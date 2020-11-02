@@ -1,0 +1,175 @@
+.. _ch0Y-sel4-code-generation:
+
+seL4 Code Generation
+###############################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+   
+Overview
+=================
+
+HAMR code generation for seL4 produces C source code that is then integrated within the Data61 CAmkES component modeling language framework 
+C - based
+
+[Tool-chain / architecture factored through CAmkES]
+seL4's separation mechanisms are specified using low-level capability descriptions that define read-write access for chunks of memory [need to improve this description, but I need to re-study capabilities -- omit if capabilities are already described].  Data61 provides an seL4-specific component specification framework called CAmkES (Component Architecture for microkernel-based Embedded Systems) that enables engineers to provide a higher-level specification of embedded system elements in terms of components and their interactions.  Given a CAmkES specification, the CAmkES translation tool generates an seL4 capability description file (capDL) as well as C code that realizes threading and component communication implied by different types of CAmkES component connectors.
+
+
+Code organization
+ 
+Platform code (Camkes, camkes generated C, HAMR generated C infrastructure, infrastructure port communication APIs).
+
+Port communication currently for local components, components on the same processor.
+Shared memory communication with signaling.
+
+Scheduling - domain scheduling plus explicit notification to activate a thread.
+Each component has a scheduling 
+
+Background
+===========
+
+seL4
+-----
+
+CAmkES
+-------
+
+
+Code Organization
+==================
+
+[Explain folder structure of generated C code]
+
+
+
+
+C Application Development Layer
+================================
+
+Following a structure similar to HAMR Slang code generation, for each AADL thread component, HAMR will generate APIs for interacting with the ports of the component.  The APIs generated for ``TempControl`` component are illustrated below.
+
+.. code-block:: c
+
+   /**********************************************************************************
+   * fanCmd : out event data port FanCmd
+   **********************************************************************************/
+
+   Unit BuildingControl_TempControl_i_sendfanCmd(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         building_control_gen_mixed_excludes_BuildingControl_FanCmd value);
+
+
+   /**********************************************************************************
+   * currentTemp : in data port Temperature.i
+   ***********************************************************************************/
+
+   bool BuildingControl_TempControl_i_getcurrentTemp(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         building_control_gen_mixed_excludes_BuildingControl_Temperature_i value);
+
+   /**********************************************************************************
+   * tempChanged : in event port
+   **********************************************************************************/
+
+   bool BuildingControl_TempControl_i_gettempChanged(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         art_Empty value);
+
+   /**********************************************************************************
+   * fanAck : in event data port FanAck
+   **********************************************************************************/
+
+   bool BuildingControl_TempControl_i_getfanAck(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         building_control_gen_mixed_excludes_BuildingControl_FanAck *value);
+
+   /**********************************************************************************
+   * setPoint : in event data port SetPoint.i
+   **********************************************************************************/
+
+   bool BuildingControl_TempControl_i_getsetPoint(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         building_control_gen_mixed_excludes_BuildingControl_SetPoint_i value);
+
+   /**********************************************************************************
+   * logging methods
+   **********************************************************************************/
+
+   void BuildingControl_TempControl_i_logInfo(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         String str);
+
+   void BuildingControl_TempControl_i_logDebug(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         String str);
+
+   void BuildingControl_TempControl_i_logError(
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this,
+         String str);
+
+Each API is passed a struct ``this`` that contains state information about the component.  This struct information never needs to be manipulated directly by application code.  It is created by initialization infrastructure code and then updated behind the scenes by each HAMR API calls.
+
+[insert type of the this construct and explain]
+
+
+The design of the APIs above does not have the flavor of hand-written C code, but it is constructed in this way to enable the C code to interoperate with code generated for out HAMR component implementations written in Slang and CakeML.
+
+
+
+
+
+In the API for ``out event data port`` ``sendfanCmd``,
+
+
+.. code-block:: c
+
+   Unit building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl_handletempChanged_(
+         STACK_FRAME
+         building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl this) {
+
+      DeclNewString(msg);
+      struct building_control_gen_mixed_excludes_BuildingControl_Temperature_i currentTemp;
+      if (BuildingControl_TempControl_i_getcurrentTemp(this, &currentTemp)) {
+         struct building_control_gen_mixed_excludes_BuildingControl_Temperature_i tempInF = toFahrenheit(currentTemp);
+
+         if (tempInF.degrees > setPoint.high.degrees) {
+               BuildingControl_TempControl_i_sendfanCmd(this, FanCmd_On);
+
+               String__append((String) &msg, string("Sent fan command: "));
+               building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_((String) &msg, FanCmd_On);
+         }
+         else if (tempInF.degrees < setPoint.low.degrees) {
+               BuildingControl_TempControl_i_sendfanCmd(this, FanCmd_Off);
+
+               String__append((String) &msg, string("Sent fan command: "));
+               building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_((String) &msg, FanCmd_Off);
+         }
+         else {
+               String__append((String) &msg, string("Temperature ok:"));
+         }
+         String__append((String) &msg, string(" - "));
+         building_control_gen_mixed_excludes_BuildingControl_Temperature_i_string_((String) &msg, &currentTemp);
+         BuildingControl_TempControl_i_logInfo(this, (String) &msg);
+      } else {
+         printf("Unexpected: tempSensor should have also sent something on its currentTemp port\n");
+      }
+   }
+
+
+
+
+
+seL4 Platform Layer
+====================
+
+
+
+Platform Communication APIs
+----------------------------
+
+
+
+Platform Tasking APIs
+---------------------

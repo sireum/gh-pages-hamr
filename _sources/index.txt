@@ -32,9 +32,9 @@ Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded
 
 To learn more about HAMR,
 
-* read an overview of HAMR,
+* read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour`,
 * watch overview videos,
-* browse the HAMR documentation.
+* browse the :ref:`hamr-index`
 
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
 the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
@@ -63,7 +63,7 @@ Development of HAMR is supported in part by DARPA, US Air Force Research Lab, US
            </div>
            <div class="panel-body">
                       
-           <!-- Enter quick link here -->
+           <a href="hamr/hamr-index.html">HAMR Documentation</a>
 
            </div>
          </div>

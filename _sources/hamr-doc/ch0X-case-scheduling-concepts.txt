@@ -1,0 +1,389 @@
+.. _ch0X-case-scheduling-concepts:
+
+CASE Scheduling Concepts
+###############################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+   
+Overview
+=================
+
+CASE aims to support a variety of DoD applications that need to be hardened for cyber-resiliency, including systems built in conformance to standards for real-time processing such as ARINC 653.
+
+Supporting full ARINC 653 development/deployment is beyond the scope of CASE Phase II for the following reasons:
+
+* We are not deploying the Phase II system on an ARINC 653 compliant platform.
+
+* We are not using the Mixed Criticality System (MCS) version of seL4, which would provide some capabilities for enforcing time partitioning, similar in spirit to what would be done in ARINC 653.
+
+* The overhead of using full ARINC 653 methodogy in a model-driven development process, e.g., as reflected in AADL ARINC 653 Annex is beyond the current scope.
+
+Therefore, we have adopted a basic, minimal set of real-time scheduling options and associated AADL modeling annotations.   The scheduling approach and annotations are intended to allow a smooth migration to a full ARINC 653 approach in the future.  The selection of capabilities for the approach is driven by:
+
+* Scheduling capabilities that the non-MCS (but formally verified) version of seL4 can handle -- in particular, capabilities that can be realized by a clever use of the seL4 domain scheduler
+
+* the need to be able to explicitly order the scheduling for cyber-resiliency components such as filters and monitors, as they are intermixed with application components.
+
+The scheduling approach must be designed by a system integrator via the following developer activities:
+
+* modeling the processes and threads in a constrained way
+
+* adding model annotations for scheduling domains (allocating each thread to a particular domain) and annotations for conventional, AADL-standard timing constraints such as *period* and *compute-exection-time*
+
+* constructing by hand (using some hints from HAMR derived from the AADL system model) a static schedule that is provided to seL4 to configure its domain scheduler.
+
+
+This chapter describes the overall concepts and provides directions on how to accomplish the tasks above.
+
+Schedulability analysis and schedule generation tools such as Adventium's FASTAR tool can eventually be used to automate some of these steps.  For now, our schedules are constructed manually, and this chapter provides guidance to developers on how on to manually construct schedules.
+
+
+Summary of CASE Scheduling Concepts
+===================================
+
+This section provides an overview of the CASE scheduling comments and provides an abbreviated list of activities (modeling constraints, specifying property sets, defining schedule) needed to specify the scheduling.   Details of the approach are discussed in the following sections.
+
+Summary of Concepts
+-----------------------------------------------
+
+**To be completed**
+
+* [diagram of approach, illustrating scheduling component, application components, etc.]
+
+* one-to-one correspondence between processes and threads.   The seL4 unit of scheduleability is a CAmkES component, which corresponds to an AADL process (except in AADL, a process is a unit of spatial protection, and a thread is a unit of execution (scheduleability)).  Following AADL convention, we will discuss the scheduling in terms of AADL threads (which we simply refer to as "threads" in the discussion below, and otherwise qualify when we need to point out issues with seL4 threading).
+
+* ZZZ TC: This is not required. ZZZ run-to-completion, no preemption.
+
+
+Summary of Modeling Constraints and Properties
+-----------------------------------------------
+
+* All threads are periodic (all threads should be declared with ``Periodic`` dispatch mode).
+
+* ZZZ TC does not agree with this point: Why is it most? What system requirement drives that choice? ZZZ Most ports are event data ports of size 1, but arrival of messages on input event data ports does not trigger a dispatch (all dispatching is time-triggered).  Event ports and data ports can also be used.
+
+* There is one thread per process in the AADL model (this is checked by Resolint).
+
+* Each AADL process is associated with a numeric domain identifier specified using the ``CASE_Scheduling::Domain`` property (this is checked by Resolint).
+
+* The maximum value of the domain identifiers is specified in the AADL model (applies to system instance) using the ``CASE_Scheduling::Max_Domain property``.
+
+* Timing_Properties::Compute_Execution_Time (applies to each AADL thread type) -- specifies the duration for which the thread is scheduled.  This is used by HAMR to generate a hint in the auto-generated schedule skeleton.  The value should match the slot duration value ``.length`` in the seL4 domain schedule (this needs to be checked manually).
+
+* Timing_Properties::Period (applies to each AADL thread type) -- specifies the period for each thread.  Comments containing this information are included along with the HAMR generated skeleton for the schedule, helping the developer to ensure that the periodicity of the thread implied by the written schedule matches the specified period in the AADL model (this needs to be checked manually).
+
+* The schedule for the system is written as a domain schedule for seL4 (which is specified in a C data structure, processed by CAmkES) (we may develop a platform independent representation of the same information that would enable us to generate scheduling for Linux and JVM platforms).
+
+* The tick duration for the underlying platform is configured using the ``TimingProperties::Clock_Period`` property (applies to Processor) in the AADL model.  The slot durations within the schedule are specified in terms of ticks. 
+
+* The period of the major frame of the scheduled is specified using the ``Timing_Properties::Frame_Period`` property (applies to Processor) in the AADL model.  The sum of the domain lengths specified in the domain schedule should equal this value.  The frame period value is included in hints generated by HAMR to accompany an auto-generated schedule skeleton.  Correspondence to the actual duration of the schedule must be checked manually.
+
+
+Utilizing the seL4 Domain Scheduler to Support the CASE Scheduling Approach
+===========================================================================
+
+In the CASE scheduling approach, the ultimate aim of the engineering activity is to produce a *static schedule* where the throughput of the system satisfies timing constraints on the computation or environment interactions of the system -- for example, producing mission plans quickly enough for flight controls, or satisfying jitter, throughput, and latency requirments on sensing and actuating actions in control loops.
+
+On the seL4 platform, the static scheduling is realized using the seL4 domain scheduling framework.  The schedule itself is expressed as a C data structure used to configure seL4.  The scheduling data structure for a simple producer (``src``) / consumer (``dst``) system is shown below.
+
+.. code-block:: C 
+
+   // Copyright 2020 Adventium Labs
+
+   // This is a kernal data structure. To get your kernal compiled with this
+   // domain schedule you need to modify the top level settings.cmake file to have
+   // these lines.  Make sure you replace the existing "set(KernelNumDomains"
+   // line.
+   //
+   // camkes-project/projects/camkes/settings.cmake
+   //
+   // set(KernelDomainSchedule "${CMAKE_CURRENT_LIST_DIR}/apps/test_data_port_periodic_domains/behavior_code/kernel/domain_schedule.c" CACHE INTERNAL "")
+   // set(KernelNumDomains 4 CACHE STRING "" FORCE)
+
+   #include <config.h>
+   #include <object/structures.h>
+   #include <model/statedata.h>
+
+   // An arbitrary hand generated schedule. The lenght is in seL4 ticks
+   // (2 ms default). This schedule shoule be generated from the AADL
+   // using execution time and data flow latency specifications.
+   //
+   // Pacer runs at highest rate
+   //
+   // This schedule is single-rate, 1Hz, run each thread at 200ms ticks for simplicity.
+   // Fill space in with domain 0.
+   //
+   //         +
+   // 3 dest  |        -              -              -              -      
+   // 2 src   |     -              -              -              -         
+   // 1 pacer |  -              -              -              -            
+   // 0 dom0  |-- -- -- -------- -- -- -------- -- -- -------- -- -- ------
+   //         |______________|______________________________________________\time
+   //           seconds      1              2              3              4 /
+   //
+   // Major frame is 1 seconds, since destination has 1 second period
+   //
+   const dschedule_t ksDomSchedule[] = { // (1 tick == 2ms)
+      { .domain = 0, .length = 100 }, // all other seL4 threads, init, 200ms
+      { .domain = 1, .length =   5 }, // pacer        10ms
+      { .domain = 0, .length =  95 }, // domain0     190ms
+      { .domain = 2, .length =   5 }, // source       10ms
+      { .domain = 0, .length =  95 }, // domain0     190ms
+      { .domain = 3, .length =   5 }, // destination  10ms
+      { .domain = 0, .length = 195 }, // domain0     390ms
+   };
+
+   const word_t ksDomScheduleLength = sizeof(ksDomSchedule) / sizeof(dschedule_t);
+
+Domains
+-------------
+
+Because we are leveraging the seL4 domain scheduler as the foundation of the CASE scheduling approach, the unit of schedulability is the *domain* (this may be enhanced in the future to consider scheduling of multiple threads within a domain).   The CASE strategy uses two domains (domain 0 and 1) for infrastructure (called *infrastructure* domains), and the rest for application threads (called *application* domains).  At present, there is a one-to-one correspondence between AADL threads and application domains (later we might consider allowing multiple AADL threads in the same scheduling domain).
+
+We use the following convention for organizing the infrastructure domains:
+
+* Domain 0 includes seL4 infrastructure threading for initialization, servicing interrupts, etc. 
+
+* Domain 1 includes what we call "pacing" infrastructure which controls the activation of seL4 threads in the application domains.  Activation is achieved by having the CAmkES representation of each AADL thread consume an notification (event) upon which it waits, and the pacing infrastructure systematically emits the notifications to unblock the threads to realize the schedule (details of this strategy are given at the end of this chapter).
+
+System developers do not need to configure any of the internal logic of the infrastructure domains (Domain 0 logic is determined by the CAmkES compilation process and the pacing logic in domain 1 is autogenerated by HAMR).  However, they will need to configure the time slot(s) for each of these (following some straightforward guidelines).
+
+For application domains, the current convention is to simply consider the order in which AADL threads are intended to execute and select domains identifiers (starting at 2) according to that order.  Note that the domain numbers are simply identifiers -- they do not influence the order of execution; the order of execution is completely determined by the order of entries in the domain schedule data structure.   An AADL process is assigned to a domain using AADL model properties (illustrated in sections below).
+
+Configuring the Number of Domains
+---------------------------------
+
+The first step in finalizing the schedule is to set the total number of domains.  Currently this is specified directly (not auto-generated by HAMR) in the CAmkES cmake file.  Here's an example for the producer/consumer system (2 application domains -- 1 each for producer and consumer -- and 2 infrastructure domains).
+
+.. code-block:: C 
+
+   // set(KernelNumDomains 4 CACHE STRING "" FORCE)
+
+Developing the Schedule Concept
+-------------------------------
+
+Next one would typically develop what we call a "schedule concept" -- an informal description of the schedule that can be shared across the development team.  The inputs to developing the schedule concept include the end-to-end latency needs of the application and the information flow (dependences) reflected in the AADL model.  The scheduling concept is developed and refined simultaneously with the specification of periods for each AADL thread, captured using an AADL thread property (see subsequent sections).  Periods are also potentially determined by the end-to-end latency needs.  See real-time scheduling textbooks for these concepts and process.
+
+Below is an ASCII visualization of a schedule concept for the procedure/consumer system.   First, one aims to determine the relative ordering of the domains within the schedule.  Following that, the specific time values for the slots in the schedule are determined.
+
+.. code-block:: C
+
+   //
+   //         +
+   // 3 dest  |        -              -              -              -      
+   // 2 src   |     -              -              -              -         
+   // 1 pacer |  -              -              -              -            
+   // 0 dom0  |-- -- -- -------- -- -- -------- -- -- -------- -- -- ------
+   //         |______________|______________________________________________\time
+   //           seconds      1              2              3              4 /
+   //
+   // Major frame is 1 seconds, since destination has 1 second period
+   //
+
+The schedule for the system is cyclic -- each complete cycle is referred to as a *major frame*.  The schedule is specified by configuring the ordering and timing properties of domains within the major frame.  Within each major frame, a domain will typically be scheduled once.  The exception to this convention is that domain 0 needs to be interleaved with application threads to handle interrupts and other kernel level services.  In addition, one may way to interleave application domains such as monitors to ensure that all events/state that the monitor aims to observe are appropriately exposed to its execution.
+
+The example producer/consumer schedule visualization above illustrates four major frames.  In each frame, the pacer and application domains (domains 1-3) are each scheduled once, whereas domain 0 is scheduled multiple times -- interleaved between the other domains.   
+
+When defining the schedule, domain 0 should be executed first.  In the simple CASE scheduling methodology, the domain 0 time slot durations for will be determined by starting with a value that typically works, and then tweaking based on experience running the system (see guidelines at the end of this chapter).  
+
+Next, the pacer domain should run (see guidelines for time duration).  
+
+For application domains, the ordering is typically determined by looking at the application data flow reflected in the AADL model.   In our example, the producer produces information that flows to the consumer.  Therefore, we schedule the ``src`` thread before the ``dst`` thread (with domain 0 executions interleaved).  
+
+Defining the Schedule
+---------------------
+
+After the schedule concept is developed, one encodes the schedule in a data structure used to configure the seL4 kernel.   A possible schedule data structure for the producer/consumer system is shown below.
+
+.. code-block:: C
+
+   // major frame duration: 500 ticks = 1000 ms = 1 sec
+
+   const dschedule_t ksDomSchedule[] = { // (1 tick == 2ms)
+      { .domain = 0, .length = 100 }, // all other seL4 threads, init, 200ms
+      { .domain = 1, .length =   5 }, // pacer        10ms
+      { .domain = 0, .length =  95 }, // domain0     190ms
+      { .domain = 2, .length =   5 }, // source       10ms
+      { .domain = 0, .length =  95 }, // domain0     190ms
+      { .domain = 3, .length =   5 }, // destination  10ms
+      { .domain = 0, .length = 195 }, // domain0     390ms
+   };
+
+   const word_t ksDomScheduleLength = sizeof(ksDomSchedule) / sizeof(dschedule_t);
+
+The schedule is an array of domain and execution durations in the order of desired execution within the major frame.  The domain fields are either 0 or 1 or refer an AADL process both the ``CASE_Scheduling::Domain`` property associated with a process in the AADL model. The units on duration fields (``.length``) are seL4 *ticks*.  The actual clock time for a tick is configured in (**TBD: for TC: where? TIMER_TICK_MS https://github.com/seL4/seL4/blob/master/config.cmake#L207 - see see comment in seL4 Properties.aadl)
+end seL4_Properties; **).  The default tick duration for verified seL4 kernels is 2 milli-seconds.  
+
+It's good style to indicate using comments the actual duration of each domain activiation in milliseconds (``.length`` * tick duration).  It's also useful to indicate in comments the total duration (in ticks and secs/milliseconds) of the major frame.
+
+The following constraints should hold for the completed data structure and AADL model (these need to be checked manually now; they may be automated in the future; HAMR currently generates some helpful hints when values used in the schedule can be derived from AADL model properties):
+
+* each domain field should lie within the interval 0 .. CASE_Scheduling::Max_Domain 
+
+* each domain from 0 .. CASE_Scheduling::Max_Domain should be accounted for at least once in the schedule
+
+* the slot duration (in milliseconds) written in comments should correspond to the ``Timing_Properties::Compute_Execution_Time`` property for the thread captured in the AADL model.
+
+* the slot duration field value (in ticks) should be correctly computed from the millisecond duration in comments and the tick duration.
+
+* the major frame duration written in comments (in milliseconds) should correspond to the ``Timing_Properties::Frame_Period`` property value written in the AADL model (**TBD: applies to what? The sum of the lengths in the schedule, which is what the next bullet says? **).
+
+* the sum of the ``.length`` fields (and associated milliseconds in comments) in the schedule should be equal to the major frame duration (in ticks, respectively milliseconds) written in comments
+
+* the time between the activation of an application domain in one cycle to the next activation of the domain (which may be in the next major frame) should be equal to the ``Period`` property of thread in the AADL model.
+
+
+AADL Modeling of Timing and Domain Scheduling Information
+==========================================================
+
+The CASE scheduling approach is design to enable a scheduling approach for seL4 -- the primary execution context technology for the Collins CASE teams.  
+To achieve alignment with the seL4 context, AADL modeling related to process and threads as well as AADL properties are used in a restricted way that doesn't necessarily match what one would do in general when working with AADL.  The primary restrictions are:
+
+* There is a single thread in each process (normally, AADL allows multiple threads and thread groups per process).
+* A CASE-specific annotation must be used to explicitly associate a process to a scheduling domain (this concept is not present in the standard set of AADL timing properties).
+
+Below we provide an example-driven explanation of how models are structured and annotations are added to support the CASE scheduling approach.
+
+Following the standard semantics of AADL, an AADL process represents a separate address space -- a space partition unit whose boundaries are enforced at runtime (see Section 5.8 of the AADL standard).   When using the seL4 CamKES framework, a space partition unit is represented as a CAmkES component.  While AADL allows multiple threads per process, to simplify the code generation and scheduling infrastructure, we currently restrict there to be exactly one AADL thread per process.  Thus, a AADL process/thread pair will become both the unit of space partitioning and scheduling.  
+
+The AADL code below illustrates how processes and threads are declared in concert, with accompanying annotations, to support the CASE scheduling approach.
+
+.. code-block:: AADL
+
+   thread source_thread
+      features
+        write_port: out data port Base_Types::Integer_8;
+      properties
+         -- Each thread type must have a declared dispatch protocol.  In CASE scheduling, 
+         --  the protocol is typically Periodic.
+			Dispatch_Protocol => Periodic;
+         -- Each periodic thread must have a declared period.  The period is not used
+         -- in code generation currently.  Instead, the system integrator needs to manually
+         -- check that the indicated period is implied by time slots declared in the seL4 
+         -- schedule data structure.  To support this, the period value is passed down 
+         -- in comments in the auto-generated schedule data structure template.
+			Period => 1000ms;
+         -- Each periodic thread must declare a Compute_Execution_Time (as an AADL time range).  
+         -- The Compute_Execution_Time is not used in code generation currently.  
+         -- Instead, the system integrator needs to manually check that upper 
+         -- bound of the time range (the lower bound is not used) corresponds to the 
+         -- time value associated with the slot of the domain corresponding to the thread's process 
+         -- the seL4 data structure.  To support this, the Compute_Execution_Time value is passed down 
+         -- in comments in the auto-generated schedule data structure template.
+			Compute_Execution_Time => 10ms .. 10ms;
+         -- ToDo:
+         --  The stuff below stuff should go away.
+			Source_Text => ("behavior_code/components/source/src/source.c");
+			Initialize_Entrypoint_Source_Text => "test_data_port_periodic_domains_source_component_init";
+			Compute_Entrypoint_Source_Text => "test_data_port_periodic_domains_source_component_time_triggered";
+	end source_thread;
+
+   -- No scheduling related info goes in the thread implementation.
+	thread implementation source_thread.impl
+	end source_thread.impl;
+
+   -- process specifies boundary of spatial isolation
+	process source_process
+		features
+			write_port: out data port Base_Types::Integer_8;
+		properties
+			seL4_Properties::Domain => 2; -- pacer 1, source 2, destination 3
+	end source_process;
+
+   -- No scheduling related info goes in the process implementation.
+	process implementation source_process.impl
+		subcomponents
+			source_thread_component: thread source_thread.impl;
+		connections
+			write_connection: port source_thread_component.write_port -> write_port;
+	end source_process.impl;
+
+The major frame period and time duration for the processor tick are configured via the ``Frame_Period`` and ``Clock_Period`` properties, as illustrated below (see Section A.3 of the AADL standard).
+
+.. code-block:: AADL
+
+   processor proc
+   end proc;
+
+   processor implementation proc.impl
+   properties
+      Frame_Period => 1000ms;
+      Clock_Period => 2ms;
+      seL4_Properties::Schedule_Source_Text => "behavior_code/kernel/domain_schedule.c";
+   end proc.impl;
+
+
+* The tick duration for the underlying platform is configured using the ``TimingProperties::Clock_Period`` property (applies to Processor) in the AADL model.  The slot durations within the schedule are specified in terms of ticks. 
+
+* The period of the major frame of the scheduled is specified using the ``Timing_Properties::Frame_Period`` property (applies to Processor) in the AADL model.  The sum of the domain lengths specified in the domain schedule should equal this value.  The frame period value is included in hints generated by HAMR to accompany an auto-generated schedule skeleton.  Correspondence to the actual duration of the schedule must be checked manually.
+
+
+.. note::
+
+   ToDo: 
+   
+   * We need to consider how the execution time of the Initialize entry points for threads are handled, e.g., using the standard AADL timing property ``Initialize_Execution_Time``.
+
+
+
+CASE Scheduling Properties
+============================
+
+The following AADL property declarations are used to support the CASE scheduling approach.  Each of the properties are explained in the sections above.
+
+.. code-block:: AADL
+
+   ----------------------------------------------------------------------
+   -- Copyright 2020 DARPA CASE
+   --
+   -- Experimental seL4 specific properties for configuring kernel
+   -- and run-time schedule
+   ----------------------------------------------------------------------
+   property set seL4_Properties is
+   -- The values of these properties are not computed
+   -- values; they will be user specified, typically by the integrator's
+   -- Systems Engineer.
+   --
+   -- We will get fancier if we do a general ARINC653 solution. This
+   -- works for a basic schedule.
+
+   -- seL4_Properties::Domain is the numeric ID of the domain to which
+   -- the Systems Engineer assigns the thread. Once the examples get
+   -- fixed to have processes, this should be at the process level,
+   -- rather than thread level.
+
+   Domain: aadlinteger applies to (thread, process);
+
+   -- Schedule_Source_Text specifies the location of the source text for a
+   -- periodic domain schedule. For seL4, this will be a kernel modification.
+
+   Schedule_Source_Text: aadlstring applies to (processor, virtual processor);
+
+   -- use Timing_Properties::Compute_Execution_Time to specify the duration
+   -- for which the thread is scheduled. This ends up in the domain schedule. 
+
+   -- Use Timing_Properties::Frame_Period to specify the duration of the
+   -- major frame.
+
+   -- use TimingProperties::Clock_Period to specify tick duration in ms.
+   -- (seL4 default is 2) on the vanilla (non-MCS) seL4, the length of
+   -- the timer tick is configurable, defaulting to 2ms. None of the
+   -- verified configurations change this. See:
+   -- https://github.com/seL4/seL4/blob/master/config.cmake#L213
+   end seL4_Properties;
+
+
+
+
+Practical Issues - Things That Can Go Wrong
+===========================================
+
+.. note::
+
+   ToDo: 
+     
+   * indicate what might be observed when things go wrong with setting up the schedule.
+
+
