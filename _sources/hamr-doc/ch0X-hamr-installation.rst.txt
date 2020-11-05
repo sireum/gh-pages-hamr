@@ -20,7 +20,7 @@ Using HAMR to build an executable system requires working with:
 
 The Sireum Kekinian framework is used to ease the installation of these tools and associated infrastructure.   Kekinian is installed first, and then its installation scripts are used to install the FMIDE and Slang and C development environments.
 
-As part of the DARPA CASE project, ` Vagrant scripts <https://github.com/loonwerks/CASE/tree/master/TA5/case-env>`__ are provided to build a VirtualBox VM running Linux that hosts the tool components above.
+As part of the DARPA CASE project, `Vagrant scripts <https://github.com/loonwerks/CASE/tree/master/TA5/case-env>`__ are provided to build a VirtualBox VM running Linux that hosts the tool components above.
 
 Following the installation instructions, instructions are given for loading and running a simple HAMR Slang project.
 
