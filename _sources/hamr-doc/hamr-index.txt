@@ -3,19 +3,15 @@
 HAMR Documentation
 ###################
 
-The material below is draft content for the HAMR Reference Manual (HAMR RM).   Additional documentation is planned (see the itemized list below).
+The material below is draft content for the HAMR Reference Manual (HAMR RM).   Additional documentation is being rolled out by mid-November 2020 (see the itemized list below).
 
 .. toctree::
    :maxdepth: 2
 
+   ch0X-hamr-installation
    ch00-hamr-overview
    ch0X-hamr-tour
    ch04-hamr-aadl-fundamental-concepts
-   ch0X-hamr-project-org-workflows
-   ch05-hamr-types
-   ch0W-slang-development
-   ch0X-case-scheduling-concepts
-   ch0W-c-code-generation-APIs
 
 **Top-level Outline of planned Sireum documentation**
 

@@ -33,7 +33,10 @@ Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded
 To learn more about HAMR,
 
 * read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour`,
-* watch overview videos,
+* watch overview videos
+
+  * HAMR Overview (with emphasis on HAMR Slang development) - `talk given at CMU Software Engineering Institute <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__ (around 1 hr plus additional time for questions)
+
 * browse the :ref:`hamr-index`
 
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
@@ -63,7 +66,11 @@ Development of HAMR is supported in part by DARPA, US Air Force Research Lab, US
            </div>
            <div class="panel-body">
                       
-           <a href="hamr/hamr-index.html">HAMR Documentation</a>
+           <a href="hamr-doc/ch0X-hamr-installation.html">Installation</a>
+           <br>
+           <a href="hamr-doc/hamr-index.html">Documentation</a>
+           <br>
+           <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
 
            </div>
          </div>

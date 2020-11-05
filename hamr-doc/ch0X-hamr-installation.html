@@ -1,0 +1,195 @@
+
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HAMR Installation &mdash; Sireum HAMR</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="../_static/hamr.ico"/>
+    <link rel="top" title="Sireum HAMR" href="../index.html" />
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">
+          HAMR</a>
+        <span class="navbar-text navbar-version pull-left"><b></b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="../index.html">Download</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="../index.html"> <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="../search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="hamr-installation">
+<span id="ch0x-hamr-installation"></span><h1>HAMR Installation<a class="headerlink" href="#hamr-installation" title="Permalink to this headline">¶</a></h1>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr" id="id2">Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR</a></li>
+<li><a class="reference internal" href="#ide-sireum-ive-for-slang-based-development-of-hamr-systems" id="id3">IDE (Sireum IVE) for Slang-based Development of HAMR Systems</a></li>
+<li><a class="reference internal" href="#ide-for-c-based-development-of-hamr-systems" id="id4">IDE for C-based Development of HAMR Systems</a></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id1">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>HAMR is supported on Windows, Linux, and MacOS platforms.</p>
+<p>Using HAMR to build an executable system requires working with:</p>
+<ul class="simple">
+<li>FMIDE (Formal Methods Integrated Development Environment) &#8211; a customization of the Eclipse-based OSATE AADL IDE created on the DARPA CASE project.   The FMIDE includes the HAMR code generation plugin.</li>
+<li>A development environment for the HAMR targetted programming language(s) &#8211; the programming language used to code the implementation of components whose skeletons and associated run-time infrastructure are generated by HAMR.   HAMR currently supports Slang (a Scala-based language), C, with some support for CakeML.  Currently, HAMR support for Slang is the most mature and easy-to-use.</li>
+</ul>
+<p>The Sireum Kekinian framework is used to ease the installation of these tools and associated infrastructure.   Kekinian is installed first, and then its installation scripts are used to install the FMIDE and Slang and C development environments.</p>
+<p>Alternatively, Vagrant scripts are provided to build a VM running Linux that hosts the tool components above.</p>
+<p>Following the installation instructions, instructions are given for loading and running a simple HAMR Slang project.</p>
+</div>
+<div class="section" id="installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr">
+<h2><a class="toc-backref" href="#id2">Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR</a><a class="headerlink" href="#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr" title="Permalink to this headline">¶</a></h2>
+<p>Windows:</p>
+<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+cd Sireum
+git checkout &lt;commit&gt; &amp; REM^; SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
+git submodule update --init --recursive
+bin\build.cmd setup
+bin\install\fmide.cmd [&lt;tag-name&gt;] &amp; REM^; Optional release tag name; latest nightly release is used if unspecified
+start /B bin\win\fmide\fmide.exe
+</pre></div>
+</div>
+<p>Linux:</p>
+<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+cd Sireum
+git checkout &lt;commit&gt; # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
+git submodule update --init --recursive
+bin/build.cmd setup
+bin/install/fmide.cmd [&lt;tag-name&gt;] # Optional release tag name; latest nightly release is used if unspecified
+bin/linux/fmide/fmide&amp;
+</pre></div>
+</div>
+<p>macOS:</p>
+<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+cd Sireum
+git checkout &lt;commit&gt; # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
+git submodule update --init --recursive
+bin/build.cmd setup
+bin/install/fmide.cmd [&lt;tag-name&gt;] # Optional release tag name; latest nightly release is used if unspecified
+open bin/mac/fmide.app
+</pre></div>
+</div>
+<p>The Sireum directory created above is referred to using the environment variable <code class="docutils literal"><span class="pre">$SIREUM_HOME</span></code> in the instructions below.</p>
+<p>To update FMIDE,</p>
+<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/install/fmide.cmd [&lt;tag-name&gt;] # Optional release tag name; latest nightly release is used if unspecified
+</pre></div>
+</div>
+<p>If the installation somehow did not finish (e.g., due to a network issue), remove the problematic file in Sireum&#8217;s cache directory (~/Downloads/sireum) and re-run the above.</p>
+<p>To update Sireum:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Robby fix.</p>
+</div>
+</div>
+<div class="section" id="ide-sireum-ive-for-slang-based-development-of-hamr-systems">
+<h2><a class="toc-backref" href="#id3">IDE (Sireum IVE) for Slang-based Development of HAMR Systems</a><a class="headerlink" href="#ide-sireum-ive-for-slang-based-development-of-hamr-systems" title="Permalink to this headline">¶</a></h2>
+<p>When using Slang to program an AADL/HAMR based system, you will use the Sireum IVE (Integrated Verification Environment).  Sireum IVE is a customization of IntelliJ that includes Scala-associated infrastructure pre-installed as well as other SAnToS-built plug-ins for the Slang language subset and associated analysis/verification capabilities.</p>
+<p>The Kekinian framework is used to install and update the Sireum IVE.  Thus, once the steps above are completed, Sireum IVE can be installed using the steps below.</p>
+<p>Install the IntelliJ-based Sireum IVE (for HAMR Slang component development, etc.):</p>
+<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/build.cmd setup
+</pre></div>
+</div>
+<p>Then, to launch it:</p>
+<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/linux/idea/bin/IVE.sh&amp;
+</pre></div>
+</div>
+</div>
+<div class="section" id="ide-for-c-based-development-of-hamr-systems">
+<h2><a class="toc-backref" href="#id4">IDE for C-based Development of HAMR Systems</a><a class="headerlink" href="#ide-for-c-based-development-of-hamr-systems" title="Permalink to this headline">¶</a></h2>
+<p>Any C modern IDE can be used.  The HAMR team uses CLion from JetBrains.</p>
+<p>To install CLion C/C++ IDE (license required/free 30-day evaluation):</p>
+<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/install/clion.cmd
+</pre></div>
+</div>
+<p>Then, to launch it:</p>
+<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/linux/clion/bin/clion.sh&amp;
+</pre></div>
+</div>
+</div>
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+
+  </body>
+</html>
