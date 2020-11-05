@@ -42,7 +42,12 @@ To learn more about HAMR,
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
 the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
 
-Development of HAMR is supported in part by DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute
+Development of HAMR is supported in part by 
+
+* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
+
+* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+
 
 .. raw:: html
 
