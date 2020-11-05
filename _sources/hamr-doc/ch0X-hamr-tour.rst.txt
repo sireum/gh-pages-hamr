@@ -1,0 +1,278 @@
+.. _ch0X-hamr-tour:
+
+HAMR Tour
+###########
+
+.. contents:: 
+   :local: 
+   :depth: 2
+   
+Overview
+=================
+
+This chapter provides a high-level summary of developer activities when using HAMR.  This includes:
+
+* simple illustrations of AADL component and system modeling,
+* examples of HAMR-related AADL model analysis,
+* generating code with HAMR,
+* programming component behaviors with HAMR, 
+* HAMR-based testing for components (unit testing) and systems (system tests), and
+* running HAMR applications.
+
+HAMR supports multiple programming languages for coding the functionality of components and systems whose infrastructured is auto-generated from HAMR.  Workflows for both Slang and C programming languages are illustrated in this chapter.  The first two items above (AADL modeling and AADL analysis) are independent of whether or not Slang or C is being used as the programming language.  Accordingly, the content of the chapter is organized as follows:
+
+* AADL modeling
+* AADL analysis
+* Slang workflows
+* C workflows
+
+Throughout the presentation, forward references are provided to subsequent chapters that provide more details.
+
+AADL Modeling 
+==================
+
+The OSATE Eclipse AADL Environment
+-----------------------------------
+
+HAMR workflows begin with creating AADL models of components and systems in the *OSATE* AADL tool.  OSATE is based on the widely-used open-source Eclipse IDE.   HAMR is currently distributed in special "branded" distribution of OSATE called the Formal Methods Integrated Development Environment (FMIDE) developed on the DARPA CASE project.  
+
+* See the installation instructions for installing OSATE/FMIDE and HAMR plug-in.  
+* See :ref:`ch04-hamr-aadl-fundamental-concepts` for a detailed presentation of AADL modeling and semantics concepts.
+
+Each OSATE AADL model has both a graphical view and textual view, and OSATE keeps them synchronized.  Although it is possble to create and edit models in the graphical view, HAMR documentation emphasizes creating/editing models in the textual view and then visualizing them in the graphical view.
+
+.. _OSATE-graphical-view:
+
+.. figure:: figures/Tour-OSATE-graphical-view.png
+   :align: center 
+
+   **OSATE AADL Graphical View**
+
+.. _OSATE-textual-view:
+
+.. figure:: figures/Tour-OSATE-textual-view.png
+   :align: center 
+
+   **OSATE AADL Textual View**
+
+OSATE includes different analysis and code generation plug-ins whose functions can be accessed through the menu system or through icons in the tool bar.   Some OSATE/FMIDE capabilities require additional libraries to be installed, they vary in their maturity, and they work on different model features/properties (some of which may not be included in your models)  -- so the take away is that you should not expect all other OSATE plug-ins to work on models in the HAMR documentation nor models that you build.   However, all HAMR-related related features described in this documentation should work.
+
+.. _OSATE-menus-toolbar:
+
+.. figure:: figures/Tour-OSATE-menus-toolbar.png
+   :align: center 
+
+   **OSATE Menus and Toolbar**
+
+
+
+Component Modeling
+--------------------
+
+AADL systems are built from different kinds of components.
+
+With HAMR, the most important component kind is a ``thread`` component, which corresponds to a *real-time task* in real-time systems literature.   
+
+HAMR generates code skeletons for ``thread`` components, and a developer implements a system by (a) using a HAMR-supported programming language to program the behavior of thread components and (b) using other AADL modeling elements to group and "wire" components together.   
+
+HAMR also generates for communication infrastructure for the wiring between components, and platform infrastructure code corresponding to other kinds of AADL components such as ``process`` and ``system`` -- which are used to aggregate ``thread`` components so that they can be associated with various system resources and configurations.
+
+Each AADL software component, e.g., a ``thread``, ``process``, or ``system``, has a specified interface captured as an AADL ``component type``.   AADL emphasizes *port-based inter-component communication*, and so an AADL component type (interface) is a collection of ports.  There are several categories of AADL ports (``event``, ``data``, and ``event data``), and a port category (together with optional port properties) indicates a particular pattern of communication to be used for communication on that port.
+
+* ``data`` ports -- roughly correspond to shared memory between components that act either as writers or readers
+* ``event`` ports -- roughly corespond to buffered notifications from one component to another
+* ``event data`` ports -- roughly correspond to buffered messages with payloads sent from one component to another
+
+AADL properties can be used to configure buffer sizes, timing properties, etc.
+
+HAMR only supports **uni-directional** ports and connections (with port direction indicated by ``in`` and ``out``), so as to enable (a) clean design of security and information flow controls and (b) model- and code-level information flow analysis.
+
+.. _component-interface-textual:
+
+.. figure:: figures/Tour-component-interface-textual-w-graphical-inlay.png
+   :align: center 
+
+   **AADL Textual Representation of Port-based Thread Component Type (Interface)**
+
+Later in the workflow, HAMR will generate code-level interfaces for modeled component types.
+
+Defining Data Types for Intercomponent Communication (shared data, messages)
+------------------------------------------------------------------------------
+
+AADL provides facilities modeling data structures like structs (records), arrays, unions, and enums that flow between components.   AADL libraries also provide common base types including fixed-width, signed and unsigned integers, floats, etc. commonly used in embedded system programming.  
+
+Once these types are defined, they are referenced in component interface specification to indicate the types of data flowing across ports.
+
+.. _data-modeling:
+
+.. figure:: figures/Tour-data-modeling.png
+   :align: center 
+
+   **AADL Data Modeling**
+
+Later in the workflow, HAMR will generate code-level data types for modeled component types.
+
+
+System Modeling
+----------------
+
+**Software Integration and Architecture**
+
+Once software threads are designed, they can be integrated, aggregated into AADL ``thread group`` components, placed in address spaces (represented by AADL ``processes``) --- all of these elements can be organized to into subsystems (represented by AADL ``system`` components) and systems.
+
+.. _software-system-graphical:
+
+.. figure:: figures/Tour-software-system-graphical.png
+   :align: center 
+
+   **AADL Software System Modeling (AADL graphical view)**
+
+A key aspect of these integration activities is using AADL ``connections`` to associate the output ports of one component with the input ports of another.   AADL's type checking checks that connected ports are type compatible.  Other AADL tools such as AGREE and BLESS can be used to specify contracts (formal specification of data constraints and input output relations) and then check that connected ports/components have compatible contracts.
+
+.. _software-system-textual:
+
+.. figure:: figures/Tour-software-system-textual.png
+   :align: center 
+
+   **AADL Software System Modeling (AADL textual view)**
+
+Once the software architecture is specified, HAMR can generate code for it (illustrated in later in the workflow).   HAMR generates execution contexts, thread skeletons, and APIs for port communication for thread components.   
+The developer fills in the thread skeletons to complete the component implementation.
+
+HAMR generates code for communication between thread components using the target platform's communication mechanisms which can include both local communication as well as distributed communication (e.g., supported by middleware).   Realization of inter-component communication is completely automatic.  That is, in contrast to realizing threads, for communication infrastructure *all* the code is generated -- there are no skeletons to fill in.  
+
+**Software and Hardware Integration and Allocation of Software Components to Platform and Hardware Resources**
+
+
+
+
+AADL Analysis
+===============
+
+Information Flow Analysis
+--------------------------
+
+.. note::
+
+   **ToDo: Complete this section**
+
+
+* Code: intra-component flows 
+* Image: Information Flow Visualization (slicing)
+* Image: Information Flow Visualization (querying)
+
+Slang Workflows
+=================
+
+Generating Code and Code Development Environment Setup
+-------------------------------------------------------
+
+Once the AADL model has been developed to a level of detail sufficient to support code generation, the HAMR code generation capability can be invoked from the OSATE menu system.
+
+Tour-HAMR-code-generation-JVM
+.. _HAMR-code-generation-JVM:
+
+.. figure:: figures/Tour-HAMR-code-generation-JVM.png
+   :align: center 
+
+   **HAMR Code Generation (Slang / JVM Platform)**
+
+HAMR generates code for:
+
+* **communication infrastructure code** that implements communication between AADL threads (e.g., communicating over port connections),
+* **threading infrastructure code** for containers that host threads and a thread component state (one for each thread instance in the AADL model), 
+* **code skeletons for thread application code**, 
+* **build scripts** (in SBT) for configuring a build of the system and identifying needed library packages, 
+* **unit testing infrastructure** that aids the developer in setting up unit tests for each thread component,
+* **code that supports simulation and visualization** of Slang systems.
+
+The developer will subsequently implement the system by filling in the code skeletons for the application code, configuring build scripts, adding unit and system tests, etc.   The generated infrastructure code is complete and should not be modified in the development process.
+
+Build Scripts
+--------------
+
+HAMR generates generates default build scripts in `SBT <https://www.scala-sbt.org>`__.  SBT is similar to `Maven <https://maven.apache.org>`__ and `Ant <https://ant.apache.org>`__ -- popular Java-oriented build tools.  For example, SBT adopts Maven's project folder structure and supports library dependences in `Apache IVY  <https://ant.apache.org/ivy/>`__ library repositories.
+
+However, SBT builds are defined in a Scala data structures (as opposed to XML used in Maven and Ant), and this provides greater flexibility, some degree of type checking on build definitions (utilizing underlying type checking facilities of Scala), and a deeper integration with the Scala ecosystem.
+
+The HAMR-generated SBT build script is sufficient for running the initial default behavior of the HAMR-generated system and for launching auto-generated example unit tests.
+
+Developers extend the default build scripts as needed to specify library dependences and to tailor execution and testing workflows for the application.
+
+.. note::
+
+   **ToDo: Add screenshot of SBT file:**
+
+Component Development
+----------------------
+
+
+* Coding component logic (e.g., temp controller with port reads and writes)
+* Reading and writing from ports 
+* Interfacing with Java and component GUIs 
+
+* Test edit of HAMR tour under component development.  Foo bar
+
+System Development and Execution
+----------------------------------
+
+* Component integration and scheduling, with concept of running on platform  (perhaps with HAMR image of platform)
+* Console logging information 
+
+Unit Testing 
+-----------------
+
+* IMAGE (need to draw): Explanation of component testing in terms of component inputs and outputs
+* Illustration of code providing inputs and checking outputs
+* Running via Scala Test 
+
+System Testing 
+----------------
+
+* System testing via controlled schedule exploration
+
+System Monitoring and Execution Visualization
+----------------------------------------------
+
+* Inspector Framework
+* MSC Visualization
+* Redis logging 
+
+C Workflows
+=================
+
+Generating Code and Code Development Environment Setup
+-------------------------------------------------------
+
+* Screen shot of OSATE menu (explain multiple platform options)
+* Quick overview of generated code in CLion IDE 
+* Setting up builds with CMAKE 
+
+Component Development
+----------------------
+
+* Coding component logic 
+* Reading and writing from ports 
+* Interfacing with Java and component GUIs 
+
+Scheduling and System Configuration 
+------------------------------------
+
+* Configuring scheduler 
+
+Linux System Execution
+------------------------
+
+* illustration of Linux Execution
+
+seL4 System Execution (simulation via Qemu)
+--------------------------------------------
+
+* illustration of seL4 Execution on Qemu
+
+seL4 System Execution (on development board)
+--------------------------------------------
+
+* illustration of seL4 Execution on board 
+
+

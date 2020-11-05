@@ -1,0 +1,31 @@
+.. _hamr-index:
+
+HAMR Documentation
+###################
+
+The material below is draft content for the HAMR Reference Manual (HAMR RM).   Additional documentation is being rolled out by mid-November 2020 (see the itemized list below).
+
+.. toctree::
+   :maxdepth: 2
+
+   ch0X-hamr-installation
+   ch00-hamr-overview
+   ch0X-hamr-tour
+   ch04-hamr-aadl-fundamental-concepts
+
+**Top-level Outline of planned Sireum documentation**
+
+* What is HAMR / HAMR Tour
+* Preparing to use HAMR (installation, gathering libraries, etc.)
+* AADL/HAMR Fundamental Concepts
+* HAMR Workflow  
+* AADL/HAMR Modeling Essentials
+* HAMR Type System
+* HAMR/Slang Coding
+* HAMR/Slang Contract-based Verification
+* HAMR/Slang Simulation and Testing 
+* HAMR/C Development
+* HAMR Project Deployment 
+* Examples 
+
+

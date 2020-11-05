@@ -1,0 +1,302 @@
+.. _ch05-hamr-types:
+
+AADL/HAMR Data Types and Data Modeling
+######################################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+   
+Overview
+========
+
+Background 
+--------------
+
+AADL and HAMR emphasize port-based communication between components where the data exchanged over ports is typed.   In AADL models, ports are declared in *component types* and HAMR requires that each port in a component type has an associated data type constructed according to the *AADL Data Modeling Annex* -- which standardizes one approach to defining data types in AADL.  In the Data Modeling Annex, data types are modeled using AADL's *data components*.   When the ports of different components are connected, HAMR requires that the data types on the connected ports be compatible.  Together with AADL port properties, and other behavioral constraints such as AGREE specifications, AADL's typed ports form part of a component's interface specification, which is captured in a *component type* declaration.
+
+As it performs code generation for an AADL model, HAMR translates AADL data types based on the Data Modeling Annex to type declaration in the target programming language (e.g., Slang or C).  The translation and the representation in target programming languages is *not standardized* by AADL.  However, HAMR data type translation is designed to ensure interoperability between HAMR-based components whose implementations are coded in different HAMR-supported languages.   Behind the scenes, HAMR makes use of the *Sireum Bitcodec* framework to ensure interoperability.   In addition, Sireum Bitcodec also provides a serialized (wire-format) for data that can be used for distributed communication.  Sireum Bitcodec also provides a basis for specifying for format of complex legacy data representations.  Given a Bitcodec specification, the Sireum infrastructure can generated programming language type declaraions and encoders and decoders for transforming data between HAMR-supported languages and legacy programs.
+
+AADL's approach to types and data modeling is a recognized weakness.  AADL type declarations are verbose and klunky, and the lack of a standardized data type code generation approach for interoperability leaves each AADL tool developer to "roll their own" approach to types and associated language representations.  AADL V3, the upcoming version of the AADL standard, will introduce a new syntax for types.   Work on HAMR is influencing the AADL V3 type system, and when the AADL V3 type system is finalized, HAMR will likely adopt it.
+
+General Approach and Workflow Concepts
+----------------------------------------
+
+In this section we illustrate the primary steps involved in defining and using AADL types and then using HAMR-generated type representations at the code-level.   Below is a high-level summary of the steps.
+
+* Define AADL application types -- types that build upon AADL base types to provide data structures such as arrays, structs, and enums.
+* Use AADL base types and application types to define the types of ports in component types.
+* Use the Resolint tool to check that type declarations adhere to HAMR rules (ensuring that code-generation can be applied to the types without having the code-generator complain of a syntax error).
+* Observe the structure of HAMR-generated programming language types for AADL base types and application types.
+* Program component application logic using port operations and method handlers that reference the HAMR-generated types.
+
+AADL-Level Types
+.................
+
+AADL provides a library of *base type* declarations that integers of different bitwidths (signed and unsigned), floats/doubles, booleans, characters, and strings.  Structured types supported by the AADL Data Modeling Annex include arrays (single and multi-dimensional), structs/records, enums, and unions.
+
+.. note::
+
+  HAMR does not currently support multi-dimensional arrays or unions, but we expect to add support for those by end of 2020.
+
+To introduce a structured type, an application developer defines an AADL *data component* with some accompanying AADL properties.  HAMR encourages a file/package organization that groups data type declarations together in one or packages dedicated exclusively to type declarations.  
+
+For example, an application developer might define a package 'Datatypes' to hold the data type declarations for the application.
+
+.. code-block:: AADL
+
+   -- introduce an AADL package (name 'Datatypes' chosen by developer) to hold the application's data type declarations
+   package Datatypes    
+   public
+     with Data_Model;  -- include properties from AADL Data Modeling annex, used to define data types 
+     with Base_Types;  -- include AADL pre-defined data types for base types
+
+     -- declare a struct data type (name 'MyStruct2' chosen by developer)
+     data MyStruct2  
+       properties
+       -- use standard data model property to indicate the data component models a 'struct'
+       Data_Model::Data_Representation => Struct; 
+     end MyStruct2;
+     -- modeling a struct requires using a data component implementation to declare the fields of the struct 
+     data implementation MyStruct2.i
+     subcomponents
+       -- declare a field named 'fieldFloat' to be of type 'Float' using AADL's pre-defined base types
+       fieldFloat: data Base_Types::Float;      
+       -- declare a field named 'fieldSChar' to be of type 'Character' using AADL's pre-defined base types
+       fieldSChar: data Base_Types::Character;
+      end MyStruct2.i;
+   
+   end Datatypes;
+
+The example above illustrates that data types are defined *data components* annotated with ``Data_model`` properties such as ``Data_Representation => Struct``.  For ``struct`` definitions, a data component implementation is used to declare the type's subcomponents (other data type declarations do not require a component implementation).
+
+In the fields of the example struct, AADL's library of base types is used to define fields of type ``Float`` and ``Character``.
+
+AADL-Level Ports with Type Declarations
+.........................................
+
+When building an AADL model, AADL pre-defined ``Base_Types`` along with application-defined types like those above are used to declare types of ports.
+
+The example below shows excerpts from a system model illustrating the use of base types and application-defined types to define types for ports.  
+
+.. code-block:: AADL
+
+  package MySystem 
+  public
+    with Base_Types; -- include AADL pre-defined data types for base types
+    with Datatypes;  -- include application types defined in Datatypes package
+
+    ...
+
+    -- example component type and implementation
+    thread ProducerThr
+      features
+      -- declare field of type Float using predefined AADL Base_Types 
+      myFloat : out event data port Base_Types::Float;  
+      -- Base_Types includes types for fixed-width fields for both signed and unsigned integers    
+      myInt16 : out event data port Base_Types::Integer_16;
+      myUInt64 : out event data port Base_Types::Unsigned_64;  
+      -- declare field that uses an application defined type 
+      myStruct: out event data port Datatypes::MyStruct2.i; -- struct types need to reference component implementation 
+    properties
+      Dispatch_Protocol => Periodic;
+      Period => 1000ms;
+   end ProducerThr;
+   thread implementation ProducerThr.i
+   end ProducerThr.i;
+	
+   ...
+  end MySystem;
+
+Checking AADL/HAMR Type Well-formedness Using Resolint
+........................................................
+
+.. note:: ToDo
+
+   * Adding Resolint annex clause to trigger checking 
+   * Summary of what resolint checks
+   * Example screen shot of Resolint detecting a problem with declared types
+
+HAMR-generated Code-Level Representations of AADL Types (Slang)
+................................................................
+
+HAMR-generated code includes representations of AADL base types as well as application-declared types.  
+
+In code generation for Slang, HAMR introduces aliases (corresponding to AADL's base type names) for appropriate built in Slang types.
+
+.. code-block:: scala
+
+  // excerpts from HAMR's Slang representation of base types 
+
+  type Integer_16 = org.sireum.S16
+  type Unsigned_64 = org.sireum.U64
+  type Float = org.sireum.R
+  type Character = org.sireum.C
+
+Slang classes/objects for each application type are generated.   Types for the AADL-declared structure as well as a wrapper class for messages containing the typed value are generated (application code never works with the wrapper classes directly -- they are introduced behind the scenes in the HAMR Slang infrastructure).
+
+.. code-block:: scala
+
+   // slang package generated corresponding to AADL package 'Datatypes' above 
+   package slang.Datatypes
+
+   // class generated to represent the AADL application-specified 'MyStruct2' struct type 
+   @datatype class MyStruct2_i(
+     fieldFloat : R,    -- field is typed used Slang representation of Float base type above (org.sireum.R)
+     fieldSChar : C) {  -- field is typed used Slang representation of Character base type above (org.sireum.C)
+   }
+
+   // Slang "companion object" providing a function that returns a default value for the application-specified type 
+   object MyStruct2_i {
+     def empty(): Datatypes.MyStruct2_i = {
+        return Datatypes.MyStruct2_i(Base_Types.Float_empty(), Base_Types.Character_empty())
+     }
+   }
+
+   // Wrapper class used for messages between components (hidden from developer).  This adds additional fields from art.DataContent
+   // for time stamps and other system information.
+   @datatype class MyStruct2_i_Payload(value: Datatypes.MyStruct2_i) extends art.DataContent
+
+   // Slang "companion object" providing default value for payload.
+   object MyStruct2_i_Payload {
+     def empty(): MyStruct2_i_Payload = {
+        return MyStruct2_i_Payload(Datatypes.MyStruct2_i.empty())
+     }
+   }
+
+HAMR-generated Code-Level Component Interfaces with Typed Port Operations (Slang)
+..................................................................................
+
+HAMR-generated code for port operations and skeletons for message handlers references the Slang type corresponding to the AADL type declared for a particular port.
+
+.. code-block:: scala
+
+  // auto-generated methods (only method signatures shown) for AADL producer thread (excerpts)
+  def sendmyFloat(value : R) : Unit
+  def sendmyInt16(value : S16) : Unit
+  def sendmyUInt64(value : U64) : Unit
+  def sendmyStruct(value : Datatypes.MyStruct_i) : Unit
+
+  // auto-generated message handler skeleton for AADL consumer thread
+  def handlemyStruct(value : Datatypes.MyStruct_i): Unit = {
+   ...
+   }
+
+
+
+AADL/HAMR Data Modeling Reference -- Base Types 
+================================================
+
+The AADL Data Modeling Annex specifies a collection of base types that are commonly used in embedded systems.  OSATE includes the definition of these types in the AADL package ``Base_Types`` found in the *Plug-in Contributions* folder of an OSATE-initialized AADL project. 
+
+.. _OSATE-base-types:
+
+.. figure:: figures/OSATE-base-types.png
+   :align: center 
+
+   **OSATE Base Types Package**
+
+The right pane in :ref:`OSATE-base-types` shows the contents of the ``Base_Types`` package and illustrates that each base type is modeled as a AADL data component annotated with properties from the AADL Data Modeling annex.
+
+*This file should not be edited*, but it may be useful to read the file to remind yourself of available base types.
+
+The table below lists the AADL base types along with their Slang and C representations.
+
+======================  ========================  ====================
+**AADL Base Type**      **Slang Representation**  **C Representation** 
+Boolean                 B                         *TBD*
+Integer                 Z                         *TBD*
+Float                   R                         *TBD*
+Character               C                         *TBD*
+String                  String                    *TBD*
+Integer_8               S8                        *TBD*
+Integer_16              S16                       *TBD*
+Integer_32              S32                       *TBD*
+Integer_64              S64                       *TBD*
+Unsigned_8              U8                        *TBD*
+Unsigned_16             U16                       *TBD*
+Unsigned_32             U32                       *TBD*
+Unsigned_64             U64                       *TBD*
+Float_32                F32                       *TBD*
+Float_64                F64                       *TBD*
+======================  ========================  ====================
+
+.. note::
+
+  * AADL also includes a ``Natural`` base type as well as a mechanism for specifying strings of bounded size, but these are currently not supported by HAMR.
+  * Does HAMR support AADL extension of base types?
+
+The base types ``Integer``, ``Float``, ``Character``, ``String`` do not have a specified size.  In the Slang representations, types such as ``Z`` (Slang integers) are unbounded (the representation is dynamically expanded as needed like ``java.math.BigInteger``).   However, when generating code for an embedded platform, HAMR has a configuration file that enables a bounded representation of these types to be specified.
+
+.. note::
+
+   ToDo : Jason describe how bounded versions are specified when translating to C (it would be good to have an example in a HAMR "public example" repository).
+
+
+Slang Examples
+..............
+
+* Discuss Slang literals
+* Refer to Slang documentation for details on operations, etc.
+
+C Examples
+..........
+
+
+
+AADL/HAMR Data Modeling Reference -- Application Types
+=======================================================
+
+Base Types
+----------
+
+Slang Examples
+..............
+
+
+C Examples
+..........
+
+Enums
+-----
+
+Slang Examples
+..............
+
+
+C Examples
+..........
+
+
+Records / Structs
+-----------------
+
+Slang Examples
+..............
+
+
+C Examples
+..........
+
+
+
+Arrays
+------
+
+Slang Examples
+..............
+
+C Examples
+..........
+
+
+Union Types
+-----------
+
+Slang Examples
+..............
+
+
+C Examples
+..........
+

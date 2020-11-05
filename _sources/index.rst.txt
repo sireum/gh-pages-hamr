@@ -1,0 +1,84 @@
+.. toctree::
+   :hidden:
+
+.. include:: def.rst
+
+Home
+####
+
+.. raw:: html
+
+   <script src="_static/jquery.cycle2.js" ></script>
+   <div class="container-fluid">
+     <div class="row">
+       <div class="col-md-12">
+         <div class = "cycle-slideshow" data-cycle-slides="> a">
+           <a href="doc/01-getting-started/index.html"><img width="100%" src="_static/sireum-hamr.png" ></a>
+         </div>
+       </div>
+     </div>
+
+     <br/>
+
+     <div class="row">
+       <div class="col-md-8">
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">About</h3>
+           </div>
+           <div class="panel-body">
+
+Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems'') is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.
+
+To learn more about HAMR,
+
+* read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour`,
+* watch overview videos
+
+  * HAMR Overview (with emphasis on HAMR Slang development) - `talk given at CMU Software Engineering Institute <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__ (around 1 hr plus additional time for questions)
+
+* browse the :ref:`hamr-index`
+
+HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
+the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
+
+Development of HAMR is supported in part by 
+
+* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
+
+* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+
+
+.. raw:: html
+
+           </div>
+         </div>
+       </div>
+       <div class="col-md-4">
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Contact</h3>
+           </div>
+           <div class="panel-body">
+
+           <!-- Enter contact info here -->
+
+           </div>
+         </div>
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Quick Links</h3>
+           </div>
+           <div class="panel-body">
+                      
+           <a href="hamr-doc/ch0X-hamr-installation.html">Installation</a>
+           <br>
+           <a href="hamr-doc/hamr-index.html">Documentation</a>
+           <br>
+           <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
+
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
