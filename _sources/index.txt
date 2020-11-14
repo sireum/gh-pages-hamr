@@ -35,7 +35,8 @@ To learn more about HAMR,
 * read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour`,
 * watch overview videos
 
-  * HAMR Overview (with emphasis on HAMR Slang development) - `talk given at CMU Software Engineering Institute <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__ (around 1 hr plus additional time for questions)
+  * HAMR Overview (with emphasis on Slang language development) - talk given at CMU Software Engineering Institute (`video <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__) (around 1 hr plus additional time for questions)
+  * HAMR for seL4 (with emphasis on C language development) - talk given at November 2020 seL4 Summit (`video <https://drive.google.com/file/d/1asOCIzlIYR_GO4ENdalXXNgtj-92oQRQ/view?usp=sharing>`__, `slides <https://drive.google.com/file/d/1h-kMg7QXTpJqAomPvv3itotnusNynE5T/view?usp=sharing>`__)
 
 * browse the :ref:`hamr-index`
 
