@@ -35,9 +35,15 @@ To learn more about HAMR,
 * read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour`,
 * watch overview videos
 
-  * HAMR Overview (with emphasis on HAMR Slang development) - `talk given at CMU Software Engineering Institute <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__ (around 1 hr plus additional time for questions)
+  * HAMR Overview (with emphasis on Slang language development) - talk given at CMU Software Engineering Institute (`video <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__) (around 1 hr plus additional time for questions)
+  * HAMR for seL4 (with emphasis on C language development) - talk given at November 2020 seL4 Summit (`video <https://drive.google.com/file/d/1asOCIzlIYR_GO4ENdalXXNgtj-92oQRQ/view?usp=sharing>`__, `slides <https://drive.google.com/file/d/1h-kMg7QXTpJqAomPvv3itotnusNynE5T/view?usp=sharing>`__)
 
 * browse the :ref:`hamr-index`
+
+HAMR is being used in several US Department of Defense research projects.  The links below include information on the broader objectives of these projects,
+
+* DARPA Cyber-Assured Systems Engineering (CASE) - with Collins Aerospace (lead), Adventium Labs, and Data61.  Collins Aerospace team web site: `CASE Overview <http://loonwerks.com/projects/case.html>`__
+
 
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
 the `Simplified BSD <https://github.com/sireum/kekinian/blob/master/license.md>`__ license.
@@ -45,11 +51,18 @@ the `Simplified BSD <https://github.com/sireum/kekinian/blob/master/license.md>`
 
 .. raw:: html
 
-   </br>
            </div>
          </div>
        </div>
        <div class="col-md-4">
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Contact</h3>
+           </div>
+           <div class="panel-body">
+           <a href="mailto:hamr@sireum.org">hamr@sireum.org</a></br>
+           </div>
+         </div>
          <div class="panel panel-default">
            <div class="panel-heading">
              <h3 class="panel-title">Quick Links</h3>
