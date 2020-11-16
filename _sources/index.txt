@@ -40,6 +40,11 @@ To learn more about HAMR,
 
 * browse the :ref:`hamr-index`
 
+HAMR is being used in several US Department of Defense research projects.  The links below include information on the broader objectives of these projects,
+
+* DARPA Cyber-Assured Systems Engineering (CASE) - with Collins Aerospace (lead), Adventium Labs, and Data61.  Collins Aerospace team web site: `CASE Overview <http://loonwerks.com/projects/case.html>`__
+
+
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
 the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
 
