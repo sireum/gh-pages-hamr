@@ -1,40 +1,27 @@
 
 <!DOCTYPE html>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Home &mdash; Sireum HAMR</title>
-    
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sireum.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home &#8212; Sireum HAMR</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="_static/sireum.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/sireum.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/js/jquery-1.11.0.min.js"></script>
+    <script src="_static/js/jquery-fix.js"></script>
+    <script src="_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="_static/hamr.ico"/>
-    <link rel="top" title="Sireum HAMR" href="#" />
-  </head>
-  <body role="document">
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -53,7 +40,8 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="#">Download</a></li>
+                <li><a href="hamr-doc/ch0X-hamr-installation.html">Download</a></li>
+                <li><a href="hamr-doc/ch00-hamr-overview.html">Doc</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -65,6 +53,20 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#"> <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">Home</a></li>
+</ul>
+</ul>
 </li>
               
             
@@ -114,42 +116,24 @@
         <div class="panel-heading">
           <h3 class="panel-title">About</h3>
         </div>
-        <div class="panel-body"><p>Sireum HAMR (&#8220;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems&#8217;&#8216;) is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.</p>
+        <div class="panel-body"><p>Sireum HAMR (“[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.</p>
 <p>To learn more about HAMR,</p>
 <ul class="simple">
-<li>read a short <a class="reference internal" href="hamr-doc/ch00-hamr-overview.html#ch00-hamr-overview"><span>HAMR Overview</span></a>, then a longer <a class="reference internal" href="hamr-doc/ch0X-hamr-tour.html#ch0x-hamr-tour"><span>HAMR Tour</span></a>,</li>
-<li>watch overview videos<ul>
-<li>HAMR Overview (with emphasis on Slang language development) - talk given at CMU Software Engineering Institute (<a class="reference external" href="https://www.youtube.com/watch?v=ceCJ_F3sjBc">video</a>) (around 1 hr plus additional time for questions)</li>
-<li>HAMR for seL4 (with emphasis on C language development) - talk given at November 2020 seL4 Summit (<a class="reference external" href="https://drive.google.com/file/d/1asOCIzlIYR_GO4ENdalXXNgtj-92oQRQ/view?usp=sharing">video</a>, <a class="reference external" href="https://drive.google.com/file/d/1h-kMg7QXTpJqAomPvv3itotnusNynE5T/view?usp=sharing">slides</a>)</li>
+<li><p>read a short <a class="reference internal" href="hamr-doc/ch00-hamr-overview.html#ch00-hamr-overview"><span class="std std-ref">HAMR Overview</span></a>, then a longer <a class="reference internal" href="hamr-doc/ch0X-hamr-tour.html#ch0x-hamr-tour"><span class="std std-ref">HAMR Tour</span></a>,</p></li>
+<li><p>watch overview videos</p>
+<ul>
+<li><p>HAMR Overview (with emphasis on HAMR Slang development) - <a class="reference external" href="https://www.youtube.com/watch?v=ceCJ_F3sjBc">talk given at CMU Software Engineering Institute</a> (around 1 hr plus additional time for questions)</p></li>
 </ul>
 </li>
-<li>browse the <a class="reference internal" href="hamr-doc/hamr-index.html#hamr-index"><span>HAMR Documentation</span></a></li>
-</ul>
-<p>HAMR is being used in several US Department of Defense research projects.  The links below include information on the broader objectives of these projects,</p>
-<ul class="simple">
-<li>DARPA Cyber-Assured Systems Engineering (CASE) - with Collins Aerospace (lead), Adventium Labs, and Data61.  Collins Aerospace team web site: <a class="reference external" href="http://loonwerks.com/projects/case.html">CASE Overview</a></li>
+<li><p>browse the <a class="reference internal" href="hamr-doc/hamr-index.html#hamr-index"><span class="std std-ref">HAMR Documentation</span></a></p></li>
 </ul>
 <p>HAMR is an <a class="reference external" href="https://github.com/sireum/hamr">open source</a> project released under
-the <a class="reference external" href="https://github.com/sireum/v3/blob/release/license.md">Simplified BSD</a> license.</p>
-<p>Development of HAMR is supported in part by</p>
-<ul class="simple">
-<li>funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.</li>
-<li>key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.</li>
-</ul>
+the <a class="reference external" href="https://github.com/sireum/kekinian/blob/master/license.md">Simplified BSD</a> license.</p>
+</br>
         </div>
       </div>
     </div>
     <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Contact</h3>
-        </div>
-        <div class="panel-body">
-
-        <!-- Enter contact info here -->
-
-        </div>
-      </div>
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title">Quick Links</h3>
@@ -162,6 +146,17 @@ the <a class="reference external" href="https://github.com/sireum/v3/blob/releas
         <br>
         <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
 
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Acknowledgements</h3>
+        </div>
+        <div class="panel-body"><p>Development of HAMR is supported in part by</p>
+<ul class="simple">
+<li><p>funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.</p></li>
+<li><p>key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.</p></li>
+</ul>
         </div>
       </div>
     </div>

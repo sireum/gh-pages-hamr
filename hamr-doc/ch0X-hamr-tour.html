@@ -1,40 +1,27 @@
 
 <!DOCTYPE html>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>HAMR Tour &mdash; Sireum HAMR</title>
-    
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HAMR Tour &#8212; Sireum HAMR</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="top" title="Sireum HAMR" href="../index.html" />
-  </head>
-  <body role="document">
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -53,7 +40,8 @@
         <div class="collapse navbar-collapse nav-collapse">
           <ul class="nav navbar-nav">
             
-                <li><a href="../index.html">Download</a></li>
+                <li><a href="ch0X-hamr-installation.html">Download</a></li>
+                <li><a href="ch00-hamr-overview.html">Doc</a></li>
             
             
               <li class="dropdown globaltoc-container">
@@ -65,6 +53,53 @@
   <ul class="dropdown-menu globaltoc"
       role="menu"
       aria-labelledby="dLabelGlobalToc"></ul>
+</li>
+              
+                <li class="dropdown">
+  <a role="button"
+     id="dLabelLocalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="#"> <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"
+      role="menu"
+      aria-labelledby="dLabelLocalToc"><ul>
+<li><a class="reference internal" href="#">HAMR Tour</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#aadl-modeling">AADL Modeling</a><ul>
+<li><a class="reference internal" href="#the-osate-eclipse-aadl-environment">The OSATE Eclipse AADL Environment</a></li>
+<li><a class="reference internal" href="#component-modeling">Component Modeling</a></li>
+<li><a class="reference internal" href="#defining-data-types-for-intercomponent-communication-shared-data-messages">Defining Data Types for Intercomponent Communication (shared data, messages)</a></li>
+<li><a class="reference internal" href="#system-modeling">System Modeling</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#aadl-analysis">AADL Analysis</a><ul>
+<li><a class="reference internal" href="#information-flow-analysis">Information Flow Analysis</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#slang-workflows">Slang Workflows</a><ul>
+<li><a class="reference internal" href="#generating-code-and-code-development-environment-setup">Generating Code and Code Development Environment Setup</a></li>
+<li><a class="reference internal" href="#build-scripts">Build Scripts</a></li>
+<li><a class="reference internal" href="#component-development">Component Development</a></li>
+<li><a class="reference internal" href="#system-development-and-execution">System Development and Execution</a></li>
+<li><a class="reference internal" href="#unit-testing">Unit Testing</a></li>
+<li><a class="reference internal" href="#system-testing">System Testing</a></li>
+<li><a class="reference internal" href="#system-monitoring-and-execution-visualization">System Monitoring and Execution Visualization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#c-workflows">C Workflows</a><ul>
+<li><a class="reference internal" href="#id1">Generating Code and Code Development Environment Setup</a></li>
+<li><a class="reference internal" href="#id2">Component Development</a></li>
+<li><a class="reference internal" href="#scheduling-and-system-configuration">Scheduling and System Configuration</a></li>
+<li><a class="reference internal" href="#linux-system-execution">Linux System Execution</a></li>
+<li><a class="reference internal" href="#sel4-system-execution-simulation-via-qemu">seL4 System Execution (simulation via Qemu)</a></li>
+<li><a class="reference internal" href="#sel4-system-execution-on-development-board">seL4 System Execution (on development board)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</ul>
 </li>
               
             
@@ -96,35 +131,39 @@
 <span id="ch0x-hamr-tour"></span><h1>HAMR Tour<a class="headerlink" href="#hamr-tour" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#overview" id="id11">Overview</a></li>
-<li><a class="reference internal" href="#aadl-modeling" id="id12">AADL Modeling</a><ul>
-<li><a class="reference internal" href="#the-osate-eclipse-aadl-environment" id="id13">The OSATE Eclipse AADL Environment</a></li>
-<li><a class="reference internal" href="#component-modeling" id="id14">Component Modeling</a></li>
-<li><a class="reference internal" href="#defining-data-types-for-intercomponent-communication-shared-data-messages" id="id15">Defining Data Types for Intercomponent Communication (shared data, messages)</a></li>
-<li><a class="reference internal" href="#system-modeling" id="id16">System Modeling</a></li>
+<li><p><a class="reference internal" href="#overview" id="id11">Overview</a></p></li>
+<li><p><a class="reference internal" href="#aadl-modeling" id="id12">AADL Modeling</a></p>
+<ul>
+<li><p><a class="reference internal" href="#the-osate-eclipse-aadl-environment" id="id13">The OSATE Eclipse AADL Environment</a></p></li>
+<li><p><a class="reference internal" href="#component-modeling" id="id14">Component Modeling</a></p></li>
+<li><p><a class="reference internal" href="#defining-data-types-for-intercomponent-communication-shared-data-messages" id="id15">Defining Data Types for Intercomponent Communication (shared data, messages)</a></p></li>
+<li><p><a class="reference internal" href="#system-modeling" id="id16">System Modeling</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aadl-analysis" id="id17">AADL Analysis</a><ul>
-<li><a class="reference internal" href="#information-flow-analysis" id="id18">Information Flow Analysis</a></li>
+<li><p><a class="reference internal" href="#aadl-analysis" id="id17">AADL Analysis</a></p>
+<ul>
+<li><p><a class="reference internal" href="#information-flow-analysis" id="id18">Information Flow Analysis</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#slang-workflows" id="id19">Slang Workflows</a><ul>
-<li><a class="reference internal" href="#generating-code-and-code-development-environment-setup" id="id20">Generating Code and Code Development Environment Setup</a></li>
-<li><a class="reference internal" href="#build-scripts" id="id21">Build Scripts</a></li>
-<li><a class="reference internal" href="#component-development" id="id22">Component Development</a></li>
-<li><a class="reference internal" href="#system-development-and-execution" id="id23">System Development and Execution</a></li>
-<li><a class="reference internal" href="#unit-testing" id="id24">Unit Testing</a></li>
-<li><a class="reference internal" href="#system-testing" id="id25">System Testing</a></li>
-<li><a class="reference internal" href="#system-monitoring-and-execution-visualization" id="id26">System Monitoring and Execution Visualization</a></li>
+<li><p><a class="reference internal" href="#slang-workflows" id="id19">Slang Workflows</a></p>
+<ul>
+<li><p><a class="reference internal" href="#generating-code-and-code-development-environment-setup" id="id20">Generating Code and Code Development Environment Setup</a></p></li>
+<li><p><a class="reference internal" href="#build-scripts" id="id21">Build Scripts</a></p></li>
+<li><p><a class="reference internal" href="#component-development" id="id22">Component Development</a></p></li>
+<li><p><a class="reference internal" href="#system-development-and-execution" id="id23">System Development and Execution</a></p></li>
+<li><p><a class="reference internal" href="#unit-testing" id="id24">Unit Testing</a></p></li>
+<li><p><a class="reference internal" href="#system-testing" id="id25">System Testing</a></p></li>
+<li><p><a class="reference internal" href="#system-monitoring-and-execution-visualization" id="id26">System Monitoring and Execution Visualization</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#c-workflows" id="id27">C Workflows</a><ul>
-<li><a class="reference internal" href="#id1" id="id28">Generating Code and Code Development Environment Setup</a></li>
-<li><a class="reference internal" href="#id2" id="id29">Component Development</a></li>
-<li><a class="reference internal" href="#scheduling-and-system-configuration" id="id30">Scheduling and System Configuration</a></li>
-<li><a class="reference internal" href="#linux-system-execution" id="id31">Linux System Execution</a></li>
-<li><a class="reference internal" href="#sel4-system-execution-simulation-via-qemu" id="id32">seL4 System Execution (simulation via Qemu)</a></li>
-<li><a class="reference internal" href="#sel4-system-execution-on-development-board" id="id33">seL4 System Execution (on development board)</a></li>
+<li><p><a class="reference internal" href="#c-workflows" id="id27">C Workflows</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id1" id="id28">Generating Code and Code Development Environment Setup</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id29">Component Development</a></p></li>
+<li><p><a class="reference internal" href="#scheduling-and-system-configuration" id="id30">Scheduling and System Configuration</a></p></li>
+<li><p><a class="reference internal" href="#linux-system-execution" id="id31">Linux System Execution</a></p></li>
+<li><p><a class="reference internal" href="#sel4-system-execution-simulation-via-qemu" id="id32">seL4 System Execution (simulation via Qemu)</a></p></li>
+<li><p><a class="reference internal" href="#sel4-system-execution-on-development-board" id="id33">seL4 System Execution (on development board)</a></p></li>
 </ul>
 </li>
 </ul>
@@ -133,19 +172,19 @@
 <h2><a class="toc-backref" href="#id11">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This chapter provides a high-level summary of developer activities when using HAMR.  This includes:</p>
 <ul class="simple">
-<li>simple illustrations of AADL component and system modeling,</li>
-<li>examples of HAMR-related AADL model analysis,</li>
-<li>generating code with HAMR,</li>
-<li>programming component behaviors with HAMR,</li>
-<li>HAMR-based testing for components (unit testing) and systems (system tests), and</li>
-<li>running HAMR applications.</li>
+<li><p>simple illustrations of AADL component and system modeling,</p></li>
+<li><p>examples of HAMR-related AADL model analysis,</p></li>
+<li><p>generating code with HAMR,</p></li>
+<li><p>programming component behaviors with HAMR,</p></li>
+<li><p>HAMR-based testing for components (unit testing) and systems (system tests), and</p></li>
+<li><p>running HAMR applications.</p></li>
 </ul>
 <p>HAMR supports multiple programming languages for coding the functionality of components and systems whose infrastructured is auto-generated from HAMR.  Workflows for both Slang and C programming languages are illustrated in this chapter.  The first two items above (AADL modeling and AADL analysis) are independent of whether or not Slang or C is being used as the programming language.  Accordingly, the content of the chapter is organized as follows:</p>
 <ul class="simple">
-<li>AADL modeling</li>
-<li>AADL analysis</li>
-<li>Slang workflows</li>
-<li>C workflows</li>
+<li><p>AADL modeling</p></li>
+<li><p>AADL analysis</p></li>
+<li><p>Slang workflows</p></li>
+<li><p>C workflows</p></li>
 </ul>
 <p>Throughout the presentation, forward references are provided to subsequent chapters that provide more details.</p>
 </div>
@@ -153,43 +192,43 @@
 <h2><a class="toc-backref" href="#id12">AADL Modeling</a><a class="headerlink" href="#aadl-modeling" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="the-osate-eclipse-aadl-environment">
 <h3><a class="toc-backref" href="#id13">The OSATE Eclipse AADL Environment</a><a class="headerlink" href="#the-osate-eclipse-aadl-environment" title="Permalink to this headline">¶</a></h3>
-<p>HAMR workflows begin with creating AADL models of components and systems in the <em>OSATE</em> AADL tool.  OSATE is based on the widely-used open-source Eclipse IDE.   HAMR is currently distributed in special &#8220;branded&#8221; distribution of OSATE called the Formal Methods Integrated Development Environment (FMIDE) developed on the DARPA CASE project.</p>
+<p>HAMR workflows begin with creating AADL models of components and systems in the <em>OSATE</em> AADL tool.  OSATE is based on the widely-used open-source Eclipse IDE.   HAMR is currently distributed in special “branded” distribution of OSATE called the Formal Methods Integrated Development Environment (FMIDE) developed on the DARPA CASE project.</p>
 <ul class="simple">
-<li>See the installation instructions for installing OSATE/FMIDE and HAMR plug-in.</li>
-<li>See <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span>AADL Computational Paradigm and HAMR Fundamental Concepts</span></a> for a detailed presentation of AADL modeling and semantics concepts.</li>
+<li><p>See the installation instructions for installing OSATE/FMIDE and HAMR plug-in.</p></li>
+<li><p>See <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span class="std std-ref">AADL Computational Paradigm and HAMR Fundamental Concepts</span></a> for a detailed presentation of AADL modeling and semantics concepts.</p></li>
 </ul>
 <p>Each OSATE AADL model has both a graphical view and textual view, and OSATE keeps them synchronized.  Although it is possble to create and edit models in the graphical view, HAMR documentation emphasizes creating/editing models in the textual view and then visualizing them in the graphical view.</p>
 <div class="figure align-center" id="id3">
 <span id="osate-graphical-view"></span><img alt="../_images/Tour-OSATE-graphical-view.png" src="../_images/Tour-OSATE-graphical-view.png" />
-<p class="caption"><span class="caption-text"><strong>OSATE AADL Graphical View</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>OSATE AADL Graphical View</strong></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <div class="figure align-center" id="id4">
 <span id="osate-textual-view"></span><img alt="../_images/Tour-OSATE-textual-view.png" src="../_images/Tour-OSATE-textual-view.png" />
-<p class="caption"><span class="caption-text"><strong>OSATE AADL Textual View</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>OSATE AADL Textual View</strong></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </div>
-<p>OSATE includes different analysis and code generation plug-ins whose functions can be accessed through the menu system or through icons in the tool bar.   Some OSATE/FMIDE capabilities require additional libraries to be installed, they vary in their maturity, and they work on different model features/properties (some of which may not be included in your models)  &#8211; so the take away is that you should not expect all other OSATE plug-ins to work on models in the HAMR documentation nor models that you build.   However, all HAMR-related related features described in this documentation should work.</p>
+<p>OSATE includes different analysis and code generation plug-ins whose functions can be accessed through the menu system or through icons in the tool bar.   Some OSATE/FMIDE capabilities require additional libraries to be installed, they vary in their maturity, and they work on different model features/properties (some of which may not be included in your models)  – so the take away is that you should not expect all other OSATE plug-ins to work on models in the HAMR documentation nor models that you build.   However, all HAMR-related related features described in this documentation should work.</p>
 <div class="figure align-center" id="id5">
 <span id="osate-menus-toolbar"></span><img alt="../_images/Tour-OSATE-menus-toolbar.png" src="../_images/Tour-OSATE-menus-toolbar.png" />
-<p class="caption"><span class="caption-text"><strong>OSATE Menus and Toolbar</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>OSATE Menus and Toolbar</strong></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </div>
 </div>
 <div class="section" id="component-modeling">
 <h3><a class="toc-backref" href="#id14">Component Modeling</a><a class="headerlink" href="#component-modeling" title="Permalink to this headline">¶</a></h3>
 <p>AADL systems are built from different kinds of components.</p>
-<p>With HAMR, the most important component kind is a <code class="docutils literal"><span class="pre">thread</span></code> component, which corresponds to a <em>real-time task</em> in real-time systems literature.</p>
-<p>HAMR generates code skeletons for <code class="docutils literal"><span class="pre">thread</span></code> components, and a developer implements a system by (a) using a HAMR-supported programming language to program the behavior of thread components and (b) using other AADL modeling elements to group and &#8220;wire&#8221; components together.</p>
-<p>HAMR also generates for communication infrastructure for the wiring between components, and platform infrastructure code corresponding to other kinds of AADL components such as <code class="docutils literal"><span class="pre">process</span></code> and <code class="docutils literal"><span class="pre">system</span></code> &#8211; which are used to aggregate <code class="docutils literal"><span class="pre">thread</span></code> components so that they can be associated with various system resources and configurations.</p>
-<p>Each AADL software component, e.g., a <code class="docutils literal"><span class="pre">thread</span></code>, <code class="docutils literal"><span class="pre">process</span></code>, or <code class="docutils literal"><span class="pre">system</span></code>, has a specified interface captured as an AADL <code class="docutils literal"><span class="pre">component</span> <span class="pre">type</span></code>.   AADL emphasizes <em>port-based inter-component communication</em>, and so an AADL component type (interface) is a collection of ports.  There are several categories of AADL ports (<code class="docutils literal"><span class="pre">event</span></code>, <code class="docutils literal"><span class="pre">data</span></code>, and <code class="docutils literal"><span class="pre">event</span> <span class="pre">data</span></code>), and a port category (together with optional port properties) indicates a particular pattern of communication to be used for communication on that port.</p>
+<p>With HAMR, the most important component kind is a <code class="docutils literal notranslate"><span class="pre">thread</span></code> component, which corresponds to a <em>real-time task</em> in real-time systems literature.</p>
+<p>HAMR generates code skeletons for <code class="docutils literal notranslate"><span class="pre">thread</span></code> components, and a developer implements a system by (a) using a HAMR-supported programming language to program the behavior of thread components and (b) using other AADL modeling elements to group and “wire” components together.</p>
+<p>HAMR also generates for communication infrastructure for the wiring between components, and platform infrastructure code corresponding to other kinds of AADL components such as <code class="docutils literal notranslate"><span class="pre">process</span></code> and <code class="docutils literal notranslate"><span class="pre">system</span></code> – which are used to aggregate <code class="docutils literal notranslate"><span class="pre">thread</span></code> components so that they can be associated with various system resources and configurations.</p>
+<p>Each AADL software component, e.g., a <code class="docutils literal notranslate"><span class="pre">thread</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code>, or <code class="docutils literal notranslate"><span class="pre">system</span></code>, has a specified interface captured as an AADL <code class="docutils literal notranslate"><span class="pre">component</span> <span class="pre">type</span></code>.   AADL emphasizes <em>port-based inter-component communication</em>, and so an AADL component type (interface) is a collection of ports.  There are several categories of AADL ports (<code class="docutils literal notranslate"><span class="pre">event</span></code>, <code class="docutils literal notranslate"><span class="pre">data</span></code>, and <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">data</span></code>), and a port category (together with optional port properties) indicates a particular pattern of communication to be used for communication on that port.</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">data</span></code> ports &#8211; roughly correspond to shared memory between components that act either as writers or readers</li>
-<li><code class="docutils literal"><span class="pre">event</span></code> ports &#8211; roughly corespond to buffered notifications from one component to another</li>
-<li><code class="docutils literal"><span class="pre">event</span> <span class="pre">data</span></code> ports &#8211; roughly correspond to buffered messages with payloads sent from one component to another</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code> ports – roughly correspond to shared memory between components that act either as writers or readers</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">event</span></code> ports – roughly corespond to buffered notifications from one component to another</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">data</span></code> ports – roughly correspond to buffered messages with payloads sent from one component to another</p></li>
 </ul>
 <p>AADL properties can be used to configure buffer sizes, timing properties, etc.</p>
-<p>HAMR only supports <strong>uni-directional</strong> ports and connections (with port direction indicated by <code class="docutils literal"><span class="pre">in</span></code> and <code class="docutils literal"><span class="pre">out</span></code>), so as to enable (a) clean design of security and information flow controls and (b) model- and code-level information flow analysis.</p>
+<p>HAMR only supports <strong>uni-directional</strong> ports and connections (with port direction indicated by <code class="docutils literal notranslate"><span class="pre">in</span></code> and <code class="docutils literal notranslate"><span class="pre">out</span></code>), so as to enable (a) clean design of security and information flow controls and (b) model- and code-level information flow analysis.</p>
 <div class="figure align-center" id="id6">
 <span id="component-interface-textual"></span><img alt="../_images/Tour-component-interface-textual-w-graphical-inlay.png" src="../_images/Tour-component-interface-textual-w-graphical-inlay.png" />
-<p class="caption"><span class="caption-text"><strong>AADL Textual Representation of Port-based Thread Component Type (Interface)</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>AADL Textual Representation of Port-based Thread Component Type (Interface)</strong></span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </div>
 <p>Later in the workflow, HAMR will generate code-level interfaces for modeled component types.</p>
 </div>
@@ -199,26 +238,26 @@
 <p>Once these types are defined, they are referenced in component interface specification to indicate the types of data flowing across ports.</p>
 <div class="figure align-center" id="id7">
 <span id="data-modeling"></span><img alt="../_images/Tour-data-modeling.png" src="../_images/Tour-data-modeling.png" />
-<p class="caption"><span class="caption-text"><strong>AADL Data Modeling</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>AADL Data Modeling</strong></span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </div>
 <p>Later in the workflow, HAMR will generate code-level data types for modeled component types.</p>
 </div>
 <div class="section" id="system-modeling">
 <h3><a class="toc-backref" href="#id16">System Modeling</a><a class="headerlink" href="#system-modeling" title="Permalink to this headline">¶</a></h3>
 <p><strong>Software Integration and Architecture</strong></p>
-<p>Once software threads are designed, they can be integrated, aggregated into AADL <code class="docutils literal"><span class="pre">thread</span> <span class="pre">group</span></code> components, placed in address spaces (represented by AADL <code class="docutils literal"><span class="pre">processes</span></code>) &#8212; all of these elements can be organized to into subsystems (represented by AADL <code class="docutils literal"><span class="pre">system</span></code> components) and systems.</p>
+<p>Once software threads are designed, they can be integrated, aggregated into AADL <code class="docutils literal notranslate"><span class="pre">thread</span> <span class="pre">group</span></code> components, placed in address spaces (represented by AADL <code class="docutils literal notranslate"><span class="pre">processes</span></code>) — all of these elements can be organized to into subsystems (represented by AADL <code class="docutils literal notranslate"><span class="pre">system</span></code> components) and systems.</p>
 <div class="figure align-center" id="id8">
 <span id="software-system-graphical"></span><img alt="../_images/Tour-software-system-graphical.png" src="../_images/Tour-software-system-graphical.png" />
-<p class="caption"><span class="caption-text"><strong>AADL Software System Modeling (AADL graphical view)</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>AADL Software System Modeling (AADL graphical view)</strong></span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </div>
-<p>A key aspect of these integration activities is using AADL <code class="docutils literal"><span class="pre">connections</span></code> to associate the output ports of one component with the input ports of another.   AADL&#8217;s type checking checks that connected ports are type compatible.  Other AADL tools such as AGREE and BLESS can be used to specify contracts (formal specification of data constraints and input output relations) and then check that connected ports/components have compatible contracts.</p>
+<p>A key aspect of these integration activities is using AADL <code class="docutils literal notranslate"><span class="pre">connections</span></code> to associate the output ports of one component with the input ports of another.   AADL’s type checking checks that connected ports are type compatible.  Other AADL tools such as AGREE and BLESS can be used to specify contracts (formal specification of data constraints and input output relations) and then check that connected ports/components have compatible contracts.</p>
 <div class="figure align-center" id="id9">
 <span id="software-system-textual"></span><img alt="../_images/Tour-software-system-textual.png" src="../_images/Tour-software-system-textual.png" />
-<p class="caption"><span class="caption-text"><strong>AADL Software System Modeling (AADL textual view)</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>AADL Software System Modeling (AADL textual view)</strong></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </div>
 <p>Once the software architecture is specified, HAMR can generate code for it (illustrated in later in the workflow).   HAMR generates execution contexts, thread skeletons, and APIs for port communication for thread components.
 The developer fills in the thread skeletons to complete the component implementation.</p>
-<p>HAMR generates code for communication between thread components using the target platform&#8217;s communication mechanisms which can include both local communication as well as distributed communication (e.g., supported by middleware).   Realization of inter-component communication is completely automatic.  That is, in contrast to realizing threads, for communication infrastructure <em>all</em> the code is generated &#8211; there are no skeletons to fill in.</p>
+<p>HAMR generates code for communication between thread components using the target platform’s communication mechanisms which can include both local communication as well as distributed communication (e.g., supported by middleware).   Realization of inter-component communication is completely automatic.  That is, in contrast to realizing threads, for communication infrastructure <em>all</em> the code is generated – there are no skeletons to fill in.</p>
 <p><strong>Software and Hardware Integration and Allocation of Software Components to Platform and Hardware Resources</strong></p>
 </div>
 </div>
@@ -227,13 +266,13 @@ The developer fills in the thread skeletons to complete the component implementa
 <div class="section" id="information-flow-analysis">
 <h3><a class="toc-backref" href="#id18">Information Flow Analysis</a><a class="headerlink" href="#information-flow-analysis" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>ToDo: Complete this section</strong></p>
+<p class="admonition-title">Note</p>
+<p><strong>ToDo: Complete this section</strong></p>
 </div>
 <ul class="simple">
-<li>Code: intra-component flows</li>
-<li>Image: Information Flow Visualization (slicing)</li>
-<li>Image: Information Flow Visualization (querying)</li>
+<li><p>Code: intra-component flows</p></li>
+<li><p>Image: Information Flow Visualization (slicing)</p></li>
+<li><p>Image: Information Flow Visualization (querying)</p></li>
 </ul>
 </div>
 </div>
@@ -246,66 +285,66 @@ The developer fills in the thread skeletons to complete the component implementa
 .. _HAMR-code-generation-JVM:</p>
 <div class="figure align-center" id="id10">
 <img alt="../_images/Tour-HAMR-code-generation-JVM.png" src="../_images/Tour-HAMR-code-generation-JVM.png" />
-<p class="caption"><span class="caption-text"><strong>HAMR Code Generation (Slang / JVM Platform)</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>HAMR Code Generation (Slang / JVM Platform)</strong></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
 </div>
 <p>HAMR generates code for:</p>
 <ul class="simple">
-<li><strong>communication infrastructure code</strong> that implements communication between AADL threads (e.g., communicating over port connections),</li>
-<li><strong>threading infrastructure code</strong> for containers that host threads and a thread component state (one for each thread instance in the AADL model),</li>
-<li><strong>code skeletons for thread application code</strong>,</li>
-<li><strong>build scripts</strong> (in SBT) for configuring a build of the system and identifying needed library packages,</li>
-<li><strong>unit testing infrastructure</strong> that aids the developer in setting up unit tests for each thread component,</li>
-<li><strong>code that supports simulation and visualization</strong> of Slang systems.</li>
+<li><p><strong>communication infrastructure code</strong> that implements communication between AADL threads (e.g., communicating over port connections),</p></li>
+<li><p><strong>threading infrastructure code</strong> for containers that host threads and a thread component state (one for each thread instance in the AADL model),</p></li>
+<li><p><strong>code skeletons for thread application code</strong>,</p></li>
+<li><p><strong>build scripts</strong> (in SBT) for configuring a build of the system and identifying needed library packages,</p></li>
+<li><p><strong>unit testing infrastructure</strong> that aids the developer in setting up unit tests for each thread component,</p></li>
+<li><p><strong>code that supports simulation and visualization</strong> of Slang systems.</p></li>
 </ul>
 <p>The developer will subsequently implement the system by filling in the code skeletons for the application code, configuring build scripts, adding unit and system tests, etc.   The generated infrastructure code is complete and should not be modified in the development process.</p>
 </div>
 <div class="section" id="build-scripts">
 <h3><a class="toc-backref" href="#id21">Build Scripts</a><a class="headerlink" href="#build-scripts" title="Permalink to this headline">¶</a></h3>
-<p>HAMR generates generates default build scripts in <a class="reference external" href="https://www.scala-sbt.org">SBT</a>.  SBT is similar to <a class="reference external" href="https://maven.apache.org">Maven</a> and <a class="reference external" href="https://ant.apache.org">Ant</a> &#8211; popular Java-oriented build tools.  For example, SBT adopts Maven&#8217;s project folder structure and supports library dependences in <a class="reference external" href="https://ant.apache.org/ivy/">Apache IVY</a> library repositories.</p>
+<p>HAMR generates generates default build scripts in <a class="reference external" href="https://www.scala-sbt.org">SBT</a>.  SBT is similar to <a class="reference external" href="https://maven.apache.org">Maven</a> and <a class="reference external" href="https://ant.apache.org">Ant</a> – popular Java-oriented build tools.  For example, SBT adopts Maven’s project folder structure and supports library dependences in <a class="reference external" href="https://ant.apache.org/ivy/">Apache IVY</a> library repositories.</p>
 <p>However, SBT builds are defined in a Scala data structures (as opposed to XML used in Maven and Ant), and this provides greater flexibility, some degree of type checking on build definitions (utilizing underlying type checking facilities of Scala), and a deeper integration with the Scala ecosystem.</p>
 <p>The HAMR-generated SBT build script is sufficient for running the initial default behavior of the HAMR-generated system and for launching auto-generated example unit tests.</p>
 <p>Developers extend the default build scripts as needed to specify library dependences and to tailor execution and testing workflows for the application.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>ToDo: Add screenshot of SBT file:</strong></p>
+<p class="admonition-title">Note</p>
+<p><strong>ToDo: Add screenshot of SBT file:</strong></p>
 </div>
 </div>
 <div class="section" id="component-development">
 <h3><a class="toc-backref" href="#id22">Component Development</a><a class="headerlink" href="#component-development" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Coding component logic (e.g., temp controller with port reads and writes)</li>
-<li>Reading and writing from ports</li>
-<li>Interfacing with Java and component GUIs</li>
-<li>Test edit of HAMR tour under component development.  Foo bar</li>
+<li><p>Coding component logic (e.g., temp controller with port reads and writes)</p></li>
+<li><p>Reading and writing from ports</p></li>
+<li><p>Interfacing with Java and component GUIs</p></li>
+<li><p>Test edit of HAMR tour under component development.  Foo bar</p></li>
 </ul>
 </div>
 <div class="section" id="system-development-and-execution">
 <h3><a class="toc-backref" href="#id23">System Development and Execution</a><a class="headerlink" href="#system-development-and-execution" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Component integration and scheduling, with concept of running on platform  (perhaps with HAMR image of platform)</li>
-<li>Console logging information</li>
+<li><p>Component integration and scheduling, with concept of running on platform  (perhaps with HAMR image of platform)</p></li>
+<li><p>Console logging information</p></li>
 </ul>
 </div>
 <div class="section" id="unit-testing">
 <h3><a class="toc-backref" href="#id24">Unit Testing</a><a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>IMAGE (need to draw): Explanation of component testing in terms of component inputs and outputs</li>
-<li>Illustration of code providing inputs and checking outputs</li>
-<li>Running via Scala Test</li>
+<li><p>IMAGE (need to draw): Explanation of component testing in terms of component inputs and outputs</p></li>
+<li><p>Illustration of code providing inputs and checking outputs</p></li>
+<li><p>Running via Scala Test</p></li>
 </ul>
 </div>
 <div class="section" id="system-testing">
 <h3><a class="toc-backref" href="#id25">System Testing</a><a class="headerlink" href="#system-testing" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>System testing via controlled schedule exploration</li>
+<li><p>System testing via controlled schedule exploration</p></li>
 </ul>
 </div>
 <div class="section" id="system-monitoring-and-execution-visualization">
 <h3><a class="toc-backref" href="#id26">System Monitoring and Execution Visualization</a><a class="headerlink" href="#system-monitoring-and-execution-visualization" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Inspector Framework</li>
-<li>MSC Visualization</li>
-<li>Redis logging</li>
+<li><p>Inspector Framework</p></li>
+<li><p>MSC Visualization</p></li>
+<li><p>Redis logging</p></li>
 </ul>
 </div>
 </div>
@@ -314,41 +353,41 @@ The developer fills in the thread skeletons to complete the component implementa
 <div class="section" id="id1">
 <h3><a class="toc-backref" href="#id28">Generating Code and Code Development Environment Setup</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Screen shot of OSATE menu (explain multiple platform options)</li>
-<li>Quick overview of generated code in CLion IDE</li>
-<li>Setting up builds with CMAKE</li>
+<li><p>Screen shot of OSATE menu (explain multiple platform options)</p></li>
+<li><p>Quick overview of generated code in CLion IDE</p></li>
+<li><p>Setting up builds with CMAKE</p></li>
 </ul>
 </div>
 <div class="section" id="id2">
 <h3><a class="toc-backref" href="#id29">Component Development</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Coding component logic</li>
-<li>Reading and writing from ports</li>
-<li>Interfacing with Java and component GUIs</li>
+<li><p>Coding component logic</p></li>
+<li><p>Reading and writing from ports</p></li>
+<li><p>Interfacing with Java and component GUIs</p></li>
 </ul>
 </div>
 <div class="section" id="scheduling-and-system-configuration">
 <h3><a class="toc-backref" href="#id30">Scheduling and System Configuration</a><a class="headerlink" href="#scheduling-and-system-configuration" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>Configuring scheduler</li>
+<li><p>Configuring scheduler</p></li>
 </ul>
 </div>
 <div class="section" id="linux-system-execution">
 <h3><a class="toc-backref" href="#id31">Linux System Execution</a><a class="headerlink" href="#linux-system-execution" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>illustration of Linux Execution</li>
+<li><p>illustration of Linux Execution</p></li>
 </ul>
 </div>
 <div class="section" id="sel4-system-execution-simulation-via-qemu">
 <h3><a class="toc-backref" href="#id32">seL4 System Execution (simulation via Qemu)</a><a class="headerlink" href="#sel4-system-execution-simulation-via-qemu" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>illustration of seL4 Execution on Qemu</li>
+<li><p>illustration of seL4 Execution on Qemu</p></li>
 </ul>
 </div>
 <div class="section" id="sel4-system-execution-on-development-board">
 <h3><a class="toc-backref" href="#id33">seL4 System Execution (on development board)</a><a class="headerlink" href="#sel4-system-execution-on-development-board" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li>illustration of seL4 Execution on board</li>
+<li><p>illustration of seL4 Execution on board</p></li>
 </ul>
 </div>
 </div>

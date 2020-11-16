@@ -40,31 +40,16 @@ To learn more about HAMR,
 * browse the :ref:`hamr-index`
 
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
-the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
-
-Development of HAMR is supported in part by 
-
-* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
-
-* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+the `Simplified BSD <https://github.com/sireum/kekinian/blob/master/license.md>`__ license.
 
 
 .. raw:: html
 
+   </br>
            </div>
          </div>
        </div>
        <div class="col-md-4">
-         <div class="panel panel-default">
-           <div class="panel-heading">
-             <h3 class="panel-title">Contact</h3>
-           </div>
-           <div class="panel-body">
-
-           <!-- Enter contact info here -->
-
-           </div>
-         </div>
          <div class="panel panel-default">
            <div class="panel-heading">
              <h3 class="panel-title">Quick Links</h3>
@@ -76,6 +61,22 @@ Development of HAMR is supported in part by
            <a href="hamr-doc/hamr-index.html">Documentation</a>
            <br>
            <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
+
+           </div>
+         </div>
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Acknowledgements</h3>
+           </div>
+           <div class="panel-body">
+                      
+Development of HAMR is supported in part by 
+
+* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
+
+* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+
+.. raw:: html
 
            </div>
          </div>
