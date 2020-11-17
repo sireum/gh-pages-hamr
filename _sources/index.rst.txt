@@ -12,13 +12,14 @@ Home
    <div class="container-fluid">
      <div class="row">
        <div class="col-md-12">
-         <div class = "cycle-slideshow" data-cycle-slides="> img">
+         <div class = "cycle-slideshow" data-cycle-slides="> img" >
            <img width="100%" src="_static/sireum-hamr.png" />
            <img width="100%" src="_static/hamr-osate-arch.png" />
            <img width="100%" src="_static/hamr-osate-menu.png" />
            <img width="100%" src="_static/hamr-osate-dialog.png" />
            <img width="100%" src="_static/hamr-ive-slang-code.png" />
            <img width="100%" src="_static/hamr-ive-demo.png" />
+           <img width="100%" src="_static/hamr-ive-ba-viz.png" />
            <img width="100%" src="_static/hamr-ive-filter.png" />
            <img width="100%" src="_static/hamr-ive-msc.png" />
            <img width="100%" src="_static/hamr-clion.png" />
