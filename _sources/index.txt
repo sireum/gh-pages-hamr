@@ -12,8 +12,19 @@ Home
    <div class="container-fluid">
      <div class="row">
        <div class="col-md-12">
-         <div class = "cycle-slideshow" data-cycle-slides="> a">
-           <a href="doc/01-getting-started/index.html"><img width="100%" src="_static/sireum-hamr.png" ></a>
+         <div class = "cycle-slideshow" data-cycle-slides="> img" >
+           <img width="100%" src="_static/sireum-hamr.png" />
+           <img width="100%" src="_static/hamr-osate-arch.png" />
+           <img width="100%" src="_static/hamr-osate-menu.png" />
+           <img width="100%" src="_static/hamr-osate-dialog.png" />
+           <img width="100%" src="_static/hamr-ive-slang-code.png" />
+           <img width="100%" src="_static/hamr-ive-demo.png" />
+           <img width="100%" src="_static/hamr-ive-ba-viz.png" />
+           <img width="100%" src="_static/hamr-ive-filter.png" />
+           <img width="100%" src="_static/hamr-ive-msc.png" />
+           <img width="100%" src="_static/hamr-clion.png" />
+           <img width="100%" src="_static/hamr-linux-demo.png" />
+           <img width="100%" src="_static/hamr-qemu-demo.png" />
          </div>
        </div>
      </div>
@@ -28,7 +39,7 @@ Home
            </div>
            <div class="panel-body">
 
-Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems'') is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.
+Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems'') is a code generation and system build framework for embedded systems whose architecture is specified using the `Architecture Analysis and Design Language <https://www.sei.cmu.edu/our-work/projects/display.cfm?customel_datapageid_4050=191439>`__ (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the `seL4 micro-kernel <https://sel4.systems>`__ .
 
 To learn more about HAMR,
 
@@ -46,13 +57,7 @@ HAMR is being used in several US Department of Defense research projects.  The l
 
 
 HAMR is an `open source <https://github.com/sireum/hamr>`__ project released under
-the `Simplified BSD <https://github.com/sireum/v3/blob/release/license.md>`__ license.
-
-Development of HAMR is supported in part by 
-
-* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
-
-* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+the `Simplified BSD <https://github.com/sireum/kekinian/blob/master/license.md>`__ license.
 
 
 .. raw:: html
@@ -66,9 +71,7 @@ Development of HAMR is supported in part by
              <h3 class="panel-title">Contact</h3>
            </div>
            <div class="panel-body">
-
-           <!-- Enter contact info here -->
-
+           <a href="mailto:hamr@santoslab.org">hamr@santoslab.org</a></br>
            </div>
          </div>
          <div class="panel panel-default">
@@ -82,6 +85,22 @@ Development of HAMR is supported in part by
            <a href="hamr-doc/hamr-index.html">Documentation</a>
            <br>
            <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
+
+           </div>
+         </div>
+         <div class="panel panel-default">
+           <div class="panel-heading">
+             <h3 class="panel-title">Acknowledgements</h3>
+           </div>
+           <div class="panel-body">
+                      
+Development of HAMR is supported in part by 
+
+* funding agencies: DARPA, US Air Force Research Lab, US Army, and the Software Engineering Institute.
+
+* key collaborations: Collins Aerospace, Adventium Labs, and the Software Engineering Institute.
+
+.. raw:: html
 
            </div>
          </div>
