@@ -1,40 +1,27 @@
 
 <!DOCTYPE html>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>HAMR Overview &mdash; Sireum HAMR</title>
-    
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HAMR Overview &#8212; Sireum HAMR</title>
     <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="top" title="Sireum HAMR" href="../index.html" />
-  </head>
-  <body role="document">
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -125,41 +112,42 @@
 <span id="ch00-hamr-overview"></span><h1>HAMR Overview<a class="headerlink" href="#hamr-overview" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#general-concepts" id="id3">General Concepts</a></li>
-<li><a class="reference internal" href="#supported-programming-languages-for-application-logic" id="id4">Supported Programming Languages for Application Logic</a></li>
-<li><a class="reference internal" href="#supported-target-platforms" id="id5">Supported Target Platforms</a><ul>
-<li><a class="reference internal" href="#java-virtual-machine-jvm" id="id6">Java Virtual Machine (JVM)</a></li>
-<li><a class="reference internal" href="#linux-xnix" id="id7">Linux (xNix)</a></li>
-<li><a class="reference internal" href="#sel4-microkernel" id="id8">seL4 Microkernel</a></li>
-<li><a class="reference internal" href="#variations-and-extensions" id="id9">Variations and Extensions</a></li>
+<li><p><a class="reference internal" href="#general-concepts" id="id3">General Concepts</a></p></li>
+<li><p><a class="reference internal" href="#supported-programming-languages-for-application-logic" id="id4">Supported Programming Languages for Application Logic</a></p></li>
+<li><p><a class="reference internal" href="#supported-target-platforms" id="id5">Supported Target Platforms</a></p>
+<ul>
+<li><p><a class="reference internal" href="#java-virtual-machine-jvm" id="id6">Java Virtual Machine (JVM)</a></p></li>
+<li><p><a class="reference internal" href="#linux-xnix" id="id7">Linux (xNix)</a></p></li>
+<li><p><a class="reference internal" href="#sel4-microkernel" id="id8">seL4 Microkernel</a></p></li>
+<li><p><a class="reference internal" href="#variations-and-extensions" id="id9">Variations and Extensions</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#hamr-on-the-darpa-case-program" id="id10">HAMR on the DARPA CASE Program</a></li>
-<li><a class="reference internal" href="#hamr-code-generation-architecture" id="id11">HAMR Code Generation Architecture</a></li>
-<li><a class="reference internal" href="#assurance-case-structure-of-hamr-built-systems" id="id12">Assurance Case Structure of HAMR-built Systems</a></li>
+<li><p><a class="reference internal" href="#hamr-on-the-darpa-case-program" id="id10">HAMR on the DARPA CASE Program</a></p></li>
+<li><p><a class="reference internal" href="#hamr-code-generation-architecture" id="id11">HAMR Code Generation Architecture</a></p></li>
+<li><p><a class="reference internal" href="#assurance-case-structure-of-hamr-built-systems" id="id12">Assurance Case Structure of HAMR-built Systems</a></p></li>
 </ul>
 </div>
 <div class="section" id="general-concepts">
 <h2><a class="toc-backref" href="#id3">General Concepts</a><a class="headerlink" href="#general-concepts" title="Permalink to this headline">¶</a></h2>
-<p>HAMR (&#8220;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems&#8221;) is a code generation and system build framework for cyber-resilient systems whose architecture is specified using the <a class="reference external" href="https://www.sei.cmu.edu/our-work/projects/display.cfm?customel_datapageid_4050=191439">Architecture Analysis and Design Language</a> (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the <a class="reference external" href="https://sel4.systems">seL4 micro-kernel</a>.</p>
-<p>For interface and infrastructure generation, HAMR translates AADL system models to code that implements threading infrastructure and inter-component communication for AADL components. HAMR <em>does not</em> generate code for the application logic of a system; it only generates infrastructure code for &#8220;gluing together&#8221; the component application code. So to &#8220;program a system&#8221; using HAMR, you define a component-based system/software architecture in AADL, you program the internal behavior (the &#8220;application code&#8221;) of the components in a programming language (HAMR supports several different languages, plus some high-level declaration approaches for generating message filters for cyber-resiliency) and then HAMR generates the infrastructure code (aligned with the AADL architecture) that provides an execution context for the application code.</p>
-<p>The auto-generated infrastructure code is designed to implement the semantics of AADL threading and communication as specified in the <a class="reference external" href="https://www.sae.org/standards/content/as5506c/">AADL standard</a> (HAMR implements a subset of the standard semantics). In essence, AADL defines a <em>computational model</em> &#8211; a constrained way of organizing processes, threads, and communication &#8211; that matches the domain properties of real-time embedded systems. AADL and its computational model are system engineering abstractions that are designed to be analyzable. Since the HAMR auto-generated infrastructure code is faithful to the AADL semantics and computational model, various forms of analysis applied to AADL model are faithful to the semantics and resiliency properties of the executable code in the HAMR-generated deployed system.</p>
-<p>An important aspect of the HAMR tool chain is that it enables the application code that implements a component to be platform agnostic to a significant degree. Application programmers program to a common collection of APIs for threading and communication aspects auto-generated by HAMR from AADL.  For example, for each AADL component, a collection of APIs is auto-generated to support communication over the ports appearing in the correspondign AADL component interface.  These APIs hide the details of how threading and communication are realized on particular platform &#8211; regardless of the particular platform, the <em>behavior</em> of the threading and communication infrastructure should be the same, even though the <em>implementation</em> differs.</p>
+<p>HAMR (“[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a code generation and system build framework for cyber-resilient systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.</p>
+<p>For interface and infrastructure generation, HAMR translates AADL system models to code that implements threading infrastructure and inter-component communication for AADL components. HAMR <em>does not</em> generate code for the application logic of a system; it only generates infrastructure code for “gluing together” the component application code. So to “program a system” using HAMR, you define a component-based system/software architecture in AADL, you program the internal behavior (the “application code”) of the components in a programming language (HAMR supports several different languages, plus some high-level declaration approaches for generating message filters for cyber-resiliency) and then HAMR generates the infrastructure code (aligned with the AADL architecture) that provides an execution context for the application code.</p>
+<p>The auto-generated infrastructure code is designed to implement the semantics of AADL threading and communication as specified in the AADL standard (HAMR implements a subset of the standard semantics). In essence, AADL defines a <em>computational model</em> – a constrained way of organizing processes, threads, and communication – that matches the domain properties of real-time embedded systems. AADL and its computational model are system engineering abstractions that are designed to be analyzable. Since the HAMR auto-generated infrastructure code is faithful to the AADL semantics and computational model, various forms of analysis applied to AADL model are faithful to the semantics and resiliency properties of the executable code in the HAMR-generated deployed system.</p>
+<p>An important aspect of the HAMR tool chain is that it enables the application code that implemnets a component to be platform agnostic to a significant degree. Application programmers program to a common collection of APIs for threading and communication aspects auto-generated by HAMR from AADL.  For example, for each AADL component, a collection of APIs is auto-generated to support communication over the ports appearing in the correspondign AADL component interface.  These APIs hide the details of how threading and communication are realized on particular platform – regardless of the particular platform, the <em>behavior</em> of the threading and communication infrastructure should be the same, even though the <em>implementation</em> differs.</p>
 <p>Use of the AADL-based threading and communication abstractions helps system designers and application programmers develop a consistent and shared understanding of how to organize computation and communication within the system.  In addition, they simplify integration efforts because all communication is based on a fixed collection of interaction patterns, and all threading is based on analyzeable approaches inspired by decades of experience in the real-time embedded systems community.  Note that platform specific I/O interfacing to sensors/actuators, services etc. may still need to be reworked when moving to another platform.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">When a new platform support is added to HAMR, it is the responsibility of the HAMR translation developer to ensure that the semantics of the new platform infrastructure code supports the intended semantics of the APIs, as indicated by the AADL standard.  The AADL standard is not completely clear about some of the intended behavior.  At this time there is no formal process within the AADL community to establish compliance to the standard.   We are addressing these gaps in ongoing research.  Currently, HAMR takes the following approach: (a) a reference implementation for the infrastructure semantics (AADL computational model) is programmed in Slang (Slang is described in the section below), and this reference implementation can be executed on the Java Virtual Machine, and (b) initial infrastructure is being developed to enable HAMR platform implementations to compare testing results to results of the reference implementation (in essence, this is a model-based testing approach where there high-level Slang-based reference implementation is the &#8220;model&#8221; that serves as the test oracle).  A formal semantics of the AADL computational model is also under development, and as of now, the HAMR assurance approach includes manually comparing the implementation of the Slang reference implementation to formal semantics to determine conformity.   Longer-term research goals include formal proofs of correspondence between a mechanized formalization of the AADL semantics (e.g., in Coq), HAMR Slang reference implementation, and back-end implementations.</p>
+<p class="admonition-title">Note</p>
+<p>When new platform support is added to HAMR, it is the responsibility of the HAMR translation developer to ensure that the semantics of the platform infrastructure code supports the intended semantics of the APIs, as indicated by the AADL standard.  The AADL standard is not completely clear about some of the intended behavior.  At this time there is no formal process within the AADL community to establish compliance to the standard.   To address these gaps, HAMR takes the following approach: (a) a reference implementation for the infrastructure semantics (AADL computational model) is programmed in Slang (Slang is described in the section below), and this reference implementation can be executed on the Java Virtual Machine, and (b) initial infrastructure is being developed to enable HAMR platform implementations to compare testing results to results of the reference implementation (in essence, this is a model-based testing approach where there high-level Slang-based reference implementation is the “model” that serves as the test oracle).  A formal semantics of the computational model is also under development, and as of now, the assurance HAMR approach includes manually comparing the implementation of the Slang reference implementation to formal semantics to determine conformity.</p>
 </div>
 </div>
 <div class="section" id="supported-programming-languages-for-application-logic">
 <h2><a class="toc-backref" href="#id4">Supported Programming Languages for Application Logic</a><a class="headerlink" href="#supported-programming-languages-for-application-logic" title="Permalink to this headline">¶</a></h2>
 <p>The application code (i.e., business logic) that provides the functionality of AADL components can be written in one of several languages including:</p>
 <ul class="simple">
-<li>C &#8211; the most widely used language for embedded system programming,</li>
-<li>Slang &#8211; a safety-critical subset of Scala with automated contract-based verification support and ability to compile to C, developed by researchers in the SAnToS Lab research group at Kansas State University, and</li>
-<li>CakeML &#8211; a language with verified machine code generation and accompanying proof tools that enable applications to be proved correct using theorem-proving technology.</li>
+<li><p>C – the most widely used language for embedded system programming,</p></li>
+<li><p>Slang – a safety-critical subset of Scala with automated verification support and ability to compile to C, developed by researchers in the SAnToS Lab research group at Kansas State University, and</p></li>
+<li><p>CakeML – a language with verified machine code generation and accompanying proof tools that enable applications to be proved correct using theorem-proving technology.</p></li>
 </ul>
-<p>Experimental prototypes have also been developed for programming component application logic using the Behavior Annex (BA) of AADL and the variant of BA supported by the BLESS verification framework &#8211; BA and the BLESS BA variant are state transition system notations which have both textual and graphical representations.</p>
+<p>Experimental prototypes have also been developed for programming component application logic using the Behavior Annex (BA) of AADL and the variant of BA supported by the BLESS verification framework – BA and the BLESS BA variant are state transition system notations which have both textual and graphical representations.</p>
 <p>Regardless of the language used, the business logic and associated executable code is held in a location known to HAMR (via AADL model properties or HAMR configuration information). HAMR takes the user-written application code and weaves it together with the auto-generated infrastructure code to form a system build.</p>
 </div>
 <div class="section" id="supported-target-platforms">
@@ -168,7 +156,6 @@
 <div class="section" id="java-virtual-machine-jvm">
 <h3><a class="toc-backref" href="#id6">Java Virtual Machine (JVM)</a><a class="headerlink" href="#java-virtual-machine-jvm" title="Permalink to this headline">¶</a></h3>
 <p>HAMR generates infrastructure code in Scala - a widely used cross-paradigm language (e.g., supporting both OO and functional programming) that is widely used in the enterprise domain.  Scala is compatible with Java (Scala code can easily Java code, and vice versa) and Scala code is compiled to JVM.   Scala can also be compiled directly to native code.   When HAMR generates Scala infrastructure code, application component logic can be programmed in Scala or Slang (or Java, with a bit of additional interface engineering).</p>
-<p>Much of the Scala AADL infrastructure code generated by HAMR is in the Slang high-assurance language subset.  Not only is Slang designed for verifiabilty, it has a restricted memory model that facilitates compilation to C with static memory layout and other properties relevant for embedded systems.  HAMR&#8217;s C-based xNix backends are largely generated from this Slang.  This enables a significant amount AADL infrastructure implementation to be shared across the JVM, xNIX, and seL4 platforms.  This architecture is designed to aid future assurance efforts.</p>
 <p>In general, the benefit of the HAMR Slang code generation combined with Scala/Slang application code is that a system can easily be simulated, tested, and dynamic behavior visualized in a variety of ways using a JVM-based simulation framework provided by HAMR.  This enables developers to rapidly prototype a mockup of a system and organize and debug component interfaces/integration.  Subsequently, the complete system can be programmed in Slang, verified using Slang / Logika verification framework, and, if desired, compiled to C for deployment.  The C compiled from Slang can be deployed to x-nix (i.e., Linux, MacOS) or the seL4 platform infrastructure described below.</p>
 <p>Since JVM-based HAMR builds rely on the JVM for threading and communication (e.g., instead of an RTOS) the real-time behavior constraints of AADL are not guaranteed to be met.  The general approach is to use the JVM-based build to prototype system structure, interfaces, and non-real-time related functional behavior.</p>
 <p><em>Use of Slang, Scala, and the JVM-based framework are not required when using HAMR.</em>  One can have a development workflow totally based on C using the platform backends described below.</p>
@@ -177,66 +164,66 @@
 <h3><a class="toc-backref" href="#id7">Linux (xNix)</a><a class="headerlink" href="#linux-xnix" title="Permalink to this headline">¶</a></h3>
 <p>HAMR can generate infrastructure code and builds in C suitable for deployment on Linux and macOS (we refer to these collectively as the xNix platform).  In the current xNix platform builds, xNix processes are used to realize AADL thread components and Unix System V-based communication primitives are used realize AADL intercomponent communication.   To support C-oriented workflows, HAMR generates APIs for component application logic in C, and a C development environment of choice can be used to develop and debug component implementations.</p>
 <p>Since Linux and macOS are not real-time operating systems, the real-time threading and communication behavioral constraints of AADL are not guaranteed to be met. Also, Linux and macOS do not provide the same level of memory protection that one gets with, e.g., the seL4 microkernel. Nevertheless, the HAMR generated code for these platforms organizes the system build into distinct units with constrained interactions between units. Even without the strong OS/platform partitioning, this disciplined build structure can aid assurance arguments.</p>
-<p>Sometimes, HAMR&#8217;s support for xNix is in conjunction with its support for seL4: HAMR&#8217;s support for Linux and Linux in VMs facilitates wrapping of legacy components and subsystems (perhaps untrusted) and isolating them in a VM in a seL4 partition.</p>
+<p>Sometimes, HAMR’s support for xNix is in conjunction with its support for seL4: HAMR’s support for Linux and Linux in VMs facilitates wrapping of legacy components and subsystems (perhaps untrusted) and isolating them in a VM in a seL4 partition.</p>
 </div>
 <div class="section" id="sel4-microkernel">
 <h3><a class="toc-backref" href="#id8">seL4 Microkernel</a><a class="headerlink" href="#sel4-microkernel" title="Permalink to this headline">¶</a></h3>
-<p>The <a class="reference external" href="https://sel4.systems">seL4 verified micro-kernel</a> is a key technology solution used to provide strong partitioning between components in a application. With this partitioning, one application component cannot access the memory/state of another component unless explicitly granted that capability in the kernel configuration, and communication between components is guaranteed to be limited to explicitly declared pathways. Based on these partitioning properties, seL4 can play a key role in achieving fault containment and cyber-resiliency by</p>
+<p>The seL4 verified micro-kernel is a key technology solution used to provide strong partitioning between components in a application. With this partitioning, one application component cannot access the memory/state of another component unless explicitly granted that capability in the kernel configuration, and communication between components is guaranteed to be limited to explicitly declared pathways. Based on these partitioning properties, seL4 can play a key role in achieving fault containment and cyber-resiliency by</p>
 <ul class="simple">
-<li>isolating less trusted portions of the application in separate components so that they cannot attack or interfere with critical components,</li>
-<li>separating trusted components to better isolate faults and achieve other robustness properties, and</li>
-<li>enabling communication between components to be more easily assessed/audited and guarded with various security controls.</li>
+<li><p>isolating less trusted portions of the application in separate components so that they cannot attack or interfere with critical components,</p></li>
+<li><p>separating trusted components to better isolate faults and achieve other robustness properties, and</p></li>
+<li><p>enabling communication between components to be more easily assessed/audited and guarded with various security controls.</p></li>
 </ul>
 <p>HAMR-generates C APIs for component logic application logic that are identical to those generated for xNix.  This enables systems to be prototyped in xNix (which has richer support for debugging and drivers) and then moved to seL4.   The API-based isolation of the application code from the details of the underlying platform also enables general portability between platforms.</p>
-<p>When HAMR generates implementations for seL4, it generates realizations of AADL component interfaces and connection topologies in <a class="reference external" href="https://docs.sel4.systems/projects/camkes/">CAmkES</a> &#8211; a dedicated language from Data61 for specifying seL4-based partitions and inter-partition communication.  Once all component implementations and other build artifacts are in place, HAMR invokes a Data61-provided translation tool that translates CAmkES descriptions to C and seL4 capability configuration files that control the memory protection mechanisms of the seL4 microkernel. Additional Data61 tools generate the binaries that are deployed on seL4.</p>
+<p>When HAMR generates implementations for seL4, it generates realizations of AADL component interfaces and connection topologies in CAmkES – a dedicated language from Data61 for specifying seL4-based partitions and inter-partition communication.  Once all component implementations and other build artifacts are in place, HAMR invokes a Data61-provided translation tool that translates CAmkES descriptions to C and seL4 capability configuration files that control the memory protection mechanisms of the seL4 microkernel. Additional Data61 tools generate the binaries that are deployed on seL4.</p>
 </div>
 <div class="section" id="variations-and-extensions">
 <h3><a class="toc-backref" href="#id9">Variations and Extensions</a><a class="headerlink" href="#variations-and-extensions" title="Permalink to this headline">¶</a></h3>
-<p>HAMR is designed to make it easier to target multiple platforms and communication infrastructure, even within the same system.  While the current HAMR implementation only supports the platforms above, future research efforts may add support for widely-used distributed communication frameworks like OMG&#8217;S Data Distribution Service (DDS), ActiveMQ, zeroMQ, etc.   Support for real-time operating systems and micro-kernels with strong temporal partitioning is also planned (simple HAMR extensions have been prototyped to support FreeRTOS).</p>
+<p>HAMR is designed to make it easier to target multiple platforms and communication infrastructure, even within the same system.  While the current HAMR implementation only supports the platforms above, future research efforts may add support for widely-used distributed communication frameworks like OMG’S Data Distribution Service (DDS), ActiveMQ, zeroMQ, etc.   Support for real-time operating systems and micro-kernels with strong temporal partitioning is also planned (simple HAMR extensions have been prototyped to support FreeRTOS).</p>
 </div>
 </div>
 <div class="section" id="hamr-on-the-darpa-case-program">
 <h2><a class="toc-backref" href="#id10">HAMR on the DARPA CASE Program</a><a class="headerlink" href="#hamr-on-the-darpa-case-program" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference external" href="http://loonwerks.com/projects/case.html">Collins Aerospace development tools for the DARPA CASE program</a> emphasize AADL to C workflows.  In these workflows, HAMR auto-generates C-based infrastructure code for AADL-compliant threading and communication that can be deployed on Linux or &#8220;bare-metal&#8221; seL4.  HAMR is used to generate C-based APIs for interacting over AADL ports, and AADL component application logic is written in C.</p>
+<p>The Collins Aerospace development tools for the DARPA CASE program emphasizes AADL to C workflows.  In these workflows, HAMR auto-generates C-based infrastructure code for AADL-compliant threading and communication that can be deployed on Linux or “bare-metal” seL4.  HAMR is used to generate C-based APIs for interacting over AADL ports, and AADL component application logic is written in C.</p>
 <p>CASE program scope <em>does not</em> include full support for enforcement of temporal separation as one would get from an RTOS or from the emerging mixed-criticality (MCS) version of seL4.   However, CASE AADL modeling guidelines and HAMR code generation are oriented to move in that direction, e.g., by embracing a simplified version of ARINC 653 threading and communication and be taking advantage of existing domain scheduling capabilities of the seL4 microkernel.</p>
 <p>In addition to C based development, the Collins Aerospace solutions use CakeML for selected components that benefit from higher levels of assurance.  For example, for CakeML implementations are used for the following types of cyber-resiliency components:</p>
 <ul class="simple">
-<li><em>filters</em> - components that filter out problematic intercomponent messages as might be generated by an adversary,</li>
-<li><em>monitors</em> - components that monitor system state and communication and then generate alerts or perform recovery actions, and</li>
-<li><em>an attestestation framework</em> - infrastructure that can automatically measure various attributes of a component to confirm its authenticity.</li>
+<li><p><em>filters</em> - components that filter out problematic intercomponent messages as might be generated by an adversary,</p></li>
+<li><p><em>monitors</em> - components that monitor system state and communication and then generate alerts or perform recovery actions, and</p></li>
+<li><p><em>an attestestation framework</em> - infrastructure that can automatically measure various attributes of a component to confirm its authenticity.</p></li>
 </ul>
-<p>For these types of components, CakeML is auto-generated from higher-level formal specifications such as extended regular expressions (for filters) and variants of temporal logic (for monitors).   The ultimate goal of these efforts (not all of which can be achieved in CASE scope), is to have machine-verified proofs that a deployment cyber-resiliency component&#8217;s implementation satisfies its formal high-level specification.</p>
-<p>Slang is used in Collins Aerospace research for system prototyping.  Moreover, &#8220;behind the scenes&#8221;, the generation of C code for platform infrastructure is factored through Slang in many cases (i.e., code is first generated for Slang, and then the Slang is compiled to C) which enables the tooling to more easily target multiple backends.  The factoring through Slang is invisible to C-oriented application developers.</p>
-<p>On CASE, HAMR&#8217;s cross-platform build capabilities are used primarily to help migrate legacy Linux applications to seL4.  For example, HAMR can generate seL4/CAmkES partitions that host virtual machines (VMs) running legacy applications in Linux.  Moreover, HAMR&#8217;s auto-generated APIs for communication make it easier to move implementations between platforms (e.g., shifting code running in a Linux process to code running on bare-metal in seL4 CAmkES component &#8211; as might be necessary when extracting key components out of an untrusted Linux-based deployment and hardening them to trusted components to run in an seL4 partition).</p>
+<p>For these types of components, CakeML is auto-generated from higher-level formal specifications such as extended regular expressions (for filters) and variants of temporal logic (for monitors).   The ultimate goal of these efforts (not all of which can be achieved in CASE scope), is to have machine-verified proofs that a deployment cyber-resiliency component’s implementation satisfies its formal high-level specification.</p>
+<p>Slang is used in Collins Aerospace research for system prototyping.  Moreover, “behind the scenes”, the generation of C code for platform infrastructure is factored through Slang in many cases (i.e., code is first generated for Slang, and then the Slang is compiled to C) which enables the tooling to more easily target multiple backends.  The factoring through Slang is invisible to C-oriented application developers.</p>
+<p>On CASE, HAMR’s cross-platform build capabilities are used primarily to help migrate legacy Linux applications to seL4.  For example, HAMR can generate seL4/CAmkES partitions that host virtual machines (VMs) running legacy applications in Linux.  Moreover, HAMR’s auto-generated APIs for communication make it easier to move implementations between platforms (e.g., shifting code running in a Linux process to code running on bare-metal in seL4 CAmkES component – as might be necessary when extracting key components out of an untrusted Linux-based deployment and hardening them to trusted components to run in an seL4 partition).</p>
 <p>Overall, in the CASE Collins Aerospace tools, HAMR forms the backbone of tool-chain for engineering cyber-resilient embedded systems by supporting modeling, analyzing, transforming, code generation, and build construction for partitioned applications.</p>
 </div>
 <div class="section" id="hamr-code-generation-architecture">
 <h2><a class="toc-backref" href="#id11">HAMR Code Generation Architecture</a><a class="headerlink" href="#hamr-code-generation-architecture" title="Permalink to this headline">¶</a></h2>
 <div class="figure align-center" id="id2">
 <span id="id1"></span><img alt="../_images/hamr-code-generation-architecture.png" src="../_images/hamr-code-generation-architecture.png" />
-<p class="caption"><span class="caption-text"><strong>HAMR Code Generation Architecture</strong></span></p>
+<p class="caption"><span class="caption-text"><strong>HAMR Code Generation Architecture</strong></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
-<p><a class="reference internal" href="#id1"><span>HAMR Code Generation Architecture</span></a> presents the high-level concept of the HAMR code generation. The AADL model in the figure is a simple temperature control system with a temperature sensor, a controller (thermostat), and a cooling fan &#8211; the details are not relevant for this overview.</p>
-<p>A fundamental goal of HAMR is to structure the code so that the application code is isolated from the underlying component and communication infrastructure &#8211; enabling HAMR to target platforms with different threading and communication with minimal changes to application code.</p>
+<p><a class="reference internal" href="#id1"><span class="std std-ref">HAMR Code Generation Architecture</span></a> presents the high-level concept of the HAMR code generation. The AADL model in the figure is a simple temperature control system with a temperature sensor, a controller (thermostat), and a cooling fan – the details are not relevant for this overview.</p>
+<p>A fundamental goal of HAMR is to structure the code so that the application code is isolated from the underlying component and communication infrastructure – enabling HAMR to target platforms with different threading and communication with minimal changes to application code.</p>
 <p>To achieve this, the code generation has the following four dimensions.</p>
 <ul class="simple">
-<li><strong>Code skeletons and APIs for application code</strong> &#8211; for each AADL thread, HAMR generates code skeletons for application code (see right hand side of Figure 28&#8211; forthcoming DARPA CASE releases will document the details of these code skeletons). The developer completes the component implementation using a conventional development environment. The application code accesses automatically generated APIs to communicate via the component&#8217;s ports with other components. These APIs abstract the application code away from the details of the particular communication infrastructure.</li>
-<li><strong>Component infrastructure, including threading infrastructure</strong> &#8211; code is generated to support the invocation of the application code and move the data being transported over the component&#8217;s ports between port variables accessible by the application code and the communication infrastructure abstracted by the communication APIs.</li>
-<li><strong>Communication infrastructure</strong> &#8211; code is generated to move data/events between output ports of sending components and input ports of receiving components. The particular mechanism used depends on the underlying platform. For example, for a Unix/Linux platform-based implementation, System V communication primitives used. For an seL4-based implementation, seL4&#8217;s inter-partition communication primitives are used. For distributed components, a publish-subscribe framework like OMG Data Distribution Service or a CAN BUS could be used (distributed communication is not yet implemented in HAMR).</li>
-<li><strong>Platform configuration information</strong> - Depending on how the underlying platform capabilities are configured, HAMR may generate meta-data (e.g., in an XML or JSON format) that is used to configure options on the underlying platform.</li>
+<li><p><strong>Code skeletons and APIs for application code</strong> – for each AADL thread, HAMR generates code skeletons for application code (see right hand side of Figure 28– forthcoming DARPA CASE releases will document the details of these code skeletons). The developer completes the component implementation using a conventional development environment. The application code accesses automatically generated APIs to communicate via the component’s ports with other components. These APIs abstract the application code away from the details of the particular communication infrastructure.</p></li>
+<li><p><strong>Component infrastructure, including threading infrastructure</strong> – code is generated to support the invocation of the application code and move the data being transported over the component’s ports between port variables accessible by the application code and the communication infrastructure abstracted by the communication APIs.</p></li>
+<li><p><strong>Communication infrastructure</strong> – code is generated to move data/events between output ports of sending components and input ports of receiving components. The particular mechanism used depends on the underlying platform. For example, for a Unix/Linux platform-based implementation, System V communication primitives used. For an seL4-based implementation, seL4’s inter-partition communication primitives are used. For distributed components, a publish-subscribe framework like OMG Data Distribution Service or a CAN BUS could be used (distributed communication is not yet implemented in HAMR).</p></li>
+<li><p><strong>Platform configuration information</strong> - Depending on how the underlying platform capabilities are configured, HAMR may generate meta-data (e.g., in an XML or JSON format) that is used to configure options on the underlying platform.</p></li>
 </ul>
 </div>
 <div class="section" id="assurance-case-structure-of-hamr-built-systems">
 <h2><a class="toc-backref" href="#id12">Assurance Case Structure of HAMR-built Systems</a><a class="headerlink" href="#assurance-case-structure-of-hamr-built-systems" title="Permalink to this headline">¶</a></h2>
 <p>Overall, HAMR can be seen as coordinating an AADL-guided build of a system that includes the four dimensions above. The overall assurance case that the generated build achieves desired system functional/safety/security requirements (including cyber-resiliency requirements) includes the following elements:</p>
 <ul class="simple">
-<li><strong>(Arch)</strong> - arguments that an architecture appropriate for the system requirements (e.g., achieving appropriate partitioning properties) is specified in AADL (reflected in the topological structure of the AADL specification),</li>
-<li><strong>(ArchAttributes)</strong> - arguments that system attributes presented (e.g. as AADL properties) are appropriate for the system requirements,</li>
-<li><strong>(ArchAnalysis)</strong> - arguments that any automated analyses including information flow analysis, latency analysis, schedulability analysis, etc., that are used to automatically configure model attributes or to confirm that model attributes appropriately realize system requirements,</li>
-<li><strong>(ApplicationCode)</strong> - arguments each component&#8217;s application code is implemented to satisfy component behavioral specification so that integration of the components with component/communication infrastructure that adheres to the AADL computational model yields &#8220;end to end&#8221; behavior that achieves the system requirements,</li>
-<li><strong>(ComponentInfrastructureCode)</strong> - arguments that the HAMR code generation for component infrastructure correctly implements the AADL computational model,</li>
-<li><strong>(CommunicationInfrastructureCode)</strong> - arguments that the HAMR code generation for communication infrastructure correctly implements the AADL computational model,</li>
-<li><strong>(PlatformConfigurationInformation)</strong> - arguments that the HAMR code generation for platform configuration information configures the platform to achieve resource provisioning/partitioning and other properties necessary to realize the system requirements.</li>
+<li><p><strong>(Arch)</strong> - arguments that an architecture appropriate for the system requirements (e.g., achieving appropriate partitioning properties) is specified in AADL (reflected in the topological structure of the AADL specification),</p></li>
+<li><p><strong>(ArchAttributes)</strong> - arguments that system attributes presented (e.g. as AADL properties) are appropriate for the system requirements,</p></li>
+<li><p><strong>(ArchAnalysis)</strong> - arguments that any automated analyses including information flow analysis, latency analysis, schedulability analysis, etc., that are used to automatically configure model attributes or to confirm that model attributes appropriately realize system requirements,</p></li>
+<li><p><strong>(ApplicationCode)</strong> - arguments each component’s application code is implemented to satisfy component behavioral specification so that integration of the components with component/communication infrastructure that adheres to the AADL computational model yields “end to end” behavior that achieves the system requirements,</p></li>
+<li><p><strong>(ComponentInfrastructureCode)</strong> - arguments that the HAMR code generation for component infrastructure correctly implements the AADL computational model,</p></li>
+<li><p><strong>(CommunicationInfrastructureCode)</strong> - arguments that the HAMR code generation for communication infrastructure correctly implements the AADL computational model,</p></li>
+<li><p><strong>(PlatformConfigurationInformation)</strong> - arguments that the HAMR code generation for platform configuration information configures the platform to achieve resource provisioning/partitioning and other properties necessary to realize the system requirements.</p></li>
 </ul>
 </div>
 </div>
