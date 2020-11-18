@@ -39,7 +39,7 @@ Home
            </div>
            <div class="panel-body">
 
-Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems'') is a code generation and system build framework for embedded systems whose architecture is specified using the Architecture and Analysis Definition Language (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the seL4 micro-kernel.
+Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems'') is a code generation and system build framework for embedded systems whose architecture is specified using the `Architecture Analysis and Design Language <https://www.sei.cmu.edu/our-work/projects/display.cfm?customel_datapageid_4050=191439>`__ (AADL). HAMR supports development of new components and wrapping of legacy components by generating code that provides interfacing infrastructure between components. Once component implementations are developed, HAMR can create deployable builds on multiple platforms including the Java Virtual Machine, Linux, and the `seL4 micro-kernel <https://sel4.systems>`__ .
 
 To learn more about HAMR,
 
