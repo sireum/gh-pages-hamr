@@ -1,27 +1,40 @@
 
 <!DOCTYPE html>
 
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AADL/HAMR Data Types and Data Modeling &#8212; Sireum HAMR</title>
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>AADL/HAMR Data Types and Data Modeling &mdash; Sireum HAMR</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
-    <script src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script src="../_static/js/jquery-fix.js"></script>
-    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../_static/bootstrap-sphinx.js"></script>
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-  </head><body>
+    <link rel="top" title="Sireum HAMR" href="../index.html" />
+  </head>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -77,8 +90,8 @@
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-base-types">AADL/HAMR Data Modeling Reference – Base Types</a></li>
-<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-application-types">AADL/HAMR Data Modeling Reference – Application Types</a><ul>
+<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-base-types">AADL/HAMR Data Modeling Reference &#8211; Base Types</a></li>
+<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-application-types">AADL/HAMR Data Modeling Reference &#8211; Application Types</a><ul>
 <li><a class="reference internal" href="#base-types">Base Types</a><ul>
 <li><a class="reference internal" href="#slang-examples">Slang Examples</a></li>
 <li><a class="reference internal" href="#c-examples">C Examples</a></li>
@@ -141,20 +154,18 @@
 <span id="ch05-hamr-types"></span><h1>AADL/HAMR Data Types and Data Modeling<a class="headerlink" href="#aadl-hamr-data-types-and-data-modeling" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id10">Overview</a></p>
-<ul>
-<li><p><a class="reference internal" href="#background" id="id11">Background</a></p></li>
-<li><p><a class="reference internal" href="#general-approach-and-workflow-concepts" id="id12">General Approach and Workflow Concepts</a></p></li>
+<li><a class="reference internal" href="#overview" id="id10">Overview</a><ul>
+<li><a class="reference internal" href="#background" id="id11">Background</a></li>
+<li><a class="reference internal" href="#general-approach-and-workflow-concepts" id="id12">General Approach and Workflow Concepts</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#aadl-hamr-data-modeling-reference-base-types" id="id13">AADL/HAMR Data Modeling Reference – Base Types</a></p></li>
-<li><p><a class="reference internal" href="#aadl-hamr-data-modeling-reference-application-types" id="id14">AADL/HAMR Data Modeling Reference – Application Types</a></p>
-<ul>
-<li><p><a class="reference internal" href="#base-types" id="id15">Base Types</a></p></li>
-<li><p><a class="reference internal" href="#enums" id="id16">Enums</a></p></li>
-<li><p><a class="reference internal" href="#records-structs" id="id17">Records / Structs</a></p></li>
-<li><p><a class="reference internal" href="#arrays" id="id18">Arrays</a></p></li>
-<li><p><a class="reference internal" href="#union-types" id="id19">Union Types</a></p></li>
+<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-base-types" id="id13">AADL/HAMR Data Modeling Reference &#8211; Base Types</a></li>
+<li><a class="reference internal" href="#aadl-hamr-data-modeling-reference-application-types" id="id14">AADL/HAMR Data Modeling Reference &#8211; Application Types</a><ul>
+<li><a class="reference internal" href="#base-types" id="id15">Base Types</a></li>
+<li><a class="reference internal" href="#enums" id="id16">Enums</a></li>
+<li><a class="reference internal" href="#records-structs" id="id17">Records / Structs</a></li>
+<li><a class="reference internal" href="#arrays" id="id18">Arrays</a></li>
+<li><a class="reference internal" href="#union-types" id="id19">Union Types</a></li>
 </ul>
 </li>
 </ul>
@@ -163,30 +174,30 @@
 <h2><a class="toc-backref" href="#id10">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="background">
 <h3><a class="toc-backref" href="#id11">Background</a><a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
-<p>AADL and HAMR emphasize port-based communication between components where the data exchanged over ports is typed.   In AADL models, ports are declared in <em>component types</em> and HAMR requires that each port in a component type has an associated data type constructed according to the <em>AADL Data Modeling Annex</em> – which standardizes one approach to defining data types in AADL.  In the Data Modeling Annex, data types are modeled using AADL’s <em>data components</em>.   When the ports of different components are connected, HAMR requires that the data types on the connected ports be compatible.  Together with AADL port properties, and other behavioral constraints such as AGREE specifications, AADL’s typed ports form part of a component’s interface specification, which is captured in a <em>component type</em> declaration.</p>
+<p>AADL and HAMR emphasize port-based communication between components where the data exchanged over ports is typed.   In AADL models, ports are declared in <em>component types</em> and HAMR requires that each port in a component type has an associated data type constructed according to the <em>AADL Data Modeling Annex</em> &#8211; which standardizes one approach to defining data types in AADL.  In the Data Modeling Annex, data types are modeled using AADL&#8217;s <em>data components</em>.   When the ports of different components are connected, HAMR requires that the data types on the connected ports be compatible.  Together with AADL port properties, and other behavioral constraints such as AGREE specifications, AADL&#8217;s typed ports form part of a component&#8217;s interface specification, which is captured in a <em>component type</em> declaration.</p>
 <p>As it performs code generation for an AADL model, HAMR translates AADL data types based on the Data Modeling Annex to type declaration in the target programming language (e.g., Slang or C).  The translation and the representation in target programming languages is <em>not standardized</em> by AADL.  However, HAMR data type translation is designed to ensure interoperability between HAMR-based components whose implementations are coded in different HAMR-supported languages.   Behind the scenes, HAMR makes use of the <em>Sireum Bitcodec</em> framework to ensure interoperability.   In addition, Sireum Bitcodec also provides a serialized (wire-format) for data that can be used for distributed communication.  Sireum Bitcodec also provides a basis for specifying for format of complex legacy data representations.  Given a Bitcodec specification, the Sireum infrastructure can generated programming language type declaraions and encoders and decoders for transforming data between HAMR-supported languages and legacy programs.</p>
-<p>AADL’s approach to types and data modeling is a recognized weakness.  AADL type declarations are verbose and klunky, and the lack of a standardized data type code generation approach for interoperability leaves each AADL tool developer to “roll their own” approach to types and associated language representations.  AADL V3, the upcoming version of the AADL standard, will introduce a new syntax for types.   Work on HAMR is influencing the AADL V3 type system, and when the AADL V3 type system is finalized, HAMR will likely adopt it.</p>
+<p>AADL&#8217;s approach to types and data modeling is a recognized weakness.  AADL type declarations are verbose and klunky, and the lack of a standardized data type code generation approach for interoperability leaves each AADL tool developer to &#8220;roll their own&#8221; approach to types and associated language representations.  AADL V3, the upcoming version of the AADL standard, will introduce a new syntax for types.   Work on HAMR is influencing the AADL V3 type system, and when the AADL V3 type system is finalized, HAMR will likely adopt it.</p>
 </div>
 <div class="section" id="general-approach-and-workflow-concepts">
 <h3><a class="toc-backref" href="#id12">General Approach and Workflow Concepts</a><a class="headerlink" href="#general-approach-and-workflow-concepts" title="Permalink to this headline">¶</a></h3>
 <p>In this section we illustrate the primary steps involved in defining and using AADL types and then using HAMR-generated type representations at the code-level.   Below is a high-level summary of the steps.</p>
 <ul class="simple">
-<li><p>Define AADL application types – types that build upon AADL base types to provide data structures such as arrays, structs, and enums.</p></li>
-<li><p>Use AADL base types and application types to define the types of ports in component types.</p></li>
-<li><p>Use the Resolint tool to check that type declarations adhere to HAMR rules (ensuring that code-generation can be applied to the types without having the code-generator complain of a syntax error).</p></li>
-<li><p>Observe the structure of HAMR-generated programming language types for AADL base types and application types.</p></li>
-<li><p>Program component application logic using port operations and method handlers that reference the HAMR-generated types.</p></li>
+<li>Define AADL application types &#8211; types that build upon AADL base types to provide data structures such as arrays, structs, and enums.</li>
+<li>Use AADL base types and application types to define the types of ports in component types.</li>
+<li>Use the Resolint tool to check that type declarations adhere to HAMR rules (ensuring that code-generation can be applied to the types without having the code-generator complain of a syntax error).</li>
+<li>Observe the structure of HAMR-generated programming language types for AADL base types and application types.</li>
+<li>Program component application logic using port operations and method handlers that reference the HAMR-generated types.</li>
 </ul>
 <div class="section" id="aadl-level-types">
 <h4>AADL-Level Types<a class="headerlink" href="#aadl-level-types" title="Permalink to this headline">¶</a></h4>
 <p>AADL provides a library of <em>base type</em> declarations that integers of different bitwidths (signed and unsigned), floats/doubles, booleans, characters, and strings.  Structured types supported by the AADL Data Modeling Annex include arrays (single and multi-dimensional), structs/records, enums, and unions.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>HAMR does not currently support multi-dimensional arrays or unions, but we expect to add support for those by end of 2020.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">HAMR does not currently support multi-dimensional arrays or unions, but we expect to add support for those by end of 2020.</p>
 </div>
 <p>To introduce a structured type, an application developer defines an AADL <em>data component</em> with some accompanying AADL properties.  HAMR encourages a file/package organization that groups data type declarations together in one or packages dedicated exclusively to type declarations.</p>
-<p>For example, an application developer might define a package ‘Datatypes’ to hold the data type declarations for the application.</p>
-<div class="highlight-AADL notranslate"><div class="highlight"><pre><span></span>-- introduce an AADL package (name &#39;Datatypes&#39; chosen by developer) to hold the application&#39;s data type declarations
+<p>For example, an application developer might define a package &#8216;Datatypes&#8217; to hold the data type declarations for the application.</p>
+<div class="highlight-AADL"><div class="highlight"><pre>-- introduce an AADL package (name &#39;Datatypes&#39; chosen by developer) to hold the application&#39;s data type declarations
 package Datatypes
 public
   with Data_Model;  -- include properties from AADL Data Modeling annex, used to define data types
@@ -210,14 +221,14 @@ public
 end Datatypes;
 </pre></div>
 </div>
-<p>The example above illustrates that data types are defined <em>data components</em> annotated with <code class="docutils literal notranslate"><span class="pre">Data_model</span></code> properties such as <code class="docutils literal notranslate"><span class="pre">Data_Representation</span> <span class="pre">=&gt;</span> <span class="pre">Struct</span></code>.  For <code class="docutils literal notranslate"><span class="pre">struct</span></code> definitions, a data component implementation is used to declare the type’s subcomponents (other data type declarations do not require a component implementation).</p>
-<p>In the fields of the example struct, AADL’s library of base types is used to define fields of type <code class="docutils literal notranslate"><span class="pre">Float</span></code> and <code class="docutils literal notranslate"><span class="pre">Character</span></code>.</p>
+<p>The example above illustrates that data types are defined <em>data components</em> annotated with <code class="docutils literal"><span class="pre">Data_model</span></code> properties such as <code class="docutils literal"><span class="pre">Data_Representation</span> <span class="pre">=&gt;</span> <span class="pre">Struct</span></code>.  For <code class="docutils literal"><span class="pre">struct</span></code> definitions, a data component implementation is used to declare the type&#8217;s subcomponents (other data type declarations do not require a component implementation).</p>
+<p>In the fields of the example struct, AADL&#8217;s library of base types is used to define fields of type <code class="docutils literal"><span class="pre">Float</span></code> and <code class="docutils literal"><span class="pre">Character</span></code>.</p>
 </div>
 <div class="section" id="aadl-level-ports-with-type-declarations">
 <h4>AADL-Level Ports with Type Declarations<a class="headerlink" href="#aadl-level-ports-with-type-declarations" title="Permalink to this headline">¶</a></h4>
-<p>When building an AADL model, AADL pre-defined <code class="docutils literal notranslate"><span class="pre">Base_Types</span></code> along with application-defined types like those above are used to declare types of ports.</p>
+<p>When building an AADL model, AADL pre-defined <code class="docutils literal"><span class="pre">Base_Types</span></code> along with application-defined types like those above are used to declare types of ports.</p>
 <p>The example below shows excerpts from a system model illustrating the use of base types and application-defined types to define types for ports.</p>
-<div class="highlight-AADL notranslate"><div class="highlight"><pre><span></span>package MySystem
+<div class="highlight-AADL"><div class="highlight"><pre>package MySystem
 public
   with Base_Types; -- include AADL pre-defined data types for base types
   with Datatypes;  -- include application types defined in Datatypes package
@@ -249,20 +260,20 @@ end MySystem;
 <div class="section" id="checking-aadl-hamr-type-well-formedness-using-resolint">
 <h4>Checking AADL/HAMR Type Well-formedness Using Resolint<a class="headerlink" href="#checking-aadl-hamr-type-well-formedness-using-resolint" title="Permalink to this headline">¶</a></h4>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
+<p class="first admonition-title">Note</p>
 <p>ToDo</p>
-<ul class="simple">
-<li><p>Adding Resolint annex clause to trigger checking</p></li>
-<li><p>Summary of what resolint checks</p></li>
-<li><p>Example screen shot of Resolint detecting a problem with declared types</p></li>
+<ul class="last simple">
+<li>Adding Resolint annex clause to trigger checking</li>
+<li>Summary of what resolint checks</li>
+<li>Example screen shot of Resolint detecting a problem with declared types</li>
 </ul>
 </div>
 </div>
 <div class="section" id="hamr-generated-code-level-representations-of-aadl-types-slang">
 <h4>HAMR-generated Code-Level Representations of AADL Types (Slang)<a class="headerlink" href="#hamr-generated-code-level-representations-of-aadl-types-slang" title="Permalink to this headline">¶</a></h4>
 <p>HAMR-generated code includes representations of AADL base types as well as application-declared types.</p>
-<p>In code generation for Slang, HAMR introduces aliases (corresponding to AADL’s base type names) for appropriate built in Slang types.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// excerpts from HAMR&#39;s Slang representation of base types</span>
+<p>In code generation for Slang, HAMR introduces aliases (corresponding to AADL&#8217;s base type names) for appropriate built in Slang types.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// excerpts from HAMR&#39;s Slang representation of base types</span>
 
 <span class="k">type</span> <span class="kt">Integer_16</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">sireum</span><span class="o">.</span><span class="n">S16</span>
 <span class="k">type</span> <span class="kt">Unsigned_64</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">sireum</span><span class="o">.</span><span class="n">U64</span>
@@ -270,8 +281,8 @@ end MySystem;
 <span class="k">type</span> <span class="kt">Character</span> <span class="o">=</span> <span class="n">org</span><span class="o">.</span><span class="n">sireum</span><span class="o">.</span><span class="n">C</span>
 </pre></div>
 </div>
-<p>Slang classes/objects for each application type are generated.   Types for the AADL-declared structure as well as a wrapper class for messages containing the typed value are generated (application code never works with the wrapper classes directly – they are introduced behind the scenes in the HAMR Slang infrastructure).</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// slang package generated corresponding to AADL package &#39;Datatypes&#39; above</span>
+<p>Slang classes/objects for each application type are generated.   Types for the AADL-declared structure as well as a wrapper class for messages containing the typed value are generated (application code never works with the wrapper classes directly &#8211; they are introduced behind the scenes in the HAMR Slang infrastructure).</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// slang package generated corresponding to AADL package &#39;Datatypes&#39; above</span>
 <span class="k">package</span> <span class="nn">slang.Datatypes</span>
 
 <span class="c1">// class generated to represent the AADL application-specified &#39;MyStruct2&#39; struct type</span>
@@ -303,7 +314,7 @@ end MySystem;
 <div class="section" id="hamr-generated-code-level-component-interfaces-with-typed-port-operations-slang">
 <h4>HAMR-generated Code-Level Component Interfaces with Typed Port Operations (Slang)<a class="headerlink" href="#hamr-generated-code-level-component-interfaces-with-typed-port-operations-slang" title="Permalink to this headline">¶</a></h4>
 <p>HAMR-generated code for port operations and skeletons for message handlers references the Slang type corresponding to the AADL type declared for a particular port.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// auto-generated methods (only method signatures shown) for AADL producer thread (excerpts)</span>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// auto-generated methods (only method signatures shown) for AADL producer thread (excerpts)</span>
 <span class="k">def</span> <span class="n">sendmyFloat</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">R</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Unit</span>
 <span class="k">def</span> <span class="n">sendmyInt16</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">S16</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Unit</span>
 <span class="k">def</span> <span class="n">sendmyUInt64</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">U64</span><span class="o">)</span> <span class="k">:</span> <span class="kt">Unit</span>
@@ -319,107 +330,107 @@ end MySystem;
 </div>
 </div>
 <div class="section" id="aadl-hamr-data-modeling-reference-base-types">
-<h2><a class="toc-backref" href="#id13">AADL/HAMR Data Modeling Reference – Base Types</a><a class="headerlink" href="#aadl-hamr-data-modeling-reference-base-types" title="Permalink to this headline">¶</a></h2>
-<p>The AADL Data Modeling Annex specifies a collection of base types that are commonly used in embedded systems.  OSATE includes the definition of these types in the AADL package <code class="docutils literal notranslate"><span class="pre">Base_Types</span></code> found in the <em>Plug-in Contributions</em> folder of an OSATE-initialized AADL project.</p>
+<h2><a class="toc-backref" href="#id13">AADL/HAMR Data Modeling Reference &#8211; Base Types</a><a class="headerlink" href="#aadl-hamr-data-modeling-reference-base-types" title="Permalink to this headline">¶</a></h2>
+<p>The AADL Data Modeling Annex specifies a collection of base types that are commonly used in embedded systems.  OSATE includes the definition of these types in the AADL package <code class="docutils literal"><span class="pre">Base_Types</span></code> found in the <em>Plug-in Contributions</em> folder of an OSATE-initialized AADL project.</p>
 <div class="figure align-center" id="id9">
 <span id="osate-base-types"></span><img alt="../_images/OSATE-base-types.png" src="../_images/OSATE-base-types.png" />
-<p class="caption"><span class="caption-text"><strong>OSATE Base Types Package</strong></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text"><strong>OSATE Base Types Package</strong></span></p>
 </div>
-<p>The right pane in <a class="reference internal" href="#osate-base-types"><span class="std std-ref">OSATE Base Types Package</span></a> shows the contents of the <code class="docutils literal notranslate"><span class="pre">Base_Types</span></code> package and illustrates that each base type is modeled as a AADL data component annotated with properties from the AADL Data Modeling annex.</p>
+<p>The right pane in <a class="reference internal" href="#osate-base-types"><span>OSATE Base Types Package</span></a> shows the contents of the <code class="docutils literal"><span class="pre">Base_Types</span></code> package and illustrates that each base type is modeled as a AADL data component annotated with properties from the AADL Data Modeling annex.</p>
 <p><em>This file should not be edited</em>, but it may be useful to read the file to remind yourself of available base types.</p>
 <p>The table below lists the AADL base types along with their Slang and C representations.</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 36%" />
-<col style="width: 30%" />
+<col width="33%" />
+<col width="36%" />
+<col width="30%" />
 </colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>AADL Base Type</strong></p></td>
-<td><p><strong>Slang Representation</strong></p></td>
-<td><p><strong>C Representation</strong></p></td>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>AADL Base Type</strong></td>
+<td><strong>Slang Representation</strong></td>
+<td><strong>C Representation</strong></td>
 </tr>
-<tr class="row-even"><td><p>Boolean</p></td>
-<td><p>B</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Boolean</td>
+<td>B</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Integer</p></td>
-<td><p>Z</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Integer</td>
+<td>Z</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Float</p></td>
-<td><p>R</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Float</td>
+<td>R</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Character</p></td>
-<td><p>C</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Character</td>
+<td>C</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>String</p></td>
-<td><p>String</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>String</td>
+<td>String</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Integer_8</p></td>
-<td><p>S8</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Integer_8</td>
+<td>S8</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Integer_16</p></td>
-<td><p>S16</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Integer_16</td>
+<td>S16</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Integer_32</p></td>
-<td><p>S32</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Integer_32</td>
+<td>S32</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Integer_64</p></td>
-<td><p>S64</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Integer_64</td>
+<td>S64</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Unsigned_8</p></td>
-<td><p>U8</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Unsigned_8</td>
+<td>U8</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Unsigned_16</p></td>
-<td><p>U16</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Unsigned_16</td>
+<td>U16</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Unsigned_32</p></td>
-<td><p>U32</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Unsigned_32</td>
+<td>U32</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Unsigned_64</p></td>
-<td><p>U64</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Unsigned_64</td>
+<td>U64</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-odd"><td><p>Float_32</p></td>
-<td><p>F32</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-odd"><td>Float_32</td>
+<td>F32</td>
+<td><em>TBD</em></td>
 </tr>
-<tr class="row-even"><td><p>Float_64</p></td>
-<td><p>F64</p></td>
-<td><p><em>TBD</em></p></td>
+<tr class="row-even"><td>Float_64</td>
+<td>F64</td>
+<td><em>TBD</em></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul class="simple">
-<li><p>AADL also includes a <code class="docutils literal notranslate"><span class="pre">Natural</span></code> base type as well as a mechanism for specifying strings of bounded size, but these are currently not supported by HAMR.</p></li>
-<li><p>Does HAMR support AADL extension of base types?</p></li>
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>AADL also includes a <code class="docutils literal"><span class="pre">Natural</span></code> base type as well as a mechanism for specifying strings of bounded size, but these are currently not supported by HAMR.</li>
+<li>Does HAMR support AADL extension of base types?</li>
 </ul>
 </div>
-<p>The base types <code class="docutils literal notranslate"><span class="pre">Integer</span></code>, <code class="docutils literal notranslate"><span class="pre">Float</span></code>, <code class="docutils literal notranslate"><span class="pre">Character</span></code>, <code class="docutils literal notranslate"><span class="pre">String</span></code> do not have a specified size.  In the Slang representations, types such as <code class="docutils literal notranslate"><span class="pre">Z</span></code> (Slang integers) are unbounded (the representation is dynamically expanded as needed like <code class="docutils literal notranslate"><span class="pre">java.math.BigInteger</span></code>).   However, when generating code for an embedded platform, HAMR has a configuration file that enables a bounded representation of these types to be specified.</p>
+<p>The base types <code class="docutils literal"><span class="pre">Integer</span></code>, <code class="docutils literal"><span class="pre">Float</span></code>, <code class="docutils literal"><span class="pre">Character</span></code>, <code class="docutils literal"><span class="pre">String</span></code> do not have a specified size.  In the Slang representations, types such as <code class="docutils literal"><span class="pre">Z</span></code> (Slang integers) are unbounded (the representation is dynamically expanded as needed like <code class="docutils literal"><span class="pre">java.math.BigInteger</span></code>).   However, when generating code for an embedded platform, HAMR has a configuration file that enables a bounded representation of these types to be specified.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ToDo : Jason describe how bounded versions are specified when translating to C (it would be good to have an example in a HAMR “public example” repository).</p>
+<p class="first admonition-title">Note</p>
+<p class="last">ToDo : Jason describe how bounded versions are specified when translating to C (it would be good to have an example in a HAMR &#8220;public example&#8221; repository).</p>
 </div>
 <ul class="simple">
-<li><p>Discuss Slang literals</p></li>
-<li><p>Refer to Slang documentation for details on operations, etc.</p></li>
+<li>Discuss Slang literals</li>
+<li>Refer to Slang documentation for details on operations, etc.</li>
 </ul>
 </div>
 <div class="section" id="aadl-hamr-data-modeling-reference-application-types">
-<h2><a class="toc-backref" href="#id14">AADL/HAMR Data Modeling Reference – Application Types</a><a class="headerlink" href="#aadl-hamr-data-modeling-reference-application-types" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14">AADL/HAMR Data Modeling Reference &#8211; Application Types</a><a class="headerlink" href="#aadl-hamr-data-modeling-reference-application-types" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="base-types">
 <h3><a class="toc-backref" href="#id15">Base Types</a><a class="headerlink" href="#base-types" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="slang-examples">
