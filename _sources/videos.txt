@@ -1,0 +1,49 @@
+.. _videos:
+
+HAMR Videos
+###########################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+
+Overview
+=================
+
+This page lists various support videos for HAMR, including
+
+* overview videos
+* installation and use tutorials
+* lecture videos from high-assurance systems and embedded courses that cover AADL and HAMR
+
+*Note: most of these videos are hosted on Google Drive.  We have observed that these Google-hosted videos sometimes fail to launch in certain web browers. If this happens for you, we suggest that you use the Google Chrome browser, as we have found it to be the most reliable for launching these Google-hosted videos.*
+
+Overview Videos
+==================
+
+**HAMR Overview (with emphasis on Slang language development)** -  (`video <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__) (around 1 hr plus additional time for questions)
+
+This talk was given at CMU Software Engineering Institute in July 2019 as part of the SEI Director's Lecture Series.  The talk reports on HAMR's role in the SEI/KSU funded research project called ISSE - Integrated Safety and Security Engineering.  The talk covers general motivation for model-driven development using HAMR in avionics, mission control, and medical domains, basics of the HAMR code generation architecture, code examples of programming HAMR-generated components using Slang (a safety-critical subset of Scala developed by KSU), illustration of various simulation capabilities for HAMR/Slang systems running on the JVM.  This talk emphasizes HAMR's Slang/JVM platform backend.
+
+**HAMR for Applications built on the seL4 Microkernel (with emphasis on C language development)** (`video <https://drive.google.com/file/d/1asOCIzlIYR_GO4ENdalXXNgtj-92oQRQ/view?usp=sharing>`__ (25 minutes), `slides <https://drive.google.com/file/d/1h-kMg7QXTpJqAomPvv3itotnusNynE5T/view?usp=sharing>`__)
+
+This was an invitated presentation given at the November 2020 seL4 Summit.   The presentation begins with an overview of how HAMR facilitates the development of applications built on the `seL4 micro-kernel <https://sel4.systems>`__ and how it complements existing seL4 development tools by providing a systems engineering-focused model-driven development environment.  It then illustrates aspects of HAMR C-centric workflows being used on the DARPA CASE project.  It provides simple code examples that illustrate programming AADL components in C, and explains how HAMR component application code in C can be deployed on both Linux and seL4 platforms.  It concludes with a short demo illustrating deployment and execution of a HAMR-built system on both Linux and seL4.
+
+
+Installation and Use Tutorials
+===============================
+
+**HAMR Installation** - (`video <https://drive.google.com/file/d/1qRe7I0Osj4w1jH1nqiQKdL6m0E1d-9Rb/view?usp=sharing>`__ (~3 minutes))
+
+This video covers the downloading and installation of HAMR.  The video demonstrates installation on Linux, but steps for Windows and MacOS platforms are almost identical. 
+
+**HAMR C Workflow Overview** - (`video <https://drive.google.com/file/d/1W9ddmpUGXAz_akxzQ-OJDFR4I1YdlNQc/view?usp=sharing>`__ (~9:30 minutes))
+
+This video provides an overview of the workflows for creating an AADL model, invoking the HAMR code generator, implementing component behaviors in C, and deploying and executing the system on Linux and seL4 (Qemu-based simulation).   This video is meant to be an *quick overview* of the workflows.   Details for AADL modeling and coding HAMR-generated components in C are provided in subsequent videos.
+
+Lecture Videos and Supporting Material
+=======================================
+
+The `High Assurance Systems <http://s19.highassurance.santoslab.org>`__ graduate course at Kansas State University provides in-depth lectures on AADL modeling and HAMR development using Slang.  The course material is being updated for the Spring 2021 semester, and relevant videos and slides will be linked from here as they become available.
+
+

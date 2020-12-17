@@ -197,6 +197,8 @@ The figure above illustrates AADL intra-component flow specifications and their 
 .. figure:: figures/Tour-awas-query.png
    :align: center 
 
+   **Awas provides interactive information flow querying (e.g., via clickable graphical representations) and visualizations of query results**
+
 The figure above illustrates how Awas can simultaneously display information flow of multiple subsystems or multiple levels of the system hierarchy.   Awas support multiple forms of queries.  In the example above, in the display for the top-level components in the system architecture, the user clicks on an output port (with a *forward information flow* option being previously set), and Awas immediately calculates and visualizations the connections, ports, and components in the system that may receive information derived from the outputs of the selected port.   In this example, the query corresponds to the application concern "how  does map information propagation from ground station to UAV and through UAV’s mission computer to produce a waypoint?”.
 
 An extended walk-through of Awas browsing and querying can be found `at this link <https://awas.sireum.org/doc/02-user-story/index.html>`__ . 
@@ -249,11 +251,10 @@ Component Development
 ----------------------
 
 
+* Component skeleton code
 * Coding component logic (e.g., temp controller with port reads and writes)
 * Reading and writing from ports 
 * Interfacing with Java and component GUIs 
-
-* Test edit of HAMR tour under component development.  Foo bar
 
 System Development and Execution
 ----------------------------------

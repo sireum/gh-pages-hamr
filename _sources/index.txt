@@ -82,6 +82,8 @@ the `Simplified BSD <https://github.com/sireum/kekinian/blob/master/license.md>`
                       
            <a href="hamr-doc/ch0X-hamr-installation.html">Installation</a>
            <br>
+           <a href="videos.html">Videos</a>
+           <br>
            <a href="hamr-doc/hamr-index.html">Documentation</a>
            <br>
            <a href="https://github.com/santoslab/iccps20-case-studies">Public examples repository</a>
