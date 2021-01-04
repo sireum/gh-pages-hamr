@@ -35,11 +35,11 @@ There are at least two approaches to installing the tool chain elements above:
 
 The following describes the most common HAMR workflows and recommended installation approaches.  These workflows are described in greater detailed in the video and slides available on the :ref:`videos` page.
 
-* **Component development using the Slang programming language with system deployment on the JVM** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, Sireum IVE (IntelliJ customization) for coding and running Slang.  The workflow can be set up on Mac OSX, Linux, or Windows.   The preferred way to install is to download the Sireum framework and use it to install the necessary components.   Alternatively, you can use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed. 
+* **Component development using the Slang programming language with system deployment on the JVM** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, Sireum IVE (IntelliJ customization) for coding and running Slang.  The workflow can be set up on Mac OSX, Linux, or Windows.   The preferred way to install is to download the Sireum Kekinian framework and use it to install the necessary components.   Alternatively, you can use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed. 
 
-* **Component development using the C programming language with system deployment on Linux/MacOS X** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well).  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum and use it to install the required tools directly in Linux or Mac OSX.
+* **Component development using the C programming language with system deployment on Linux/MacOS X** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well).  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.
 
-* **Component development using the C programming language with system deployment on seL4 micro-kernel** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well), and multiple components from Data61 for working with seL4.  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum and use it to install the required tools directly in Linux or Mac OSX.  You will also need to download and install the Data61 tools for seL4.
+* **Component development using the C programming language with system deployment on seL4 micro-kernel** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well), and multiple components from Data61 for working with seL4.  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.  You will also need to download and install the Data61 tools for seL4.
 
 
 Following the installation instructions, instructions are given for loading and running a simple HAMR Slang project.
@@ -50,7 +50,7 @@ Installation Option: Direct Installation with Assistance from the Sireum Kekinia
 Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR
 ----------------------------------------------------------------------------
 
-You will first install SAnToS Lab Sireum programming language tools, and then use that to install the FMIDE for creating AADL models and performing HAMR code generation.
+You will first install SAnToS Lab Sireum Kekinian programming language tools, and then use that to install the FMIDE for creating AADL models and performing HAMR code generation.
 
 * **Windows:**
 
@@ -114,7 +114,7 @@ IDE (Sireum IVE) for Slang-based Development of HAMR Systems
 
 When using Slang to program an AADL/HAMR based system, you will use the Sireum IVE (Integrated Verification Environment).  Sireum IVE is a customization of IntelliJ that includes Scala-associated infrastructure pre-installed as well as other SAnToS-built plug-ins for the Slang language subset and associated analysis/verification capabilities.
 
-The Kekinian framework is used to install and update the Sireum IVE.  Thus, Sireum IVE is installed as part of the steps above.
+The Sireum Kekinian framework is used to install and update the Sireum IVE.  Thus, Sireum IVE is installed as part of the steps above.
 
 Then, to launch it:
 
