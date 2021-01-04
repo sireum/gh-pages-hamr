@@ -33,9 +33,24 @@ This was an invitated presentation given at the November 2020 seL4 Summit.   The
 Installation and Use Tutorials
 ===============================
 
+**HAMR Workflow Overview** - (`video <https://drive.google.com/file/d/1fKzXS8fPtij9PyCqDZS7PtDLYObUGE2q/view?usp=sharing>`__ (~35 minutes), 
+`slides <https://drive.google.com/file/d/1bSIsUYOXzDhW0VeOC7VGt3zxI5cyLL87/view?usp=sharing>`__)
+
+HAMR supports multiple platforms and multiple programming languages.   The programming language and platform that you choose to work with determines the tools that you will work with and the workflows that you will follow.   This video provides an overview of different HAMR workflows and indicates which tools will be involved for each workflow.  This video assumes that you have read through the :ref:`ch00-hamr-overview` and :ref:`ch0X-hamr-tour` material.
+
+The video identifies the following basic workflows:
+
+* **Component development using the Slang programming language with system deployment on the JVM** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, Sireum IVE (IntelliJ customization) for coding and running Slang.  The workflow can be set up on Mac OSX, Linux, or Windows.   The preferred way to install is to download the Sireum framework and use it to install the necessary components (explained in the video below).   Alternatively, you can use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed. 
+
+* **Component development using the C programming language with system deployment on Linux/MacOS X** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well).  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum and use it to install the required tools directly in Linux or Mac OSX (explained in the video below).
+
+* **Component development using the C programming language with system deployment on seL4 micro-kernel** - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well), and multiple components from Data61 for working with seL4.  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum and use it to install the required tools directly in Linux or Mac OSX.  You will also need to download and install the Data61 tools for seL4 (explained in the video below).
+
+The video also describes several more advanced workflows that combine Slang and C development and address migrating HAMR system implementations across multiple platforms.
+
 **HAMR Installation** - (`video <https://drive.google.com/file/d/1qRe7I0Osj4w1jH1nqiQKdL6m0E1d-9Rb/view?usp=sharing>`__ (~3 minutes))
 
-This video covers the downloading and installation of HAMR.  The video demonstrates installation on Linux, but steps for Windows and MacOS platforms are almost identical. 
+This video covers the downloading and installation of HAMR.  The video demonstrates installation on Linux, but steps for Windows and MacOS platforms are almost identical.   For written installation instructions, see :ref:`ch0X-hamr-installation`.
 
 **HAMR C Workflow Overview** - (`video <https://drive.google.com/file/d/1W9ddmpUGXAz_akxzQ-OJDFR4I1YdlNQc/view?usp=sharing>`__ (~9:30 minutes))
 
