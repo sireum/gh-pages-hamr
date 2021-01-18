@@ -56,6 +56,11 @@ This video covers the downloading and installation of HAMR.  The video demonstra
 
 This video provides an overview of the workflows for creating an AADL model, invoking the HAMR code generator, implementing component behaviors in C, and deploying and executing the system on Linux and seL4 (Qemu-based simulation).   This video is meant to be an *quick overview* of the workflows.   Details for AADL modeling and coding HAMR-generated components in C are provided in subsequent videos.
 
+**HAMR C Component Implementation Details** - (`video <https://drive.google.com/file/d/1mhNJX-Xw7G5Fx1DY2BosDvUQae9D2uK-/view?usp=sharing>`__ (~9:50 minutes))
+
+This video provides details on implementing in C the application logic for AADL HAMR-generated components.   Basic aspects of working with HAMR C type structures, APIs for reading and writing values on ports, and debugging information are presented.
+
+
 Lecture Videos and Supporting Material
 =======================================
 
