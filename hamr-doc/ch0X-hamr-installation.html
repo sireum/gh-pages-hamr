@@ -166,6 +166,8 @@ The HAMR tool chain itself can be installed on Windows, Linux, and MacOS platfor
 <li><p class="first"><strong>Windows:</strong></p>
 <div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
+REM The following step is optional -- only needed it you want to check out a particular commit tip
+REM Otherwise, proceed directly to git submodule update ...
 git checkout &lt;commit&gt; &amp; REM^; SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
 git submodule update --init --recursive
 bin\build.cmd setup
@@ -177,6 +179,8 @@ start /B bin\win\fmide\fmide.exe
 <li><p class="first"><strong>Linux:</strong></p>
 <div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
+# The following step is optional -- only needed it you want to check out a particular commit tip
+# Otherwise, proceed directly to git submodule update ...
 git checkout &lt;commit&gt; # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
 git submodule update --init --recursive
 bin/build.cmd setup
@@ -188,6 +192,8 @@ bin/linux/fmide/fmide&amp;
 <li><p class="first"><strong>macOS:</strong></p>
 <div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
+# The following step is optional -- only needed it you want to check out a particular commit tip
+# Otherwise, proceed directly to git submodule update ...
 git checkout &lt;commit&gt; # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
 git submodule update --init --recursive
 bin/build.cmd setup
