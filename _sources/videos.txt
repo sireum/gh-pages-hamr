@@ -64,6 +64,6 @@ This video provides details on implementing in C the application logic for AADL 
 Lecture Videos and Supporting Material
 =======================================
 
-The `High Assurance Systems <http://s19.highassurance.santoslab.org>`__ graduate course at Kansas State University provides in-depth lectures on AADL modeling and HAMR development using Slang.  The course material is being updated for the Spring 2021 semester, and relevant videos and slides will be linked from here as they become available.
+The `High Assurance Systems <http://s21.highassurance.santoslab.org/lectures.html>`__ graduate course at Kansas State University provides in-depth lectures on AADL modeling and HAMR development using Slang.  The course material is being updated for the Spring 2021 semester, and relevant videos and slides will be linked from here as they become available.
 
 
