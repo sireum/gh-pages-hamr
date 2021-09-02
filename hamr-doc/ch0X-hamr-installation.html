@@ -1,40 +1,27 @@
 
 <!DOCTYPE html>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>HAMR Installation &mdash; Sireum HAMR</title>
-    
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>HAMR Installation &#8212; Sireum HAMR</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="top" title="Sireum HAMR" href="../index.html" />
-  </head>
-  <body role="document">
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -117,54 +104,55 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="hamr-installation">
+  <section id="hamr-installation">
 <span id="ch0x-hamr-installation"></span><h1>HAMR Installation<a class="headerlink" href="#hamr-installation" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
-<li><a class="reference internal" href="#installation-option-direct-installation-with-assistance-from-the-sireum-kekinian-framework" id="id2">Installation Option: Direct Installation with Assistance from the Sireum Kekinian Framework</a><ul>
-<li><a class="reference internal" href="#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr" id="id3">Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR</a></li>
-<li><a class="reference internal" href="#ide-sireum-ive-for-slang-based-development-of-hamr-systems" id="id4">IDE (Sireum IVE) for Slang-based Development of HAMR Systems</a></li>
-<li><a class="reference internal" href="#ide-for-c-based-development-of-hamr-systems" id="id5">IDE for C-based Development of HAMR Systems</a></li>
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#installation-option-direct-installation-with-assistance-from-the-sireum-kekinian-framework" id="id2">Installation Option: Direct Installation with Assistance from the Sireum Kekinian Framework</a></p>
+<ul>
+<li><p><a class="reference internal" href="#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr" id="id3">Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR</a></p></li>
+<li><p><a class="reference internal" href="#ide-sireum-ive-for-slang-based-development-of-hamr-systems" id="id4">IDE (Sireum IVE) for Slang-based Development of HAMR Systems</a></p></li>
+<li><p><a class="reference internal" href="#ide-for-c-based-development-of-hamr-systems" id="id5">IDE for C-based Development of HAMR Systems</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#installation-option-vagrant-vm-based-installation" id="id6">Installation Option: Vagrant VM-based Installation</a></li>
+<li><p><a class="reference internal" href="#installation-option-vagrant-vm-based-installation" id="id6">Installation Option: Vagrant VM-based Installation</a></p></li>
 </ul>
 </div>
-<div class="section" id="overview">
+<section id="overview">
 <h2><a class="toc-backref" href="#id1">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>These instructions assume that you have read through the <a class="reference internal" href="ch00-hamr-overview.html#ch00-hamr-overview"><span>HAMR Overview</span></a> and <a class="reference internal" href="ch0X-hamr-tour.html#ch0x-hamr-tour"><span>HAMR Tour</span></a> material.</p>
+<p>These instructions assume that you have read through the <a class="reference internal" href="ch00-hamr-overview.html#ch00-hamr-overview"><span class="std std-ref">HAMR Overview</span></a> and <a class="reference internal" href="ch0X-hamr-tour.html#ch0x-hamr-tour"><span class="std std-ref">HAMR Tour</span></a> material.</p>
 <p>HAMR supports model-based system development using multiple programming languages including Slang and C.  Systems can be created for execution on multiple platforms.
 The HAMR tool chain itself can be installed on Windows, Linux, and MacOS platforms.</p>
 <p>The programming language and system execution platform that you choose determines the tools that you will work with and the workflows that you will follow.</p>
-<p>The HAMR Workflows video and slides on the <a class="reference internal" href="../videos.html#videos"><span>HAMR Videos</span></a> page illustrate possible HAMR workflows and installation options.</p>
+<p>The HAMR Workflows video and slides on the <a class="reference internal" href="../videos.html#videos"><span class="std std-ref">HAMR Videos</span></a> page illustrate possible HAMR workflows and installation options.</p>
 <p>In general, using HAMR to build an executable system requires working with:</p>
 <ul class="simple">
-<li>The Eclipse-based OSATE or OSATE customization FMIDE (Formal Methods Integrated Development Environment) for creating AADL models and invoking HAMR code generation.   We recommend using the FMIDE because the HAMR plug-in is already installed in it.  If you are using AADL for other purposes and already have OSATE installed (perhaps with other plug-ins added), you can install the HAMR plug-in directly.</li>
-<li>A development environment for the HAMR targeted programming language(s) &#8211; the programming language used to code the implementation of components whose skeletons and associated run-time infrastructure are generated by HAMR.   HAMR currently supports Slang (a Scala-based language), C, with some support for CakeML.  Currently, HAMR support for Slang is the most mature and easy-to-use.  When coding components in Slang, you will need to install the Sireum IVE (Integrated Verification Environment) customization of the IntelliJ IDE &#8211; which will support you in coding/debugging Slang with extensions in Scala and Java.  When coding components in C, you will need to install a C IDE that can process CMake files.  We recommend using the JetBrains CLion IDE.  However, other IDEs such as Microsoft Visual Studio Code can also be used.</li>
-<li>Execution platform support - HAMR systems can be built for JVM, Linux/Mac OSX based operatoring systems, and the seL4 microkernel running in the Qemu simulator or on a development board.</li>
+<li><p>The Eclipse-based OSATE or OSATE customization FMIDE (Formal Methods Integrated Development Environment) for creating AADL models and invoking HAMR code generation.   We recommend using the FMIDE because the HAMR plug-in is already installed in it.  If you are using AADL for other purposes and already have OSATE installed (perhaps with other plug-ins added), you can install the HAMR plug-in directly.</p></li>
+<li><p>A development environment for the HAMR targeted programming language(s) – the programming language used to code the implementation of components whose skeletons and associated run-time infrastructure are generated by HAMR.   HAMR currently supports Slang (a Scala-based language), C, with some support for CakeML.  Currently, HAMR support for Slang is the most mature and easy-to-use.  When coding components in Slang, you will need to install the Sireum IVE (Integrated Verification Environment) customization of the IntelliJ IDE – which will support you in coding/debugging Slang with extensions in Scala and Java.  When coding components in C, you will need to install a C IDE that can process CMake files.  We recommend using the JetBrains CLion IDE.  However, other IDEs such as Microsoft Visual Studio Code can also be used.</p></li>
+<li><p>Execution platform support - HAMR systems can be built for JVM, Linux/Mac OSX based operatoring systems, and the seL4 microkernel running in the Qemu simulator or on a development board.</p></li>
 </ul>
 <p>There are at least two approaches to installing the tool chain elements above:</p>
 <ul class="simple">
-<li>install them directly, with assistance from Sireum Kekinian framework.  Kekinian is installed first, and then a few simple command line options can be used to install the FMIDE, Sireum IVE, JVM, etc.  This is recommended when you are working with Slang and JVM deployments, and it is also suitable for C-based development on Linux.</li>
-<li>install them via a virtual machine built using the Vagrant VM build tool - As part of the DARPA CASE project, <a class="reference external" href="https://github.com/loonwerks/CASE/tree/master/TA5/case-env">Vagrant scripts</a> are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above.  If you are working with seL4 or if you are working with DARPA CASE technologies and examples, it is strongly recommended that you install the HAMR tool chain using the Vagrant VM scripts.</li>
+<li><p>install them directly, with assistance from Sireum Kekinian framework.  Kekinian is installed first, and then a few simple command line options can be used to install the FMIDE, Sireum IVE, JVM, etc.  This is recommended when you are working with Slang and JVM deployments, and it is also suitable for C-based development on Linux.</p></li>
+<li><p>install them via a virtual machine built using the Vagrant VM build tool - As part of the DARPA CASE project, <a class="reference external" href="https://github.com/loonwerks/CASE/tree/master/TA5/case-env">Vagrant scripts</a> are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above.  If you are working with seL4 or if you are working with DARPA CASE technologies and examples, it is strongly recommended that you install the HAMR tool chain using the Vagrant VM scripts.</p></li>
 </ul>
-<p>The following describes the most common HAMR workflows and recommended installation approaches.  These workflows are described in greater detailed in the video and slides available on the <a class="reference internal" href="../videos.html#videos"><span>HAMR Videos</span></a> page.</p>
+<p>The following describes the most common HAMR workflows and recommended installation approaches.  These workflows are described in greater detailed in the video and slides available on the <a class="reference internal" href="../videos.html#videos"><span class="std std-ref">HAMR Videos</span></a> page.</p>
 <ul class="simple">
-<li><strong>Component development using the Slang programming language with system deployment on the JVM</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, Sireum IVE (IntelliJ customization) for coding and running Slang.  The workflow can be set up on Mac OSX, Linux, or Windows.   The preferred way to install is to download the Sireum Kekinian framework and use it to install the necessary components.   Alternatively, you can use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.</li>
-<li><strong>Component development using the C programming language with system deployment on Linux/MacOS X</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well).  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.</li>
-<li><strong>Component development using the C programming language with system deployment on seL4 micro-kernel</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well), and multiple components from Data61 for working with seL4.  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.  You will also need to download and install the Data61 tools for seL4.</li>
+<li><p><strong>Component development using the Slang programming language with system deployment on the JVM</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, Sireum IVE (IntelliJ customization) for coding and running Slang.  The workflow can be set up on Mac OSX, Linux, or Windows.   The preferred way to install is to download the Sireum Kekinian framework and use it to install the necessary components.   Alternatively, you can use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.</p></li>
+<li><p><strong>Component development using the C programming language with system deployment on Linux/MacOS X</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well).  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.</p></li>
+<li><p><strong>Component development using the C programming language with system deployment on seL4 micro-kernel</strong> - Tools used include the Eclipse-based OSATE or FMIDE (OSATE customization) for creating AADL models, and CLion IDE for coding and running C (other C IDEs can be used as well), and multiple components from Data61 for working with seL4.  The preferred way to install is to use the DARPA CASE Vagrant VM building infrastructure to build a virtual machine running Debian with all the required tools installed.   Alternatively, you can download Sireum Kekinian and use it to install the required tools directly in Linux or Mac OSX.  You will also need to download and install the Data61 tools for seL4.</p></li>
 </ul>
 <p>Following the installation instructions, instructions are given for loading and running a simple HAMR Slang project.</p>
-</div>
-<div class="section" id="installation-option-direct-installation-with-assistance-from-the-sireum-kekinian-framework">
+</section>
+<section id="installation-option-direct-installation-with-assistance-from-the-sireum-kekinian-framework">
 <h2><a class="toc-backref" href="#id2">Installation Option: Direct Installation with Assistance from the Sireum Kekinian Framework</a><a class="headerlink" href="#installation-option-direct-installation-with-assistance-from-the-sireum-kekinian-framework" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr">
+<section id="installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr">
 <h3><a class="toc-backref" href="#id3">Installing and Updating FMIDE (customization of AADL OSATE IDE) and HAMR</a><a class="headerlink" href="#installing-and-updating-fmide-customization-of-aadl-osate-ide-and-hamr" title="Permalink to this headline">¶</a></h3>
 <p>You will first install SAnToS Lab Sireum Kekinian programming language tools, and then use that to install the FMIDE for creating AADL models and performing HAMR code generation.</p>
 <ul>
-<li><p class="first"><strong>Windows:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+<li><p><strong>Windows:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
 REM The following step is optional -- only needed it you want to check out a particular commit tip
 REM Otherwise, proceed directly to git submodule update ...
@@ -176,8 +164,8 @@ start /B bin\win\fmide\fmide.exe
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>Linux:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+<li><p><strong>Linux:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
 # The following step is optional -- only needed it you want to check out a particular commit tip
 # Otherwise, proceed directly to git submodule update ...
@@ -189,8 +177,8 @@ bin/linux/fmide/fmide&amp;
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>macOS:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>git clone https://github.com/sireum/kekinian Sireum
+<li><p><strong>macOS:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/sireum/kekinian Sireum
 cd Sireum
 # The following step is optional -- only needed it you want to check out a particular commit tip
 # Otherwise, proceed directly to git submodule update ...
@@ -203,77 +191,77 @@ open bin/mac/fmide.app
 </div>
 </li>
 </ul>
-<p>The Sireum directory created above is referred to using the environment variable <code class="docutils literal"><span class="pre">$SIREUM_HOME</span></code> in the instructions below.</p>
+<p>The Sireum directory created above is referred to using the environment variable <code class="docutils literal notranslate"><span class="pre">$SIREUM_HOME</span></code> in the instructions below.</p>
 <p>To update FMIDE,</p>
 <ul>
-<li><p class="first"><strong>Windows:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>%SIREUM_HOME%\bin\install\fmide.cmd [&lt;tag-name&gt;] &amp; REM^; Optional release tag name; latest nightly release is used if unspecified
+<li><p><strong>Windows:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%SIREUM_HOME%\bin\install\fmide.cmd [&lt;tag-name&gt;] &amp; REM^; Optional release tag name; latest nightly release is used if unspecified
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>Linux/macOS:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/install/fmide.cmd [&lt;tag-name&gt;] # Optional release tag name; latest nightly release is used if unspecified
+<li><p><strong>Linux/macOS:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$SIREUM_HOME/bin/install/fmide.cmd [&lt;tag-name&gt;] # Optional release tag name; latest nightly release is used if unspecified
 </pre></div>
 </div>
 </li>
 </ul>
-<p>If the installation somehow did not finish (e.g., due to a network issue), remove the problematic file in Sireum&#8217;s cache directory (~/Downloads/sireum) and re-run the above.</p>
+<p>If the installation somehow did not finish (e.g., due to a network issue), remove the problematic file in Sireum’s cache directory (~/Downloads/sireum) and re-run the above.</p>
 <p>To update Sireum, simply do a git pull, recursively update its submodules, and re-run <cite>build.cmd setup</cite> and <cite>fmide.cmd</cite>.</p>
-</div>
-<div class="section" id="ide-sireum-ive-for-slang-based-development-of-hamr-systems">
+</section>
+<section id="ide-sireum-ive-for-slang-based-development-of-hamr-systems">
 <h3><a class="toc-backref" href="#id4">IDE (Sireum IVE) for Slang-based Development of HAMR Systems</a><a class="headerlink" href="#ide-sireum-ive-for-slang-based-development-of-hamr-systems" title="Permalink to this headline">¶</a></h3>
 <p>When using Slang to program an AADL/HAMR based system, you will use the Sireum IVE (Integrated Verification Environment).  Sireum IVE is a customization of IntelliJ that includes Scala-associated infrastructure pre-installed as well as other SAnToS-built plug-ins for the Slang language subset and associated analysis/verification capabilities.</p>
 <p>The Sireum Kekinian framework is used to install and update the Sireum IVE.  Thus, Sireum IVE is installed as part of the steps above.</p>
 <p>Then, to launch it:</p>
 <ul>
-<li><p class="first"><strong>Windows:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>start /B %SIREUM_HOME%\bin\win\idea\bin\IVE.exe
+<li><p><strong>Windows:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>start /B %SIREUM_HOME%\bin\win\idea\bin\IVE.exe
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>Linux:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/linux/idea/bin/IVE.sh&amp;
+<li><p><strong>Linux:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$SIREUM_HOME/bin/linux/idea/bin/IVE.sh&amp;
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>macOS:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>open $SIREUM_HOME/bin/mac/idea/IVE.app
+<li><p><strong>macOS:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>open $SIREUM_HOME/bin/mac/idea/IVE.app
 </pre></div>
 </div>
 </li>
 </ul>
-</div>
-<div class="section" id="ide-for-c-based-development-of-hamr-systems">
+</section>
+<section id="ide-for-c-based-development-of-hamr-systems">
 <h3><a class="toc-backref" href="#id5">IDE for C-based Development of HAMR Systems</a><a class="headerlink" href="#ide-for-c-based-development-of-hamr-systems" title="Permalink to this headline">¶</a></h3>
 <p>Any C modern IDE can be used.  The HAMR team uses CLion from JetBrains.</p>
 <p>To install and run CLion C/C++ IDE (license required/free 30-day evaluation):</p>
 <ul>
-<li><p class="first"><strong>Windows:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>%SIREUM_HOME%\bin\install\clion.cmd
+<li><p><strong>Windows:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%SIREUM_HOME%\bin\install\clion.cmd
 start /b %SIREUM_HOME%\bin\win\clion\bin\clion64.exe
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>Linux:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/install/clion.cmd
+<li><p><strong>Linux:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$SIREUM_HOME/bin/install/clion.cmd
 $SIREUM_HOME/bin/linux/clion/bin/clion.sh&amp;
 </pre></div>
 </div>
 </li>
-<li><p class="first"><strong>macsOS:</strong></p>
-<div class="highlight-none"><div class="highlight"><pre>$SIREUM_HOME/bin/install/clion.cmd
+<li><p><strong>macsOS:</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$SIREUM_HOME/bin/install/clion.cmd
 open $SIREUM_HOME/bin/mac/clion/CLion.app
 </pre></div>
 </div>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="installation-option-vagrant-vm-based-installation">
+</section>
+</section>
+<section id="installation-option-vagrant-vm-based-installation">
 <h2><a class="toc-backref" href="#id6">Installation Option: Vagrant VM-based Installation</a><a class="headerlink" href="#installation-option-vagrant-vm-based-installation" title="Permalink to this headline">¶</a></h2>
 <p>Follow the instructions from DARPA CASE Github repository. <a class="reference external" href="https://github.com/loonwerks/CASE/tree/master/TA5/case-env">Vagrant scripts</a> are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above as well as tools supporting development for seL4.   The VM also includes other CASE analysis and model transformation tools.</p>
-</div>
-</div>
+</section>
+</section>
 
 
     </div>

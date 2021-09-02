@@ -141,6 +141,8 @@ The developer fills in the thread skeletons to complete the component implementa
 
 HAMR generates code for communication between thread components using the target platform's communication mechanisms which can include both local communication as well as distributed communication (e.g., supported by middleware).   Realization of inter-component communication is completely automatic.  That is, in contrast to realizing threads, for communication infrastructure *all* the code is generated -- there are no skeletons to fill in.  
 
+HAMR code generation may be repeated as models are updated.   HAMR code generation organizes code and follows certain rules to avoid overwriting developer-written code that may be written after previous code generation steps.
+
 **Software and Hardware Integration and Allocation of Software Components to Platform and Hardware Resources**
 
 
@@ -149,27 +151,68 @@ HAMR generates code for communication between thread components using the target
 AADL Analysis
 ===============
 
+Using AADL as the modeling framework for HAMR allows developers to utilize a variety of AADL-based model analysis that complement code generation and support broader system engineering activities.
+Some of the analyses most commonly used with HAMR are:
+
+* Model-based hazard analysis using AADL's Error Modeling Annex and supporting analyses
+* Information flow analysis that uses AADL's flow annotations
+* Timing and scheduleability analyses with tools like Adventium's FASTAR that work off of AADL's timing annotations and thread properties
+* Component behavior specification (e.g., component contracts) and verification using tools such as AGREE and BLESS
+
+Typical workflows will likely use *some* AADL analyses before generating code (these may generate additional information, e.g., properties using scheduling analysis, that code generation may utilize), while other analyses may be used after code generation or during repeated code generation steps.
+
 Information Flow Analysis
 --------------------------
 
-.. note::
+Awas information flow analysis (`awas.sireum.org <http://awas.sireum.org>`__) generates scalable interactive visualizations of AADL information flows and model-based hazard analysis results.  Given an AADL model with information flow annotations, Awas will generate a Javascript/HTML5 browser-based visualization of the models information flow that you can dynamically browse and query with path logic.
 
-   **ToDo: Complete this section**
+Awas information flow analysis is an example of the synergistic interplay between HAMR code generation and AADL analyses -- HAMR code generation for communication infrastructure ensures that inter-component information flows as visualized by Awas are actually preserved (no new flow paths are added) in the executable system (note: this does not consider various side channels).
 
 
-* Code: intra-component flows 
-* Image: Information Flow Visualization (slicing)
-* Image: Information Flow Visualization (querying)
+.. _awas-concept:
+
+.. figure:: figures/Tour-awas-concept.png
+   :align: center 
+
+   **Awas provides scalable visualizations of information flow specified in AADL modeling**
+
+Awas works by generating an internal information flow graph derived from the declared connections between components in the AADL model (capturing *inter*-component flows) and AADL component flow annotations (capture *intra*-component flows -- flows between a component's input and output ports).  
+
+In the current state of the tooling, AADL flows for intra-component flows must be written by hand (one can think of this as "modeling" the component implementation's information flow) and there is no checked correspondence between AADL flow declarations and the source code of AADL component.   Adventium Labs and Kansas State have an Phase II SBIR grant from AFRL to develop (a) automatic inference of AADL flows from Slang implementations of components, as well as support for a complementary workflow in which hand-written AADL flows (serving as information flows specifications) are automatically checked against information flows found in Slang component implementations, ensuring that information flow in the Slang component implementations conforms to the AADL flow specifications.
+
+Note that the code generation in the current tooling guarantees correspondence between the model-level *inter*-component information flows (represented as component connections) and the code-level information flow reflected in port-based inter-component communication.   This correspondence is not formally proven correct at this time.
+
+
+.. _awas-component-flows:
+
+.. figure:: figures/Tour-awas-component-flows.png
+   :align: center 
+
+   **Awas dependence graphs are derived (in part) from developer-specified AADL intra-component flow annotations**
+
+The figure above illustrates AADL intra-component flow specifications and their corresponding representations in the Awas-generated Javascript visualizations.  For example, given an AADL process component ``MC_SW``, AADL flow specifications can be used to specify that information flows from the ``position_status`` input port to the ``send_status`` output port.   The Awas tabular view of component inputs and outputs at the bottom of the figure provides a summary of the input/output and information flow aspects of a component.  Awas query results are displayed using coloring to mark up particular set of inputs and outputs and flows that participate in a resulting information flow path.
+
+.. _awas-query:
+
+.. figure:: figures/Tour-awas-query.png
+   :align: center 
+
+   **Awas provides interactive information flow querying (e.g., via clickable graphical representations) and visualizations of query results**
+
+The figure above illustrates how Awas can simultaneously display information flow of multiple subsystems or multiple levels of the system hierarchy.   Awas support multiple forms of queries.  In the example above, in the display for the top-level components in the system architecture, the user clicks on an output port (with a *forward information flow* option being previously set), and Awas immediately calculates and visualizations the connections, ports, and components in the system that may receive information derived from the outputs of the selected port.   In this example, the query corresponds to the application concern "how  does map information propagation from ground station to UAV and through UAV’s mission computer to produce a waypoint?”.
+
+An extended walk-through of Awas browsing and querying can be found `at this link <https://awas.sireum.org/doc/02-user-story/index.html>`__ . 
 
 Slang Workflows
 =================
 
-Generating Code and Code Development Environment Setup
--------------------------------------------------------
+This section provides an overview of HAMR capabilities that are used when developing components implementations using Slang and executing a system on the JVM platform.
+
+Generating Code and Code Development Environment Setup in the IntelliJ-based Sireum Integrated Verification Environment (Sireum IVE)
+--------------------------------------------------------------------------------------------------------------------------------------
 
 Once the AADL model has been developed to a level of detail sufficient to support code generation, the HAMR code generation capability can be invoked from the OSATE menu system.
 
-Tour-HAMR-code-generation-JVM
 .. _HAMR-code-generation-JVM:
 
 .. figure:: figures/Tour-HAMR-code-generation-JVM.png
@@ -188,6 +231,21 @@ HAMR generates code for:
 
 The developer will subsequently implement the system by filling in the code skeletons for the application code, configuring build scripts, adding unit and system tests, etc.   The generated infrastructure code is complete and should not be modified in the development process.
 
+For programming component logic, the workflow transitions from the Eclipse-based OSATE AADL environment (or the DARPA CASE customized version of OSATE called the FMIDE) to the IntelliJ-based Sireum Integrated Verification Environment (Sireum IVE).  HAMR installation instructions cover the installation of both the FMIDE and Sireum IVE.   The Sireum IVE extends IntelliJ with extensions to the Scala compiler and other facilities used to support Slang.   When using HAMR's C-based workflows, there is a similar handoff from OSATE/FMIDE to C IDE's such as JetBrain's CLion.
+
+.. figure:: figures/Tour-HAMR-OSATE-IVE-handoff.png
+   :align: center 
+
+   **HAMR Workflow Transition from OSATE/FMIDE (for AADL) to Sireum IVE (for Slang/Scala/Java)**
+
+Within the Sireum IVE, the different types of code generated by HAMR are structured in a hierarchy of files/packages.   The developer's primary concern will be the AADL component implementation code, AADL data type implementations, and unit and system tests.   A HAMR beginner usually doesn't need to understand the details of the other types of files.
+
+.. figure:: figures/Tour-HAMR-Slang-code-organization.png
+   :align: center 
+
+   **HAMR Slang Code Organization in the Sireum IVE (IntelliJ IDE)**
+
+
 Build Scripts
 --------------
 
@@ -199,25 +257,40 @@ The HAMR-generated SBT build script is sufficient for running the initial defaul
 
 Developers extend the default build scripts as needed to specify library dependences and to tailor execution and testing workflows for the application.
 
-.. note::
-
-   **ToDo: Add screenshot of SBT file:**
-
 Component Development
 ----------------------
 
+HAMR generates code skeletons for AADL thread components.   For each thread, the structure of the thread's skeletons depends on the dispatch protocol (periodic, sporadic, etc.) selected in the AADL definition of thread.
 
-* Coding component logic (e.g., temp controller with port reads and writes)
-* Reading and writing from ports 
-* Interfacing with Java and component GUIs 
+.. note::
 
-* Test edit of HAMR tour under component development.  Foo bar
+   Add figure for component code skeletons.
+
+The skeleton for each thread includes a default implementation consisting some simple logging commands and illustrations of how to use port APIs.   The default implementations enable the generated code to be immediately executed.   The default implementations can be replaced incrementally with complete implementations -- all the while maintaining a system that can be executed.
+
+When completing a thread implementation, the developer will typically (a) use the auto-generated port APIs to read data from input ports, (b) code the "business logic" that works on thread inputs and other component local variables, and (c) use the auto-generated port APIs to write data to output ports.
+
+.. figure:: figures/Tour-HAMR-Slang-component-implementation.png
+   :align: center 
+
+   **HAMR Slang Complement Implementation (AADL Thread Components)**
+
+The figure aboves shows part of the component implementation (the event handler for the ``tempChanged`` input event port in ``TempControl`` component).  
+
+.. note::
+
+   Add figure for extensions and GUI components.
 
 System Development and Execution
 ----------------------------------
 
-* Component integration and scheduling, with concept of running on platform  (perhaps with HAMR image of platform)
-* Console logging information 
+HAMR build scripts integrate component implementations with auto-generated communication and threading infrastructure to produce an executable system.  System execution can be started using an auto-generated launcher that can be launched within the Sireum IVE.   Logging information is displayed in the console of the Sireum IVE.
+
+.. figure:: figures/Tour-HAMR-Slang-console-execution.png
+   :align: center 
+
+   **HAMR Slang Launcher and Basic Execution with Logging in Sireum IVE**
+
 
 Unit Testing 
 -----------------
@@ -228,6 +301,7 @@ Unit Testing
 
 System Testing 
 ----------------
+
 
 * System testing via controlled schedule exploration
 

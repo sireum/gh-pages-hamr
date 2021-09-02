@@ -1,40 +1,27 @@
 
 <!DOCTYPE html>
 
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>HAMR Project Organization and Workflows &mdash; Sireum HAMR</title>
-    
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>HAMR Project Organization and Workflows &#8212; Sireum HAMR</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script src="../_static/js/jquery-fix.js"></script>
+    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
+    <script src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="top" title="Sireum HAMR" href="../index.html" />
-  </head>
-  <body role="document">
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  </head><body>
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -87,8 +74,8 @@
 <li><a class="reference internal" href="#develop-component-implementations">Develop Component Implementations</a></li>
 <li><a class="reference internal" href="#develop-system-types-and-system-data-dictionary">Develop System Types and System Data Dictionary</a></li>
 <li><a class="reference internal" href="#develop-information-flow-and-visualizations">Develop Information Flow and Visualizations</a><ul>
-<li><a class="reference internal" href="#compute-entry-point-periodic-threads">Compute Entry Point &#8211; Periodic Threads</a></li>
-<li><a class="reference internal" href="#compute-entry-point-sporadic-threads">Compute Entry Point &#8211; Sporadic Threads</a></li>
+<li><a class="reference internal" href="#compute-entry-point-periodic-threads">Compute Entry Point – Periodic Threads</a></li>
+<li><a class="reference internal" href="#compute-entry-point-sporadic-threads">Compute Entry Point – Sporadic Threads</a></li>
 <li><a class="reference internal" href="#initialize-entry-point">Initialize Entry Point</a></li>
 <li><a class="reference internal" href="#finalize-entry-point">Finalize Entry Point</a></li>
 </ul>
@@ -125,44 +112,45 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <div class="section" id="hamr-project-organization-and-workflows">
+  <section id="hamr-project-organization-and-workflows">
 <span id="ch0x-hamr-project-org-workflows"></span><h1>HAMR Project Organization and Workflows<a class="headerlink" href="#hamr-project-organization-and-workflows" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
-<li><a class="reference internal" href="#code-organization" id="id2">Code Organization</a></li>
-<li><a class="reference internal" href="#use-of-osate-eclipse-workspace-in-conjunction-with-git" id="id3">Use of OSATE/Eclipse Workspace in Conjunction with GIT</a></li>
-<li><a class="reference internal" href="#project-set-up" id="id4">Project Set Up</a></li>
-<li><a class="reference internal" href="#initial-model-and-random-simulation" id="id5">Initial Model and Random Simulation</a></li>
-<li><a class="reference internal" href="#develop-integration-model" id="id6">Develop Integration Model</a></li>
-<li><a class="reference internal" href="#develop-component-implementations" id="id7">Develop Component Implementations</a></li>
-<li><a class="reference internal" href="#develop-system-types-and-system-data-dictionary" id="id8">Develop System Types and System Data Dictionary</a></li>
-<li><a class="reference internal" href="#develop-information-flow-and-visualizations" id="id9">Develop Information Flow and Visualizations</a><ul>
-<li><a class="reference internal" href="#compute-entry-point-periodic-threads" id="id10">Compute Entry Point &#8211; Periodic Threads</a></li>
-<li><a class="reference internal" href="#compute-entry-point-sporadic-threads" id="id11">Compute Entry Point &#8211; Sporadic Threads</a></li>
-<li><a class="reference internal" href="#initialize-entry-point" id="id12">Initialize Entry Point</a></li>
-<li><a class="reference internal" href="#finalize-entry-point" id="id13">Finalize Entry Point</a></li>
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
+<li><p><a class="reference internal" href="#code-organization" id="id2">Code Organization</a></p></li>
+<li><p><a class="reference internal" href="#use-of-osate-eclipse-workspace-in-conjunction-with-git" id="id3">Use of OSATE/Eclipse Workspace in Conjunction with GIT</a></p></li>
+<li><p><a class="reference internal" href="#project-set-up" id="id4">Project Set Up</a></p></li>
+<li><p><a class="reference internal" href="#initial-model-and-random-simulation" id="id5">Initial Model and Random Simulation</a></p></li>
+<li><p><a class="reference internal" href="#develop-integration-model" id="id6">Develop Integration Model</a></p></li>
+<li><p><a class="reference internal" href="#develop-component-implementations" id="id7">Develop Component Implementations</a></p></li>
+<li><p><a class="reference internal" href="#develop-system-types-and-system-data-dictionary" id="id8">Develop System Types and System Data Dictionary</a></p></li>
+<li><p><a class="reference internal" href="#develop-information-flow-and-visualizations" id="id9">Develop Information Flow and Visualizations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#compute-entry-point-periodic-threads" id="id10">Compute Entry Point – Periodic Threads</a></p></li>
+<li><p><a class="reference internal" href="#compute-entry-point-sporadic-threads" id="id11">Compute Entry Point – Sporadic Threads</a></p></li>
+<li><p><a class="reference internal" href="#initialize-entry-point" id="id12">Initialize Entry Point</a></p></li>
+<li><p><a class="reference internal" href="#finalize-entry-point" id="id13">Finalize Entry Point</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#port-communication-apis" id="id14">Port Communication APIs</a></li>
+<li><p><a class="reference internal" href="#port-communication-apis" id="id14">Port Communication APIs</a></p></li>
 </ul>
 </div>
-<div class="section" id="overview">
+<section id="overview">
 <h2><a class="toc-backref" href="#id1">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Using HAMR for end-to-end development involves using several different tools including the Eclipse-based OSATE for developing AADL models, IDEs for code-level development such as IntelliJ (for Slang) or CLion (for C), different translators and compilers.  Many of these tools have their own project configuration files, an associated set of file types, and conventions for organizing project files into folders.</p>
-<p>HAMR also supports different workflows &#8211; depending on (a) the programming language used to code component implementations and (b) the target platform (e.g., JVM, Linux, seL4).</p>
+<p>HAMR also supports different workflows – depending on (a) the programming language used to code component implementations and (b) the target platform (e.g., JVM, Linux, seL4).</p>
 <p>This chapter provides</p>
 <ul class="simple">
-<li>suggestions for how to structure a HAMR project into folders/files oriented for the tools used in HAMR workflows,</li>
-<li>summaries of how the project structure may be supported in Git (e.g., which folders/files should be retained in the repository vs. the files that are generated by the tooling and should not be stored), and</li>
-<li>summaries of some of the common HAMR workflows.</li>
+<li><p>suggestions for how to structure a HAMR project into folders/files oriented for the tools used in HAMR workflows,</p></li>
+<li><p>summaries of how the project structure may be supported in Git (e.g., which folders/files should be retained in the repository vs. the files that are generated by the tooling and should not be stored), and</p></li>
+<li><p>summaries of some of the common HAMR workflows.</p></li>
 </ul>
-<p>Generally, HAMR does not mandate a particular project structure, so the directions in this chapter can be seen as &#8220;suggestions&#8221; and not &#8220;requirements&#8221;.   In any case, it&#8217;s recommended that organizations using HAMR adopt a project structure and use it consistently across their HAMR-based development.</p>
-</div>
-<div class="section" id="code-organization">
+<p>Generally, HAMR does not mandate a particular project structure, so the directions in this chapter can be seen as “suggestions” and not “requirements”.   In any case, it’s recommended that organizations using HAMR adopt a project structure and use it consistently across their HAMR-based development.</p>
+</section>
+<section id="code-organization">
 <h2><a class="toc-backref" href="#id2">Code Organization</a><a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
 <p>The diagram below illustrates the suggested organization of a HAMR project.  High-level aspects of this organization are described below.   Structures of folders that support specific workflows and platforms are described in corresponding HAMR documentation chapters.</p>
-<div class="highlight-none"><div class="highlight"><pre>aadl/
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>aadl/
 hamr/
 ├── bin/
 ├── src/
@@ -192,73 +180,68 @@ hamr/
 </pre></div>
 </div>
 <p><cite>aadl</cite> folder holds files for AADL architectural models, file types for associated AADL tooling such as Alisa or Resolute requirements and verification plans, files supporting analyses, etc.  The folder also includes libraries necessary to support OSATE and its instantiation of Eclipse.</p>
-<p>The <code class="file docutils literal"><span class="pre">&lt;platform</span> <span class="pre">infrastructure</span> <span class="pre">code</span> <span class="pre">folder&gt;</span></code> contains HAMR-generated infrastructure code for the chosen platform.   This code should never be modified by the developer &#8211; succesive calls to HAMR code generation will overwrite these files.</p>
+<p>The <code class="file docutils literal notranslate"><span class="pre">&lt;platform</span> <span class="pre">infrastructure</span> <span class="pre">code</span> <span class="pre">folder&gt;</span></code> contains HAMR-generated infrastructure code for the chosen platform.   This code should never be modified by the developer – succesive calls to HAMR code generation will overwrite these files.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>ToDo, From John, To Jason:</strong> Briefly describe the purpose of the CMAKELists.txt file.  I assume that it is the primary method of configuring the build.  Does the user ever need to modify it?  Does it get overwritten with successive calls to the code generator?</p>
+<p class="admonition-title">Note</p>
+<p><strong>ToDo, From John, To Jason:</strong> Briefly describe the purpose of the CMAKELists.txt file.  I assume that it is the primary method of configuring the build.  Does the user ever need to modify it?  Does it get overwritten with successive calls to the code generator?</p>
 </div>
-<p>** CMAKELists.txt is autogenerated.   Jason notes that there are other CMAKELists.txt  The organization of <code class="file docutils literal"><span class="pre">CMAKELists.txt</span></code> and an overview of how to customize it for compilation is presented at the end of this chapter.</p>
-<p>Developer-written application code goes in the file:<cite>c-ext</cite> folder, using the subfolders for each AADL thread component.  In the files <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code>, HAMR will generate function skeletons for each thread entry point for the respective AADL thread component (e.g., for the compute entry point, either a <cite>time-triggered</cite> function for <cite>periodic</cite> threads, or input event handlers for <cite>sporadic</cite> threads will be generated) &#8211; all following the same structure as described in Chapter XX <strong>ToDo</strong>.   When the HAMR code generator is called successively, the <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> files <em>will not</em> be overwritten.</p>
-<p>Programming the logic for the component consists of filling in code in the thread entry point skeletons.  This code will typically call functions to send and receive data over AADL ports (defined in the HAMR-generated files <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.h</span></code> and <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.c</span></code>).   The developer should not modify the <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.h</span></code> and <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.c</span></code>, and these files <em>will</em> be overwritten on successive invocations of HAMR code generation (e.g., the files may be changed to reflect changes to the component&#8217;s port declarations in the AADL model).</p>
-<p>Other C files that support the application may be added (where??? <strong>ToDo</strong> &#8211; Jason complete).</p>
-<p>The <code class="file docutils literal"><span class="pre">adapters/</span></code> folder (<strong>ToDo</strong> &#8211; Jason complete)</p>
-<p>The <code class="file docutils literal"><span class="pre">ext.c</span></code>, <code class="file docutils literal"><span class="pre">ext.h</span></code>, and <code class="file docutils literal"><span class="pre">ipc.c</span></code> files (<strong>ToDo</strong> &#8211; Jason complete)</p>
+<p>** CMAKELists.txt is autogenerated.   Jason notes that there are other CMAKELists.txt  The organization of <code class="file docutils literal notranslate"><span class="pre">CMAKELists.txt</span></code> and an overview of how to customize it for compilation is presented at the end of this chapter.</p>
+<p>Developer-written application code goes in the file:<cite>c-ext</cite> folder, using the subfolders for each AADL thread component.  In the files <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code>, HAMR will generate function skeletons for each thread entry point for the respective AADL thread component (e.g., for the compute entry point, either a <cite>time-triggered</cite> function for <cite>periodic</cite> threads, or input event handlers for <cite>sporadic</cite> threads will be generated) – all following the same structure as described in Chapter XX <strong>ToDo</strong>.   When the HAMR code generator is called successively, the <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> files <em>will not</em> be overwritten.</p>
+<p>Programming the logic for the component consists of filling in code in the thread entry point skeletons.  This code will typically call functions to send and receive data over AADL ports (defined in the HAMR-generated files <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.h</span></code> and <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.c</span></code>).   The developer should not modify the <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.h</span></code> and <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">C1&gt;_api.c</span></code>, and these files <em>will</em> be overwritten on successive invocations of HAMR code generation (e.g., the files may be changed to reflect changes to the component’s port declarations in the AADL model).</p>
+<p>Other C files that support the application may be added (where??? <strong>ToDo</strong> – Jason complete).</p>
+<p>The <code class="file docutils literal notranslate"><span class="pre">adapters/</span></code> folder (<strong>ToDo</strong> – Jason complete)</p>
+<p>The <code class="file docutils literal notranslate"><span class="pre">ext.c</span></code>, <code class="file docutils literal notranslate"><span class="pre">ext.h</span></code>, and <code class="file docutils literal notranslate"><span class="pre">ipc.c</span></code> files (<strong>ToDo</strong> – Jason complete)</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p><strong>ToDo, From John, To Jason:</strong></p>
-<ul class="last simple">
-<li>Check/complete description of folders/files above.</li>
-<li>What files contain the macros that simplify the developer&#8217;s programming?</li>
+<ul class="simple">
+<li><p>Check/complete description of folders/files above.</p></li>
+<li><p>What files contain the macros that simplify the developer’s programming?</p></li>
 </ul>
 </div>
-</div>
-<div class="section" id="use-of-osate-eclipse-workspace-in-conjunction-with-git">
+</section>
+<section id="use-of-osate-eclipse-workspace-in-conjunction-with-git">
 <h2><a class="toc-backref" href="#id3">Use of OSATE/Eclipse Workspace in Conjunction with GIT</a><a class="headerlink" href="#use-of-osate-eclipse-workspace-in-conjunction-with-git" title="Permalink to this headline">¶</a></h2>
 <p>In general, we assume that HAMR is being used with a source code management tool like GIT.
-We don&#8217;t assume that Eclipse workspace is checked into GIT.  So we will point OSATE at folders destined for GIT control.</p>
-</div>
-<div class="section" id="project-set-up">
+We don’t assume that Eclipse workspace is checked into GIT.  So we will point OSATE at folders destined for GIT control.</p>
+</section>
+<section id="project-set-up">
 <h2><a class="toc-backref" href="#id4">Project Set Up</a><a class="headerlink" href="#project-set-up" title="Permalink to this headline">¶</a></h2>
 <p>Optional: align project with git repository (pointer to advice how to structure project within git, multiple projects within a git repository, etc)  (OS and GIT)
 Create folder structure (OS): aadl folder, hamr folder (with source folders according to chosen language)
 Create AADL project (OSATE)</p>
 <blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt>New AADL Project</dt>
-<dd><ul class="first last simple">
-<li>name (used as an identifier within OSATE/Eclipse to identify a project &#8211; doesn&#8217;t show up as a folder name) should be generally be something similar to the top folder name in the tree structure above</li>
-<li>location should be AADL folder associated with project</li>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>New AADL Project</dt><dd><ul>
+<li><p>name (used as an identifier within OSATE/Eclipse to identify a project – doesn’t show up as a folder name) should be generally be something similar to the top folder name in the tree structure above</p></li>
+<li><p>location should be AADL folder associated with project</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>Set up folder structure within AADL folder (highlight project name/root in AADL Navigator and select New Folder)</dt>
-<dd><ul class="first last simple">
-<li>packages</li>
-<li>instances</li>
+<li><dl class="simple">
+<dt>Set up folder structure within AADL folder (highlight project name/root in AADL Navigator and select New Folder)</dt><dd><ul>
+<li><p>packages</p></li>
+<li><p>instances</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
 </div></blockquote>
-<dl class="docutils">
-<dt>Develop AADL Skeleton Model (OSATE) &#8211; see advice on package structure, etc.  (see subsystem/unit vs system)</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>properties</dt>
-<dd><ul class="first last simple">
-<li>scheduling</li>
+<dl class="simple">
+<dt>Develop AADL Skeleton Model (OSATE) – see advice on package structure, etc.  (see subsystem/unit vs system)</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>properties</dt><dd><ul>
+<li><p>scheduling</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>type libary</dt>
-<dd><ul class="first last simple">
-<li>HAMR default type &#8211; to be used in initial random simulation</li>
+<li><dl class="simple">
+<dt>type libary</dt><dd><ul>
+<li><p>HAMR default type – to be used in initial random simulation</p></li>
 </ul>
 </dd>
 </dl>
@@ -266,316 +249,316 @@ Create AADL project (OSATE)</p>
 </ul>
 </dd>
 </dl>
-</div>
-<div class="section" id="initial-model-and-random-simulation">
+</section>
+<section id="initial-model-and-random-simulation">
 <h2><a class="toc-backref" href="#id5">Initial Model and Random Simulation</a><a class="headerlink" href="#initial-model-and-random-simulation" title="Permalink to this headline">¶</a></h2>
 <p>Develop initial AADL model (OSATE) (code to the point to which initial random simulation will be applied, see HAMR AADL Style Guidelines)
 Configure Target Platform (OSATE and external)</p>
 <blockquote>
 <div><ul class="simple">
-<li>scheduling, communication</li>
+<li><p>scheduling, communication</p></li>
 </ul>
 </div></blockquote>
 <p>Run Resolint (OSATE Plugin)
 Run HAMR Code Generation (OSATE Plugin)
-Configure Simulation &#8211; Initial Component Implementations and Configurations on Platform (Target Language IDE)
+Configure Simulation – Initial Component Implementations and Configurations on Platform (Target Language IDE)
 Run Simulation</p>
-</div>
-<div class="section" id="develop-integration-model">
+</section>
+<section id="develop-integration-model">
 <h2><a class="toc-backref" href="#id6">Develop Integration Model</a><a class="headerlink" href="#develop-integration-model" title="Permalink to this headline">¶</a></h2>
 <p>Develop System Types and Data Dictionary
 Develop Integration Constraints</p>
 <p>[Optional: Acceptance Tests, etc.]</p>
-</div>
-<div class="section" id="develop-component-implementations">
+</section>
+<section id="develop-component-implementations">
 <h2><a class="toc-backref" href="#id7">Develop Component Implementations</a><a class="headerlink" href="#develop-component-implementations" title="Permalink to this headline">¶</a></h2>
 <p>Refine Port Types</p>
 <p>&lt;Invariant: model integration is kept in sync&gt;</p>
-</div>
-<div class="section" id="develop-system-types-and-system-data-dictionary">
+</section>
+<section id="develop-system-types-and-system-data-dictionary">
 <h2><a class="toc-backref" href="#id8">Develop System Types and System Data Dictionary</a><a class="headerlink" href="#develop-system-types-and-system-data-dictionary" title="Permalink to this headline">¶</a></h2>
 <p>Develop Types and Documentation
 Development Constraints on Data (HAMR Contracts)
 Develop Default Values and Other Value Sets used in Testing and Simulation</p>
-</div>
-<div class="section" id="develop-information-flow-and-visualizations">
+</section>
+<section id="develop-information-flow-and-visualizations">
 <h2><a class="toc-backref" href="#id9">Develop Information Flow and Visualizations</a><a class="headerlink" href="#develop-information-flow-and-visualizations" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="compute-entry-point-periodic-threads">
-<h3><a class="toc-backref" href="#id10">Compute Entry Point &#8211; Periodic Threads</a><a class="headerlink" href="#compute-entry-point-periodic-threads" title="Permalink to this headline">¶</a></h3>
-<p>Following the structure presented in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span>AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, for periodic AADL thread components the root of the primary application logic for the AADL compute entry point is the <code class="docutils literal"><span class="pre">timeTriggered</span></code> function.  This function will be repeatedly invoked by the underlying AADL and platform infrastructure at the rate corresponding to the <code class="docutils literal"><span class="pre">Period</span></code> property attached to the thread component in the AADL model.</p>
-<p>HAMR generates a skeleton for the <code class="docutils literal"><span class="pre">timeTriggered</span></code> function (along with some other supporting functions) in the <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> as described above.  For the building control example, the following skeleton is generated in the file <code class="file docutils literal"><span class="pre">/ext-c/TempSensor_i_Impl/TempSensor_i_Impl.c</span></code> for the <code class="docutils literal"><span class="pre">TempSensor</span></code> periodic thread.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempSensor_i_Impl_timeTriggered_</span><span class="p">(</span>
-      <span class="n">STACK_FRAME</span>
-      <span class="n">bc_BuildingControl_TempSensor_i_Impl</span> <span class="n">this</span><span class="p">)</span> <span class="p">{</span>
+<section id="compute-entry-point-periodic-threads">
+<h3><a class="toc-backref" href="#id10">Compute Entry Point – Periodic Threads</a><a class="headerlink" href="#compute-entry-point-periodic-threads" title="Permalink to this headline">¶</a></h3>
+<p>Following the structure presented in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span class="std std-ref">AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, for periodic AADL thread components the root of the primary application logic for the AADL compute entry point is the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> function.  This function will be repeatedly invoked by the underlying AADL and platform infrastructure at the rate corresponding to the <code class="docutils literal notranslate"><span class="pre">Period</span></code> property attached to the thread component in the AADL model.</p>
+<p>HAMR generates a skeleton for the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> function (along with some other supporting functions) in the <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> as described above.  For the building control example, the following skeleton is generated in the file <code class="file docutils literal notranslate"><span class="pre">/ext-c/TempSensor_i_Impl/TempSensor_i_Impl.c</span></code> for the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> periodic thread.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempSensor_i_Impl_timeTriggered_</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">      </span><span class="n">bc_BuildingControl_TempSensor_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-      <span class="c1">// Application code goes here</span>
-<span class="p">}</span>
+<span class="w">      </span><span class="c1">// Application code goes here</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Most HAMR C functions take a <code class="docutils literal"><span class="pre">STACK_FRAME</span></code> argument to support debugging and traceability back to the higher-level Slang infrastructure.  Developers don&#8217;t need to manipulate this argument &#8211; its values are populated by the underlying infrastructure.   Its use in debugging is discussed at the end of this chapter.  Most HAMR C functions associated with a component are passed a struct <code class="docutils literal"><span class="pre">this</span></code> that contains state information for the component.  This struct information never needs to be manipulated directly by application code.  It is created by HAMR initialization infrastructure code and then updated behind the scenes by each HAMR API call (further explanation is given at the end of the chapter).</p>
+<p>Most HAMR C functions take a <code class="docutils literal notranslate"><span class="pre">STACK_FRAME</span></code> argument to support debugging and traceability back to the higher-level Slang infrastructure.  Developers don’t need to manipulate this argument – its values are populated by the underlying infrastructure.   Its use in debugging is discussed at the end of this chapter.  Most HAMR C functions associated with a component are passed a struct <code class="docutils literal notranslate"><span class="pre">this</span></code> that contains state information for the component.  This struct information never needs to be manipulated directly by application code.  It is created by HAMR initialization infrastructure code and then updated behind the scenes by each HAMR API call (further explanation is given at the end of the chapter).</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p><strong>ToDo, From John, To Jason:</strong></p>
-<ul class="last simple">
-<li>Check wording above</li>
+<ul class="simple">
+<li><p>Check wording above</p></li>
 </ul>
 </div>
-<p>The completed application code for this example thread includes reading the sensor value by a call to the driver for the hardware temperature sensor.  The function uses HAMR-generated APIs in <code class="file docutils literal"><span class="pre">ext-c/TempSensor_i_Impl/TempSensor_i_Impl_api.*</span></code> to interact with AADL ports to send values out of the component output ports (the <code class="docutils literal"><span class="pre">TempSensor</span></code> component does not have input ports &#8211; working with input ports is illustrated using the <code class="docutils literal"><span class="pre">TempControl</span></code> component in the section on sporadic threads below).</p>
+<p>The completed application code for this example thread includes reading the sensor value by a call to the driver for the hardware temperature sensor.  The function uses HAMR-generated APIs in <code class="file docutils literal notranslate"><span class="pre">ext-c/TempSensor_i_Impl/TempSensor_i_Impl_api.*</span></code> to interact with AADL ports to send values out of the component output ports (the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> component does not have input ports – working with input ports is illustrated using the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component in the section on sporadic threads below).</p>
 <p>Since HAMR is designed for interoperability across multiple platforms and across programming languages including Slang and C, the function uses standardized macros and libaries for creation and access of type structures derived from AADL-level types and for other types (e.g., message strings used in logging) that are shared across Slang-supported infrastructure.</p>
 <p>Comments in the code listing explain the use of the APIs and macros.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempSensor_i_Impl_timeTriggered_</span><span class="p">(</span>
-      <span class="n">STACK_FRAME</span>
-      <span class="n">bc_BuildingControl_TempSensor_i_Impl</span> <span class="n">this</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempSensor_i_Impl_timeTriggered_</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">      </span><span class="n">bc_BuildingControl_TempSensor_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-   <span class="c1">// Use HAMR-provided macro to declare structure to hold temperature value retrieve via temp sensor driver</span>
-   <span class="n">DeclNewbc_BuildingControl_Temperature_i</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
-   <span class="c1">// Call driver function to move the temperature reading into the &quot;value&quot; structure</span>
-   <span class="n">currentTempGet</span><span class="p">(</span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// Use HAMR-provided macro to declare structure to hold temperature value retrieve via temp sensor driver</span>
+<span class="w">   </span><span class="n">DeclNewbc_BuildingControl_Temperature_i</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="c1">// Call driver function to move the temperature reading into the &quot;value&quot; structure</span>
+<span class="w">   </span><span class="n">currentTempGet</span><span class="p">(</span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
-   <span class="c1">// Use auto-generated APIs in ext-c/TempSensor_i_Impl/TempSensor_i_Impl_api.h to interact with AADL ports</span>
-   <span class="c1">//  .. put current temp reading in &quot;currentTemp&quot; AADL out data port</span>
-   <span class="n">api_send_currentTemp__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
-   <span class="c1">//  .. queue &quot;tempChanged&quot; event on &quot;tempChanged&quot; AADL out event port</span>
-   <span class="n">api_send_tempChanged__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// Use auto-generated APIs in ext-c/TempSensor_i_Impl/TempSensor_i_Impl_api.h to interact with AADL ports</span>
+<span class="w">   </span><span class="c1">//  .. put current temp reading in &quot;currentTemp&quot; AADL out data port</span>
+<span class="w">   </span><span class="n">api_send_currentTemp__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="c1">//  .. queue &quot;tempChanged&quot; event on &quot;tempChanged&quot; AADL out event port</span>
+<span class="w">   </span><span class="n">api_send_tempChanged__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">);</span><span class="w"></span>
 
-   <span class="c1">// Use HAMR-provided macros to declare strings interoperable with Slang infrastructure.</span>
-   <span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-   <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sensed temperature: &quot;</span><span class="p">));</span>
-   <span class="c1">// Prepare Slang compatible type structure for logging message</span>
-   <span class="n">bc_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">value</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// Use HAMR-provided macros to declare strings interoperable with Slang infrastructure.</span>
+<span class="w">   </span><span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sensed temperature: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">   </span><span class="c1">// Prepare Slang compatible type structure for logging message</span>
+<span class="w">   </span><span class="n">bc_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
-   <span class="c1">// send message structure to logger</span>
-   <span class="n">api_logInfo__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// send message structure to logger</span>
+<span class="w">   </span><span class="n">api_logInfo__bc_BuildingControl_TempSensor_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
 
-   <span class="c1">// Recall: Following AADL semantics, all values placed in output ports using the &quot;send&quot; functions as above are held</span>
-   <span class="c1">// until this function completes and are then propagated after this function completes to connected consumer</span>
-   <span class="c1">// components by the underlying AADL and platform infrastructure.</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">// Recall: Following AADL semantics, all values placed in output ports using the &quot;send&quot; functions as above are held</span>
+<span class="w">   </span><span class="c1">// until this function completes and are then propagated after this function completes to connected consumer</span>
+<span class="w">   </span><span class="c1">// components by the underlying AADL and platform infrastructure.</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="compute-entry-point-sporadic-threads">
-<h3><a class="toc-backref" href="#id11">Compute Entry Point &#8211; Sporadic Threads</a><a class="headerlink" href="#compute-entry-point-sporadic-threads" title="Permalink to this headline">¶</a></h3>
-<p>Following the structure presented in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span>AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, for sporadic AADL thread components, the roots of the primary application logic for the AADL compute entry point are message handlers for input event and event data ports (more precisely, for input event and event data ports specified as dispatch triggers).</p>
-<p>HAMR generates skeletons for message handlers for sporadic threads in the <code class="file docutils literal"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> as described above.  For the building control example, the following skeletons are generated in the file <code class="file docutils literal"><span class="pre">/ext-c/TempControl_i_Impl/TempControl_i_Impl.c</span></code> for the <code class="docutils literal"><span class="pre">TempControl</span></code> sporadic thread.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="c1">// HAMR-generated skeleton for fanAck input event data port</span>
-<span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempControl_i_Impl_handlefanAck_</span><span class="p">(</span>
-     <span class="n">STACK_FRAME</span>
-     <span class="n">bc_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-     <span class="c1">// message payload for incoming event data</span>
-     <span class="n">bc_BuildingControl_FanAck_Type</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</section>
+<section id="compute-entry-point-sporadic-threads">
+<h3><a class="toc-backref" href="#id11">Compute Entry Point – Sporadic Threads</a><a class="headerlink" href="#compute-entry-point-sporadic-threads" title="Permalink to this headline">¶</a></h3>
+<p>Following the structure presented in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span class="std std-ref">AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, for sporadic AADL thread components, the roots of the primary application logic for the AADL compute entry point are message handlers for input event and event data ports (more precisely, for input event and event data ports specified as dispatch triggers).</p>
+<p>HAMR generates skeletons for message handlers for sporadic threads in the <code class="file docutils literal notranslate"><span class="pre">&lt;component</span> <span class="pre">Cn&gt;.c</span></code> as described above.  For the building control example, the following skeletons are generated in the file <code class="file docutils literal notranslate"><span class="pre">/ext-c/TempControl_i_Impl/TempControl_i_Impl.c</span></code> for the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> sporadic thread.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// HAMR-generated skeleton for fanAck input event data port</span>
+<span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempControl_i_Impl_handlefanAck_</span><span class="p">(</span><span class="w"></span>
+<span class="w">     </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">     </span><span class="n">bc_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="c1">// message payload for incoming event data</span>
+<span class="w">     </span><span class="n">bc_BuildingControl_FanAck_Type</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-     <span class="c1">// Application code goes here</span>
-<span class="p">}</span>
+<span class="w">     </span><span class="c1">// Application code goes here</span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// HAMR-generated skeleton for fanAck input event data port</span>
-<span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempControl_i_Impl_handlesetPoint_</span><span class="p">(</span>
-     <span class="n">STACK_FRAME</span>
-     <span class="n">bc_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-     <span class="c1">// message payload for incoming event data</span>
-     <span class="n">bc_BuildingControl_SetPoint_i</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempControl_i_Impl_handlesetPoint_</span><span class="p">(</span><span class="w"></span>
+<span class="w">     </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">     </span><span class="n">bc_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="c1">// message payload for incoming event data</span>
+<span class="w">     </span><span class="n">bc_BuildingControl_SetPoint_i</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-    <span class="c1">// Application code goes here</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="c1">// Application code goes here</span>
+<span class="p">}</span><span class="w"></span>
 
 <span class="c1">// HAMR-generated skeleton for tempChanged input event port</span>
-<span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span>
-     <span class="n">STACK_FRAME</span>
-     <span class="n">bc_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">)</span>
-     <span class="c1">// no message payload for input event ports (only payloads for event data ports)</span>
-                                               <span class="p">{</span>
-    <span class="c1">// Application code goes here</span>
-<span class="p">}</span>
+<span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span><span class="w"></span>
+<span class="w">     </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">     </span><span class="n">bc_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"></span>
+<span class="w">     </span><span class="c1">// no message payload for input event ports (only payloads for event data ports)</span>
+<span class="w">                                               </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Application code goes here</span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Each of these message handlers is programmed in a manner similar to the <code class="docutils literal"><span class="pre">timeTriggered</span></code> function for periodic threads &#8211; each handler uses HAMR-generated APIs in <code class="file docutils literal"><span class="pre">ext-c/TempControl_i_Impl/TempControl_i_Impl_api.*</span></code>.   For example, shown below is the implementation of the handler for the <code class="docutils literal"><span class="pre">setPoint</span></code> event data port, along with a variable declaration to store the incoming set points (so that the set point values persist and are accessible by the component across multiple dispatches).</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="c1">// declare component local variable to store set point values</span>
-<span class="k">struct</span> <span class="n">bc_BuildingControl_SetPoint_i</span> <span class="n">setPoint</span><span class="p">;</span>
+<p>Each of these message handlers is programmed in a manner similar to the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> function for periodic threads – each handler uses HAMR-generated APIs in <code class="file docutils literal notranslate"><span class="pre">ext-c/TempControl_i_Impl/TempControl_i_Impl_api.*</span></code>.   For example, shown below is the implementation of the handler for the <code class="docutils literal notranslate"><span class="pre">setPoint</span></code> event data port, along with a variable declaration to store the incoming set points (so that the set point values persist and are accessible by the component across multiple dispatches).</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// declare component local variable to store set point values</span>
+<span class="k">struct</span> <span class="nc">bc_BuildingControl_SetPoint_i</span><span class="w"> </span><span class="n">setPoint</span><span class="p">;</span><span class="w"></span>
 
 
 <span class="c1">// completed implementation for setPoint input event data port handler</span>
-<span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempControl_i_Impl_handlesetPoint_</span><span class="p">(</span>
-      <span class="n">STACK_FRAME</span>
-      <span class="n">bc_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">bc_BuildingControl_SetPoint_i</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+<span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempControl_i_Impl_handlesetPoint_</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">      </span><span class="n">bc_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">bc_BuildingControl_SetPoint_i</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-   <span class="c1">// copy the set point values to component-local state.</span>
-   <span class="n">setPoint</span> <span class="o">=</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">// copy the set point values to component-local state.</span>
+<span class="w">   </span><span class="n">setPoint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-<p>The handler implementation for the <code class="docutils literal"><span class="pre">tempChanged</span></code> <em>event</em> port is presented below.  Note that since AADL events are simple buffer notifications (with no message payloads), there is no payload value passed to the handler (in contrast to the handler for the <em>event data</em> port above).</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Unit</span> <span class="nf">bc_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span>
-     <span class="n">STACK_FRAME</span>
-     <span class="n">bc_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">)</span> <span class="p">{</span>
+<p>The handler implementation for the <code class="docutils literal notranslate"><span class="pre">tempChanged</span></code> <em>event</em> port is presented below.  Note that since AADL events are simple buffer notifications (with no message payloads), there is no payload value passed to the handler (in contrast to the handler for the <em>event data</em> port above).</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Unit</span><span class="w"> </span><span class="nf">bc_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span><span class="w"></span>
+<span class="w">     </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">     </span><span class="n">bc_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-    <span class="c1">// Use Slang-transpiler macro for creating new strings</span>
-    <span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-    <span class="c1">// Declare a local variable to hold the current temp structure</span>
-    <span class="k">struct</span> <span class="n">bc_BuildingControl_Temperature_i</span> <span class="n">currentTemp</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// Use Slang-transpiler macro for creating new strings</span>
+<span class="w">    </span><span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// Declare a local variable to hold the current temp structure</span>
+<span class="w">    </span><span class="k">struct</span> <span class="nc">bc_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">currentTemp</span><span class="p">;</span><span class="w"></span>
 
-    <span class="c1">// Read the current temperature from the currentTemp data port.</span>
-    <span class="c1">// Note that in AADL, data ports should always have values, so if the API has a false return value</span>
-    <span class="c1">// then an error message is printed in the false branch of the conditional.</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">api_get_currentTemp__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span> <span class="p">{</span>
+<span class="w">    </span><span class="c1">// Read the current temperature from the currentTemp data port.</span>
+<span class="w">    </span><span class="c1">// Note that in AADL, data ports should always have values, so if the API has a false return value</span>
+<span class="w">    </span><span class="c1">// then an error message is printed in the false branch of the conditional.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">api_get_currentTemp__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-        <span class="c1">// ToDo: From John, to Jason: I don&#39;t understand this step</span>
-        <span class="k">struct</span> <span class="n">bc_BuildingControl_Temperature_i</span> <span class="n">tempInF</span> <span class="o">=</span> <span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// ToDo: From John, to Jason: I don&#39;t understand this step</span>
+<span class="w">        </span><span class="k">struct</span> <span class="nc">bc_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">tempInF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
 
-        <span class="c1">// compare the `degrees` field of the temperature structure to the high set point</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// if current temp exceeds the high set point,</span>
-            <span class="c1">// send a &quot;fan on&quot; command out of the fanCmd event data output port to cool environment</span>
-            <span class="n">api_send_fanCmd__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
+<span class="w">        </span><span class="c1">// compare the `degrees` field of the temperature structure to the high set point</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// if current temp exceeds the high set point,</span>
+<span class="w">            </span><span class="c1">// send a &quot;fan on&quot; command out of the fanCmd event data output port to cool environment</span>
+<span class="w">            </span><span class="n">api_send_fanCmd__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
 
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
-            <span class="n">bc_BuildingControl_FanCmd_Type_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&lt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
-            <span class="c1">// if current temp is less than the low set point,</span>
-            <span class="c1">// send a &quot;fan off&quot; command out of the fanCmd event data output port to stop cooling environment</span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">bc_BuildingControl_FanCmd_Type_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// if current temp is less than the low set point,</span>
+<span class="w">            </span><span class="c1">// send a &quot;fan off&quot; command out of the fanCmd event data output port to stop cooling environment</span>
 
-            <span class="n">api_send_fanCmd__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
+<span class="w">            </span><span class="n">api_send_fanCmd__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
 
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
-            <span class="n">bc_BuildingControl_FanCmd_Type_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="p">{</span>
-            <span class="c1">// if current temp is between high and low set points (inclusive)</span>
-            <span class="c1">// don&#39;t change the on/off status of the fan</span>
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span>
-        <span class="p">}</span>
-        <span class="c1">// creating a string that includes the current temperature for logging purposes</span>
-        <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span>
-        <span class="n">bc_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">bc_BuildingControl_FanCmd_Type_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// if current temp is between high and low set points (inclusive)</span>
+<span class="w">            </span><span class="c1">// don&#39;t change the on/off status of the fan</span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="c1">// creating a string that includes the current temperature for logging purposes</span>
+<span class="w">        </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">        </span><span class="n">bc_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
 
-        <span class="n">api_logInfo__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">        </span><span class="n">api_logInfo__bc_BuildingControl_TempControl_i_Impl</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="initialize-entry-point">
+</section>
+<section id="initialize-entry-point">
 <h3><a class="toc-backref" href="#id12">Initialize Entry Point</a><a class="headerlink" href="#initialize-entry-point" title="Permalink to this headline">¶</a></h3>
-<p>As described in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span>AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, each AADL thread has an <em>initialize entry point</em> that is called during system initialization before system scheduling takes over the dispatching for all thread compute entry points.</p>
+<p>As described in <a class="reference internal" href="ch04-hamr-aadl-fundamental-concepts.html#ch04-hamr-aadl-fundamental-concepts"><span class="std std-ref">AADL Computational Paradigm and HAMR Fundamental Concepts</span></a>, each AADL thread has an <em>initialize entry point</em> that is called during system initialization before system scheduling takes over the dispatching for all thread compute entry points.</p>
 <p>The application developer fills in the code</p>
 <p>C APIs Domain APIs</p>
-</div>
-<div class="section" id="finalize-entry-point">
+</section>
+<section id="finalize-entry-point">
 <h3><a class="toc-backref" href="#id13">Finalize Entry Point</a><a class="headerlink" href="#finalize-entry-point" title="Permalink to this headline">¶</a></h3>
 <p>(not fully implemented now)</p>
-</div>
-</div>
-<div class="section" id="port-communication-apis">
+</section>
+</section>
+<section id="port-communication-apis">
 <h2><a class="toc-backref" href="#id14">Port Communication APIs</a><a class="headerlink" href="#port-communication-apis" title="Permalink to this headline">¶</a></h2>
-<p>Following a structure similar to HAMR Slang code generation, for each AADL thread component, HAMR will generate APIs for interacting with the ports of the component.  The APIs generated for <code class="docutils literal"><span class="pre">TempControl</span></code> component are illustrated below.</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="cm">/**********************************************************************************</span>
+<p>Following a structure similar to HAMR Slang code generation, for each AADL thread component, HAMR will generate APIs for interacting with the ports of the component.  The APIs generated for <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component are illustrated below.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**********************************************************************************</span>
 <span class="cm">* fanCmd : out event data port FanCmd</span>
-<span class="cm">**********************************************************************************/</span>
+<span class="cm">**********************************************************************************/</span><span class="w"></span>
 
-<span class="n">Unit</span> <span class="nf">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd</span> <span class="n">value</span><span class="p">);</span>
+<span class="n">Unit</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* currentTemp : in data port Temperature.i</span>
-<span class="cm">***********************************************************************************/</span>
+<span class="cm">***********************************************************************************/</span><span class="w"></span>
 
-<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">value</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* tempChanged : in event port</span>
-<span class="cm">**********************************************************************************/</span>
+<span class="cm">**********************************************************************************/</span><span class="w"></span>
 
-<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_gettempChanged</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">art_Empty</span> <span class="n">value</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_gettempChanged</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">art_Empty</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* fanAck : in event data port FanAck</span>
-<span class="cm">**********************************************************************************/</span>
+<span class="cm">**********************************************************************************/</span><span class="w"></span>
 
-<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getfanAck</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanAck</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getfanAck</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanAck</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* setPoint : in event data port SetPoint.i</span>
-<span class="cm">**********************************************************************************/</span>
+<span class="cm">**********************************************************************************/</span><span class="w"></span>
 
-<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getsetPoint</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_SetPoint_i</span> <span class="n">value</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getsetPoint</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_SetPoint_i</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* logging methods</span>
-<span class="cm">**********************************************************************************/</span>
+<span class="cm">**********************************************************************************/</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logDebug</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logDebug</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
 
-<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logError</span><span class="p">(</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
-      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logError</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Each API is passed a struct <code class="docutils literal"><span class="pre">this</span></code> that contains state information about the component.  This struct information never needs to be manipulated directly by application code.  It is created by initialization infrastructure code and then updated behind the scenes by each HAMR API calls.</p>
+<p>Each API is passed a struct <code class="docutils literal notranslate"><span class="pre">this</span></code> that contains state information about the component.  This struct information never needs to be manipulated directly by application code.  It is created by initialization infrastructure code and then updated behind the scenes by each HAMR API calls.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p><strong>ToDo, From John, To Jason:</strong></p>
-<ul class="last simple">
-<li>Give the intuition of the <code class="docutils literal"><span class="pre">this</span></code> structure and indicate where the information for this structure is defined.</li>
+<ul class="simple">
+<li><p>Give the intuition of the <code class="docutils literal notranslate"><span class="pre">this</span></code> structure and indicate where the information for this structure is defined.</p></li>
 </ul>
 </div>
 <p>The design of the APIs above does not have the flavor of hand-written C code, but it is constructed in this way to enable the C code to interoperate with code generated for out HAMR component implementations written in Slang and CakeML.</p>
-<p>In the API for <code class="docutils literal"><span class="pre">out</span> <span class="pre">event</span> <span class="pre">data</span> <span class="pre">port</span></code> <code class="docutils literal"><span class="pre">sendfanCmd</span></code>,</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">Unit</span> <span class="nf">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span>
-      <span class="n">STACK_FRAME</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">)</span> <span class="p">{</span>
+<p>In the API for <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">event</span> <span class="pre">data</span> <span class="pre">port</span></code> <code class="docutils literal notranslate"><span class="pre">sendfanCmd</span></code>,</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Unit</span><span class="w"> </span><span class="nf">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span><span class="w"></span>
+<span class="w">      </span><span class="n">STACK_FRAME</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-   <span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
-   <span class="k">struct</span> <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">currentTemp</span><span class="p">;</span>
-   <span class="k">if</span> <span class="p">(</span><span class="n">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span> <span class="p">{</span>
-      <span class="k">struct</span> <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">tempInF</span> <span class="o">=</span> <span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span>
+<span class="w">   </span><span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="k">struct</span> <span class="nc">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">currentTemp</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">struct</span> <span class="nc">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">tempInF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
 
-      <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
 
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
-            <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&lt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
 
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
-            <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span>
-      <span class="p">}</span>
-      <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span>
-      <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span>
-      <span class="n">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
-   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-   <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">            </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span><span class="w"></span>
+<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="n">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>CMAKELists</p>
 <p>STACK_FRAME</p>
-</div>
-</div>
+</section>
+</section>
 
 
     </div>
