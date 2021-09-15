@@ -1,27 +1,40 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>seL4 Code Generation &#8212; Sireum HAMR</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script src="../_static/js/jquery-fix.js"></script>
-    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../_static/bootstrap-sphinx.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>seL4 Code Generation &mdash; Sireum HAMR</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-  </head><body>
+    <link rel="top" title="Sireum HAMR" href="../index.html" />
+  </head>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -109,162 +122,160 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <section id="sel4-code-generation">
+  <div class="section" id="sel4-code-generation">
 <span id="ch0y-sel4-code-generation"></span><h1>seL4 Code Generation<a class="headerlink" href="#sel4-code-generation" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
-<li><p><a class="reference internal" href="#background" id="id2">Background</a></p>
-<ul>
-<li><p><a class="reference internal" href="#sel4" id="id3">seL4</a></p></li>
-<li><p><a class="reference internal" href="#camkes" id="id4">CAmkES</a></p></li>
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#background" id="id2">Background</a><ul>
+<li><a class="reference internal" href="#sel4" id="id3">seL4</a></li>
+<li><a class="reference internal" href="#camkes" id="id4">CAmkES</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#code-organization" id="id5">Code Organization</a></p></li>
-<li><p><a class="reference internal" href="#c-application-development-layer" id="id6">C Application Development Layer</a></p></li>
-<li><p><a class="reference internal" href="#sel4-platform-layer" id="id7">seL4 Platform Layer</a></p>
-<ul>
-<li><p><a class="reference internal" href="#platform-communication-apis" id="id8">Platform Communication APIs</a></p></li>
-<li><p><a class="reference internal" href="#platform-tasking-apis" id="id9">Platform Tasking APIs</a></p></li>
+<li><a class="reference internal" href="#code-organization" id="id5">Code Organization</a></li>
+<li><a class="reference internal" href="#c-application-development-layer" id="id6">C Application Development Layer</a></li>
+<li><a class="reference internal" href="#sel4-platform-layer" id="id7">seL4 Platform Layer</a><ul>
+<li><a class="reference internal" href="#platform-communication-apis" id="id8">Platform Communication APIs</a></li>
+<li><a class="reference internal" href="#platform-tasking-apis" id="id9">Platform Tasking APIs</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<section id="overview">
+<div class="section" id="overview">
 <h2><a class="toc-backref" href="#id1">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>HAMR code generation for seL4 produces C source code that is then integrated within the Data61 CAmkES component modeling language framework
 C - based</p>
 <p>[Tool-chain / architecture factored through CAmkES]
-seL4’s separation mechanisms are specified using low-level capability descriptions that define read-write access for chunks of memory [need to improve this description, but I need to re-study capabilities – omit if capabilities are already described].  Data61 provides an seL4-specific component specification framework called CAmkES (Component Architecture for microkernel-based Embedded Systems) that enables engineers to provide a higher-level specification of embedded system elements in terms of components and their interactions.  Given a CAmkES specification, the CAmkES translation tool generates an seL4 capability description file (capDL) as well as C code that realizes threading and component communication implied by different types of CAmkES component connectors.</p>
+seL4&#8217;s separation mechanisms are specified using low-level capability descriptions that define read-write access for chunks of memory [need to improve this description, but I need to re-study capabilities &#8211; omit if capabilities are already described].  Data61 provides an seL4-specific component specification framework called CAmkES (Component Architecture for microkernel-based Embedded Systems) that enables engineers to provide a higher-level specification of embedded system elements in terms of components and their interactions.  Given a CAmkES specification, the CAmkES translation tool generates an seL4 capability description file (capDL) as well as C code that realizes threading and component communication implied by different types of CAmkES component connectors.</p>
 <p>Code organization</p>
 <p>Platform code (Camkes, camkes generated C, HAMR generated C infrastructure, infrastructure port communication APIs).</p>
 <p>Port communication currently for local components, components on the same processor.
 Shared memory communication with signaling.</p>
 <p>Scheduling - domain scheduling plus explicit notification to activate a thread.
 Each component has a scheduling</p>
-</section>
-<section id="background">
+</div>
+<div class="section" id="background">
 <h2><a class="toc-backref" href="#id2">Background</a><a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
-<section id="sel4">
+<div class="section" id="sel4">
 <h3><a class="toc-backref" href="#id3">seL4</a><a class="headerlink" href="#sel4" title="Permalink to this headline">¶</a></h3>
-</section>
-<section id="camkes">
+</div>
+<div class="section" id="camkes">
 <h3><a class="toc-backref" href="#id4">CAmkES</a><a class="headerlink" href="#camkes" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="code-organization">
+</div>
+</div>
+<div class="section" id="code-organization">
 <h2><a class="toc-backref" href="#id5">Code Organization</a><a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
 <p>[Explain folder structure of generated C code]</p>
-</section>
-<section id="c-application-development-layer">
+</div>
+<div class="section" id="c-application-development-layer">
 <h2><a class="toc-backref" href="#id6">C Application Development Layer</a><a class="headerlink" href="#c-application-development-layer" title="Permalink to this headline">¶</a></h2>
-<p>Following a structure similar to HAMR Slang code generation, for each AADL thread component, HAMR will generate APIs for interacting with the ports of the component.  The APIs generated for <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component are illustrated below.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**********************************************************************************</span>
+<p>Following a structure similar to HAMR Slang code generation, for each AADL thread component, HAMR will generate APIs for interacting with the ports of the component.  The APIs generated for <code class="docutils literal"><span class="pre">TempControl</span></code> component are illustrated below.</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="cm">/**********************************************************************************</span>
 <span class="cm">* fanCmd : out event data port FanCmd</span>
-<span class="cm">**********************************************************************************/</span><span class="w"></span>
+<span class="cm">**********************************************************************************/</span>
 
-<span class="n">Unit</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="n">Unit</span> <span class="nf">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd</span> <span class="n">value</span><span class="p">);</span>
 
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* currentTemp : in data port Temperature.i</span>
-<span class="cm">***********************************************************************************/</span><span class="w"></span>
+<span class="cm">***********************************************************************************/</span>
 
-<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">value</span><span class="p">);</span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* tempChanged : in event port</span>
-<span class="cm">**********************************************************************************/</span><span class="w"></span>
+<span class="cm">**********************************************************************************/</span>
 
-<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_gettempChanged</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">art_Empty</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_gettempChanged</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">art_Empty</span> <span class="n">value</span><span class="p">);</span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* fanAck : in event data port FanAck</span>
-<span class="cm">**********************************************************************************/</span><span class="w"></span>
+<span class="cm">**********************************************************************************/</span>
 
-<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getfanAck</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanAck</span><span class="w"> </span><span class="o">*</span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getfanAck</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanAck</span> <span class="o">*</span><span class="n">value</span><span class="p">);</span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* setPoint : in event data port SetPoint.i</span>
-<span class="cm">**********************************************************************************/</span><span class="w"></span>
+<span class="cm">**********************************************************************************/</span>
 
-<span class="kt">bool</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_getsetPoint</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_SetPoint_i</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w"></span>
+<span class="kt">bool</span> <span class="nf">BuildingControl_TempControl_i_getsetPoint</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_SetPoint_i</span> <span class="n">value</span><span class="p">);</span>
 
 <span class="cm">/**********************************************************************************</span>
 <span class="cm">* logging methods</span>
-<span class="cm">**********************************************************************************/</span><span class="w"></span>
+<span class="cm">**********************************************************************************/</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logDebug</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logDebug</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">BuildingControl_TempControl_i_logError</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">String</span><span class="w"> </span><span class="n">str</span><span class="p">);</span><span class="w"></span>
+<span class="kt">void</span> <span class="nf">BuildingControl_TempControl_i_logError</span><span class="p">(</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">,</span>
+      <span class="n">String</span> <span class="n">str</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Each API is passed a struct <code class="docutils literal notranslate"><span class="pre">this</span></code> that contains state information about the component.  This struct information never needs to be manipulated directly by application code.  It is created by initialization infrastructure code and then updated behind the scenes by each HAMR API calls.</p>
+<p>Each API is passed a struct <code class="docutils literal"><span class="pre">this</span></code> that contains state information about the component.  This struct information never needs to be manipulated directly by application code.  It is created by initialization infrastructure code and then updated behind the scenes by each HAMR API calls.</p>
 <p>[insert type of the this construct and explain]</p>
 <p>The design of the APIs above does not have the flavor of hand-written C code, but it is constructed in this way to enable the C code to interoperate with code generated for out HAMR component implementations written in Slang and CakeML.</p>
-<p>In the API for <code class="docutils literal notranslate"><span class="pre">out</span> <span class="pre">event</span> <span class="pre">data</span> <span class="pre">port</span></code> <code class="docutils literal notranslate"><span class="pre">sendfanCmd</span></code>,</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Unit</span><span class="w"> </span><span class="nf">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span><span class="w"></span>
-<span class="w">      </span><span class="n">STACK_FRAME</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span><span class="w"> </span><span class="n">this</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<p>In the API for <code class="docutils literal"><span class="pre">out</span> <span class="pre">event</span> <span class="pre">data</span> <span class="pre">port</span></code> <code class="docutils literal"><span class="pre">sendfanCmd</span></code>,</p>
+<div class="highlight-c"><div class="highlight"><pre><span class="n">Unit</span> <span class="nf">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl_handletempChanged_</span><span class="p">(</span>
+      <span class="n">STACK_FRAME</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_TempControl_i_Impl</span> <span class="n">this</span><span class="p">)</span> <span class="p">{</span>
 
-<span class="w">   </span><span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="k">struct</span> <span class="nc">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">currentTemp</span><span class="p">;</span><span class="w"></span>
-<span class="w">   </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="k">struct</span> <span class="nc">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span><span class="w"> </span><span class="n">tempInF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
+   <span class="n">DeclNewString</span><span class="p">(</span><span class="n">msg</span><span class="p">);</span>
+   <span class="k">struct</span> <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">currentTemp</span><span class="p">;</span>
+   <span class="k">if</span> <span class="p">(</span><span class="n">BuildingControl_TempControl_i_getcurrentTemp</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">))</span> <span class="p">{</span>
+      <span class="k">struct</span> <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i</span> <span class="n">tempInF</span> <span class="o">=</span> <span class="n">toFahrenheit</span><span class="p">(</span><span class="n">currentTemp</span><span class="p">);</span>
 
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&gt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
 
-<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">            </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_On</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
+            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
+            <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_On</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degrees</span> <span class="o">&lt;</span> <span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">BuildingControl_TempControl_i_sendfanCmd</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
 
-<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">            </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">FanCmd_Off</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span><span class="w"></span>
-<span class="w">      </span><span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="n">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w"></span>
-<span class="w">   </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Sent fan command: &quot;</span><span class="p">));</span>
+            <span class="n">building_control_gen_mixed_excludes_BuildingControl_FanCmd_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">FanCmd_Off</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+            <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;Temperature ok:&quot;</span><span class="p">));</span>
+      <span class="p">}</span>
+      <span class="n">String__append</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot; - &quot;</span><span class="p">));</span>
+      <span class="n">building_control_gen_mixed_excludes_BuildingControl_Temperature_i_string_</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">currentTemp</span><span class="p">);</span>
+      <span class="n">BuildingControl_TempControl_i_logInfo</span><span class="p">(</span><span class="n">this</span><span class="p">,</span> <span class="p">(</span><span class="n">String</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Unexpected: tempSensor should have also sent something on its currentTemp port</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+   <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="sel4-platform-layer">
+</div>
+<div class="section" id="sel4-platform-layer">
 <h2><a class="toc-backref" href="#id7">seL4 Platform Layer</a><a class="headerlink" href="#sel4-platform-layer" title="Permalink to this headline">¶</a></h2>
-<section id="platform-communication-apis">
+<div class="section" id="platform-communication-apis">
 <h3><a class="toc-backref" href="#id8">Platform Communication APIs</a><a class="headerlink" href="#platform-communication-apis" title="Permalink to this headline">¶</a></h3>
-</section>
-<section id="platform-tasking-apis">
+</div>
+<div class="section" id="platform-tasking-apis">
 <h3><a class="toc-backref" href="#id9">Platform Tasking APIs</a><a class="headerlink" href="#platform-tasking-apis" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
     </div>

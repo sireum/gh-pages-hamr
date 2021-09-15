@@ -1,27 +1,40 @@
 
 <!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>AADL Computational Paradigm and HAMR Fundamental Concepts &#8212; Sireum HAMR</title>
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/bootstrap-sphinx.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sireum.css" />
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script src="../_static/js/jquery-fix.js"></script>
-    <script src="../_static/bootstrap-3.3.7/js/bootstrap.min.js"></script>
-    <script src="../_static/bootstrap-sphinx.js"></script>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>AADL Computational Paradigm and HAMR Fundamental Concepts &mdash; Sireum HAMR</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootswatch-3.3.4/journal/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sireum.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
     <link rel="shortcut icon" href="../_static/hamr.ico"/>
-    <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-  </head><body>
+    <link rel="top" title="Sireum HAMR" href="../index.html" />
+  </head>
+  <body role="document">
 
   <div id="navbar" class="navbar navbar-default navbar-fixed-top">
     <div class="container">
@@ -86,13 +99,13 @@
 <li><a class="reference internal" href="#aadl-threading">AADL Threading</a><ul>
 <li><a class="reference internal" href="#thread-entry-point-concepts">Thread Entry Point Concepts</a></li>
 <li><a class="reference internal" href="#initialize-entry-point">Initialize Entry Point</a></li>
-<li><a class="reference internal" href="#compute-entry-point-thread-dispatch-modes">Compute Entry Point – Thread Dispatch Modes</a><ul>
+<li><a class="reference internal" href="#compute-entry-point-thread-dispatch-modes">Compute Entry Point &#8211; Thread Dispatch Modes</a><ul>
 <li><a class="reference internal" href="#periodic-dispatch-application-code-structure">Periodic Dispatch Application Code Structure</a></li>
 <li><a class="reference internal" href="#sporadic-dispatch-application-code-structure">Sporadic Dispatch Application Code Structure</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#finalize-entry-point">Finalize Entry Point</a></li>
-<li><a class="reference internal" href="#aadl-computational-paradigm-rationale-for-thread-structure">AADL Computational Paradigm – Rationale for Thread Structure</a></li>
+<li><a class="reference internal" href="#aadl-computational-paradigm-rationale-for-thread-structure">AADL Computational Paradigm &#8211; Rationale for Thread Structure</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#port-based-communication">Port-based Communication</a><ul>
@@ -134,111 +147,105 @@
   <div class="row">
     <div class="col-md-12 content">
       
-  <section id="aadl-computational-paradigm-and-hamr-fundamental-concepts">
+  <div class="section" id="aadl-computational-paradigm-and-hamr-fundamental-concepts">
 <span id="ch04-hamr-aadl-fundamental-concepts"></span><h1>AADL Computational Paradigm and HAMR Fundamental Concepts<a class="headerlink" href="#aadl-computational-paradigm-and-hamr-fundamental-concepts" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p>
-<ul>
-<li><p><a class="reference internal" href="#primary-information-that-directs-hamr-code-generation" id="id7">Primary Information that Directs HAMR Code Generation</a></p></li>
-<li><p><a class="reference internal" href="#important-restrictions-and-caveats" id="id8">Important Restrictions and Caveats</a></p></li>
+<li><a class="reference internal" href="#overview" id="id6">Overview</a><ul>
+<li><a class="reference internal" href="#primary-information-that-directs-hamr-code-generation" id="id7">Primary Information that Directs HAMR Code Generation</a></li>
+<li><a class="reference internal" href="#important-restrictions-and-caveats" id="id8">Important Restrictions and Caveats</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#example" id="id9">Example</a></p>
-<ul>
-<li><p><a class="reference internal" href="#example-system-functionality" id="id10">Example System Functionality</a></p></li>
-<li><p><a class="reference internal" href="#important-aadl-specification-concepts" id="id11">Important AADL Specification Concepts</a></p></li>
+<li><a class="reference internal" href="#example" id="id9">Example</a><ul>
+<li><a class="reference internal" href="#example-system-functionality" id="id10">Example System Functionality</a></li>
+<li><a class="reference internal" href="#important-aadl-specification-concepts" id="id11">Important AADL Specification Concepts</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#aadl-threading" id="id12">AADL Threading</a></p>
-<ul>
-<li><p><a class="reference internal" href="#thread-entry-point-concepts" id="id13">Thread Entry Point Concepts</a></p></li>
-<li><p><a class="reference internal" href="#initialize-entry-point" id="id14">Initialize Entry Point</a></p></li>
-<li><p><a class="reference internal" href="#compute-entry-point-thread-dispatch-modes" id="id15">Compute Entry Point – Thread Dispatch Modes</a></p></li>
-<li><p><a class="reference internal" href="#finalize-entry-point" id="id16">Finalize Entry Point</a></p></li>
-<li><p><a class="reference internal" href="#aadl-computational-paradigm-rationale-for-thread-structure" id="id17">AADL Computational Paradigm – Rationale for Thread Structure</a></p></li>
+<li><a class="reference internal" href="#aadl-threading" id="id12">AADL Threading</a><ul>
+<li><a class="reference internal" href="#thread-entry-point-concepts" id="id13">Thread Entry Point Concepts</a></li>
+<li><a class="reference internal" href="#initialize-entry-point" id="id14">Initialize Entry Point</a></li>
+<li><a class="reference internal" href="#compute-entry-point-thread-dispatch-modes" id="id15">Compute Entry Point &#8211; Thread Dispatch Modes</a></li>
+<li><a class="reference internal" href="#finalize-entry-point" id="id16">Finalize Entry Point</a></li>
+<li><a class="reference internal" href="#aadl-computational-paradigm-rationale-for-thread-structure" id="id17">AADL Computational Paradigm &#8211; Rationale for Thread Structure</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#port-based-communication" id="id18">Port-based Communication</a></p>
-<ul>
-<li><p><a class="reference internal" href="#port-communication-run-time-services-and-hamr-application-api-concepts" id="id19">Port Communication Run-Time Services and HAMR Application API Concepts</a></p></li>
-<li><p><a class="reference internal" href="#port-categories-data-event-and-event-data" id="id20">Port Categories: Data, Event, and Event Data</a></p></li>
-<li><p><a class="reference internal" href="#port-directionality-in-and-out" id="id21">Port Directionality: In and Out</a></p></li>
-<li><p><a class="reference internal" href="#port-connection-fan-in-fan-out" id="id22">Port Connection Fan In / Fan out</a></p></li>
+<li><a class="reference internal" href="#port-based-communication" id="id18">Port-based Communication</a><ul>
+<li><a class="reference internal" href="#port-communication-run-time-services-and-hamr-application-api-concepts" id="id19">Port Communication Run-Time Services and HAMR Application API Concepts</a></li>
+<li><a class="reference internal" href="#port-categories-data-event-and-event-data" id="id20">Port Categories: Data, Event, and Event Data</a></li>
+<li><a class="reference internal" href="#port-directionality-in-and-out" id="id21">Port Directionality: In and Out</a></li>
+<li><a class="reference internal" href="#port-connection-fan-in-fan-out" id="id22">Port Connection Fan In / Fan out</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#computational-model" id="id23">Computational Model</a></p></li>
+<li><a class="reference internal" href="#computational-model" id="id23">Computational Model</a></li>
 </ul>
 </div>
-<section id="overview">
+<div class="section" id="overview">
 <h2><a class="toc-backref" href="#id6">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>The AADL standard describes both the syntax and semantics of AADL models.
-The semantic aspects of AADL can be understood as a <em>computational paradgim</em> – a constrained way of organizing processes, threads, and communication – that matches the domain properties of real-time embedded systems.</p>
+The semantic aspects of AADL can be understood as a <em>computational paradgim</em> &#8211; a constrained way of organizing processes, threads, and communication &#8211; that matches the domain properties of real-time embedded systems.</p>
 <p>The goal of this chapter is to provide a high-level description of</p>
 <ul class="simple">
-<li><p>basic aspects of the AADL computational paradigm,</p></li>
-<li><p>how HAMR generates infrastructure code that implements the paradigm,</p></li>
-<li><p>how HAMR generates code skeletons and APIs to help developers write code that conforms to the paradgim,</p></li>
-<li><p>how developers use the HAMR generated infrastructure and APIs to develop components and systems.</p></li>
+<li>basic aspects of the AADL computational paradigm,</li>
+<li>how HAMR generates infrastructure code that implements the paradigm,</li>
+<li>how HAMR generates code skeletons and APIs to help developers write code that conforms to the paradgim,</li>
+<li>how developers use the HAMR generated infrastructure and APIs to develop components and systems.</li>
 </ul>
 <p>These concepts will be illustrated using Slang and the associated Slang/JVM-based reference implementation of the AADL run-time (because the presentation is cleaner in Slang than in C).  Details for HAMR development with Slang are found in XXXX, and details for development in C are found in XXXXX.</p>
-<p>It’s well beyond the scope of this documentation to provide a complete tutorial on AADL modeling.  The following books are good resources for learning and applying AADL:</p>
+<p>It&#8217;s well beyond the scope of this documentation to provide a complete tutorial on AADL modeling.  The following books are good resources for learning and applying AADL:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.amazon.com/Model-Based-Engineering-AADL-Introduction-Architecture/dp/0134208897/ref=sr_1_1?keywords=AADL&amp;qid=1581775201&amp;sr=8-1">Model-Based Engineering with AADL: An Introduction to the SAE Architecture Analysis &amp; Design Language</a>, by Peter H. Feiler and David P. Gluch. Addison-Wesley Professional, 2012.</p></li>
-<li><p><a class="reference external" href="https://www.amazon.com/AADL-Practice-software-architecture-modeling-ebook/dp/B071WHRJY3/ref=sr_1_2?keywords=AADL&amp;qid=1581775402&amp;sr=8-2">AADL In Practice: Become an expert in software architecture modeling and analysis</a>, by Julien Delange.  Amazon.com Services, 2017.</p></li>
+<li><a class="reference external" href="https://www.amazon.com/Model-Based-Engineering-AADL-Introduction-Architecture/dp/0134208897/ref=sr_1_1?keywords=AADL&amp;qid=1581775201&amp;sr=8-1">Model-Based Engineering with AADL: An Introduction to the SAE Architecture Analysis &amp; Design Language</a>, by Peter H. Feiler and David P. Gluch. Addison-Wesley Professional, 2012.</li>
+<li><a class="reference external" href="https://www.amazon.com/AADL-Practice-software-architecture-modeling-ebook/dp/B071WHRJY3/ref=sr_1_2?keywords=AADL&amp;qid=1581775402&amp;sr=8-2">AADL In Practice: Become an expert in software architecture modeling and analysis</a>, by Julien Delange.  Amazon.com Services, 2017.</li>
 </ul>
-<p>The AADL <a class="reference external" href="https://osate.org">OSATE</a> IDE’s integrated help system provides good documentation for how to use OSATE to build AADL models.</p>
-<section id="primary-information-that-directs-hamr-code-generation">
+<p>The AADL <a class="reference external" href="https://osate.org">OSATE</a> IDE&#8217;s integrated help system provides good documentation for how to use OSATE to build AADL models.</p>
+<div class="section" id="primary-information-that-directs-hamr-code-generation">
 <h3><a class="toc-backref" href="#id7">Primary Information that Directs HAMR Code Generation</a><a class="headerlink" href="#primary-information-that-directs-hamr-code-generation" title="Permalink to this headline">¶</a></h3>
-<p>Even though AADL’s computational paradigm is constrained to align with the needs of real-time embedded systems, it is general enough to support a range of computational styles (which one might think of AADL computational <em>sub-paradigms</em>).  For example, AADL can support periodic threading with sampling data ports as found in ARINC 653 (Modular Avionics) and it can also support event-driven communication with sporadic/aperiodic threading which can be implemented by widely used message passing frameworks like ActiveMQ or the OMG’s Data Distribution Service (DDS).</p>
-<p>Developers use standard AADL property sets (properties are model annotations) to configure AADL’s computational paradigm for a particular system/application.  For example, AADL properties are to indicate the dispatch mode of a thread (e.g., periodic, sporadic, etc), set the size of event/message queues, set timing constraints on threading and communication, etc.</p>
-<p>Developers use the AADL data modeling framework to specify the types of messages/data exchanged between components.  HAMR supports a large portion of the data modeling approach specified in <a class="reference external" href="https://www.sae.org/standards/content/as5506/2/">AADL’s Data Modeling Annex</a> (details are given in Chapter XXX).  HAMR includes infrastructure to auto-generate programming language data types and wire (raw) formats from HAMR-compliant AADL data models.  When using HAMR raw data formats (which are realized using Slang’s bitcodec framework), libraries of encoders/decoders are also generated to aid developers between structured programming language types and corresponding raw types.</p>
+<p>Even though AADL&#8217;s computational paradigm is constrained to align with the needs of real-time embedded systems, it is general enough to support a range of computational styles (which one might think of AADL computational <em>sub-paradigms</em>).  For example, AADL can support periodic threading with sampling data ports as found in ARINC 653 (Modular Avionics) and it can also support event-driven communication with sporadic/aperiodic threading which can be implemented by widely used message passing frameworks like ActiveMQ or the OMG&#8217;s Data Distribution Service (DDS).</p>
+<p>Developers use standard AADL property sets (properties are model annotations) to configure AADL&#8217;s computational paradigm for a particular system/application.  For example, AADL properties are to indicate the dispatch mode of a thread (e.g., periodic, sporadic, etc), set the size of event/message queues, set timing constraints on threading and communication, etc.</p>
+<p>Developers use the AADL data modeling framework to specify the types of messages/data exchanged between components.  HAMR supports a large portion of the data modeling approach specified in <a class="reference external" href="https://www.sae.org/standards/content/as5506/2/">AADL&#8217;s Data Modeling Annex</a> (details are given in Chapter XXX).  HAMR includes infrastructure to auto-generate programming language data types and wire (raw) formats from HAMR-compliant AADL data models.  When using HAMR raw data formats (which are realized using Slang&#8217;s bitcodec framework), libraries of encoders/decoders are also generated to aid developers between structured programming language types and corresponding raw types.</p>
 <p>Overall, the structure of the code that HAMR generates is determined by:</p>
 <ul class="simple">
-<li><p>the choice/arrangement of AADL modeling elements (i.e., what “boxes and lines” are present in the AADL model and their containment and association relationships) – these determines the structure of the programming language-level threads/processes generated and the APIs that the component developer uses to communicate via ports with other threads/processes in the component context – the most important elements wrt to programming are thread components and their ports,</p></li>
-<li><p>AADL properties attached to the modeling elements – these determine specific implementation strategies and resource allocation for threads/processes, communication, message buffers, etc.,</p></li>
-<li><p>the data types attached to AADL ports – these determine programming language types that appear on code-level APIs for inter-component communication, and libraries that are generated to support encoding/decoding for raw types, and</p></li>
-<li><p>the selection of language/platform for the code generation – these determine the programming language for the generated code, the implementation strategy for port-based inter-component communication, the implementation strategy for threading, etc.</p></li>
+<li>the choice/arrangement of AADL modeling elements (i.e., what &#8220;boxes and lines&#8221; are present in the AADL model and their containment and association relationships) &#8211; these determines the structure of the programming language-level threads/processes generated and the APIs that the component developer uses to communicate via ports with other threads/processes in the component context &#8211; the most important elements wrt to programming are thread components and their ports,</li>
+<li>AADL properties attached to the modeling elements &#8211; these determine specific implementation strategies and resource allocation for threads/processes, communication, message buffers, etc.,</li>
+<li>the data types attached to AADL ports &#8211; these determine programming language types that appear on code-level APIs for inter-component communication, and libraries that are generated to support encoding/decoding for raw types, and</li>
+<li>the selection of language/platform for the code generation &#8211; these determine the programming language for the generated code, the implementation strategy for port-based inter-component communication, the implementation strategy for threading, etc.</li>
 </ul>
 <p>Regardless of the language/platform selected, HAMR code generation aims to produce code that conforms to the AADL computational paradigm as configured by the first three items above.  Even though code is generated in different languages and may be developed using different IDEs, HAMR aims to structure generated code so that APIs and workflows are similar regardless of the specific programming language being used for component development.</p>
 <p>The most important AADL concepts for HAMR users to understand are <em>threading/tasking</em> and <em>communication</em> as realized via AADL thread components and port-based communication.  This chapter will focus on those concepts, and the reader will need to refer to other sources for description of other AADL modeling concepts.</p>
-</section>
-<section id="important-restrictions-and-caveats">
+</div>
+<div class="section" id="important-restrictions-and-caveats">
 <h3><a class="toc-backref" href="#id8">Important Restrictions and Caveats</a><a class="headerlink" href="#important-restrictions-and-caveats" title="Permalink to this headline">¶</a></h3>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ToDo: finish this subsection</p>
+<p class="first admonition-title">Note</p>
+<p class="last">ToDo: finish this subsection</p>
 </div>
 <ul class="simple">
-<li><p>Port-based communication only - no subprograms, no data components</p></li>
-<li><p>Limitations on scheduling</p></li>
-<li><p>Semantics of AADL in the standard are underspecified.   The contents of this chapter present our interpretation. Standard currently under revision.</p></li>
-<li><p>Resolint used to check that HAMR’s AADL inputs conform to constraints.</p></li>
+<li>Port-based communication only - no subprograms, no data components</li>
+<li>Limitations on scheduling</li>
+<li>Semantics of AADL in the standard are underspecified.   The contents of this chapter present our interpretation. Standard currently under revision.</li>
+<li>Resolint used to check that HAMR&#8217;s AADL inputs conform to constraints.</li>
 </ul>
-</section>
-</section>
-<section id="example">
+</div>
+</div>
+<div class="section" id="example">
 <h2><a class="toc-backref" href="#id9">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<section id="example-system-functionality">
+<div class="section" id="example-system-functionality">
 <h3><a class="toc-backref" href="#id10">Example System Functionality</a><a class="headerlink" href="#example-system-functionality" title="Permalink to this headline">¶</a></h3>
-<p>This section presents a minimalistic example designed to illustrate the basic aspects of the AADL computational paradigm.  The example doesn’t necessarily reflect the way that one would design a system in practice.  Rather, the features are chosen to provide coverage of both periodic and sporadic components and both data and event ports.</p>
-<figure class="align-center" id="id3">
+<p>This section presents a minimalistic example designed to illustrate the basic aspects of the AADL computational paradigm.  The example doesn&#8217;t necessarily reflect the way that one would design a system in practice.  Rather, the features are chosen to provide coverage of both periodic and sporadic components and both data and event ports.</p>
+<div class="figure align-center" id="id3">
 <span id="temp-control-graphical"></span><img alt="../_images/TempControlProcess_i.png" src="../_images/TempControlProcess_i.png" />
-<figcaption>
-<p><span class="caption-text"><strong>AADL Temperature Control Example (graphical view)</strong></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p><a class="reference internal" href="#temp-control-graphical"><span class="std std-ref">AADL Temperature Control Example (graphical view)</span></a> uses the AADL OSATE graphical view to show the thread and process (the top level system component is omitted) for a simple temperature controller that maintains a temperature according to setpoints (i.e., high and low temperature  values). The <code class="docutils literal notranslate"><span class="pre">tempSensor</span></code> thread measures the current temperature and transmits the reading on its <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> data port.  It also sends an event on its <code class="docutils literal notranslate"><span class="pre">tempChanged</span></code> port if it detects the temperature has changed since the last reading.  Note: <code class="docutils literal notranslate"><span class="pre">tempChanged</span></code> and <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> could alternatively be combined into single <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">data</span></code> port.</p>
-<p>When the <code class="docutils literal notranslate"><span class="pre">tempControl</span></code> thread receives a <code class="docutils literal notranslate"><span class="pre">tempChanged</span></code> or <code class="docutils literal notranslate"><span class="pre">setPoint</span></code> event it compares the value on <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> with the high and low temperatures from aadlPort{setPoint} and sends <code class="docutils literal notranslate"><span class="pre">FanCmd.On</span></code> or <code class="docutils literal notranslate"><span class="pre">FanCmd.Off</span></code> to the <code class="docutils literal notranslate"><span class="pre">fan</span></code> thread via its <code class="docutils literal notranslate"><span class="pre">fanCmd</span></code> event port.  The <code class="docutils literal notranslate"><span class="pre">fan</span></code> acknowledges whether it was able to fulfill the command by sending <code class="docutils literal notranslate"><span class="pre">FanAck.Ok</span></code> or <code class="docutils literal notranslate"><span class="pre">FanAck.Error</span></code> on its <code class="docutils literal notranslate"><span class="pre">fanAck</span></code> event port.</p>
-</section>
-<section id="important-aadl-specification-concepts">
+<p class="caption"><span class="caption-text"><strong>AADL Temperature Control Example (graphical view)</strong></span></p>
+</div>
+<p><a class="reference internal" href="#temp-control-graphical"><span>AADL Temperature Control Example (graphical view)</span></a> uses the AADL OSATE graphical view to show the thread and process (the top level system component is omitted) for a simple temperature controller that maintains a temperature according to setpoints (i.e., high and low temperature  values). The <code class="docutils literal"><span class="pre">tempSensor</span></code> thread measures the current temperature and transmits the reading on its <code class="docutils literal"><span class="pre">currentTemp</span></code> data port.  It also sends an event on its <code class="docutils literal"><span class="pre">tempChanged</span></code> port if it detects the temperature has changed since the last reading.  Note: <code class="docutils literal"><span class="pre">tempChanged</span></code> and <code class="docutils literal"><span class="pre">currentTemp</span></code> could alternatively be combined into single <code class="docutils literal"><span class="pre">event</span> <span class="pre">data</span></code> port.</p>
+<p>When the <code class="docutils literal"><span class="pre">tempControl</span></code> thread receives a <code class="docutils literal"><span class="pre">tempChanged</span></code> or <code class="docutils literal"><span class="pre">setPoint</span></code> event it compares the value on <code class="docutils literal"><span class="pre">currentTemp</span></code> with the high and low temperatures from aadlPort{setPoint} and sends <code class="docutils literal"><span class="pre">FanCmd.On</span></code> or <code class="docutils literal"><span class="pre">FanCmd.Off</span></code> to the <code class="docutils literal"><span class="pre">fan</span></code> thread via its <code class="docutils literal"><span class="pre">fanCmd</span></code> event port.  The <code class="docutils literal"><span class="pre">fan</span></code> acknowledges whether it was able to fulfill the command by sending <code class="docutils literal"><span class="pre">FanAck.Ok</span></code> or <code class="docutils literal"><span class="pre">FanAck.Error</span></code> on its <code class="docutils literal"><span class="pre">fanAck</span></code> event port.</p>
+</div>
+<div class="section" id="important-aadl-specification-concepts">
 <h3><a class="toc-backref" href="#id11">Important AADL Specification Concepts</a><a class="headerlink" href="#important-aadl-specification-concepts" title="Permalink to this headline">¶</a></h3>
-<p>The typical focus of the initial AADL modeling effort is to lay out the application <em>threads/tasks</em> of the system (e.g., the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code>, <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> and <code class="docutils literal notranslate"><span class="pre">Fan</span></code> threads in the example above) and port-based <em>interactions</em> between those threads.  Many things happen beyond that, but that is often the focus of the developer’s activities – especially as they are thinking about what needs to be computed and communicated.  Beyond these basic steps, AADL <code class="docutils literal notranslate"><span class="pre">thread</span> <span class="pre">groups</span></code> can aggregate similar threads as a modeling abstraction.  AADL <code class="docutils literal notranslate"><span class="pre">process</span></code> components then indicate the memory spaces within which the threads will work.  AADL <code class="docutils literal notranslate"><span class="pre">systems</span></code> add further architectural hierarchy by representing subsystems and the top-level system.   AADL resource layer which includes notions such a <code class="docutils literal notranslate"><span class="pre">processor</span></code>, <code class="docutils literal notranslate"><span class="pre">bus</span></code>, etc. can be used to model platform resources, and AADL <em>bindings</em> are used to allocate software components to resources.  Along the way, AADL <em>properties</em> are added to model elements to configure them in various ways.</p>
-<p>AADL supports both a graphical and textual views of models. The graphical view of the temperature controller example is given in the previous <a class="reference internal" href="#temp-control-graphical"><span class="std std-ref">AADL Temperature Control Example (graphical view)</span></a>. The graphical view is typically used for high-level understanding of models or for rapidly building up an architecture by dragging/dropping for a pallete of modeling elements.   A lot the detailed engineering work happens in the textual view because it is more amenable to attaching and viewing various forms of model properties, semantic information, and analysis directives.</p>
-<section id="aadl-declarative-models">
+<p>The typical focus of the initial AADL modeling effort is to lay out the application <em>threads/tasks</em> of the system (e.g., the <code class="docutils literal"><span class="pre">TempSensor</span></code>, <code class="docutils literal"><span class="pre">TempControl</span></code> and <code class="docutils literal"><span class="pre">Fan</span></code> threads in the example above) and port-based <em>interactions</em> between those threads.  Many things happen beyond that, but that is often the focus of the developer&#8217;s activities &#8211; especially as they are thinking about what needs to be computed and communicated.  Beyond these basic steps, AADL <code class="docutils literal"><span class="pre">thread</span> <span class="pre">groups</span></code> can aggregate similar threads as a modeling abstraction.  AADL <code class="docutils literal"><span class="pre">process</span></code> components then indicate the memory spaces within which the threads will work.  AADL <code class="docutils literal"><span class="pre">systems</span></code> add further architectural hierarchy by representing subsystems and the top-level system.   AADL resource layer which includes notions such a <code class="docutils literal"><span class="pre">processor</span></code>, <code class="docutils literal"><span class="pre">bus</span></code>, etc. can be used to model platform resources, and AADL <em>bindings</em> are used to allocate software components to resources.  Along the way, AADL <em>properties</em> are added to model elements to configure them in various ways.</p>
+<p>AADL supports both a graphical and textual views of models. The graphical view of the temperature controller example is given in the previous <a class="reference internal" href="#temp-control-graphical"><span>AADL Temperature Control Example (graphical view)</span></a>. The graphical view is typically used for high-level understanding of models or for rapidly building up an architecture by dragging/dropping for a pallete of modeling elements.   A lot the detailed engineering work happens in the textual view because it is more amenable to attaching and viewing various forms of model properties, semantic information, and analysis directives.</p>
+<div class="section" id="aadl-declarative-models">
 <h4>AADL Declarative Models<a class="headerlink" href="#aadl-declarative-models" title="Permalink to this headline">¶</a></h4>
 <p>The listing below shows a portion of the AADL textual view of what is called the <em>declarative model</em> for the building control example (The full model is available in Appendix XXXX).</p>
-<div class="highlight-AADL notranslate"><div class="highlight"><pre><span></span>process TempControlProcess  -- component type for temperature controller subsystem (modeled as a process)
+<div class="highlight-AADL"><div class="highlight"><pre>process TempControlProcess  -- component type for temperature controller subsystem (modeled as a process)
 features
    setPoint : in event data port SetPoint; -- the subsystem contains one input (the high and low set points for the thermostat)
 end TempControlProcess;
@@ -302,99 +309,97 @@ thread implementation TempControl.i
 end TempControl.i
 </pre></div>
 </div>
-<p>A declarative model describes the software and hardware components of a system along with their interactions and organization (Listing XXXX only addresses software aspects since those are sufficient for the discussion of the AADL computational paradigm).   AADL <em>instance models</em> are automatically derived (e.g., by the OSATE tool) from a declarative model by instantiating the declarative model for a particular instance (i.e., configuration) of a system.  The instance model concept is necessary because each AADL component has a type declaration and one or more implementation declarations, and the instance model reflects a choice of implementation for each component type.    Instance models also “flatten” or “peel off” AADL constructs that are mainly used to organize and indicate containment such as sub-systems, processes, thread groups and feature groups – leaving only primary elements such as threads and port-connections.   Instance models are discussed more detail below.  For the most part, for simple AADL models and applications of HAMR, it is safe for developers to ignore the details of an instance model and think in terms of the declarative model.  The only time an instance model comes is to play is when preparing to generate code – the developer selects a particular system implementation from which an instance model is generated.  Even then, the developer usually doesn’t need to understand the details of the instance model – only that a particular instance/configuration is selected for which code will be generated.</p>
-<section id="component-types">
+<p>A declarative model describes the software and hardware components of a system along with their interactions and organization (Listing XXXX only addresses software aspects since those are sufficient for the discussion of the AADL computational paradigm).   AADL <em>instance models</em> are automatically derived (e.g., by the OSATE tool) from a declarative model by instantiating the declarative model for a particular instance (i.e., configuration) of a system.  The instance model concept is necessary because each AADL component has a type declaration and one or more implementation declarations, and the instance model reflects a choice of implementation for each component type.    Instance models also &#8220;flatten&#8221; or &#8220;peel off&#8221; AADL constructs that are mainly used to organize and indicate containment such as sub-systems, processes, thread groups and feature groups &#8211; leaving only primary elements such as threads and port-connections.   Instance models are discussed more detail below.  For the most part, for simple AADL models and applications of HAMR, it is safe for developers to ignore the details of an instance model and think in terms of the declarative model.  The only time an instance model comes is to play is when preparing to generate code &#8211; the developer selects a particular system implementation from which an instance model is generated.  Even then, the developer usually doesn&#8217;t need to understand the details of the instance model &#8211; only that a particular instance/configuration is selected for which code will be generated.</p>
+<div class="section" id="component-types">
 <h5>Component Types<a class="headerlink" href="#component-types" title="Permalink to this headline">¶</a></h5>
-<p>The external interfaces of components (called <em>component features</em>) are specified via <em>component type</em> declarations.  For example, the component type declaration <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> has five ports that can be used when interacting with other components.  The direction information flows through the port is specified using the keywords <code class="docutils literal notranslate"><span class="pre">in</span></code> or <code class="docutils literal notranslate"><span class="pre">out</span></code> (Note: AADL also has <code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">out</span></code> (i.e., bi-directional) ports but those are not supported by HAMR because they complicate system semantics and information flow reasoning).  Data ports (indicated by the <code class="docutils literal notranslate"><span class="pre">data</span></code> keyword) are used to communicate state data between components without queueing (old values on the receiver side are overwritten with newer values).   Event data ports (indicated by the <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">data</span></code> keywords) asynchronously transmit messages between components, where messages are buffered/queued on the receiving component.  Event ports (indicated by <code class="docutils literal notranslate"><span class="pre">event</span></code> keyword) allow a sending component to signal a receiving component in a message without a payload.</p>
-</section>
-<section id="component-implementations">
+<p>The external interfaces of components (called <em>component features</em>) are specified via <em>component type</em> declarations.  For example, the component type declaration <code class="docutils literal"><span class="pre">TempControl</span></code> has five ports that can be used when interacting with other components.  The direction information flows through the port is specified using the keywords <code class="docutils literal"><span class="pre">in</span></code> or <code class="docutils literal"><span class="pre">out</span></code> (Note: AADL also has <code class="docutils literal"><span class="pre">in</span> <span class="pre">out</span></code> (i.e., bi-directional) ports but those are not supported by HAMR because they complicate system semantics and information flow reasoning).  Data ports (indicated by the <code class="docutils literal"><span class="pre">data</span></code> keyword) are used to communicate state data between components without queueing (old values on the receiver side are overwritten with newer values).   Event data ports (indicated by the <code class="docutils literal"><span class="pre">event</span> <span class="pre">data</span></code> keywords) asynchronously transmit messages between components, where messages are buffered/queued on the receiving component.  Event ports (indicated by <code class="docutils literal"><span class="pre">event</span></code> keyword) allow a sending component to signal a receiving component in a message without a payload.</p>
+</div>
+<div class="section" id="component-implementations">
 <h5>Component Implementations<a class="headerlink" href="#component-implementations" title="Permalink to this headline">¶</a></h5>
-<p>AADL’s <code class="docutils literal notranslate"><span class="pre">implemention</span></code> constructs model specific implementations of a component type.  For each component category (e.g., <code class="docutils literal notranslate"><span class="pre">system</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span></code>, <code class="docutils literal notranslate"><span class="pre">thread</span></code>, etc.), the AADL language includes a corresponding implementation construct (e.g., <code class="docutils literal notranslate"><span class="pre">system</span> <span class="pre">implementation</span></code>, <code class="docutils literal notranslate"><span class="pre">process</span> <span class="pre">implementation</span></code>, etc.)  Sometimes a component implementation models the internal structure of a component as a collection of contained connected subcomponents (e.g., the component implementatation <code class="docutils literal notranslate"><span class="pre">TempControlProcess.i.</span></code> implements the component type <code class="docutils literal notranslate"><span class="pre">TempControlProcess</span></code> and contains the architectural containment hierarchy of the process).  In other cases, component implementations don’t specify the internal structure of the component because the component is a <em>leaf node</em> of the architecture, and the component will be directly implemented in source code or hardware.  In such cases, the body of the component implementation may be left empty or other AADL properties may be used to indicate the filename of the code that implements the component (e.g., the implementations of the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code>, <code class="docutils literal notranslate"><span class="pre">Fan</span></code>, and <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> components).   A component type may have multiple corresponding implementations, but this capability is often not used in simpler models.  For leaf nodes, different implementations might be used to model the fact that different algorithms are available to choose from for a particular thread.   For components with containment, different implementations might be used to indicate selections of different algorithms for its subcomponents or to model different possible architectures for subsystems that, e.g.,  provide a both straightforward implementations as well as a different topology with redundant components to achieve fault-tolerance.</p>
-<p>In implementations with containment, interaction between the subcomponents is declared via named port-to-port <em>connections</em>.  For example, in <code class="docutils literal notranslate"><span class="pre">TempControlProcess.i</span></code> there are three thread subcomponents (<code class="docutils literal notranslate"><span class="pre">tempSensor</span></code>, <code class="docutils literal notranslate"><span class="pre">tempControl</span></code>, and <code class="docutils literal notranslate"><span class="pre">fan</span></code>).  Named connections represent the abstract communication pathways between the components (e.g., in the <code class="docutils literal notranslate"><span class="pre">TempControlProcess</span></code> implementation, the connection named <code class="docutils literal notranslate"><span class="pre">ct</span></code> represents a communication link between the <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> output port of <code class="docutils literal notranslate"><span class="pre">tempSensor</span></code> and the <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> input port of <code class="docutils literal notranslate"><span class="pre">tempControl</span></code>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">dispatch_protocol</span></code> settings of <code class="docutils literal notranslate"><span class="pre">Periodic</span></code> and <code class="docutils literal notranslate"><span class="pre">Sporadic</span></code> are examples of AADL <em>properties</em> that can be added to the model to support model analyses and to direct code generation or other aspects of the development tool chain.  In these particular examples,  <code class="docutils literal notranslate"><span class="pre">Periodic</span></code> and <code class="docutils literal notranslate"><span class="pre">Sporadic</span></code> inform AADL schedulability analysis that the underlying component threads will be dispatched by either periodic timing events (periodic) or by the arrival of events on event data ports (sporadic).   They direct code generation tools to insert different types of hooks from the scheduler and communication infrastructure to the application code  realizing the component logic.   This use of properties along with coordination between analysis and code generation is key to enabling model analysis and to ensuring that analysis results apply to the generated code.</p>
-</section>
-</section>
-<section id="aadl-instance-models">
+<p>AADL&#8217;s <code class="docutils literal"><span class="pre">implemention</span></code> constructs model specific implementations of a component type.  For each component category (e.g., <code class="docutils literal"><span class="pre">system</span></code>, <code class="docutils literal"><span class="pre">process</span></code>, <code class="docutils literal"><span class="pre">thread</span></code>, etc.), the AADL language includes a corresponding implementation construct (e.g., <code class="docutils literal"><span class="pre">system</span> <span class="pre">implementation</span></code>, <code class="docutils literal"><span class="pre">process</span> <span class="pre">implementation</span></code>, etc.)  Sometimes a component implementation models the internal structure of a component as a collection of contained connected subcomponents (e.g., the component implementatation <code class="docutils literal"><span class="pre">TempControlProcess.i.</span></code> implements the component type <code class="docutils literal"><span class="pre">TempControlProcess</span></code> and contains the architectural containment hierarchy of the process).  In other cases, component implementations don&#8217;t specify the internal structure of the component because the component is a <em>leaf node</em> of the architecture, and the component will be directly implemented in source code or hardware.  In such cases, the body of the component implementation may be left empty or other AADL properties may be used to indicate the filename of the code that implements the component (e.g., the implementations of the <code class="docutils literal"><span class="pre">TempSensor</span></code>, <code class="docutils literal"><span class="pre">Fan</span></code>, and <code class="docutils literal"><span class="pre">TempControl</span></code> components).   A component type may have multiple corresponding implementations, but this capability is often not used in simpler models.  For leaf nodes, different implementations might be used to model the fact that different algorithms are available to choose from for a particular thread.   For components with containment, different implementations might be used to indicate selections of different algorithms for its subcomponents or to model different possible architectures for subsystems that, e.g.,  provide a both straightforward implementations as well as a different topology with redundant components to achieve fault-tolerance.</p>
+<p>In implementations with containment, interaction between the subcomponents is declared via named port-to-port <em>connections</em>.  For example, in <code class="docutils literal"><span class="pre">TempControlProcess.i</span></code> there are three thread subcomponents (<code class="docutils literal"><span class="pre">tempSensor</span></code>, <code class="docutils literal"><span class="pre">tempControl</span></code>, and <code class="docutils literal"><span class="pre">fan</span></code>).  Named connections represent the abstract communication pathways between the components (e.g., in the <code class="docutils literal"><span class="pre">TempControlProcess</span></code> implementation, the connection named <code class="docutils literal"><span class="pre">ct</span></code> represents a communication link between the <code class="docutils literal"><span class="pre">currentTemp</span></code> output port of <code class="docutils literal"><span class="pre">tempSensor</span></code> and the <code class="docutils literal"><span class="pre">currentTemp</span></code> input port of <code class="docutils literal"><span class="pre">tempControl</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">dispatch_protocol</span></code> settings of <code class="docutils literal"><span class="pre">Periodic</span></code> and <code class="docutils literal"><span class="pre">Sporadic</span></code> are examples of AADL <em>properties</em> that can be added to the model to support model analyses and to direct code generation or other aspects of the development tool chain.  In these particular examples,  <code class="docutils literal"><span class="pre">Periodic</span></code> and <code class="docutils literal"><span class="pre">Sporadic</span></code> inform AADL schedulability analysis that the underlying component threads will be dispatched by either periodic timing events (periodic) or by the arrival of events on event data ports (sporadic).   They direct code generation tools to insert different types of hooks from the scheduler and communication infrastructure to the application code  realizing the component logic.   This use of properties along with coordination between analysis and code generation is key to enabling model analysis and to ensuring that analysis results apply to the generated code.</p>
+</div>
+</div>
+<div class="section" id="aadl-instance-models">
 <h4>AADL Instance Models<a class="headerlink" href="#aadl-instance-models" title="Permalink to this headline">¶</a></h4>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
+<p class="first admonition-title">Note</p>
 <p>ToDo: Finish this section.</p>
 <p>In addition to the declarative model format, AADL also has an instance model format that is generated from
 declarative model.   An AADL instance model accomplishes several things.</p>
-<ul class="simple">
-<li><p><strong>To Do:</strong> explain multiple component implementations and how an instance model picks the specific implementation.</p></li>
-<li><p><strong>To Do:</strong> explain how an instance model tunnels through the architecture hierarchy to focus on threads.  When generating code from AADL models, the thread components are the model elements that dictate the most of the structure of the generated code.</p></li>
+<ul class="last simple">
+<li><strong>To Do:</strong> explain multiple component implementations and how an instance model picks the specific implementation.</li>
+<li><strong>To Do:</strong> explain how an instance model tunnels through the architecture hierarchy to focus on threads.  When generating code from AADL models, the thread components are the model elements that dictate the most of the structure of the generated code.</li>
 </ul>
 </div>
-</section>
-</section>
-</section>
-<section id="aadl-threading">
+</div>
+</div>
+</div>
+<div class="section" id="aadl-threading">
 <h2><a class="toc-backref" href="#id12">AADL Threading</a><a class="headerlink" href="#aadl-threading" title="Permalink to this headline">¶</a></h2>
 <p>This section addresses the structure of the HAMR-generated code for an AADL thread component.   The code structure is influenced by two AADL concepts:</p>
 <ul class="simple">
-<li><p>the AADL concept of <em>entry point</em> – i.e., the different application functions/methods that the underlying run-time infrastructure (e.g., RTOS scheduler) calls to run the application code for the thread, and</p></li>
-<li><p>the AADL concept of thread <em>dispatch protocol</em> – the rules (protocol) that determine when the thread application code is executed (e.g., whether a thread is classified as <em>periodic</em> or <em>sporadic</em>).</p></li>
+<li>the AADL concept of <em>entry point</em> &#8211; i.e., the different application functions/methods that the underlying run-time infrastructure (e.g., RTOS scheduler) calls to run the application code for the thread, and</li>
+<li>the AADL concept of thread <em>dispatch protocol</em> &#8211; the rules (protocol) that determine when the thread application code is executed (e.g., whether a thread is classified as <em>periodic</em> or <em>sporadic</em>).</li>
 </ul>
-<p>In general, the code that HAMR generates to support threading does various things behind the scenes (i.e., the actions are purposely hidden from the developer so that they don’t accidently change the associated code, and application code doesn’t need to understand the details) including receiving and propagating port data and taking steps to ensure that application code can be structured in a way that facilitates analysis and verification.  Depending on the programming language targetted, HAMR uses different language mechanisms to isolate the “behind the scenes” threading infrastructure code from the developer-written application code so that the developer can concentrate on the application logic of a component.</p>
+<p>In general, the code that HAMR generates to support threading does various things behind the scenes (i.e., the actions are purposely hidden from the developer so that they don&#8217;t accidently change the associated code, and application code doesn&#8217;t need to understand the details) including receiving and propagating port data and taking steps to ensure that application code can be structured in a way that facilitates analysis and verification.  Depending on the programming language targetted, HAMR uses different language mechanisms to isolate the &#8220;behind the scenes&#8221; threading infrastructure code from the developer-written application code so that the developer can concentrate on the application logic of a component.</p>
 <p>Since it targets embedded systems, the AADL standard indicates that threading should be supported by an AADL-compliant run-time environment that sets up threading in a manner that ensures computational paradigm.  This means that developers will not use the threading mechanisms of the programming language directly, i.e., C programmers will not directly create Posix threads, Scala programmers will not use Scala (JVM) threads, etc.   The AADL run-time may use those mechanisms in the infrastructure code to achieve the computational paradigm, but those details are not exposed to the application code and developers typically do not need to be concerned about them.  All the developer needs to understand is the AADL thread abstraction, and how to configure/constrain the thread abstraction and scheduling using AADL thread properties (e.g., priority, deadline, etc).</p>
-<section id="thread-entry-point-concepts">
+<div class="section" id="thread-entry-point-concepts">
 <h3><a class="toc-backref" href="#id13">Thread Entry Point Concepts</a><a class="headerlink" href="#thread-entry-point-concepts" title="Permalink to this headline">¶</a></h3>
-<p>The interfacing between thread application code and AADL run-time is defined in the standard using the concept of <em>entry point</em> – which is often used in real-time tasking.   In other frameworks and OSes, the application code makes the scheduler aware of the entrypoints by registering certain methods with the scheduler.  With HAMR, entry point skeletons are auto-generated for the developer using certain naming conventions, and the scheduler invokes entry points with those specific names.</p>
-<figure class="align-center" id="id4">
+<p>The interfacing between thread application code and AADL run-time is defined in the standard using the concept of <em>entry point</em> &#8211; which is often used in real-time tasking.   In other frameworks and OSes, the application code makes the scheduler aware of the entrypoints by registering certain methods with the scheduler.  With HAMR, entry point skeletons are auto-generated for the developer using certain naming conventions, and the scheduler invokes entry points with those specific names.</p>
+<div class="figure align-center" id="id4">
 <span id="hamr-thread-entry-points"></span><img alt="../_images/hamr-thread-entry-points.png" src="../_images/hamr-thread-entry-points.png" />
-<figcaption>
-<p><span class="caption-text"><strong>HAMR AADL-compliant Thread Entry Points</strong></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p><a class="reference internal" href="#hamr-thread-entry-points"><span class="std std-ref">HAMR AADL-compliant Thread Entry Points</span></a> illustrates some of the primary concepts of HAMR thread entry points.   First, it’s important to understand that the AADL standard (see Clause 5.4.1 (21)) – following common practice in avionics and other safety-critical systems – recognizes distinct phases of execution: an <em>initialization phase</em> and an <em>operational phase</em> (see the right side of the figure).  In the initialization phase, each thread’s infrastructure is initialized and the Initialize Entry Point of each thread is called to execute developer-supplied code that initializes the application state of the component.  After all thread initialization is complete, the system shifts to the Operational Phase.   The standard does not specify a particular scheduling policy/order for initialization, each thread’s Initialize Entry Point is called exactly once, typically in a round-robin fashion.   During the operational phase, the Compute Entry Point of each thread (which implements the application logic of a thread) is called according to a developer-configured scheduling policy, set or derived from various AADL properties or other means (e.g., a static schedule provided as part of the platform infrastructure configuration).  In the current implementation of HAMR, after the operational phase is complete, the Finalize Entry Point for each thread is called.</p>
-<p>Thus, from the developer’s point of view, the business logic of the thread is programmed by implementing the following entry points (HAMR code generation provides a skeleton for each of these).</p>
+<p class="caption"><span class="caption-text"><strong>HAMR AADL-compliant Thread Entry Points</strong></span></p>
+</div>
+<p><a class="reference internal" href="#hamr-thread-entry-points"><span>HAMR AADL-compliant Thread Entry Points</span></a> illustrates some of the primary concepts of HAMR thread entry points.   First, it&#8217;s important to understand that the AADL standard (see Clause 5.4.1 (21)) &#8211; following common practice in avionics and other safety-critical systems &#8211; recognizes distinct phases of execution: an <em>initialization phase</em> and an <em>operational phase</em> (see the right side of the figure).  In the initialization phase, each thread&#8217;s infrastructure is initialized and the Initialize Entry Point of each thread is called to execute developer-supplied code that initializes the application state of the component.  After all thread initialization is complete, the system shifts to the Operational Phase.   The standard does not specify a particular scheduling policy/order for initialization, each thread&#8217;s Initialize Entry Point is called exactly once, typically in a round-robin fashion.   During the operational phase, the Compute Entry Point of each thread (which implements the application logic of a thread) is called according to a developer-configured scheduling policy, set or derived from various AADL properties or other means (e.g., a static schedule provided as part of the platform infrastructure configuration).  In the current implementation of HAMR, after the operational phase is complete, the Finalize Entry Point for each thread is called.</p>
+<p>Thus, from the developer&#8217;s point of view, the business logic of the thread is programmed by implementing the following entry points (HAMR code generation provides a skeleton for each of these).</p>
 <ul class="simple">
-<li><p>Initialize Entry Point - used to initialize any thread-local variables, initialize drivers or other resources that the thread manages, and used to set the output ports with initial values.   The <strong>values of output data ports must be set</strong>, whereas sending messages on output event or event data ports is optional. <strong>Input ports must not be read in the Initialize Entry Point</strong>.   These read and write constraints are currently not enforced by static code analysis in the HAMR supported languages, although it is likely that they will be checked in the future for Slang.   The time at which the output port values are propagated to consumers is not specified in the standard – only that propagation is guaranteed before the operational phase starts.</p></li>
-<li><p>Compute Entry Point - used to implement the primary business logic of the component.  Port APIs, described in the following section are used to exchange information with other components to which the thread is connected.   In contrast to the other entry points, the structure of a thread’s Compute Entry Point differs depending on the dispatch mode (periodic or sporadic) of the thread as explained below.</p></li>
-<li><p>Finalize Entry Point - used to for any logic needed to achieve a graceful shutdown of the thread.  Currently, HAMR will not propagate any outgoing port communication initiated during the finalize entry point.</p></li>
+<li>Initialize Entry Point - used to initialize any thread-local variables, initialize drivers or other resources that the thread manages, and used to set the output ports with initial values.   The <strong>values of output data ports must be set</strong>, whereas sending messages on output event or event data ports is optional. <strong>Input ports must not be read in the Initialize Entry Point</strong>.   These read and write constraints are currently not enforced by static code analysis in the HAMR supported languages, although it is likely that they will be checked in the future for Slang.   The time at which the output port values are propagated to consumers is not specified in the standard &#8211; only that propagation is guaranteed before the operational phase starts.</li>
+<li>Compute Entry Point - used to implement the primary business logic of the component.  Port APIs, described in the following section are used to exchange information with other components to which the thread is connected.   In contrast to the other entry points, the structure of a thread&#8217;s Compute Entry Point differs depending on the dispatch mode (periodic or sporadic) of the thread as explained below.</li>
+<li>Finalize Entry Point - used to for any logic needed to achieve a graceful shutdown of the thread.  Currently, HAMR will not propagate any outgoing port communication initiated during the finalize entry point.</li>
 </ul>
 <p>The AADL standard specifies three additional entry points that HAMR does not currently support (see Section 5.4.1 of the standard):  A Recover Entry Point allows the developer to code recovery steps to be initiated on certain types of failures, and Activate and Deactivate Entry Points are used to support mode switching.</p>
-<p>For each HAMR-supported programming language, HAMR will generate method skeletons for the entry points for each thread component.   For example, for the Slang code generation of the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component, the HAMR-generated code will include the follow in a <code class="file docutils literal notranslate"><span class="pre">TempControl_i.scala</span></code>.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempControl_i</span> <span class="p">{</span> <span class="c1">// Slang interface collecting AADL standard thread entry points</span>
+<p>For each HAMR-supported programming language, HAMR will generate method skeletons for the entry points for each thread component.   For example, for the Slang code generation of the <code class="docutils literal"><span class="pre">TempControl</span></code> component, the HAMR-generated code will include the follow in a <code class="file docutils literal"><span class="pre">TempControl_i.scala</span></code>.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempControl_i</span> <span class="o">{</span> <span class="c1">// Slang interface collecting AADL standard thread entry points</span>
 
-  <span class="p">...</span>
+  <span class="o">...</span>
 
-  <span class="k">def</span> <span class="nf">initialise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1">// signature / skeleton for Initialize Entry Point</span>
+  <span class="k">def</span> <span class="n">initialise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>   <span class="c1">// signature / skeleton for Initialize Entry Point</span>
 
   <span class="c1">// Compute Entry Point not shown here -- code generation is handled in a different way for it</span>
 
-  <span class="k">def</span> <span class="nf">finalise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>     <span class="c1">// signature / skeleton for Initialize Entry Point</span>
+  <span class="k">def</span> <span class="n">finalise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>     <span class="c1">// signature / skeleton for Initialize Entry Point</span>
 
-  <span class="p">...</span>
-<span class="p">}</span>
+  <span class="o">...</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>These are skeletons for the Initialize Entry Point and Finalize Entry Point that the developer will override in a companion file <code class="file docutils literal notranslate"><span class="pre">TempControl_i_Impl.scala</span></code> to provide the implementation of these methods (along with the Compute Entry Point implementation) (see the following section).</p>
-</section>
-<section id="initialize-entry-point">
+<p>These are skeletons for the Initialize Entry Point and Finalize Entry Point that the developer will override in a companion file <code class="file docutils literal"><span class="pre">TempControl_i_Impl.scala</span></code> to provide the implementation of these methods (along with the Compute Entry Point implementation) (see the following section).</p>
+</div>
+<div class="section" id="initialize-entry-point">
 <h3><a class="toc-backref" href="#id14">Initialize Entry Point</a><a class="headerlink" href="#initialize-entry-point" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// TempSensor thread completed Initialize Entry Point</span>
-<span class="k">override</span> <span class="k">def</span> <span class="nf">initialise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="kd">val</span> <span class="n">temp</span> <span class="o">=</span> <span class="nc">TempSensorNative</span><span class="p">.</span><span class="n">currentTempGet</span><span class="p">()</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">setcurrentTemp</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
-<span class="p">}</span>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// TempSensor thread completed Initialize Entry Point</span>
+<span class="k">override</span> <span class="k">def</span> <span class="n">initialise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="nc">TempSensorNative</span><span class="o">.</span><span class="n">currentTempGet</span><span class="o">()</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">setcurrentTemp</span><span class="o">(</span><span class="n">temp</span><span class="o">)</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// TempControl thread completed Initialize Entry Point</span>
-<span class="k">override</span> <span class="k">def</span> <span class="nf">initialise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
- <span class="n">setPoint</span> <span class="o">=</span> <span class="nc">SetPoint</span><span class="p">(</span>
-    <span class="nc">Temperature</span><span class="p">(</span><span class="mf">55f</span><span class="p">,</span> <span class="nc">TempUnit</span><span class="p">.</span><span class="nc">Fahrenheit</span><span class="p">),</span>
-    <span class="nc">Temperature</span><span class="p">(</span><span class="mf">100f</span><span class="p">,</span> <span class="nc">TempUnit</span><span class="p">.</span><span class="nc">Fahrenheit</span><span class="p">))</span>
-<span class="p">}</span>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// TempControl thread completed Initialize Entry Point</span>
+<span class="k">override</span> <span class="k">def</span> <span class="n">initialise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+ <span class="n">setPoint</span> <span class="k">=</span> <span class="nc">SetPoint</span><span class="o">(</span>
+    <span class="nc">Temperature</span><span class="o">(</span><span class="mi">55</span><span class="n">f</span><span class="o">,</span> <span class="nc">TempUnit</span><span class="o">.</span><span class="nc">Fahrenheit</span><span class="o">),</span>
+    <span class="nc">Temperature</span><span class="o">(</span><span class="mi">100</span><span class="n">f</span><span class="o">,</span> <span class="nc">TempUnit</span><span class="o">.</span><span class="nc">Fahrenheit</span><span class="o">))</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-</section>
-<section id="compute-entry-point-thread-dispatch-modes">
-<h3><a class="toc-backref" href="#id15">Compute Entry Point – Thread Dispatch Modes</a><a class="headerlink" href="#compute-entry-point-thread-dispatch-modes" title="Permalink to this headline">¶</a></h3>
-<p>The manner in which a thread’s Compute Entry Point is invoked by the AADL run time as well as the HAMR-generated structure of the entry point itself is determined by the thread’s <em>dispatch protocol</em>.</p>
-<p>The developer sets the dispatch protocol for a thread by attaching the AADL property <code class="docutils literal notranslate"><span class="pre">Dispatch_Protocol</span></code> in the thread component type (note: according to the AADL standard, the dispatch protocol may also be set in a thread component implementation, but HAMR requires it to be in a component type because it determines the semantics of the component and the allowed structure of component contracts – thus it needs to be exposed in the “public interface” of the component as represented by the type).   For example, the following excerpts from the AADL model of the temperature control example illustrate that the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> component is declared to be <code class="docutils literal notranslate"><span class="pre">Periodic</span></code> whereas the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> thread is sporadic.</p>
-<div class="highlight-AADL notranslate"><div class="highlight"><pre><span></span>thread TempSensor
+</div>
+<div class="section" id="compute-entry-point-thread-dispatch-modes">
+<h3><a class="toc-backref" href="#id15">Compute Entry Point &#8211; Thread Dispatch Modes</a><a class="headerlink" href="#compute-entry-point-thread-dispatch-modes" title="Permalink to this headline">¶</a></h3>
+<p>The manner in which a thread&#8217;s Compute Entry Point is invoked by the AADL run time as well as the HAMR-generated structure of the entry point itself is determined by the thread&#8217;s <em>dispatch protocol</em>.</p>
+<p>The developer sets the dispatch protocol for a thread by attaching the AADL property <code class="docutils literal"><span class="pre">Dispatch_Protocol</span></code> in the thread component type (note: according to the AADL standard, the dispatch protocol may also be set in a thread component implementation, but HAMR requires it to be in a component type because it determines the semantics of the component and the allowed structure of component contracts &#8211; thus it needs to be exposed in the &#8220;public interface&#8221; of the component as represented by the type).   For example, the following excerpts from the AADL model of the temperature control example illustrate that the <code class="docutils literal"><span class="pre">TempSensor</span></code> component is declared to be <code class="docutils literal"><span class="pre">Periodic</span></code> whereas the <code class="docutils literal"><span class="pre">TempControl</span></code> thread is sporadic.</p>
+<div class="highlight-AADL"><div class="highlight"><pre>thread TempSensor
 features
    currentTemp : out data port Temperature;
    tempChanged : out event port;
@@ -416,338 +421,336 @@ end TempControl;
 </div>
 <p>The AADL standard specifies five different dispatch protocols, but only the following two are supported by HAMR.</p>
 <ul class="simple">
-<li><p>Periodic Dispatch - threads are released for scheduling (in AADL terms, <em>dispatched</em>) at a regular interval indicated by the <code class="docutils literal notranslate"><span class="pre">Period</span></code> property.</p></li>
-<li><p>Sporadic Dispatch - threads are released for scheduling when messages arrive on the thread’s input event or input event data ports.  AADL provides additional properties including notions of port priorities that allow finer grain control over the conditions for triggering a thread dispatch.  A minimum time between dispatches can also be specified to ensure the thread can function properly in situations where a failing sender component or an adversary might flood the thread with incoming messages.</p></li>
+<li>Periodic Dispatch - threads are released for scheduling (in AADL terms, <em>dispatched</em>) at a regular interval indicated by the <code class="docutils literal"><span class="pre">Period</span></code> property.</li>
+<li>Sporadic Dispatch - threads are released for scheduling when messages arrive on the thread&#8217;s input event or input event data ports.  AADL provides additional properties including notions of port priorities that allow finer grain control over the conditions for triggering a thread dispatch.  A minimum time between dispatches can also be specified to ensure the thread can function properly in situations where a failing sender component or an adversary might flood the thread with incoming messages.</li>
 </ul>
-<p>Other AADL dispatch protocols not currently supported by HAMR are Aperiodic Dispatch (similar to Sporadic but does not support the notion of a minimum interval between dispatching), Timed Dispatch (like Aperiodic, but an additional time out property can be specified that is reached will cause the thread to be dispatched), and Hybrid Dispatch (like Periodic and Aperiodic combined – the thread is dispatched both periodically and also upon the arrival of messages on event or event data ports).  See Section 5.4.2 of the AADL standard for details.</p>
-<figure class="align-center" id="id5">
+<p>Other AADL dispatch protocols not currently supported by HAMR are Aperiodic Dispatch (similar to Sporadic but does not support the notion of a minimum interval between dispatching), Timed Dispatch (like Aperiodic, but an additional time out property can be specified that is reached will cause the thread to be dispatched), and Hybrid Dispatch (like Periodic and Aperiodic combined &#8211; the thread is dispatched both periodically and also upon the arrival of messages on event or event data ports).  See Section 5.4.2 of the AADL standard for details.</p>
+<div class="figure align-center" id="id5">
 <span id="periodic-sporadic-code-structure"></span><img alt="../_images/Periodic-Sporadic-code-structure.png" src="../_images/Periodic-Sporadic-code-structure.png" />
-<figcaption>
-<p><span class="caption-text"><strong>Code Structure for Periodic and Sporadic Thread Dispatch Modes</strong></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
-<p>The following subsections discuss the structure of the HAMR-generated Compute Entry Points for HAMR supported protocols along with AADL properties that are used to further configure dispatching conditions or to specify thread properties that inform schedulability and resource constraint analysis. Figure <a class="reference internal" href="#periodic-sporadic-code-structure"><span class="std std-ref">Code Structure for Periodic and Sporadic Thread Dispatch Modes</span></a> summarizes concepts code structure that are discussed in greater detail below.</p>
-<section id="periodic-dispatch-application-code-structure">
+<p class="caption"><span class="caption-text"><strong>Code Structure for Periodic and Sporadic Thread Dispatch Modes</strong></span></p>
+</div>
+<p>The following subsections discuss the structure of the HAMR-generated Compute Entry Points for HAMR supported protocols along with AADL properties that are used to further configure dispatching conditions or to specify thread properties that inform schedulability and resource constraint analysis. Figure <a class="reference internal" href="#periodic-sporadic-code-structure"><span>Code Structure for Periodic and Sporadic Thread Dispatch Modes</span></a> summarizes concepts code structure that are discussed in greater detail below.</p>
+<div class="section" id="periodic-dispatch-application-code-structure">
 <h4>Periodic Dispatch Application Code Structure<a class="headerlink" href="#periodic-dispatch-application-code-structure" title="Permalink to this headline">¶</a></h4>
-<p>AADL threads with periodic dispatch mode correspond directly to the conventional notion of periodic thread from the real-time systems domain.  The thread is <em>time-triggered</em> – it is dispatched (released for scheduling) at a regular rate, determined by the thread’s period which is provided as an AADL property.   To program the application logic of a periodic component, the developer implements the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method whose skeleton is auto-generated by HAMR (the method has slightly different names depending on the target programming language).   The <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method is the developer’s view of the Compute Entry Point when a thread as a <code class="docutils literal notranslate"><span class="pre">Periodic</span></code> dispatch protocol.</p>
-<p>For example, for the periodic <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> thread, HAMR generates the following Slang method skeletons for entry points.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// HAMR-generated entry point skeletons in TempSensor_i.scala</span>
-<span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempSensor_i</span> <span class="p">{</span>
+<p>AADL threads with periodic dispatch mode correspond directly to the conventional notion of periodic thread from the real-time systems domain.  The thread is <em>time-triggered</em> &#8211; it is dispatched (released for scheduling) at a regular rate, determined by the thread&#8217;s period which is provided as an AADL property.   To program the application logic of a periodic component, the developer implements the <code class="docutils literal"><span class="pre">timeTriggered</span></code> method whose skeleton is auto-generated by HAMR (the method has slightly different names depending on the target programming language).   The <code class="docutils literal"><span class="pre">timeTriggered</span></code> method is the developer&#8217;s view of the Compute Entry Point when a thread as a <code class="docutils literal"><span class="pre">Periodic</span></code> dispatch protocol.</p>
+<p>For example, for the periodic <code class="docutils literal"><span class="pre">TempSensor</span></code> thread, HAMR generates the following Slang method skeletons for entry points.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// HAMR-generated entry point skeletons in TempSensor_i.scala</span>
+<span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempSensor_i</span> <span class="o">{</span>
 
    <span class="c1">// reference to APIs to support port communication</span>
-   <span class="k">def</span> <span class="nf">api</span> <span class="p">:</span> <span class="nc">TempSensor_i_Bridge</span><span class="p">.</span><span class="nc">Api</span>
+   <span class="k">def</span> <span class="n">api</span> <span class="k">:</span> <span class="kt">TempSensor_i_Bridge.Api</span>
 
    <span class="c1">// skeleton for Initialize Entry Point</span>
-   <span class="k">def</span> <span class="nf">initialise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>
+   <span class="k">def</span> <span class="n">initialise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>
 
    <span class="c1">// skeleton for developer&#39;s view of the compute entry point (following the pattern for periodic threads)</span>
-   <span class="k">def</span> <span class="nf">timeTriggered</span><span class="p">()</span> <span class="p">:</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>
+   <span class="k">def</span> <span class="n">timeTriggered</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>
 
    <span class="c1">// skeleton for the Finalize Entry Point</span>
-   <span class="k">def</span> <span class="nf">finalise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="p">}</span>
+   <span class="k">def</span> <span class="n">finalise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>Then, the Slang application logic of the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> is coded filling in the auto-generated skeleton for the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method as follows.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span> <span class="c1">// TempSensor application logic (excerpts) in TempSensor_i_Impl.scala</span>
+<p>Then, the Slang application logic of the <code class="docutils literal"><span class="pre">TempSensor</span></code> is coded filling in the auto-generated skeleton for the <code class="docutils literal"><span class="pre">timeTriggered</span></code> method as follows.</p>
+<div class="highlight-scala"><div class="highlight"><pre> <span class="c1">// TempSensor application logic (excerpts) in TempSensor_i_Impl.scala</span>
 
- <span class="k">override</span> <span class="k">def</span> <span class="nf">timeTriggered</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1">// this signature/skeleton is auto-generated</span>
+ <span class="k">override</span> <span class="k">def</span> <span class="n">timeTriggered</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>  <span class="c1">// this signature/skeleton is auto-generated</span>
  <span class="c1">// ==== developer programs application code below ===</span>
 
   <span class="c1">// get current temperature value from physical sensor using driver (not modeled in AADL)</span>
-  <span class="kd">val</span> <span class="n">temp</span> <span class="o">=</span> <span class="nc">TempSensorNative</span><span class="p">.</span><span class="n">currentTempGet</span><span class="p">()</span>
+  <span class="k">val</span> <span class="n">temp</span> <span class="k">=</span> <span class="nc">TempSensorNative</span><span class="o">.</span><span class="n">currentTempGet</span><span class="o">()</span>
   <span class="c1">// set the value of the `currentTemp` in AADL output data port using auto-generated API</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">setcurrentTemp</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">setcurrentTemp</span><span class="o">(</span><span class="n">temp</span><span class="o">)</span>
   <span class="c1">// send event on `tempChanged` on AADL output event port using auto-generated API</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">sendtempChanged</span><span class="p">()</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">sendtempChanged</span><span class="o">()</span>
   <span class="c1">// use internal library to convert raw temp to appropriate display format</span>
-  <span class="kd">val</span> <span class="n">degree</span> <span class="o">=</span> <span class="nc">Util</span><span class="p">.</span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">temp</span><span class="p">).</span><span class="n">degree</span>
+  <span class="k">val</span> <span class="n">degree</span> <span class="k">=</span> <span class="nc">Util</span><span class="o">.</span><span class="n">toFahrenheit</span><span class="o">(</span><span class="n">temp</span><span class="o">).</span><span class="n">degree</span>
   <span class="c1">// log value using auto-generated logging infrastructure</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;Sensed temperature: </span><span class="si">$</span><span class="n">degree</span><span class="s"> F&quot;</span><span class="p">)</span>
-<span class="p">}</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;Sensed temperature: </span><span class="si">$degree</span><span class="s"> F&quot;</span><span class="o">)</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>While the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method forms the <em>developer’s view</em> of the Compute Entry Point, behind the scenes, the HAMR-generated infrastructure for a periodic component includes a <code class="docutils literal notranslate"><span class="pre">compute</span></code> method that represents the <em>infrastructure’s view</em> of the Compute Entry Point.  The Slang version of this method is shown below.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// HAMR-generated infrastructure method -- hidden from developer (in TempSensor_i_Bridge.scala)</span>
-<span class="k">def</span> <span class="nf">compute</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
+<p>While the <code class="docutils literal"><span class="pre">timeTriggered</span></code> method forms the <em>developer&#8217;s view</em> of the Compute Entry Point, behind the scenes, the HAMR-generated infrastructure for a periodic component includes a <code class="docutils literal"><span class="pre">compute</span></code> method that represents the <em>infrastructure&#8217;s view</em> of the Compute Entry Point.  The Slang version of this method is shown below.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// HAMR-generated infrastructure method -- hidden from developer (in TempSensor_i_Bridge.scala)</span>
+<span class="k">def</span> <span class="n">compute</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
    <span class="c1">// AADL run time `receive input` makes infrastructure ports values visible to application code port APIs</span>
    <span class="c1">// ...this implements AADL&#39;s notion of &quot;port freezing&quot;</span>
-   <span class="nc">Art</span><span class="p">.</span><span class="n">receiveInput</span><span class="p">(</span><span class="n">eventInPortIds</span><span class="p">,</span> <span class="n">dataInPortIds</span><span class="p">)</span>
+   <span class="nc">Art</span><span class="o">.</span><span class="n">receiveInput</span><span class="o">(</span><span class="n">eventInPortIds</span><span class="o">,</span> <span class="n">dataInPortIds</span><span class="o">)</span>
    <span class="c1">// Compute Entry Point application code for periodic component is executed</span>
-   <span class="n">component</span><span class="p">.</span><span class="n">timeTriggered</span><span class="p">()</span>
+   <span class="n">component</span><span class="o">.</span><span class="n">timeTriggered</span><span class="o">()</span>
    <span class="c1">// AADL run time `sendOutput` releases values set by application code port APIs to infrastructure for propagation</span>
    <span class="c1">// to consuming components</span>
-   <span class="nc">Art</span><span class="p">.</span><span class="n">sendOutput</span><span class="p">(</span><span class="n">eventOutPortIds</span><span class="p">,</span> <span class="n">dataOutPortIds</span><span class="p">)</span>
- <span class="p">}</span>
+   <span class="nc">Art</span><span class="o">.</span><span class="n">sendOutput</span><span class="o">(</span><span class="n">eventOutPortIds</span><span class="o">,</span> <span class="n">dataOutPortIds</span><span class="o">)</span>
+ <span class="o">}</span>
 </pre></div>
 </div>
-<p>The delimiting of the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> application code by the AADL run time routines <code class="docutils literal notranslate"><span class="pre">receive</span> <span class="pre">input</span></code> and <code class="docutils literal notranslate"><span class="pre">send</span> <span class="pre">output</span></code> is an important aspect of the AADL standard’s computational paradigm (the rationale for this is discussed in a following subsection after structure of sporadic threads is presented).  Placing these calls in the auto-generated <code class="docutils literal notranslate"><span class="pre">compute</span></code> method in the infrastructure (separate from application code) guarantees that the computational paradigm is always followed.</p>
-</section>
-<section id="sporadic-dispatch-application-code-structure">
+<p>The delimiting of the <code class="docutils literal"><span class="pre">timeTriggered</span></code> application code by the AADL run time routines <code class="docutils literal"><span class="pre">receive</span> <span class="pre">input</span></code> and <code class="docutils literal"><span class="pre">send</span> <span class="pre">output</span></code> is an important aspect of the AADL standard&#8217;s computational paradigm (the rationale for this is discussed in a following subsection after structure of sporadic threads is presented).  Placing these calls in the auto-generated <code class="docutils literal"><span class="pre">compute</span></code> method in the infrastructure (separate from application code) guarantees that the computational paradigm is always followed.</p>
+</div>
+<div class="section" id="sporadic-dispatch-application-code-structure">
 <h4>Sporadic Dispatch Application Code Structure<a class="headerlink" href="#sporadic-dispatch-application-code-structure" title="Permalink to this headline">¶</a></h4>
-<p>An AADL thread with sporadic dispatch mode is dispatched upon the arrival of messages on its input event or event data ports.  In other words, it’s execution is <em>event-triggered</em> instead of <em>time-triggered</em>.   To tailor the application code structure to the event-driven character of the thread, HAMR generates a message handler method skeleton for each input event and event data port.   To program the application logic of a periodic component, the developer completes the implementation of these method handlers.   Thus, in contrast to a periodic component where the <code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method is the developer’s view of the Compute Entry Point, for a sporadic component the message handler methods form the developer’s view of the Compute Entry Point.</p>
-<p>For example, for the sporadic <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> thread, HAMR generates the following Slang method skeletons for entry points.</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="c1">// TempControl_i.scala - HAMR-generated method signatures and default implementations for entry points,</span>
+<p>An AADL thread with sporadic dispatch mode is dispatched upon the arrival of messages on its input event or event data ports.  In other words, it&#8217;s execution is <em>event-triggered</em> instead of <em>time-triggered</em>.   To tailor the application code structure to the event-driven character of the thread, HAMR generates a message handler method skeleton for each input event and event data port.   To program the application logic of a periodic component, the developer completes the implementation of these method handlers.   Thus, in contrast to a periodic component where the <code class="docutils literal"><span class="pre">timeTriggered</span></code> method is the developer&#8217;s view of the Compute Entry Point, for a sporadic component the message handler methods form the developer&#8217;s view of the Compute Entry Point.</p>
+<p>For example, for the sporadic <code class="docutils literal"><span class="pre">TempControl</span></code> thread, HAMR generates the following Slang method skeletons for entry points.</p>
+<div class="highlight-scala"><div class="highlight"><pre><span class="c1">// TempControl_i.scala - HAMR-generated method signatures and default implementations for entry points,</span>
 <span class="c1">//   including event handlers that support the implementation of the Compute Entry Point</span>
 
-<span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempControl_i</span> <span class="p">{</span>
+<span class="nd">@msig</span> <span class="k">trait</span> <span class="nc">TempControl_i</span> <span class="o">{</span>
 
    <span class="c1">// reference to APIs to support port communication</span>
-   <span class="k">def</span> <span class="nf">api</span> <span class="p">:</span> <span class="nc">TempControl_i_Bridge</span><span class="p">.</span><span class="nc">Api</span>
+   <span class="k">def</span> <span class="n">api</span> <span class="k">:</span> <span class="kt">TempControl_i_Bridge.Api</span>
 
    <span class="c1">// skeleton for Initialize Entry Point</span>
-   <span class="k">def</span> <span class="nf">initialise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>
+   <span class="k">def</span> <span class="n">initialise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>
 
    <span class="c1">// skeletons for developer&#39;s view of the compute entry point (following the pattern for sporadic threads)</span>
    <span class="c1">//   ...an message handler is generated for each input event and event data port</span>
 
    <span class="c1">// message handler for the `fanAck` input event data port -- `value` is the message payload</span>
-   <span class="k">def</span> <span class="nf">handlefanAck</span><span class="p">(</span><span class="n">value</span> <span class="p">:</span> <span class="nc">BuildingControl</span><span class="p">.</span><span class="nc">FanAck</span><span class="p">.</span><span class="nc">Type</span><span class="p">):</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="k">def</span> <span class="n">handlefanAck</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">BuildingControl.FanAck.Type</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
       <span class="c1">// auto-generated default implementation simply logs the incoming message payload</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;received </span><span class="si">${</span><span class="n">value</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">&quot;default fanAck implementation&quot;</span><span class="p">)</span>
-   <span class="p">}</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;received </span><span class="si">${</span><span class="n">value</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">&quot;default fanAck implementation&quot;</span><span class="o">)</span>
+   <span class="o">}</span>
 
    <span class="c1">// message handler for the `setPoint` input event data port -- `value` is the message payload</span>
-   <span class="k">def</span> <span class="nf">handlesetPoint</span><span class="p">(</span><span class="n">value</span> <span class="p">:</span> <span class="nc">BuildingControl</span><span class="p">.</span><span class="nc">SetPoint</span><span class="p">):</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="k">def</span> <span class="n">handlesetPoint</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">BuildingControl.SetPoint</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
       <span class="c1">// auto-generated default implementation simply logs the incoming message payload</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;received </span><span class="si">${</span><span class="n">value</span><span class="si">}</span><span class="s">&quot;</span><span class="p">)</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">&quot;default setPoint implementation&quot;</span><span class="p">)</span>
-   <span class="p">}</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;received </span><span class="si">${</span><span class="n">value</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">&quot;default setPoint implementation&quot;</span><span class="o">)</span>
+   <span class="o">}</span>
 
    <span class="c1">// event handler for the `tempChanged` input event port</span>
    <span class="c1">//  -- there is no parameter because an AADL event does not have a payload</span>
-   <span class="k">def</span> <span class="nf">handletempChanged</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="k">def</span> <span class="n">handletempChanged</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
       <span class="c1">// auto-generated default implementation simply logs a message that the event has been received</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">&quot;received tempChanged&quot;</span><span class="p">)</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">&quot;default tempChanged implementation&quot;</span><span class="p">)</span>
-   <span class="p">}</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">&quot;received tempChanged&quot;</span><span class="o">)</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">&quot;default tempChanged implementation&quot;</span><span class="o">)</span>
+   <span class="o">}</span>
 
    <span class="c1">// skeleton for Finalize Entry Point</span>
-   <span class="k">def</span> <span class="nf">finalise</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="p">}</span>
+   <span class="k">def</span> <span class="n">finalise</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{}</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>Then, in addition to completing the code for the Initialize and Finalize Entry Points, the primary Slang application logic of the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> is coded by filling in the auto-generated skeleton for the message handler methods as follows (only excerpts are shown).</p>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span> <span class="c1">// TempControl application logic (excerpts) in TempControl_i_Impl.scala</span>
+<p>Then, in addition to completing the code for the Initialize and Finalize Entry Points, the primary Slang application logic of the <code class="docutils literal"><span class="pre">TempControl</span></code> is coded by filling in the auto-generated skeleton for the message handler methods as follows (only excerpts are shown).</p>
+<div class="highlight-scala"><div class="highlight"><pre> <span class="c1">// TempControl application logic (excerpts) in TempControl_i_Impl.scala</span>
 
 <span class="c1">// event handler for the `tempChanged` input event port</span>
 <span class="c1">//  -- there is no parameter because an AADL event does not have a payload</span>
-<span class="k">override</span> <span class="k">def</span> <span class="nf">handletempChanged</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span><span class="c1">// this signature/skeleton is auto-generated</span>
+<span class="k">override</span> <span class="k">def</span> <span class="n">handletempChanged</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span><span class="c1">// this signature/skeleton is auto-generated</span>
 
   <span class="c1">// ==== developer programs application code below ===</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;received tempChanged&quot;</span><span class="p">)</span>  <span class="c1">// retain auto-generated call to logging</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;received tempChanged&quot;</span><span class="o">)</span>  <span class="c1">// retain auto-generated call to logging</span>
 
   <span class="c1">// use port APIs to read the value of the `currentTemp` input data port</span>
   <span class="c1">//  ...and use Util method to convert to Fahrenheit</span>
-  <span class="kd">val</span> <span class="n">tempInF</span> <span class="o">=</span> <span class="nc">Util</span><span class="p">.</span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">getcurrentTemp</span><span class="p">().</span><span class="n">get</span><span class="p">)</span>
+  <span class="k">val</span> <span class="n">tempInF</span> <span class="k">=</span> <span class="nc">Util</span><span class="o">.</span><span class="n">toFahrenheit</span><span class="o">(</span><span class="n">api</span><span class="o">.</span><span class="n">getcurrentTemp</span><span class="o">().</span><span class="n">get</span><span class="o">)</span>
   <span class="c1">// convert values of setpoint (saved local to the thread) to Fahrenheit</span>
-  <span class="kd">val</span> <span class="n">setPointLowInF</span> <span class="o">=</span> <span class="nc">Util</span><span class="p">.</span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">setPoint</span><span class="p">.</span><span class="n">low</span><span class="p">)</span>
-  <span class="kd">val</span> <span class="n">setPointHighInF</span> <span class="o">=</span> <span class="nc">Util</span><span class="p">.</span><span class="n">toFahrenheit</span><span class="p">(</span><span class="n">setPoint</span><span class="p">.</span><span class="n">high</span><span class="p">)</span>
+  <span class="k">val</span> <span class="n">setPointLowInF</span> <span class="k">=</span> <span class="nc">Util</span><span class="o">.</span><span class="n">toFahrenheit</span><span class="o">(</span><span class="n">setPoint</span><span class="o">.</span><span class="n">low</span><span class="o">)</span>
+  <span class="k">val</span> <span class="n">setPointHighInF</span> <span class="k">=</span> <span class="nc">Util</span><span class="o">.</span><span class="n">toFahrenheit</span><span class="o">(</span><span class="n">setPoint</span><span class="o">.</span><span class="n">high</span><span class="o">)</span>
 
   <span class="c1">// construct possible control message to send to Fan</span>
   <span class="c1">//  ...a Slang option type is used to indicate if a control message will be needed or not</span>
-  <span class="kd">val</span> <span class="n">cmdOpt</span><span class="p">:</span> <span class="nc">Option</span><span class="p">[</span><span class="nc">FanCmd</span><span class="p">.</span><span class="nc">Type</span><span class="p">]</span> <span class="o">=</span>
+  <span class="k">val</span> <span class="n">cmdOpt</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">FanCmd.Type</span><span class="o">]</span> <span class="k">=</span>
     <span class="c1">// if input temperature is higher than high set point, then</span>
     <span class="c1">//  indicate a control message is needed (using `Some`) and the</span>
     <span class="c1">//  message is to turn the fan on to cool the environment</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degree</span> <span class="o">&gt;</span> <span class="n">setPointHighInF</span><span class="p">.</span><span class="n">degree</span><span class="p">)</span> <span class="nc">Some</span><span class="p">(</span><span class="nc">FanCmd</span><span class="p">.</span><span class="nc">On</span><span class="p">)</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">tempInF</span><span class="o">.</span><span class="n">degree</span> <span class="o">&gt;</span> <span class="n">setPointHighInF</span><span class="o">.</span><span class="n">degree</span><span class="o">)</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">FanCmd</span><span class="o">.</span><span class="nc">On</span><span class="o">)</span>
     <span class="c1">// if input temperature is lower than low set point, then</span>
     <span class="c1">//  indicate a control message is needed (using `Some`) and the</span>
     <span class="c1">//  message is to turn the fan off to let the environment warm</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degree</span> <span class="o">&lt;</span> <span class="n">setPointLowInF</span><span class="p">.</span><span class="n">degree</span><span class="p">)</span> <span class="nc">Some</span><span class="p">(</span><span class="nc">FanCmd</span><span class="p">.</span><span class="nc">Off</span><span class="p">)</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">tempInF</span><span class="o">.</span><span class="n">degree</span> <span class="o">&lt;</span> <span class="n">setPointLowInF</span><span class="o">.</span><span class="n">degree</span><span class="o">)</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">FanCmd</span><span class="o">.</span><span class="nc">Off</span><span class="o">)</span>
     <span class="c1">// ... otherwise no control message is needed</span>
-    <span class="k">else</span> <span class="nc">None</span><span class="p">[</span><span class="nc">FanCmd</span><span class="p">.</span><span class="nc">Type</span><span class="p">]()</span>
+    <span class="k">else</span> <span class="nc">None</span><span class="o">[</span><span class="kt">FanCmd.Type</span><span class="o">]()</span>
   <span class="c1">// use pattern matching on cmdOpt to selectively send message on `fanCmd` output event data port</span>
-  <span class="n">cmdOpt</span> <span class="k">match</span> <span class="p">{</span>
+  <span class="n">cmdOpt</span> <span class="k">match</span> <span class="o">{</span>
     <span class="c1">// case where cmd has be built for sending</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span> <span class="o">=&gt;</span>
+    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">cmd</span><span class="o">)</span> <span class="k">=&gt;</span>
       <span class="c1">// use the auto-generated port API to send the message</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">sendfanCmd</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;Sent fan command: </span><span class="si">$</span><span class="n">cmd</span><span class="s">&quot;</span><span class="p">)</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">sendfanCmd</span><span class="o">(</span><span class="n">cmd</span><span class="o">)</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;Sent fan command: </span><span class="si">$cmd</span><span class="s">&quot;</span><span class="o">)</span>
     <span class="c1">// case where no cmd was built</span>
-    <span class="k">case</span> <span class="n">_</span> <span class="o">=&gt;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span>
       <span class="c1">// don&#39;t send a command, just log</span>
-      <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;Temperature ok: </span><span class="si">${</span><span class="n">tempInF</span><span class="p">.</span><span class="n">degree</span><span class="si">}</span><span class="s"> F&quot;</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+      <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;Temperature ok: </span><span class="si">${</span><span class="n">tempInF</span><span class="o">.</span><span class="n">degree</span><span class="si">}</span><span class="s"> F&quot;</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
 
 <span class="c1">// component local variable declared to hold received set point</span>
-<span class="kd">var</span> <span class="n">setPoint</span><span class="p">:</span> <span class="nc">SetPoint</span> <span class="o">=</span>
-  <span class="nc">SetPoint</span><span class="p">(</span> <span class="p">...</span> <span class="o">&lt;</span><span class="n">initialized</span> <span class="n">set</span> <span class="n">point</span> <span class="n">value</span><span class="o">&gt;</span> <span class="p">...</span> <span class="p">)</span>
+<span class="k">var</span> <span class="n">setPoint</span><span class="k">:</span> <span class="kt">SetPoint</span> <span class="o">=</span>
+  <span class="nc">SetPoint</span><span class="o">(</span> <span class="o">...</span> <span class="o">&lt;</span><span class="n">initialized</span> <span class="n">set</span> <span class="n">point</span> <span class="n">value</span><span class="o">&gt;</span> <span class="o">...</span> <span class="o">)</span>
 
 <span class="c1">// message handler for the `setPoint` input event data port -- `value` is the message payload</span>
-<span class="k">override</span> <span class="k">def</span> <span class="nf">handlesetPoint</span><span class="p">(</span><span class="n">value</span> <span class="p">:</span> <span class="nc">BuildingControl</span><span class="p">.</span><span class="nc">SetPoint</span><span class="p">):</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span><span class="c1">// this signature/skeleton is auto-generated</span>
+<span class="k">override</span> <span class="k">def</span> <span class="n">handlesetPoint</span><span class="o">(</span><span class="n">value</span> <span class="k">:</span> <span class="kt">BuildingControl.SetPoint</span><span class="o">)</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span><span class="c1">// this signature/skeleton is auto-generated</span>
 
   <span class="c1">// ==== developer programs application code below ===</span>
-  <span class="n">api</span><span class="p">.</span><span class="n">logInfo</span><span class="p">(</span><span class="s">s&quot;received setPoint </span><span class="si">$</span><span class="n">value</span><span class="s">&quot;</span><span class="p">)</span>
+  <span class="n">api</span><span class="o">.</span><span class="n">logInfo</span><span class="o">(</span><span class="s">s&quot;received setPoint </span><span class="si">$value</span><span class="s">&quot;</span><span class="o">)</span>
   <span class="c1">// assign received set point value to component local variable</span>
-  <span class="n">setPoint</span> <span class="o">=</span> <span class="n">value</span>
-<span class="p">}</span>
+  <span class="n">setPoint</span> <span class="k">=</span> <span class="n">value</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>While the message handler methods form the <em>developer’s view</em> of the Compute Entry Point, behind the scenes, the HAMR-generated infrastructure for a sporadic thread includes a <code class="docutils literal notranslate"><span class="pre">compute</span></code> method that represents the <em>infrastructure’s view</em> of the Compute Entry Point.  The Slang version of this method is shown below.</p>
+<p>While the message handler methods form the <em>developer&#8217;s view</em> of the Compute Entry Point, behind the scenes, the HAMR-generated infrastructure for a sporadic thread includes a <code class="docutils literal"><span class="pre">compute</span></code> method that represents the <em>infrastructure&#8217;s view</em> of the Compute Entry Point.  The Slang version of this method is shown below.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ToDo: The processing of <em>all</em> incoming events is not aligned with the AADL standard.  Instead, only one event should be processed per dispatch. It also does not incorporate the more sophisticated semantics for “dispatch trigger” ports, urgency, etc.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">ToDo: The processing of <em>all</em> incoming events is not aligned with the AADL standard.  Instead, only one event should be processed per dispatch. It also does not incorporate the more sophisticated semantics for &#8220;dispatch trigger&#8221; ports, urgency, etc.</p>
 </div>
-<div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">compute</span><span class="p">():</span> <span class="nc">Unit</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-scala"><div class="highlight"><pre><span class="k">def</span> <span class="n">compute</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
    <span class="c1">// get ids of event / event data ports that have pending messages.</span>
-   <span class="kd">val</span> <span class="nc">EventTriggered</span><span class="p">(</span><span class="n">portIds</span><span class="p">)</span> <span class="o">=</span> <span class="nc">Art</span><span class="p">.</span><span class="n">dispatchStatus</span><span class="p">(</span><span class="nc">TempControl_i_BridgeId</span><span class="p">)</span>
+   <span class="k">val</span> <span class="nc">EventTriggered</span><span class="o">(</span><span class="n">portIds</span><span class="o">)</span> <span class="k">=</span> <span class="nc">Art</span><span class="o">.</span><span class="n">dispatchStatus</span><span class="o">(</span><span class="nc">TempControl_i_BridgeId</span><span class="o">)</span>
    <span class="c1">// &quot;freeze&quot; data ports -- move data port values from infrastructure to application space</span>
-   <span class="nc">Art</span><span class="p">.</span><span class="n">receiveInput</span><span class="p">(</span><span class="n">portIds</span><span class="p">,</span> <span class="n">dataInPortIds</span><span class="p">)</span>
+   <span class="nc">Art</span><span class="o">.</span><span class="n">receiveInput</span><span class="o">(</span><span class="n">portIds</span><span class="o">,</span> <span class="n">dataInPortIds</span><span class="o">)</span>
 
    <span class="c1">// === invoking application code (event handlers) ===</span>
    <span class="c1">// for each arrived event, call the corresponding event handler</span>
-   <span class="k">for</span><span class="p">(</span><span class="n">portId</span> <span class="o">&lt;-</span> <span class="n">portIds</span><span class="p">)</span> <span class="p">{</span>
+   <span class="k">for</span><span class="o">(</span><span class="n">portId</span> <span class="k">&lt;-</span> <span class="n">portIds</span><span class="o">)</span> <span class="o">{</span>
      <span class="c1">// if an event arrived on the `fanAck` port</span>
-     <span class="k">if</span><span class="p">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">fanAck_Id</span><span class="p">){</span>
+     <span class="k">if</span><span class="o">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">fanAck_Id</span><span class="o">){</span>
        <span class="c1">// get the message payload and call the fanAck event handler with the message payload as parameter</span>
-       <span class="kd">val</span> <span class="nc">Some</span><span class="p">(</span><span class="nc">BuildingControl</span><span class="p">.</span><span class="nc">FanAck_Payload</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">=</span> <span class="nc">Art</span><span class="p">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">fanAck_Id</span><span class="p">)</span>
-       <span class="n">component</span><span class="p">.</span><span class="n">handlefanAck</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-     <span class="p">}</span> <span class="c1">// process setPoint event data in same manner as above</span>
-     <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">setPoint_Id</span><span class="p">){</span>
-       <span class="kd">val</span> <span class="nc">Some</span><span class="p">(</span><span class="nc">BuildingControl</span><span class="p">.</span><span class="nc">SetPoint_Payload</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="o">=</span> <span class="nc">Art</span><span class="p">.</span><span class="n">getValue</span><span class="p">(</span><span class="n">setPoint_Id</span><span class="p">)</span>
-       <span class="n">component</span><span class="p">.</span><span class="n">handlesetPoint</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-     <span class="p">}</span>
-     <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">tempChanged_Id</span><span class="p">)</span> <span class="p">{</span>
+       <span class="k">val</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">BuildingControl</span><span class="o">.</span><span class="nc">FanAck_Payload</span><span class="o">(</span><span class="n">value</span><span class="o">))</span> <span class="k">=</span> <span class="nc">Art</span><span class="o">.</span><span class="n">getValue</span><span class="o">(</span><span class="n">fanAck_Id</span><span class="o">)</span>
+       <span class="n">component</span><span class="o">.</span><span class="n">handlefanAck</span><span class="o">(</span><span class="n">value</span><span class="o">)</span>
+     <span class="o">}</span> <span class="c1">// process setPoint event data in same manner as above</span>
+     <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">setPoint_Id</span><span class="o">){</span>
+       <span class="k">val</span> <span class="nc">Some</span><span class="o">(</span><span class="nc">BuildingControl</span><span class="o">.</span><span class="nc">SetPoint_Payload</span><span class="o">(</span><span class="n">value</span><span class="o">))</span> <span class="k">=</span> <span class="nc">Art</span><span class="o">.</span><span class="n">getValue</span><span class="o">(</span><span class="n">setPoint_Id</span><span class="o">)</span>
+       <span class="n">component</span><span class="o">.</span><span class="n">handlesetPoint</span><span class="o">(</span><span class="n">value</span><span class="o">)</span>
+     <span class="o">}</span>
+     <span class="k">else</span> <span class="k">if</span><span class="o">(</span><span class="n">portId</span> <span class="o">==</span> <span class="n">tempChanged_Id</span><span class="o">)</span> <span class="o">{</span>
        <span class="c1">// `tempChanged` port is event (not event data) so there is no payload to pass to the event handler</span>
-       <span class="n">component</span><span class="p">.</span><span class="n">handletempChanged</span><span class="p">()</span>
-     <span class="p">}</span>
-   <span class="p">}</span>
+       <span class="n">component</span><span class="o">.</span><span class="n">handletempChanged</span><span class="o">()</span>
+     <span class="o">}</span>
+   <span class="o">}</span>
    <span class="c1">// after all event handlers have run, propagate to consumers the values that they wrote to output ports</span>
-   <span class="nc">Art</span><span class="p">.</span><span class="n">sendOutput</span><span class="p">(</span><span class="n">eventOutPortIds</span><span class="p">,</span> <span class="n">dataOutPortIds</span><span class="p">)</span>
- <span class="p">}</span>
+   <span class="nc">Art</span><span class="o">.</span><span class="n">sendOutput</span><span class="o">(</span><span class="n">eventOutPortIds</span><span class="o">,</span> <span class="n">dataOutPortIds</span><span class="o">)</span>
+ <span class="o">}</span>
 </pre></div>
 </div>
-<p>Similar to the way that the periodic thread application code (<code class="docutils literal notranslate"><span class="pre">timeTriggered</span></code> method) was delimited by <code class="docutils literal notranslate"><span class="pre">receive</span> <span class="pre">input</span></code> and <code class="docutils literal notranslate"><span class="pre">send</span> <span class="pre">output</span></code>, the same form of delimiting occurs in the code above for the sporadic application code (the event handlers).</p>
-</section>
-</section>
-<section id="finalize-entry-point">
+<p>Similar to the way that the periodic thread application code (<code class="docutils literal"><span class="pre">timeTriggered</span></code> method) was delimited by <code class="docutils literal"><span class="pre">receive</span> <span class="pre">input</span></code> and <code class="docutils literal"><span class="pre">send</span> <span class="pre">output</span></code>, the same form of delimiting occurs in the code above for the sporadic application code (the event handlers).</p>
+</div>
+</div>
+<div class="section" id="finalize-entry-point">
 <h3><a class="toc-backref" href="#id16">Finalize Entry Point</a><a class="headerlink" href="#finalize-entry-point" title="Permalink to this headline">¶</a></h3>
 <p>The notion of Finalize Entry Point is somewhat under-specified in the AADL standard.  In HAMR, the Finalize Entry Point is used to for any application logic needed to achieve a graceful shutdown of the application component.  This might include close any system services (e.g., GUIs, communication links) not directly modeled in AADL, or sending shutdown logging messages.  A HAMR thread will not receive any incoming port communication nor propagate any outgoing port communication during the execution of the Finalize Entry Point.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ToDo: Need to indicate what system state / condition triggers the activitation of the Finalize Entry Point.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">ToDo: Need to indicate what system state / condition triggers the activitation of the Finalize Entry Point.</p>
 </div>
-</section>
-<section id="aadl-computational-paradigm-rationale-for-thread-structure">
-<h3><a class="toc-backref" href="#id17">AADL Computational Paradigm – Rationale for Thread Structure</a><a class="headerlink" href="#aadl-computational-paradigm-rationale-for-thread-structure" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="aadl-computational-paradigm-rationale-for-thread-structure">
+<h3><a class="toc-backref" href="#id17">AADL Computational Paradigm &#8211; Rationale for Thread Structure</a><a class="headerlink" href="#aadl-computational-paradigm-rationale-for-thread-structure" title="Permalink to this headline">¶</a></h3>
 <p>The following clause from Section 5.4 (2) of the AADL summarizes some fundamental properties of AADL’s computation paradigm:</p>
 <div class="topic">
-<p class="topic-title">AADL Computational Paradigm (AADL Standard - Clause 5.4 (2))</p>
+<p class="topic-title first">AADL Computational Paradigm (AADL Standard - Clause 5.4 (2))</p>
 <p>AADL supports an input-compute-output model of communication and execution for threads and port-based communication. The inputs received from other components are frozen at a specified point, by default the dispatch of a thread. As a result the computation performed by a thread is not affected by the arrival of new input until an explicit request for input, by default the next dispatch. Similarly, the output is made available to other components at a specified point in time, for data ports by default at completion time or thread deadline. In other words, AADL is able to support both synchronous execution and communication behavior, e.g., in the form of deterministic sampling of a control system data stream, as well as asynchronous concurrent processing.</p>
 </div>
 <p>The phrasing “AADL supports” indicates that AADL emphasizes the model of computation, but it does not require it. It emphasizes it by:</p>
 <ul class="simple">
-<li><p>defining a constrained structure for threads and thread states that support the model,</p></li>
-<li><p>defining a collection of run-time services sending and receiving values over components ports,</p></li>
-<li><p>defining a collection of built in properties for configuring and specifying properties (including timing and latency properties) that rely on the model, and</p></li>
-<li><p>providing foundations for automated schedulability and latency analysis that rely on the model.</p></li>
+<li>defining a constrained structure for threads and thread states that support the model,</li>
+<li>defining a collection of run-time services sending and receiving values over components ports,</li>
+<li>defining a collection of built in properties for configuring and specifying properties (including timing and latency properties) that rely on the model, and</li>
+<li>providing foundations for automated schedulability and latency analysis that rely on the model.</li>
 </ul>
 <p>The computational paradigm described in the standard clause above has long been emphasized within the real-time systems community as an approach to engineer systems that are more easily analyzable. For example, the following pseudo-code suggesting a structure for real-time tasks is taken from “Analysable Real-Time Systems Programmed in Ada” (Section 2.3 p. 30) by Alan Burns and Andy Wellings (the notation/syntax/comments have been adapted slighly to make a stronger connection to AADL terminology):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loop</span>
-  <span class="n">wait</span> <span class="k">for</span> <span class="n">dispatch</span>
-  <span class="o">//</span> <span class="o">====</span> <span class="n">RECEIVE</span> <span class="n">INPUT</span> <span class="o">=====</span>
-  <span class="n">Read</span> <span class="n">data</span> <span class="kn">from</span> <span class="nn">other</span> <span class="n">components</span> <span class="n">into</span> <span class="nb">input</span> <span class="n">port</span> <span class="n">variables</span> <span class="n">In1</span><span class="p">,</span> <span class="n">In2</span><span class="p">,</span> <span class="p">,</span> <span class="n">Inm</span>
-  <span class="o">//</span> <span class="o">====</span> <span class="n">DO</span> <span class="n">APPLICATION</span> <span class="n">WORK</span> <span class="o">====</span>
-  <span class="o">//</span> <span class="n">compute</span> <span class="n">output</span> <span class="n">values</span> <span class="kn">from</span> <span class="nn">current</span> <span class="n">component</span>
-  <span class="o">//</span> <span class="n">state</span> <span class="n">S</span> <span class="p">(</span><span class="n">may</span> <span class="n">include</span> <span class="n">many</span> <span class="n">local</span> <span class="n">variables</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">input</span> <span class="n">values</span>
-  <span class="n">Out1</span><span class="p">,</span> <span class="n">Out2</span><span class="p">,</span> <span class="p">,</span> <span class="n">OutN</span> <span class="o">:=</span> <span class="n">G</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">In1</span><span class="p">,</span> <span class="n">In2</span><span class="p">,</span> <span class="p">,</span> <span class="n">Inm</span><span class="p">)</span>
-  <span class="o">//</span> <span class="n">compute</span> <span class="n">new</span> <span class="n">local</span> <span class="n">state</span> <span class="kn">from</span> <span class="nn">current</span> <span class="n">local</span> <span class="n">state</span> <span class="ow">and</span> <span class="nb">input</span> <span class="n">values</span>
-  <span class="n">S</span> <span class="o">:=</span> <span class="n">F</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">In1</span><span class="p">,</span> <span class="n">In2</span><span class="p">,</span> <span class="p">,</span> <span class="n">Inm</span><span class="p">)</span>
-  <span class="o">//</span> <span class="o">====</span> <span class="n">SEND</span> <span class="n">OUTPUT</span> <span class="o">====</span>
-  <span class="n">Write</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">output</span> <span class="n">ports</span> <span class="n">to</span> <span class="n">other</span> <span class="n">components</span>
-<span class="n">end</span> <span class="n">loop</span> <span class="o">//</span> <span class="p">(</span><span class="n">repeats</span> <span class="n">forever</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre>loop
+  wait for dispatch
+  // ==== RECEIVE INPUT =====
+  Read data from other components into input port variables In1, In2, , Inm
+  // ==== DO APPLICATION WORK ====
+  // compute output values from current component
+  // state S (may include many local variables) and input values
+  Out1, Out2, , OutN := G(S,In1, In2, , Inm)
+  // compute new local state from current local state and input values
+  S := F(S, In1, In2, , Inm)
+  // ==== SEND OUTPUT ====
+  Write data in output ports to other components
+end loop // (repeats forever)
 </pre></div>
 </div>
 <p>While AADL and HAMR provide much more flexibility in how the application code (the section marked “DO APPLICATION WORK”) is structured, the overall effect of AADL’s computational paradigm is very similar to the Burns/Wellings outline above. When an AADL thread component is declared to be computational paradigm compliant (the notation for this is not finalized), HAMR goes beyond what is required in the AADL standard to support the computational paradigm – in particular, it generates infrastructure code and application code skeletons in way that guarantees that the application code will conform to AADL’s computation model. Specifically, referring to the pseudo-code above, the HAMR approach hides from the developer the code for looping, waiting for dispatch, and sending/receiving information between components. This enables the developer to focus on coding and verifying the “application work” code.</p>
 <p>Some of the key aspects in the HAMR “strict AADL adherence” approach are:</p>
 <ul class="simple">
-<li><p>constrained structure for threads and thread states – HAMR follows the entry point structure defined in the standard, and it adheres to the standard guidance regarding Compute Entry Point structure for periodic and sporadic components.  It goes beyond what is specified in the standard to actually <em>enforce</em> the structure through its code generation patterns for periodic and sporadic Compute Entry Points.</p></li>
-<li><p>communictation – HAMR further constrains the AADL use of run-time services for sending and receiving values over components ports by created dedicated APIs for each component for sending and receiving values over ports.</p></li>
-<li><p>arrangement of communication wrt application code – while AADL provides some leeway as to when the exchange of information between components occurs, HAMR takes the strictest interpretation of the AADL standard and always forces port receives and sends to occur at the beginning and ending of the Compute Entry Point (as was illustrated in the auto-generated code above by delimiting the Compute Entry Point application code with <code class="docutils literal notranslate"><span class="pre">receiveInput</span></code> and <code class="docutils literal notranslate"><span class="pre">sendOutput</span></code> calls).</p></li>
+<li>constrained structure for threads and thread states &#8211; HAMR follows the entry point structure defined in the standard, and it adheres to the standard guidance regarding Compute Entry Point structure for periodic and sporadic components.  It goes beyond what is specified in the standard to actually <em>enforce</em> the structure through its code generation patterns for periodic and sporadic Compute Entry Points.</li>
+<li>communictation &#8211; HAMR further constrains the AADL use of run-time services for sending and receiving values over components ports by created dedicated APIs for each component for sending and receiving values over ports.</li>
+<li>arrangement of communication wrt application code &#8211; while AADL provides some leeway as to when the exchange of information between components occurs, HAMR takes the strictest interpretation of the AADL standard and always forces port receives and sends to occur at the beginning and ending of the Compute Entry Point (as was illustrated in the auto-generated code above by delimiting the Compute Entry Point application code with <code class="docutils literal"><span class="pre">receiveInput</span></code> and <code class="docutils literal"><span class="pre">sendOutput</span></code> calls).</li>
 </ul>
 <p>These HAMR restructions have the following implications:</p>
 <ul class="simple">
-<li><p>Input values are read once – there is no notion of getting updated input values in the middle of the task processing. This avoids issues related to race conditions and otherwise having application code use locks on data, which due to developer inexperience and mistakes can lead to concurrency related bugs. All locking or synchronization via scheduling is isolated in the infrastructure code (which can be assured once and for all).</p></li>
-<li><p>Input values are read together at the same conceptual point in time. This avoids inputs values being uncorrelated in time.</p></li>
-<li><p>Task application code never blocks while waiting for data or some other condition in the middle of its execution. This makes reasoning about worse-case execution time (and resulting scheduling) easier.</p></li>
+<li>Input values are read once – there is no notion of getting updated input values in the middle of the task processing. This avoids issues related to race conditions and otherwise having application code use locks on data, which due to developer inexperience and mistakes can lead to concurrency related bugs. All locking or synchronization via scheduling is isolated in the infrastructure code (which can be assured once and for all).</li>
+<li>Input values are read together at the same conceptual point in time. This avoids inputs values being uncorrelated in time.</li>
+<li>Task application code never blocks while waiting for data or some other condition in the middle of its execution. This makes reasoning about worse-case execution time (and resulting scheduling) easier.</li>
 </ul>
-<p>HAMR’s strict interpretation of AADL facilitates compositional verification of components (this will be illustrated in forthcoming chapters on HARM AADL/Slang contracts).   The constraints on the Compute Entry Point enable each invocation of the entry point to be view semantically as a function from port inputs to outputs (with optional update of local state variables – this means that the local state variables are both inputs and outputs to the function).  This facilities designing HAMR AADL/Slang contracts based on pre/post-conditions and invariants on thread component entry points.</p>
-<p>As indicated in <a class="reference internal" href="ch00-hamr-overview.html#ch00-hamr-overview"><span class="std std-ref">HAMR Overview</span></a>, it is possible to use AADL and HAMR in portions of the system that do not adhere to the AADL computational paradigm. In such cases, some of AADL’s specification and analysis concepts will not apply (or rather, they can be applied to achieve some utility, but they will not be sound). The most common use-case for such situations is the incorporation of legacy components.</p>
+<p>HAMR&#8217;s strict interpretation of AADL facilitates compositional verification of components (this will be illustrated in forthcoming chapters on HARM AADL/Slang contracts).   The constraints on the Compute Entry Point enable each invocation of the entry point to be view semantically as a function from port inputs to outputs (with optional update of local state variables &#8211; this means that the local state variables are both inputs and outputs to the function).  This facilities designing HAMR AADL/Slang contracts based on pre/post-conditions and invariants on thread component entry points.</p>
+<p>As indicated in <a class="reference internal" href="ch00-hamr-overview.html#ch00-hamr-overview"><span>HAMR Overview</span></a>, it is possible to use AADL and HAMR in portions of the system that do not adhere to the AADL computational paradigm. In such cases, some of AADL’s specification and analysis concepts will not apply (or rather, they can be applied to achieve some utility, but they will not be sound). The most common use-case for such situations is the incorporation of legacy components.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>ToDo: Give point to section of documentation discussing dealing with legacy components:</strong></p>
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>ToDo: Give point to section of documentation discussing dealing with legacy components:</strong></p>
 </div>
-</section>
-</section>
-<section id="port-based-communication">
+</div>
+</div>
+<div class="section" id="port-based-communication">
 <h2><a class="toc-backref" href="#id18">Port-based Communication</a><a class="headerlink" href="#port-based-communication" title="Permalink to this headline">¶</a></h2>
-<p>The primary form of AADL inter-component communication is port-based communication (described in the section below), which covers most of the communication patterns used in embedded and distributed systems.   AADL also provides facility for <a href="#id1"><span class="problematic" id="id2">``</span></a>subprogram calls’’ (which are roughly the same as remote procedure calls) and access to shared data objects.   Among these, port-based communication is by far the most developed and emphasized in the AADL standard.  <em>HAMR only supports port-based communication at this time</em>.</p>
-<section id="port-communication-run-time-services-and-hamr-application-api-concepts">
+<p>The primary form of AADL inter-component communication is port-based communication (described in the section below), which covers most of the communication patterns used in embedded and distributed systems.   AADL also provides facility for <a href="#id1"><span class="problematic" id="id2">``</span></a>subprogram calls&#8217;&#8217; (which are roughly the same as remote procedure calls) and access to shared data objects.   Among these, port-based communication is by far the most developed and emphasized in the AADL standard.  <em>HAMR only supports port-based communication at this time</em>.</p>
+<div class="section" id="port-communication-run-time-services-and-hamr-application-api-concepts">
 <h3><a class="toc-backref" href="#id19">Port Communication Run-Time Services and HAMR Application API Concepts</a><a class="headerlink" href="#port-communication-run-time-services-and-hamr-application-api-concepts" title="Permalink to this headline">¶</a></h3>
 <p>XXXXXXXX stopped here XXXXXXXXXXX</p>
 <ul class="simple">
-<li><p>Figure - of receive input, send output and quotes from standard</p></li>
-<li><p>Notion of port states</p></li>
-<li><p>Receive input and send output as abstractions of real-time middleware</p></li>
-<li><p>Component-specific HAMR generated APIs as wrappers for generic middleware concepts</p></li>
+<li>Figure - of receive input, send output and quotes from standard</li>
+<li>Notion of port states</li>
+<li>Receive input and send output as abstractions of real-time middleware</li>
+<li>Component-specific HAMR generated APIs as wrappers for generic middleware concepts</li>
 </ul>
-</section>
-<section id="port-categories-data-event-and-event-data">
+</div>
+<div class="section" id="port-categories-data-event-and-event-data">
 <h3><a class="toc-backref" href="#id20">Port Categories: Data, Event, and Event Data</a><a class="headerlink" href="#port-categories-data-event-and-event-data" title="Permalink to this headline">¶</a></h3>
-<p>AADL provides three categories of port-based communication: event data ports, data ports, and event ports.   The purpose of AADL’s three categories of ports is best described in Clauses (3, 12, 13, 14) of Section 8.3 the standard (quoting from the standard below).</p>
+<p>AADL provides three categories of port-based communication: event data ports, data ports, and event ports.   The purpose of AADL&#8217;s three categories of ports is best described in Clauses (3, 12, 13, 14) of Section 8.3 the standard (quoting from the standard below).</p>
 <div class="topic">
-<p class="topic-title">AADL Port Categories (AADL Standard - Section 8.3)</p>
+<p class="topic-title first">AADL Port Categories (AADL Standard - Section 8.3)</p>
 <ol class="arabic simple" start="3">
-<li><p>AADL distinguishes between three port categories. Event data ports are ports through which data is sent and received. The arrival of data at the destination may trigger a dispatch or a mode switch. The data may be queued if the destination component is busy. Event data ports effectively represent message ports. Data ports are event data ports with a queue size of one in which the newest arrival is kept. By default arrival of data at data ports does not trigger a dispatch. Data ports effectively represent unqueued ports that communicate state information, such as signal streams that are sampled and processed in control loops. Event ports are event data ports with empty message content. Event ports effectively represent discrete events in the physical environment, such as a button push, in the computing platform, such as a clock interrupt, or a logical discrete event, such as an alarm.</p></li>
+<li>AADL distinguishes between three port categories. Event data ports are ports through which data is sent and received. The arrival of data at the destination may trigger a dispatch or a mode switch. The data may be queued if the destination component is busy. Event data ports effectively represent message ports. Data ports are event data ports with a queue size of one in which the newest arrival is kept. By default arrival of data at data ports does not trigger a dispatch. Data ports effectively represent unqueued ports that communicate state information, such as signal streams that are sampled and processed in control loops. Event ports are event data ports with empty message content. Event ports effectively represent discrete events in the physical environment, such as a button push, in the computing platform, such as a clock interrupt, or a logical discrete event, such as an alarm.</li>
 </ol>
 <ol class="arabic simple" start="12">
-<li><p>Data ports are intended for transmission of state data such as sensor data streams. Therefore, no queuing is supported for data ports. […]</p></li>
-<li><p>Event data ports are intended for message transmission, i.e., the queuing of the event and associated data at the port of the receiving thread. A receiving thread can get access to one or more data element in the queue according to the Dequeue_Protocol and Dequeued_Items properties (see Section 8.3.3). […]</p></li>
-<li><p>Event ports are intended for event and alarm transmission, i.e., the queuing of events at the port of the receiving thread, possibly resulting in a dispatch or mode transition. A receiving thread can get access to one or more events in the queue according to the Dequeue_Protocol and the Dequeue_Items property. […]</p></li>
+<li>Data ports are intended for transmission of state data such as sensor data streams. Therefore, no queuing is supported for data ports. [...]</li>
+<li>Event data ports are intended for message transmission, i.e., the queuing of the event and associated data at the port of the receiving thread. A receiving thread can get access to one or more data element in the queue according to the Dequeue_Protocol and Dequeued_Items properties (see Section 8.3.3). [...]</li>
+<li>Event ports are intended for event and alarm transmission, i.e., the queuing of events at the port of the receiving thread, possibly resulting in a dispatch or mode transition. A receiving thread can get access to one or more events in the queue according to the Dequeue_Protocol and the Dequeue_Items property. [...]</li>
 </ol>
 </div>
 <p>XXXXXXXX stopped here XXXXXXXXXXX</p>
-<p>In listing XXX, the port <code class="docutils literal notranslate"><span class="pre">fanCmd</span></code> in <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> that sent a command to turn the fan on/off was modeled as an <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">data</span></code> port because it is naturally aperiodic (the command doesn’t change with each temperature sensor reading) and it is natural to trigger a dispatch of the <code class="docutils literal notranslate"><span class="pre">Fan</span></code> component only when it needs to change its state (on/off).  The <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> reading output by the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> was modeled as a <code class="docutils literal notranslate"><span class="pre">data</span></code> port so that the latest temperature reading would always be available to the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component, but the arrival of data to <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> need not trigger a dispatch.  A notification from the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> indicating that the temperature changed was modeled as an <code class="docutils literal notranslate"><span class="pre">event</span></code> port (it communicates a message with no payload).  A reasonable alternative design could model the <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> as an event data port, which would produce an aperiodic message only when the temperature changed (removing the need for the separate <code class="docutils literal notranslate"><span class="pre">tempChanged</span></code>).   With <code class="docutils literal notranslate"><span class="pre">currentTemp</span></code> as an event data port, it is also possible to have the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> message sent periodically at the same rate of the <code class="docutils literal notranslate"><span class="pre">TempSensor</span></code> thread, and this would cause the <code class="docutils literal notranslate"><span class="pre">TempControl</span></code> component to be dispatched at the same rate. alternatives.</p>
+<p>In listing XXX, the port <code class="docutils literal"><span class="pre">fanCmd</span></code> in <code class="docutils literal"><span class="pre">TempControl</span></code> that sent a command to turn the fan on/off was modeled as an <code class="docutils literal"><span class="pre">event</span> <span class="pre">data</span></code> port because it is naturally aperiodic (the command doesn&#8217;t change with each temperature sensor reading) and it is natural to trigger a dispatch of the <code class="docutils literal"><span class="pre">Fan</span></code> component only when it needs to change its state (on/off).  The <code class="docutils literal"><span class="pre">currentTemp</span></code> reading output by the <code class="docutils literal"><span class="pre">TempSensor</span></code> was modeled as a <code class="docutils literal"><span class="pre">data</span></code> port so that the latest temperature reading would always be available to the <code class="docutils literal"><span class="pre">TempControl</span></code> component, but the arrival of data to <code class="docutils literal"><span class="pre">TempControl</span></code> need not trigger a dispatch.  A notification from the <code class="docutils literal"><span class="pre">TempSensor</span></code> indicating that the temperature changed was modeled as an <code class="docutils literal"><span class="pre">event</span></code> port (it communicates a message with no payload).  A reasonable alternative design could model the <code class="docutils literal"><span class="pre">currentTemp</span></code> as an event data port, which would produce an aperiodic message only when the temperature changed (removing the need for the separate <code class="docutils literal"><span class="pre">tempChanged</span></code>).   With <code class="docutils literal"><span class="pre">currentTemp</span></code> as an event data port, it is also possible to have the <code class="docutils literal"><span class="pre">TempSensor</span></code> message sent periodically at the same rate of the <code class="docutils literal"><span class="pre">TempSensor</span></code> thread, and this would cause the <code class="docutils literal"><span class="pre">TempControl</span></code> component to be dispatched at the same rate. alternatives.</p>
 <p>HAMR supports all three types of ports above.</p>
-<p>In HAMR’s support for ARINC 653-like platforms, these are implemented using ARINC 653 sampling ports.  For the seL4 micro-kernel, HAMR implements these using shared memory with capability configurations that only allow writing by the sender and reading by the receiver.</p>
+<p>In HAMR&#8217;s support for ARINC 653-like platforms, these are implemented using ARINC 653 sampling ports.  For the seL4 micro-kernel, HAMR implements these using shared memory with capability configurations that only allow writing by the sender and reading by the receiver.</p>
 <p>AADL provides property sets to configure different types of policies related to ports (e.g., specifying size of event data port queues, what happens when event data port queues are full, etc.).</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>ToDo:</strong> discuss port properties.</p>
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>ToDo:</strong> discuss port properties.</p>
 </div>
-</section>
-<section id="port-directionality-in-and-out">
+</div>
+<div class="section" id="port-directionality-in-and-out">
 <h3><a class="toc-backref" href="#id21">Port Directionality: In and Out</a><a class="headerlink" href="#port-directionality-in-and-out" title="Permalink to this headline">¶</a></h3>
 <p>AADL supports three different directional modalities (emph{in}, emph{out}, and emph{in out}) for ports (quoting from clauses of Section 8.3 of the standard):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="n">Ports</span> <span class="n">are</span> <span class="n">directional</span><span class="o">.</span> <span class="n">An</span> <span class="n">out</span> <span class="n">port</span> <span class="n">represents</span> <span class="n">output</span> <span class="n">provided</span> <span class="n">by</span> <span class="n">the</span> <span class="n">sender</span><span class="p">,</span> <span class="ow">and</span> <span class="n">an</span> <span class="ow">in</span> <span class="n">port</span> <span class="n">represents</span> <span class="nb">input</span> <span class="n">needed</span> <span class="n">by</span> <span class="n">the</span> <span class="n">receiver</span><span class="o">.</span> <span class="n">An</span> <span class="ow">in</span> <span class="n">out</span> <span class="n">port</span> <span class="n">represents</span> <span class="n">both</span> <span class="n">an</span> <span class="ow">in</span> <span class="n">port</span> <span class="ow">and</span> <span class="n">an</span> <span class="n">out</span> <span class="n">port</span><span class="o">.</span> <span class="n">Incoming</span> <span class="n">connection</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="ow">and</span> <span class="n">outgoing</span> <span class="n">connection</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">of</span> <span class="n">an</span> <span class="ow">in</span> <span class="n">out</span> <span class="n">port</span> <span class="n">may</span> <span class="n">be</span> <span class="n">connected</span> <span class="n">to</span> <span class="n">the</span> <span class="n">same</span> <span class="n">component</span> <span class="ow">or</span> <span class="n">to</span> <span class="n">different</span> <span class="n">components</span><span class="o">.</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre>(7) Ports are directional. An out port represents output provided by the sender, and an in port represents input needed by the receiver. An in out port represents both an in port and an out port. Incoming connection(s) and outgoing connection(s) of an in out port may be connected to the same component or to different components. [...]
 </pre></div>
 </div>
-<p>HAMR <em>does not</em> support <code class="docutils literal notranslate"><span class="pre">in</span> <span class="pre">out</span></code> ports.  We view such ports as an unnecessary complication as their effect can be realized via a pair of an <code class="docutils literal notranslate"><span class="pre">in</span></code> port and an <code class="docutils literal notranslate"><span class="pre">out</span></code> port.   In most analysis or code generation capabilities, {bf in out} ports would be split <code class="docutils literal notranslate"><span class="pre">behind</span> <span class="pre">the</span> <span class="pre">scenes''</span> <span class="pre">anyway</span> <span class="pre">into</span> <span class="pre">distinct</span> <span class="pre">``in</span></code> and <code class="docutils literal notranslate"><span class="pre">out</span></code> ports.   Furthermore, information flow specification and analysis, interface contracts, etc. are all simpler when ports are explicitly unidirectional at the model level.</p>
-</section>
-<section id="port-connection-fan-in-fan-out">
+<p>HAMR <em>does not</em> support <code class="docutils literal"><span class="pre">in</span> <span class="pre">out</span></code> ports.  We view such ports as an unnecessary complication as their effect can be realized via a pair of an <code class="docutils literal"><span class="pre">in</span></code> port and an <code class="docutils literal"><span class="pre">out</span></code> port.   In most analysis or code generation capabilities, {bf in out} ports would be split <code class="docutils literal"><span class="pre">behind</span> <span class="pre">the</span> <span class="pre">scenes''</span> <span class="pre">anyway</span> <span class="pre">into</span> <span class="pre">distinct</span> <span class="pre">``in</span></code> and <code class="docutils literal"><span class="pre">out</span></code> ports.   Furthermore, information flow specification and analysis, interface contracts, etc. are all simpler when ports are explicitly unidirectional at the model level.</p>
+</div>
+<div class="section" id="port-connection-fan-in-fan-out">
 <h3><a class="toc-backref" href="#id22">Port Connection Fan In / Fan out</a><a class="headerlink" href="#port-connection-fan-in-fan-out" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="computational-model">
+</div>
+</div>
+<div class="section" id="computational-model">
 <h2><a class="toc-backref" href="#id23">Computational Model</a><a class="headerlink" href="#computational-model" title="Permalink to this headline">¶</a></h2>
-<p>subsubsection{Application programmer’s view of ports}</p>
-<p>The programmer’s view of ports and the specific representation of ports in the programming model is an important issue.
+<p>subsubsection{Application programmer&#8217;s view of ports}</p>
+<p>The programmer&#8217;s view of ports and the specific representation of ports in the programming model is an important issue.
 Relevant clauses from the standard are given below.</p>
 <p>begin{quote}
 (10)  Ports appear to the thread as input and output buffers, accessible in source text as port variables.</p>
 <ol class="arabic simple">
-<li><p>[…] From the perspective of the application source text, data ports are accessible in the source text as data variables. From the perspective of the application source text, event ports represent event queues whose size is accessible. Incoming events may trigger thread dispatches or mode transitions, or they may simply be queued for processing by the recipient. From the perspective of the application source text, event data ports represent message queues whose content can be retrieved.</p></li>
+<li>[...] From the perspective of the application source text, data ports are accessible in the source text as data variables. From the perspective of the application source text, event ports represent event queues whose size is accessible. Incoming events may trigger thread dispatches or mode transitions, or they may simply be queued for processing by the recipient. From the perspective of the application source text, event data ports represent message queues whose content can be retrieved.</li>
 </ol>
 <ol class="arabic simple" start="16">
-<li><p>Data, events, and event data arriving through incoming ports is made available to the receiving thread, processor, or device at a specified input time. For a data port the input that is available through a port variable is a data value, while for an event or event data port it can be one or more elements from the port queue according to a specified dequeuing protocol (see Section 8.3.3). From that point on any newly arriving data, event, or event data is not available to the receiving component until the next dispatch, i.e., the content of an incoming port that is accessible to the application code does not change while the thread completes its execution.</p></li>
+<li>Data, events, and event data arriving through incoming ports is made available to the receiving thread, processor, or device at a specified input time. For a data port the input that is available through a port variable is a data value, while for an event or event data port it can be one or more elements from the port queue according to a specified dequeuing protocol (see Section 8.3.3). From that point on any newly arriving data, event, or event data is not available to the receiving component until the next dispatch, i.e., the content of an incoming port that is accessible to the application code does not change while the thread completes its execution.</li>
 </ol>
 <p>(17) By default, port input is frozen at dispatch time. For periodic threads or devices this means that input is sampled at fixed time intervals.
 end{quote}</p>
-</section>
-</section>
+</div>
+</div>
 
 
     </div>

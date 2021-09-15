@@ -31,7 +31,7 @@ There are at least two approaches to installing the tool chain elements above:
 
 * install them directly, with assistance from Sireum Kekinian framework.  Kekinian is installed first, and then a few simple command line options can be used to install the FMIDE, Sireum IVE, JVM, etc.  This is recommended when you are working with Slang and JVM deployments, and it is also suitable for C-based development on Linux.
 
-* install them via a virtual machine built using the Vagrant VM build tool - As part of the DARPA CASE project, `Vagrant scripts <https://github.com/loonwerks/CASE/tree/master/TA5/case-env>`__ are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above.  If you are working with seL4 or if you are working with DARPA CASE technologies and examples, it is strongly recommended that you install the HAMR tool chain using the Vagrant VM scripts.
+* install them via a virtual machine built using the Vagrant VM build tool - As part of the DARPA CASE project, `Vagrant scripts <https://github.com/sireum/case-env>`__ are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above.  If you are working with seL4 or if you are working with DARPA CASE technologies and examples, it is strongly recommended that you install the HAMR tool chain using the Vagrant VM scripts.
 
 The following describes the most common HAMR workflows and recommended installation approaches.  These workflows are described in greater detailed in the video and slides available on the :ref:`videos` page.
 
@@ -58,12 +58,9 @@ You will first install SAnToS Lab Sireum Kekinian programming language tools, an
   
      git clone https://github.com/sireum/kekinian Sireum
      cd Sireum
-     REM The following step is optional -- only needed it you want to check out a particular commit tip
-     REM Otherwise, proceed directly to git submodule update ...
-     git checkout <commit> & REM^; SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
      git submodule update --init --recursive
      bin\build.cmd setup
-     bin\install\fmide.cmd [<tag-name>] & REM^; Optional release tag name; latest nightly release is used if unspecified
+     bin\install\fmide.cmd
      start /B bin\win\fmide\fmide.exe
 
 * **Linux:**
@@ -72,12 +69,9 @@ You will first install SAnToS Lab Sireum Kekinian programming language tools, an
   
      git clone https://github.com/sireum/kekinian Sireum
      cd Sireum
-     # The following step is optional -- only needed it you want to check out a particular commit tip
-     # Otherwise, proceed directly to git submodule update ...
-     git checkout <commit> # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
      git submodule update --init --recursive
      bin/build.cmd setup
-     bin/install/fmide.cmd [<tag-name>] # Optional release tag name; latest nightly release is used if unspecified 
+     bin/install/fmide.cmd
      bin/linux/fmide/fmide&
 
 * **macOS:**
@@ -86,34 +80,39 @@ You will first install SAnToS Lab Sireum Kekinian programming language tools, an
   
      git clone https://github.com/sireum/kekinian Sireum
      cd Sireum
-     # The following step is optional -- only needed it you want to check out a particular commit tip
-     # Otherwise, proceed directly to git submodule update ...
-     git checkout <commit> # SHA commit of https://github.com/sireum/kekinian, see SIREUM_V in case-setup.sh; optional step
      git submodule update --init --recursive
      bin/build.cmd setup
-     bin/install/fmide.cmd [<tag-name>] # Optional release tag name; latest nightly release is used if unspecified 
+     bin/install/fmide.cmd
      open bin/mac/fmide.app
 
 The Sireum directory created above is referred to using the environment variable ``$SIREUM_HOME`` in the instructions below.
 
-To update FMIDE, 
+Occassionally, the FMIDE will be updated to include new HAMR code generation or AADL analysis capabilities.  To update the FMIDE, simply re-run the FMIDE install script as illustrated below.
 
 * **Windows:**
 
   .. code-block:: none
   
-     %SIREUM_HOME%\bin\install\fmide.cmd [<tag-name>] & REM^; Optional release tag name; latest nightly release is used if unspecified 
+     %SIREUM_HOME%\bin\install\fmide.cmd 
 
 * **Linux/macOS:**
 
   .. code-block:: none
   
-     $SIREUM_HOME/bin/install/fmide.cmd [<tag-name>] # Optional release tag name; latest nightly release is used if unspecified 
+     $SIREUM_HOME/bin/install/fmide.cmd 
 
 If the installation somehow did not finish (e.g., due to a network issue), remove the problematic file in Sireum's cache directory (~/Downloads/sireum) and re-run the above.
 
-To update Sireum, simply do a git pull, recursively update its submodules, and re-run `build.cmd setup` and `fmide.cmd`.
+Updates to the Sireum framework may add new code-level verification, analysis, and compilation functionality.  When you update Sireum, you should update the FMIDE as well.
+To update Sireum and the FMIDE, with your current directory as ``$SIREUM_HOME``, simply do a git pull with `--recurse-submodules` option, and re-run `build.cmd setup` and `fmide.cmd`, e.g., for macOS this would be
 
+.. code-block:: none 
+  
+     git pull --recurse-submodules
+     bin/build.cmd setup
+     bin/install/fmide.cmd
+
+Note that it is also possible to download specific versions (specific git commit tips) for both Sireum and the FMIDE.  For details, see https://github.com/sireum/case-env.
 
 IDE (Sireum IVE) for Slang-based Development of HAMR Systems 
 ----------------------------------------------------------------
@@ -175,7 +174,7 @@ To install and run CLion C/C++ IDE (license required/free 30-day evaluation):
 Installation Option: Vagrant VM-based Installation
 =============================
 
-Follow the instructions from DARPA CASE Github repository. `Vagrant scripts <https://github.com/loonwerks/CASE/tree/master/TA5/case-env>`__ are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above as well as tools supporting development for seL4.   The VM also includes other CASE analysis and model transformation tools.
+Follow the instructions from DARPA CASE Github repository. `Vagrant scripts <https://github.com/sireum/case-env>`__ are provided to build a VirtualBox VM running Debian Linux that hosts the tool components above as well as tools supporting development for seL4.   The VM also includes other CASE analysis and model transformation tools.
 
 
 
