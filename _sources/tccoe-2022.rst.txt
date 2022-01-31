@@ -1,0 +1,64 @@
+.. _tccoe-2022:
+
+TCCOE 2022 HAMR seL4 Tutorial
+#############################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+
+Overview
+=================
+
+This page presents the artifacts used in the TCCOE tutorial 
+
+* tutorial slides and videos
+* virtual machine file (.ova) that provides a virtual machine for the tools and example files used in the tutorial
+
+*Note: most of these artifacts are hosted on Google Drive.  We have observed that these Google-hosted videos sometimes fail to launch in certain web browers. If this happens for you, we suggest that you use the Google Chrome browser, as we have found it to be the most reliable for launching these Google-hosted videos.*
+
+Slides and Videos
+==================
+
+**HAMR Overview (slide presentation)** (`slides <https://drive.google.com/file/d/16zwO8PYap1e5WMcAf3t2bxU8qkmZFiZ1/view?usp=sharing>`__, `video <https://drive.google.com/file/d/1RQagPraj_R_vfeuBKFS14LfqdlYzSK1p/view?usp=sharing>`__) Provides an overview of the HAMR framework and objectives for the tutorial
+
+**AADL Concepts and Tutorial Example (slide presentation)** (`slides <https://drive.google.com/file/d/1Z653xmvMaJ4JVUlJTWqsQEKpiBXyFrnF/view?usp=sharing>`__, `video <https://drive.google.com/file/d/1Y2SgQOkdq48lYH4rZD4QlwrYPNVv-HUd/view?usp=sharing>`__) Provides an overview of the subset of AADL used by HAMR and presents the example system used in the tutorial.
+
+**Demo: Launching tools in provided VM, Editing AADL models in OSATE** (`video <https://drive.google.com/file/d/1iEna_x32QTeNpZZQVbFy8I2_2Q6BmUKW/view?usp=sharing>`__)
+
+**Demo: Running Resolint to Check AADL Model Well-formedness for HAMR** (`video <https://drive.google.com/file/d/1D8U_AZX-U0htMuLhWbkPNzIAjuKZqWx2/view?usp=sharing>`__)
+
+**Demo: Invoking HAMR Code Generation** (`video <https://drive.google.com/file/d/1Hj5zIKsTgu_1DQhpiJvW2st3LVlffIeQ/view?usp=sharing>`__)
+
+**Demo: Opening Generated Code in CLion and Running Template Code** (`video <https://drive.google.com/file/d/1zU_rlZi8W3T9PpFg4Mf2s7ipgejwQV36/view?usp=sharing>`__)
+
+**HAMR Generated Code Overview (slide presentation)** (`slides <https://drive.google.com/file/d/1XawKoFGCeere6_RiPC3m1CUQ70CbcUNa/view?usp=sharing>`__, `video <https://drive.google.com/file/d/1_wJV5Paew4bFCMwteMt8nOsy8icN5EAT/view?usp=sharing>`__) Provides an overview of the execution semantics of HAMR-generated systems, a description of the code skeletons generated, a description of the auto-generated APIs for port-based communication, and an overview of the AADL Data Modeling framework as used by HAMR.
+
+**Demo: Overview of Auto-Generated Code Skeletons** (`video <https://drive.google.com/file/d/1IR40SEtqKZQIqECH1GGz7tkviLaYpA6H/view?usp=sharing>`__)
+
+**Demo: Walkthrough of Generated Data Types** (`video <https://drive.google.com/file/d/1-NETntcG57YGq07qeQ0yNibCmWJtBz1g/view?usp=sharing>`__)
+
+**Demo: Coding Application Logic, Running on Linux** (`video <https://drive.google.com/file/d/1bO80NCMABYyhKFbBu__7LJn17W7kLWVk/view?usp=sharing>`__)
+
+**HAMR seL4 Backend (slide presentation)** (`slides <https://drive.google.com/file/d/1_l1ubEn2XSsk_FrLs0fEwe8EMX84kNLA/view?usp=sharing>`__, `video <https://drive.google.com/file/d/1V94H7j6qgtQj0LC8VKyhxJ_Kc4lUU-RJ/view?usp=sharing>`__) Provides a brief overview of how HAMR generates seL4-specific artifacts including CAmkES and AADL adapter code for seL4, and how the seL4 domain scheduler is used to provide static scheduling.
+
+**Demo: Deploying Application on SeL4 using QEMU** (`video <https://drive.google.com/file/d/1aUS8r-W_vCNthHZnuDWgW5WgsnsPZRW6/view?usp=sharing>`__)
+
+**Conclusions and Future Development Goals for HAMR (slide presentation)** (`slides <https://drive.google.com/file/d/1fof4h-YJtmosnKb-wC1AUMtdYpSttFV2/view?usp=sharing>`__, `video <https://drive.google.com/file/d/1Jjr1hUjglNXMm2dccnFHN3MbUUctMRRN/view?usp=sharing>`__) Describes ongoing projects and future directions for HAMR.
+
+
+Virtual Machine Setup and Tutorial Artifacts
+=============================================
+
+The instructions for downloading and setting up the VM for the tutorial can be found `here <https://github.com/santoslab/tccoe22-hamr>`__ .
+
+An OVA (Open Virtual Appliance) has been created that has all the development tools that will be used in this tutorial preinstalled. You will need a virtualization provider that is capable of importing the OVA such as VMWare or VirtualBox. We recommend using VirtualBox as it is free/open-source and can be downloaded via https://www.virtualbox.org/wiki/Downloads
+
+All the tools and examples needed for the tutorial are included in the VM.
+
+Other Lecture Videos and Supporting Material
+============================================
+
+The `High Assurance Systems <http://s21.highassurance.santoslab.org/lectures.html>`__ graduate course at Kansas State University provides in-depth lectures on AADL modeling (including the lectures/exercises suggested for learning AADL) and HAMR development using Slang.  
+
+
