@@ -43,7 +43,7 @@ Sireum HAMR ("[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded
 
 To learn more about HAMR,
 
-* read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour` and `HAMR ISoLA 2021 paper <http://pub.santoslab.org/papers/hamr-hatcliff-al-isola21.pdf>`__ (to appear),
+* read a short :ref:`ch00-hamr-overview`, then a longer :ref:`ch0X-hamr-tour` and `HAMR ISoLA 2021 paper <http://pub.santoslab.org/papers/hamr-hatcliff-al-isola21.pdf>`__,
 * watch overview videos
 
   * HAMR Overview (with emphasis on Slang language development) - talk given at CMU Software Engineering Institute (`video <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__) (around 1 hr plus additional time for questions)
