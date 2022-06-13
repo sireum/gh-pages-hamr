@@ -49,6 +49,7 @@ To learn more about HAMR,
   * HAMR Overview (with emphasis on Slang language development) - talk given at CMU Software Engineering Institute (`video <https://www.youtube.com/watch?v=ceCJ_F3sjBc>`__) (around 1 hr plus additional time for questions)
   * HAMR for seL4 (with emphasis on C language development) - talk given at November 2020 seL4 Summit (`video <https://drive.google.com/file/d/1asOCIzlIYR_GO4ENdalXXNgtj-92oQRQ/view?usp=sharing>`__, `slides <https://drive.google.com/file/d/1h-kMg7QXTpJqAomPvv3itotnusNynE5T/view?usp=sharing>`__)
 
+* read a `journal article <http://pub.santoslab.org/papers/hamr-seL4-belt-al-jsa-submission.pdf>`__ on HAMR code generation for the seL4 micro-kernel and its application on the DARPA CASE project.
 * go through the TCCOE "HAMR for seL4" tutorial --  :ref:`tccoe-2022`
 * browse the :ref:`hamr-index`
 

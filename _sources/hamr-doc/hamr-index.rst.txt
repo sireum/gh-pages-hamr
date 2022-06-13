@@ -12,6 +12,7 @@ The material below is draft content for the HAMR Reference Manual (HAMR RM).   A
    ch00-hamr-overview
    ch0X-hamr-tour
    ch04-hamr-aadl-fundamental-concepts
+   ch0X-hamr-sel4-tempControl-walkthrough
 
 **Top-level Outline of planned Sireum documentation**
 
