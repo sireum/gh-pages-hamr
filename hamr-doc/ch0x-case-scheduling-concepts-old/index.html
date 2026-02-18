@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content=" Overview CASE aims to support a variety of DoD applications that need to be hardened for cyber-resiliency, including systems built in conformance to standards for real-time processing such as ARINC 653.
+Supporting full ARINC 653 development/deployment is beyond the scope of CASE Phase II for the following reasons:
+we are not deploying the Phase II system on an ARINC 653 compliant platform
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/ch0x-case-scheduling-concepts-old/" />
+
+
+    <title>
+        
+            CASE Scheduling Concepts :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.9b7fec326fab4b320f3a6ebff5b2cd1a56f40af9971ff15a0213c97eff1ce5d0.css" integrity="sha256-m3/sMm&#43;rSzIPOm6/9bLNGlb0CvmXH/FaAhPJfv8c5dA=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="CASE Scheduling Concepts">
+  <meta itemprop="description" content="Overview CASE aims to support a variety of DoD applications that need to be hardened for cyber-resiliency, including systems built in conformance to standards for real-time processing such as ARINC 653.
+Supporting full ARINC 653 development/deployment is beyond the scope of CASE Phase II for the following reasons:
+we are not deploying the Phase II system on an ARINC 653 compliant platform">
+  <meta itemprop="wordCount" content="3381">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="CASE Scheduling Concepts">
+  <meta name="twitter:description" content="Overview CASE aims to support a variety of DoD applications that need to be hardened for cyber-resiliency, including systems built in conformance to standards for real-time processing such as ARINC 653.
+Supporting full ARINC 653 development/deployment is beyond the scope of CASE Phase II for the following reasons:
+we are not deploying the Phase II system on an ARINC 653 compliant platform">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/getting-started/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Download</span>
+            <span class="responsive-title-short">Download</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://doc.sireum.org" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/papers" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/team" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+        <hr />
+        <aside id="toc">
+            <div class="toc-title">Table of Contents</div>
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#summary-of-case-scheduling-concepts">Summary of CASE Scheduling Concepts</a>
+      <ul>
+        <li><a href="#summary-of-concepts">Summary of Concepts</a></li>
+        <li><a href="#summary-of-modeling-constraints-and-properties">Summary of Modeling Constraints and Properties</a></li>
+      </ul>
+    </li>
+    <li><a href="#utilizing-the-sel4-domain-scheduler-to-support-the-case-scheduling-approach">Utilizing the seL4 Domain Scheduler to Support the CASE Scheduling Approach</a>
+      <ul>
+        <li><a href="#domains">Domains</a></li>
+        <li><a href="#configuring-the-number-of-domains">Configuring the Number of Domains</a></li>
+        <li><a href="#developing-the-schedule-concept">Developing the Schedule Concept</a></li>
+        <li><a href="#defining-the-schedule">Defining the Schedule</a></li>
+      </ul>
+    </li>
+    <li><a href="#aadl-modeling-of-timing-and-domain-scheduling-information">AADL Modeling of Timing and Domain Scheduling Information</a></li>
+    <li><a href="#case-scheduling-properties">CASE Scheduling Properties</a></li>
+    <li><a href="#practical-issues---things-that-can-go-wrong">Practical Issues - Things That Can Go Wrong</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+        <h1>CASE Scheduling Concepts</h1>
+
+        
+          <div class="post-content"><!--
+.. _ch0X-case-scheduling-concepts:
+
+CASE Scheduling Concepts
+###############################
+
+.. contents:: 
+   :local: 
+   :depth: 2
+-->
+<h3 id="overview">Overview</h3>
+<p>CASE aims to support a variety of DoD applications that need to be hardened for cyber-resiliency, including systems built in conformance to standards for real-time processing such as ARINC 653.</p>
+<p>Supporting full ARINC 653 development/deployment is beyond the scope of CASE Phase II for the following reasons:</p>
+<ul>
+<li>
+<p>we are not deploying the Phase II system on an ARINC 653 compliant platform</p>
+</li>
+<li>
+<p>we are not using the MCS version of seL4, which would provide some capabilities for enforcing time partitioning, similar in spirit to what would be done in ARINC 653</p>
+</li>
+<li>
+<p>the overhead of using full ARINC 653 methodogy in a model-driven development process, e.g., as reflected in AADL ARINC 653 Annex is too great.</p>
+</li>
+</ul>
+<p>Therefore, a simplified real-time scheduling approach and associated AADL modeling annotations have been adopted.   The scheduling approach and annotations is designed to allow a smooth migration to a full ARINC 653 approach in the future.  The selection of capabilities for the approach is driven by:</p>
+<ul>
+<li>
+<p>scheduling capabilities that the non-MCS version of seL4 can handle &ndash; in particular, capabilities that can be realized by a clever use of the seL4 domain scheduler</p>
+</li>
+<li>
+<p>the need to be able to explicitly order the scheduling for cyber-resiliency components such as filters and monitors, as they are intermixed with application components.</p>
+</li>
+</ul>
+<p>The scheduling approach is realized and configured by a system integrator via the following developer activities:</p>
+<ul>
+<li>
+<p>modeling the processes and threads in a constrained way</p>
+</li>
+<li>
+<p>adding model annotations for scheduling domains (allocating each thread to a particular domain) and annotations for conventional timing constraints such as <em>period</em> and <em>worse-case execution time</em></p>
+</li>
+<li>
+<p>constructing by hand (using some hints from HAMR derived from the AADL system model) a static schedule that is provided to seL4 to configure its domain scheduler.</p>
+</li>
+</ul>
+<p>This chapter describes the overall concepts and provides directions on how to accomplish the tasks above.</p>
+<p>Schedulability analysis and schedule generation tools such as Adventium&rsquo;s FASTAR tool can eventually be used to automate some of these steps.  For now, our schedules are constructed manually, and this chapter provides guidance to developers on how on to manually construct schedules.</p>
+<h3 id="summary-of-case-scheduling-concepts">Summary of CASE Scheduling Concepts</h3>
+<p>This section provides an overview of the CASE scheduling comments and provides an abbreviated list of activities (modeling constraints, specifying property sets, defining schedule) needed to specify the scheduling.   Details of the approach are discussed in the following sections.</p>
+<h4 id="summary-of-concepts">Summary of Concepts</h4>
+<p><strong>To be completed</strong></p>
+<ul>
+<li>
+<p>[diagram of approach, illustrating scheduling component, application components, etc.]</p>
+</li>
+<li>
+<p>one-to-one correspondence between processes and threads.   The unit of scheduleability is a CAmkES component, which corresponds to an AADL process.  But following convention, we will discuss the scheduling in terms of AADL threads (which we simply refer to as &ldquo;threads&rdquo; in the discussion below, and otherwise qualify when we need to point out issues with seL4 threading).</p>
+</li>
+<li>
+<p>run-to-completion, no preemption.</p>
+</li>
+</ul>
+<h4 id="summary-of-modeling-constraints-and-properties">Summary of Modeling Constraints and Properties</h4>
+<ul>
+<li>
+<p>All threads are periodic (all threads should be declared with <code>Periodic</code> dispatch mode).</p>
+</li>
+<li>
+<p>Most ports are event data ports of size 1, but arrival of messages on input event data ports does not trigger a dispatch (all dispatching is time-triggered).  Event ports and data ports can also be used.</p>
+</li>
+<li>
+<p>There is one thread per process in the AADL model (this is checked by Resolint).</p>
+</li>
+<li>
+<p>Each AADL process is associated with a numeric domain identifier specified using the <code>CASE_Scheduling::Domain</code> property (this is checked by Resolint).</p>
+</li>
+<li>
+<p>The maximum value of the domain identifiers is specified in the AADL model (applies to system instance) using the <code>CASE_Scheduling::Max_Domain property</code>.</p>
+</li>
+<li>
+<p>Timing_Properties::Compute_Execution_Time (applies to each AADL thread type) &ndash; specifies the duration for which the thread is scheduled.  This is used by HAMR to generate a hint in the auto-generated schedule skeleton.  The value should match the slot duration value <code>.length</code> in the seL4 domain schedule (this needs to be checked manually).</p>
+</li>
+<li>
+<p>Timing_Properties::Period (applies to each AADL thread type) &ndash; specifies the period for each thread.  Comments containing this information are included along with the HAMR generated skeleton for the schedule, helping the developer to ensure that the periodicity of the thread implied by the written schedule matches the specified period in the AADL model (this needs to be checked manually).</p>
+</li>
+<li>
+<p>The schedule for the system is written as a domain schedule for seL4 (which is specified in a C data structure, processed by CAmkES) (we may develop a platform independent representation of the same information that would enable us to generate scheduling for Linux and JVM platforms).</p>
+</li>
+<li>
+<p>The tick duration for the underlying platform is configured using the <code>TimingProperties::Clock_Period</code> (applies to system instance).  The slot durations within the schedule are specified in terms of ticks.</p>
+</li>
+<li>
+<p>The period of the major frame of the scheduled is specified using the <code>Timing_Properties::Frame_Period</code> property in the AADL model.  This for informational purposes only.  The frame period value is included in hints generated by HAMR to accompany an auto-generated schedule skeleton.  Correspondence to the actual duration of the schedule must be checked manually.</p>
+</li>
+</ul>
+<h3 id="utilizing-the-sel4-domain-scheduler-to-support-the-case-scheduling-approach">Utilizing the seL4 Domain Scheduler to Support the CASE Scheduling Approach</h3>
+<p>In the CASE scheduling approach, the ultimate aim of the engineering activity is to produce a <em>static schedule</em> where the throughput of the system satisfies timing constraints on the computation or environment interactions of the system &ndash; for example, producing mission plans quickly enough for flight controls, or satisfying latency requirments on sensing and actuating actions in control loops.</p>
+<p>On the seL4 platform, the static scheduling is realized using the seL4 domain scheduling framework.  The schedule itself is expressed as a C data structure used to configure seL4.  The scheduling data structure for a simple producer (<code>src</code>) / consumer (<code>dst</code>) system is shown below.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// Copyright 2020 Adventium Labs
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// This is a kernal data structure. To get your kernal compiled with this
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// domain schedule you need to modify the top level settings.cmake file to have
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// these lines.  Make sure you replace the existing &#34;set(KernelNumDomains&#34;
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// line.
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// camkes-project/projects/camkes/settings.cmake
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// set(KernelDomainSchedule &#34;${CMAKE_CURRENT_LIST_DIR}/apps/test_data_port_periodic_domains/behavior_code/kernel/domain_schedule.c&#34; CACHE INTERNAL &#34;&#34;)
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// set(KernelNumDomains 4 CACHE STRING &#34;&#34; FORCE)
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="cp">#include</span> <span class="cpf">&lt;config.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">   <span class="cp">#include</span> <span class="cpf">&lt;object/structures.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">   <span class="cp">#include</span> <span class="cpf">&lt;model/statedata.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// An arbitrary hand generated schedule. The lenght is in seL4 ticks
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// (2 ms default). This schedule shoule be generated from the AADL
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// using execution time and data flow latency specifications.
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// Pacer runs at highest rate
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// This schedule is single-rate, 1Hz, run each thread at 200ms ticks for simplicity.
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// Fill space in with domain 0.
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//         +
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 3 dest  |        -              -              -              -      
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 2 src   |     -              -              -              -         
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 1 pacer |  -              -              -              -            
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 0 dom0  |-- -- -- -------- -- -- -------- -- -- -------- -- -- ------
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//         |______________|______________________________________________\time
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//           seconds      1              2              3              4 /
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// Major frame is 1 seconds, since destination has 1 second period
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="k">const</span> <span class="kt">dschedule_t</span> <span class="n">ksDomSchedule</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// (1 tick == 2ms)
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span> <span class="p">},</span> <span class="c1">// all other seL4 threads, init, 200ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// pacer        10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>  <span class="mi">95</span> <span class="p">},</span> <span class="c1">// domain0     190ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// source       10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>  <span class="mi">95</span> <span class="p">},</span> <span class="c1">// domain0     190ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// destination  10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">195</span> <span class="p">},</span> <span class="c1">// domain0     390ms
+</span></span></span><span class="line"><span class="cl">   <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">const</span> <span class="kt">word_t</span> <span class="n">ksDomScheduleLength</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ksDomSchedule</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">dschedule_t</span><span class="p">);</span>
+</span></span></code></pre></div><h4 id="domains">Domains</h4>
+<p>Because we are leveraging the seL4 domain scheduler as the foundation of the CASE scheduling approach, the unit of schedulability is the <em>domain</em> (this may be enhanced in the future to consider scheduling of multiple threads within a domain).   The CASE strategy uses two domains (domain 0 and 1) for infrastructure (called <em>infrastructure</em> domains), and the rest for application threads (called <em>application</em> domains).  At present, there is a one-to-one correspondence between AADL threads and application domains (later we might consider allowing multiple AADL threads in the same scheduling domain).</p>
+<p>We use the following convention for organizing the infrastructure domains:</p>
+<ul>
+<li>
+<p>Domain 0 includes seL4 infrastructure threading for initialization, servicing interrupts, etc.</p>
+</li>
+<li>
+<p>Domain 1 includes what we call &ldquo;pacing&rdquo; infrastructure which controls the activation of seL4 threads in the application domains.  Activation is achieved by having the CAmkES representation of each AADL thread consume an notification (event) upon which it waits, and the pacing infrastructure systematically emits the notifications to unblock the threads to realize the schedule (details of this strategy are given at the end of this chapter).</p>
+</li>
+</ul>
+<p>System developers do not need to configure any of the internal logic of the infrastructure domains (Domain 0 logic is determined by the CAmkES compilation process and the pacing logic in domain 1 is autogenerated by HAMR).  However, they will need to configure the time slot(s) for each of these (following some straightforward guidelines).</p>
+<p>For application domains, the current convention is to simply consider the order in which AADL threads are intended to execute and select domains identifiers (starting at 2) according to that order.  Note that the domain numbers are simply identifiers &ndash; they do not influence the order of execution; the order of execution is completely determined by the order of entries in the domain schedule data structure.   An AADL process is assigned to a domain using AADL model properties (illustrated in sections below).</p>
+<h4 id="configuring-the-number-of-domains">Configuring the Number of Domains</h4>
+<p>The first step in finalizing the schedule is to set the total number of domains.  Currently this is specified directly (not auto-generated by HAMR) in the CAmkES cmake file.  Here&rsquo;s an example for the producer/consumer system (2 application domains &ndash; 1 each for producer and consumer &ndash; and 2 infrastructure domains).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// set(KernelNumDomains 4 CACHE STRING &#34;&#34; FORCE)
+</span></span></span></code></pre></div><h4 id="developing-the-schedule-concept">Developing the Schedule Concept</h4>
+<p>Next one would typically develop what we call a &ldquo;schedule concept&rdquo; &ndash; an informal description of the schedule that can be shared across the development team.  The inputs to developing the schedule concept include the end-to-end latency needs of the application and the information flow (dependences) reflected in the AADL model.  The scheduling concept is developed and refined simultaneously with the specification of periods for each AADL thread, captured using an AADL thread property (see subsequent sections).  Periods are also determined by the end-to-end latency needs (and, given our run-to-completion model, time needed for each thread to complete its computing tasks).  See real-time scheduling textbooks for these concepts and process.</p>
+<p>Below is an ASCII visualization of a schedule concept for the procedure/consumer system.   First, one aims to determine the relative ordering of the domains within the schedule.  Following that, the specific time values for the slots in the schedule are determined.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//         +
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 3 dest  |        -              -              -              -      
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 2 src   |     -              -              -              -         
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 1 pacer |  -              -              -              -            
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// 0 dom0  |-- -- -- -------- -- -- -------- -- -- -------- -- -- ------
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//         |______________|______________________________________________\time
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//           seconds      1              2              3              4 /
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span><span class="line"><span class="cl">   <span class="c1">// Major frame is 1 seconds, since destination has 1 second period
+</span></span></span><span class="line"><span class="cl">   <span class="c1">//
+</span></span></span></code></pre></div><p>The schedule for the system is cyclic &ndash; each cycle is referred to as a <em>major frame</em>.  The schedule is specified by configuring the ordering and timing properties of domains within the major frame.  Within each major frame, a domain will typically be scheduled once.  The exception to this convention is that domain 0 needs to be interleaved with application threads to handle interrupts and other kernel level services.  In addition, one may way to interleave application domains such as monitors to ensure that all events/state that the monitor aims to observe are appropriately exposed to its execution.</p>
+<p>The example producer/consumer schedule visualization above illustrates four major frames.  In each frame, the pacer and application domains (domains 1-3) are each scheduled once, whereas domain 0 is scheduled multiple times &ndash; interleaved between the other domains.</p>
+<p>When defining the schedule, domain 0 should be executed first.  In the simple CASE scheduling methodology, the domain 0 time slot durations for will be determined by starting with a value that typically works, and then tweaking based on experience running the system (see guidelines at the end of this chapter).</p>
+<p>Next, the pacer domain should run (see guidelines for time duration).</p>
+<p>For application domains, the ordering is typically determined by looking at the application data flow reflected in the AADL model.   In our example, the producer produces information that flows to the consumer.  Therefore, we schedule the <code>src</code> thread before the <code>dst</code> thread (with domain 0 executions interleaved).</p>
+<h4 id="defining-the-schedule">Defining the Schedule</h4>
+<p>After the schedule concept is developed, one encodes the schedule in a data structure used to configure the seL4 kernel.   A possible schedule data structure for the producer/consumer system is shown below.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="c1">// major frame duration: 500 ticks = 1000 ms = 1 sec
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">const</span> <span class="kt">dschedule_t</span> <span class="n">ksDomSchedule</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// (1 tick == 2ms)
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">100</span> <span class="p">},</span> <span class="c1">// all other seL4 threads, init, 200ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// pacer        10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>  <span class="mi">95</span> <span class="p">},</span> <span class="c1">// domain0     190ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// source       10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>  <span class="mi">95</span> <span class="p">},</span> <span class="c1">// domain0     190ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span>   <span class="mi">5</span> <span class="p">},</span> <span class="c1">// destination  10ms
+</span></span></span><span class="line"><span class="cl">      <span class="p">{</span> <span class="p">.</span><span class="n">domain</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">195</span> <span class="p">},</span> <span class="c1">// domain0     390ms
+</span></span></span><span class="line"><span class="cl">   <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">const</span> <span class="kt">word_t</span> <span class="n">ksDomScheduleLength</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">ksDomSchedule</span><span class="p">)</span> <span class="o">/</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">dschedule_t</span><span class="p">);</span>
+</span></span></code></pre></div><p>The schedule is an array of domain and execution durations in the order of desired execution within the major frame.  The domain fields are either 0 or 1 or refer an AADL process both the <code>CASE_Scheduling::Domain</code> property associated with a process in the AADL model. The units on duration fields (<code>.length</code>) are seL4 <em>ticks</em>.  The actual clock time for a tick is configured in (**TBD: for TC: where? **).  The default tick duration is 2 milli-seconds.</p>
+<p>It&rsquo;s good style to indicate using comments the actual duration of each domain activiation in milliseconds (<code>.length</code> * tick duration).  It&rsquo;s also useful to indicate in comments the total duration (in ticks and secs/milliseconds) of the major frame.</p>
+<p>The following constraints should hold for the completed data structure and AADL model (these need to be checked manually now; they may be automated in the future; HAMR currently generates some helpful hints when values used in the schedule can be derived from AADL model properties):</p>
+<ul>
+<li>
+<p>each domain field should lie within the interval 0 .. CASE_Scheduling::Max_Domain</p>
+</li>
+<li>
+<p>each domain from 0 .. CASE_Scheduling::Max_Domain should be accounted for at least once in the schedule</p>
+</li>
+<li>
+<p>the slot duration (in milliseconds) written in comments should correspond to the <code>Timing_Properties::Compute_Execution_Time</code> property for the thread captured in the AADL model.</p>
+</li>
+<li>
+<p>the slot duration field value (in ticks) should be correctly computed from the millisecond duration in comments and the tick duration.</p>
+</li>
+<li>
+<p>the major frame duration written in comments (in milliseconds) should correspond to the <code>Timing_Properties::Frame_Period</code> property value written in the AADL model (**TBD: applies to what? **).</p>
+</li>
+<li>
+<p>the sum of the <code>.length</code> fields (and associated milliseconds in comments) in the schedule should be equal to the major frame duration (in ticks, respectively milliseconds) written in comments</p>
+</li>
+<li>
+<p>the time between the activation of an application domain in one cycle to the next activation of the domain (which may be in the next major frame) should be equal to the <code>Period</code> property of thread in the AADL model.</p>
+</li>
+</ul>
+<h3 id="aadl-modeling-of-timing-and-domain-scheduling-information">AADL Modeling of Timing and Domain Scheduling Information</h3>
+<p>The CASE scheduling approach is design to enable a scheduling approach for seL4 &ndash; the primary execution context technology for the Collins CASE teams.<br>
+To achieve alignment with the seL4 context, AADL modeling related to process and threads as well as AADL properties are used in a restricted way that doesn&rsquo;t necessarily match what one would do in general when working with AADL.  The primary restrictions are:</p>
+<ul>
+<li>There is a single thread in each process (normally, AADL allows multiple threads and thread groups per process).</li>
+<li>A CASE-specific annotation must be used to explicitly associate a process to a scheduling domain (this concept is not present in the standard set of AADL timing properties).</li>
+</ul>
+<p>Below we provide an example-driven explanation of how models are structured and annotations are added to support the CASE scheduling approach.</p>
+<p>Following the standard semantics of AADL, an AADL process represents a separate address space &ndash; a space partition unit whose boundaries are enforced at runtime (see Section 5.8 of the AADL standard).   When using the seL4 CamKES framework, a space partition unit is represented as a CAmkES component.  While AADL allows multiple threads per process, to simplify the code generation and scheduling infrastructure, we currently restrict there to be exactly one AADL thread per process.  Thus, a AADL process/thread pair will become both the unit of space partitioning and scheduling.</p>
+<p>The AADL code below illustrates how processes and threads are declared in concert, with accompanying annotations, to support the CASE scheduling approach.</p>
+<pre tabindex="0"><code class="language-AADL" data-lang="AADL">
+   thread source_thread
+      features
+        write_port: out data port Base_Types::Integer_8;
+      properties
+         -- Each thread type must have a declared dispatch protocol.  In CASE scheduling, 
+         --  the protocol is typically Periodic.
+			Dispatch_Protocol =&gt; Periodic;
+         -- Each periodic thread must have a declared period.  The period is not used
+         -- in code generation currently.  Instead, the system integrator needs to manually
+         -- check that the indicated period is implied by time slots declared in the seL4 
+         -- schedule data structure.  To support this, the period value is passed down 
+         -- in comments in the auto-generated schedule data structure template.
+			Period =&gt; 1000ms;
+         -- Each periodic thread must declare a Compute_Execution_Time (as an AADL time range).  
+         -- The Compute_Execution_Time is not used in code generation currently.  
+         -- Instead, the system integrator needs to manually check that upper 
+         -- bound of the time range (the lower bound is not used) corresponds to the 
+         -- time value associated with the slot of the domain corresponding to the thread&#39;s process 
+         -- the seL4 data structure.  To support this, the Compute_Execution_Time value is passed down 
+         -- in comments in the auto-generated schedule data structure template.
+			Compute_Execution_Time =&gt; 10ms .. 10ms;
+         -- ToDo:
+         --  The stuff below stuff should go away.
+			Source_Text =&gt; (&#34;behavior_code/components/source/src/source.c&#34;);
+			Initialize_Entrypoint_Source_Text =&gt; &#34;test_data_port_periodic_domains_source_component_init&#34;;
+			Compute_Entrypoint_Source_Text =&gt; &#34;test_data_port_periodic_domains_source_component_time_triggered&#34;;
+	end source_thread;
+
+
+   -- No scheduling related info goes in the thread implementation.
+	thread implementation source_thread.impl
+	end source_thread.impl;
+
+   -- process specifies boundary of spatial isolation
+	process source_process
+		features
+			write_port: out data port Base_Types::Integer_8;
+		properties
+			seL4_Properties::Domain =&gt; 2; -- pacer 1, source 2, destination 3
+	end source_process;
+
+   -- No scheduling related info goes in the process implementation.
+	process implementation source_process.impl
+		subcomponents
+			source_thread_component: thread source_thread.impl;
+		connections
+			write_connection: port source_thread_component.write_port -&gt; write_port;
+	end source_process.impl;
+</code></pre><style type="text/css">.notice{--root-color:#444;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#c33;--warning-content:#fee;--info-title:#fb7;--info-content:#fec;--note-title:#6be;--note-content:#e7f2fa;--tip-title:#5a5;--tip-content:#efe}@media (prefers-color-scheme:dark){.notice{--root-color:#ddd;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#800;--warning-content:#400;--info-title:#a50;--info-content:#420;--note-title:#069;--note-content:#023;--tip-title:#363;--tip-content:#121}}body.dark .notice{--root-color:#ddd;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#800;--warning-content:#400;--info-title:#a50;--info-content:#420;--note-title:#069;--note-content:#023;--tip-title:#363;--tip-content:#121}.notice{padding:18px;line-height:24px;margin-bottom:24px;border-radius:4px;color:var(--root-color);background:var(--root-background)}.notice p:last-child{margin-bottom:0}.notice-title{margin:-18px -18px 12px;padding:4px 18px;border-radius:4px 4px 0 0;font-weight:700;color:var(--title-color);background:var(--title-background)}.notice.warning .notice-title{background:var(--warning-title)}.notice.warning{background:var(--warning-content)}.notice.info .notice-title{background:var(--info-title)}.notice.info{background:var(--info-content)}.notice.note .notice-title{background:var(--note-title)}.notice.note{background:var(--note-content)}.notice.tip .notice-title{background:var(--tip-title)}.notice.tip{background:var(--tip-content)}.icon-notice{display:inline-flex;align-self:center;margin-right:8px}.icon-notice img,.icon-notice svg{height:1em;width:1em;fill:currentColor}.icon-notice img,.icon-notice.baseline svg{top:.125em;position:relative}.notice.todo .notice-title{background:var(--warning-title)}.notice.todo{background:var(--warning-content)}</style>
+<div><svg width="0" height="0" display="none" xmlns="http://www.w3.org/2000/svg"><symbol id="tip-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"/></symbol><symbol id="note-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="warning-notice" viewBox="0 0 576 512" preserveAspectRatio="xMidYMid meet"><path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="info-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"/></symbol><symbol id="todo-notice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></symbol></svg></div><div class="notice info" >
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#info-notice"></use></svg></span>Info</p><p>ToDo:</p>
+<ul>
+<li>
+<p>We need to consider how the execution time of the Initialize entry points for threads are handled, e.g., using the standard AADL timing property <code>Initialize_Execution_Time</code>.</p>
+</li>
+<li>
+<p>Illustrate <code>Frame_Period</code> from property set below</p>
+</li>
+<li>
+<p>Illustrate <code>Time_Period</code> from property set below</p>
+</li>
+</ul></div>
+
+<h3 id="case-scheduling-properties">CASE Scheduling Properties</h3>
+<p>The following AADL property declarations are used to support the CASE scheduling approach.  Each of the properties are explained in the sections above.</p>
+<pre tabindex="0"><code class="language-AADL" data-lang="AADL">
+   ----------------------------------------------------------------------
+   -- Copyright 2020 DARPA CASE
+   --
+   -- Experimental seL4 specific properties for configuring kernel
+   -- and run-time schedule
+   ----------------------------------------------------------------------
+   property set seL4_Properties is
+   -- The values of these properties are not computed
+   -- values; they will be user specified, typically by the integrator&#39;s
+   -- Systems Engineer.
+   --
+   -- We will get fancier if we do a general ARINC653 solution. This
+   -- works for a basic schedule.
+
+   -- seL4_Properties::Domain is the numeric ID of the domain to which
+   -- the Systems Engineer assigns the thread. Once the examples get
+   -- fixed to have processes, this should be at the process level,
+   -- rather than thread level.
+
+   Domain: aadlinteger applies to (thread, process);
+
+   -- Schedule_Source_Text specifies the location of the source text for a
+   -- periodic domain schedule. For seL4, this will be a kernel modification.
+
+   Schedule_Source_Text: aadlstring applies to (processor, virtual processor);
+
+   -- use Timing_Properties::Compute_Execution_Time to specify the duration
+   -- for which the thread is scheduled. This ends up in the domain schedule. 
+
+   -- Use Timing_Properties::Frame_Period to specify the duration of the
+   -- major frame.
+
+   -- use TimingProperties::Clock_Period to specify tick duration in ms.
+   -- (seL4 default is 2) on the vanilla (non-MCS) seL4, the length of
+   -- the timer tick is configurable, defaulting to 2ms. None of the
+   -- verified configurations change this. See:
+   -- https://github.com/seL4/seL4/blob/master/config.cmake#L213
+   end seL4_Properties;
+</code></pre><h3 id="practical-issues---things-that-can-go-wrong">Practical Issues - Things That Can Go Wrong</h3>
+<div class="notice info" >
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#info-notice"></use></svg></span>Info</p><p>ToDo:</p>
+<ul>
+<li>indicate what might be observed when things go wrong with setting up the schedule.</li>
+</ul></div>
+
+</div>
+        
+
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">Hamr-Docs</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>

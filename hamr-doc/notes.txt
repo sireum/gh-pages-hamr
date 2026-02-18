@@ -1,0 +1,21 @@
+.GitIgnore
+
+
+vagrant@debian-10:~/temp/osate$ cat ~/.gitignore_global
+*~ 
+.DS_Store - mac hidden file for directory viewing preferences
+
+In AADL folder
+
+**/.settings/ - associated with Sireum option selection in OSATE, contains full paths 
+**/.aadlbin-gen/ 
+
+in HAMR Slang folder
+
+**/.idea/  - in our workflows, auto-generated SBT or Robby's mill build - likely contains path info 
+**/target/ - binaries/class/jar files that will be produced by SBT, so need to
+
+Note
+
+**/out/ - want to have this if building from mill (the equiv of target)
+
