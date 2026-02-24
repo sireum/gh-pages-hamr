@@ -29,7 +29,7 @@
 
 
 
-<link rel="stylesheet" href="https://hamr.sireum.org/main.9b7fec326fab4b320f3a6ebff5b2cd1a56f40af9971ff15a0213c97eff1ce5d0.css" integrity="sha256-m3/sMm&#43;rSzIPOm6/9bLNGlb0CvmXH/FaAhPJfv8c5dA=">
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
 
 
 
@@ -119,8 +119,8 @@
       <div>
         <li>
           <a href="https://sireum.org/getting-started/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
-            <span class="responsive-title-long">Download</span>
-            <span class="responsive-title-short">Download</span>
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
           </a>
         </li>
       </div>
@@ -219,17 +219,51 @@
           <div class="post-content"><p>This section contains the HAMR reference documentation.  Use the navigation tree below to browse individual chapters.</p>
 </div>
         
-
-        
           <hr/>
-          Sections
-          <div id="page-tree" style="background: transparent;"><ul><li>
-        <a href="https://hamr.sireum.org/hamr-doc/installation/"><span>Installation</span></a></li><li>
-        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/"><span>HAMR System Modeling in SysMLv2</span></a><ul><li>
-        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/aadl-lib/readme/"><span></span></a></li><li>
-        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/claude/"><span></span></a></li></ul></li><li>
+              <div class="doc-module">
+                <div class="doc-module-title">Infrastructure</div>
+                <div class="doc-module-description">Setting up and configuring HAMR tools and development environments.</div>
+                <div class="module-tree" style="background: transparent;"><ul><li>
+        <a href="https://hamr.sireum.org/hamr-doc/installation/"><span>Installation</span></a></li></ul></div>
+              </div>
+              <div class="doc-module">
+                <div class="doc-module-title">Model-Level Development with SysMLv2</div>
+                <div class="doc-module-description">System modeling and IDE support for HAMR SysMLv2 workflows.</div>
+                <div class="module-tree" style="background: transparent;"><ul><li>
+        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/"><span>HAMR System Modeling in SysMLv2</span></a></li><li>
         <a href="https://hamr.sireum.org/hamr-doc/sysmlv2-codeive/"><span>Using the CodeIVE for HAMR SysMLv2 Models</span></a></li></ul></div>
-        
+              </div>
+              <div class="doc-module">
+                <div class="doc-module-title">Code-Level Development for Microkit</div>
+                <div class="doc-module-description">Building and organizing HAMR applications targeting the seL4 Microkit platform.</div>
+                <div class="module-tree" style="background: transparent;"><ul><li>
+        <a href="https://hamr.sireum.org/hamr-doc/microkit-folder-structure/"><span>Microkit Folder Structure</span></a></li></ul></div>
+              </div>
+            <script style="text/javascript">
+              window.addEventListener('load', function () {
+                var theme = document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default";
+                $('.module-tree').each(function () {
+                  $(this).jstree({
+                    "core": {
+                      "themes": {
+                        "name": theme,
+                        "dots": true,
+                        "icons": false,
+                        "variant": "large"
+                      }
+                    },
+                    plugins: [ "ui" ],
+                  }).bind("select_node.jstree", function (e, data) {
+                    document.location.href = data.node.a_attr.href;
+                  }).bind("ready.jstree", function (event, data) {
+                    $(this).jstree("open_all");
+                  }).bind("open_all.jstree", function (event, data) {
+                    data.instance.element.find('li').each(function() {});
+                    data.instance.element.get()[0].style.display="block";
+                  });
+                });
+              });
+            </script>
         <hr/>
 
         
