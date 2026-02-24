@@ -50,7 +50,7 @@ Given system models, HAMR can auto-generate application component skeletons and 
   <meta itemprop="description" content="HAMR is a tool chain for building high assurance embedded systems using integrated formal methods. It emphasizes three layers of development.
 The first layer emphasizes modeling, analysis and verification in the SysMLv2 and AADL modeling languages. At this layer, HAMR supports optional use of developer-friendly formal specifications and contract languages to specify both desired behavior and architecture constraints.
 Given system models, HAMR can auto-generate application component skeletons and associated infrastructure glue code in multiple languages. Developers can program the application behavior of these components in multiple languages including C, Rust, and Slang. HAMR component development using Rust is designed to support automated property-based testing and automated formal verification using the Verus SMT-based verification tool. HAMR’s code-level testing and verification utilizes contract information that is automatically injected into the code based on model-level contracts. A lot of these capabilities were originally developed for Slang, a safety-critical subset of Scala developed at Kansas State University. Slang programs can be automatically verified to conform to contracts using the Logika verifier tool. Slang can also be transpiled to C and Rust.">
-  <meta itemprop="wordCount" content="6463">
+  <meta itemprop="wordCount" content="6462">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -181,7 +181,7 @@ Given system models, HAMR can auto-generate application component skeletons and 
     
       <div>
         <li>
-          <a href="https://sireum.org/team" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
             <span class="responsive-title-long">Team</span>
             <span class="responsive-title-short">Team</span>
           </a>
@@ -274,7 +274,7 @@ HAMR doesn&rsquo;t address all of AADL.  Instead, it supports a subset of AADL t
 <h1 id="aadl-standard">AADL Standard</h1>
 <p><img src="image/AADL_Standard.png" alt=""></p>
 <p>Let&rsquo;s take a look at some of the key themes of AADL, and then we&rsquo;ll see how some of these concepts are being realized in SysMLv2.  There are separate chapters giving the details of using AADL and SysMLv2 for HAMR modeling.</p>
-<p>AADL is a standard from the Society of Automotive Engineers, first released in 2004.  It was inspired by the Meta H model-based development environment developed at Honeywell.  It&rsquo;s been used in research projects in aerospace and other domains in both U S and Europe.  It&rsquo;s been a favorite of researchers in the formal methods community because of its relative precision and because of its extensibility, that is, you can easily add new formal methods annotations and specifications to the base modeling language using the AADL annex mechanism.  For example, the GUMBO contract language that we mentioned earlier was first introduced as an annex language of the base AADL modeling language.</p>
+<p>AADL is a standard from the Society of Automotive Engineers, first released in 2004.  It was inspired by the Meta-H model-based development environment developed at Honeywell.  It&rsquo;s been used in research projects in aerospace and other domains in both U S and Europe.  It&rsquo;s been a favorite of researchers in the formal methods community because of its relative precision and because of its extensibility, that is, you can easily add new formal methods annotations and specifications to the base modeling language using the AADL annex mechanism.  For example, the GUMBO contract language that we mentioned earlier was first introduced as an annex language of the base AADL modeling language.</p>
 <h1 id="hamr-model-building-blocks-with-faithful-code-generation">HAMR Model Building Blocks with Faithful Code Generation</h1>
 <p><img src="image/Building_Blocks_with_Faithful_Code_Generation.png" alt=""></p>
 <p>The goal of most engineering standardization efforts is to codify the experience of a community of experts into concepts, requirements, and guidance that develop canonical approaches or best practices in the community.   In the AADL standards work, engineers with many years of experience in building high-assurance embedded systems identify collections of patterns and building blocks that are represented as modeling elements.  These include patterns for both tasking and communication, as well as platform features like processors and communication busses. These building blocks provide a modeling palette for engineers to draw from when they outline the architecture of a system.</p>
