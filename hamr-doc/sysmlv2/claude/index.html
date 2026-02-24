@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="SysMLv2 AADL Libraries Documentation Goal
+Help the software engineer prepare a high-quality technical documentation on a collection of SysMLv2 libraries used to represent AADL concepts in SysMLv2.
+Produce documentation in a single markdown file with the following characteristic: 0. The main goal is to explain how AADL concepts are represented in SysMLv2.
+Use material that you find online to summarize the purpose of AADL concepts that are being represented in SysMLv2. Assume the reader has no knowledge of SysMLv2. Explain SysMLv2 concepts in a high-level way, taking care to explain the SysMLv2 intention for widely used SysMLv2 modeling constructs such as part, part def, port, port def, connection, attribute, etc. Explain how SysMLv2 inheritance and overriding is used to enable SysMLv2 application models to use the AADL libraries to model AADL concepts Support discussions with SysMLv2 code in markdown code blocks drawn from the provided SysMLv2 libraries or from the example SysMLv2 modeled application that uses the libraries. You do not have to explain every single SysMLv2 construct. If one construct is very similar to another, you may omit it. When appropriate include URL links to other SysMLv2 and AADL talks or documentation. The libraries are customized in some auxiliary files for a model-based development tool called HAMR. Suggested Outline and Emphasis The *.sysml files mentioned below are found in the AADL-Libraries folder.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/sysmlv2/claude/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.9b7fec326fab4b320f3a6ebff5b2cd1a56f40af9971ff15a0213c97eff1ce5d0.css" integrity="sha256-m3/sMm&#43;rSzIPOm6/9bLNGlb0CvmXH/FaAhPJfv8c5dA=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="SysMLv2 AADL Libraries Documentation Goal
+Help the software engineer prepare a high-quality technical documentation on a collection of SysMLv2 libraries used to represent AADL concepts in SysMLv2.
+Produce documentation in a single markdown file with the following characteristic: 0. The main goal is to explain how AADL concepts are represented in SysMLv2.
+Use material that you find online to summarize the purpose of AADL concepts that are being represented in SysMLv2. Assume the reader has no knowledge of SysMLv2. Explain SysMLv2 concepts in a high-level way, taking care to explain the SysMLv2 intention for widely used SysMLv2 modeling constructs such as part, part def, port, port def, connection, attribute, etc. Explain how SysMLv2 inheritance and overriding is used to enable SysMLv2 application models to use the AADL libraries to model AADL concepts Support discussions with SysMLv2 code in markdown code blocks drawn from the provided SysMLv2 libraries or from the example SysMLv2 modeled application that uses the libraries. You do not have to explain every single SysMLv2 construct. If one construct is very similar to another, you may omit it. When appropriate include URL links to other SysMLv2 and AADL talks or documentation. The libraries are customized in some auxiliary files for a model-based development tool called HAMR. Suggested Outline and Emphasis The *.sysml files mentioned below are found in the AADL-Libraries folder.">
+  <meta itemprop="wordCount" content="451">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="SysMLv2 AADL Libraries Documentation Goal
+Help the software engineer prepare a high-quality technical documentation on a collection of SysMLv2 libraries used to represent AADL concepts in SysMLv2.
+Produce documentation in a single markdown file with the following characteristic: 0. The main goal is to explain how AADL concepts are represented in SysMLv2.
+Use material that you find online to summarize the purpose of AADL concepts that are being represented in SysMLv2. Assume the reader has no knowledge of SysMLv2. Explain SysMLv2 concepts in a high-level way, taking care to explain the SysMLv2 intention for widely used SysMLv2 modeling constructs such as part, part def, port, port def, connection, attribute, etc. Explain how SysMLv2 inheritance and overriding is used to enable SysMLv2 application models to use the AADL libraries to model AADL concepts Support discussions with SysMLv2 code in markdown code blocks drawn from the provided SysMLv2 libraries or from the example SysMLv2 modeled application that uses the libraries. You do not have to explain every single SysMLv2 construct. If one construct is very similar to another, you may omit it. When appropriate include URL links to other SysMLv2 and AADL talks or documentation. The libraries are customized in some auxiliary files for a model-based development tool called HAMR. Suggested Outline and Emphasis The *.sysml files mentioned below are found in the AADL-Libraries folder.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/getting-started/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Download</span>
+            <span class="responsive-title-short">Download</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/papers" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/team" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+    <main class="post">
+
+        <div class="post-info">
+            
+            </p>
+        </div>
+
+        <article>
+            <h2 class="post-title"><a href="https://hamr.sireum.org/hamr-doc/sysmlv2/claude/"></a></h2>
+
+            
+            
+            
+
+            <div class="post-content">
+                <h1 id="sysmlv2-aadl-libraries-documentation">SysMLv2 AADL Libraries Documentation</h1>
+<p><strong>Goal</strong><br>
+Help the software engineer prepare a high-quality technical documentation on a collection of SysMLv2 libraries used to represent AADL concepts in SysMLv2.</p>
+<p>Produce documentation in a single markdown file with the following characteristic:
+0. The main goal is to explain how AADL concepts are represented in SysMLv2.</p>
+<ol>
+<li>Use material that you find online to summarize the purpose of AADL concepts that are being represented in SysMLv2.</li>
+<li>Assume the reader has no knowledge of SysMLv2.  Explain SysMLv2 concepts in a high-level way, taking care to explain the SysMLv2 intention for widely used SysMLv2 modeling constructs such as part, part def, port, port def, connection, attribute, etc.</li>
+<li>Explain how SysMLv2 inheritance and overriding is used to enable SysMLv2 application models to use the AADL libraries to model AADL concepts</li>
+<li>Support discussions with SysMLv2 code in markdown code blocks drawn from the provided SysMLv2 libraries or from the example SysMLv2 modeled application that uses the libraries.</li>
+<li>You do not have to explain every single SysMLv2 construct.  If one construct is very similar to another, you may omit it.</li>
+<li>When appropriate include URL links to other SysMLv2 and AADL talks or documentation.</li>
+<li>The libraries are customized in some auxiliary files for a model-based development tool called HAMR.</li>
+</ol>
+<p><strong>Suggested Outline and Emphasis</strong>
+The *.sysml files mentioned below are found in the AADL-Libraries folder.</p>
+<ul>
+<li>Purpose and Scope of documentation</li>
+<li>Primary AADL concepts fould in <code>AADL.sysml</code> - This is the most important file to explain because it summarizes at a high-level how AADL component categories, ports, etc. are presented in SysMLv2</li>
+<li>Address Data_Model.sysml together with Base_Types.sysml</li>
+<li>The discussion of all <code>*_Properties.sysml</code> files can be grouped together.</li>
+<li>HAMR files customizing the AADL Libraries can be addressed together</li>
+<li>Conclude with a walk through of how the files in the included isolette-simple folder use the AADL libraries to represent a system.</li>
+</ul>
+<p><strong>Key Input Files</strong> (these will be in the project)</p>
+<ul>
+<li>aadl-lib      → folder containing SysMLv2 files for the AADL libraries and HAMR customizations</li>
+<li>isolette-simple → folder containing SysMLv2 files that define a system using the AADL libraries</li>
+</ul>
+<p><strong>Key Output Files</strong> (you can create these)</p>
+<ul>
+<li>hamr-sysmlv2.md</li>
+</ul>
+<p><strong>How I will ask you to work</strong></p>
+<ul>
+<li>&ldquo;Generate the docs&rdquo;    → read input files and update hamr-sysmlv2.md</li>
+</ul>
+<p><strong>Response Style</strong></p>
+<ul>
+<li>When I give a command, first acknowledge what you’re doing, then do the work and write the file.</li>
+<li>Always end with a short summary of what was created/updated and any suggestions.</li>
+<li>I&rsquo;m open to suggestions for references to other documentation that might help developers use SysMLv2 better. Let me know if you find anything interesting that could be added.</li>
+</ul>
+<p><strong>Learning / Iteration</strong></p>
+<ul>
+<li>If something isn’t quite right, just tell me and I’ll add the correction to this CLAUDE.md so you remember forever.</li>
+</ul>
+
+            </div>
+        </article>
+
+        <hr />
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/sysmlv2/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR System Modeling in SysMLv2</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+      <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/aadl-lib/readme/" style="text-decoration: none;" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+        <i class="fa-solid fa-chevron-left"></i> 
+      </a>
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+        <div class="post-info">
+            
+            
+  		</div>
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>

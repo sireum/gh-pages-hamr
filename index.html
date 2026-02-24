@@ -44,16 +44,16 @@
 
 
   <meta itemprop="name" content="Sireum HAMR">
-  <meta itemprop="description" content="HAMR (&#34;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a framework for model-based development of critical systems. HAMR emphasizes three layers of development, explained below.
+  <meta itemprop="description" content="How HAMR Works HAMR (&#34;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a framework for model-based development of critical systems. HAMR emphasizes three layers of development, explained below.
 System architecture models are specified using either the Architecture Analysis and Design Language (AADL) or SysMLv2.
 HAMR generates code for system infrastructure including inter-component communication, real-time tasking infrastructure, and scheduling. For application components, HAMR generates code skeletons with entry points that are invoked by the underlying scheduling framework. Developers fill in these code skeletons with application logic to complete the behavior of the system. HAMR supports code generation and application development in Rust, C, and Slang (a safety-critical subset of Scala).">
-  <meta itemprop="wordCount" content="530">
+  <meta itemprop="wordCount" content="543">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://hamr.sireum.org/">
   <meta name="twitter:title" content="Sireum HAMR">
-  <meta name="twitter:description" content="HAMR (&#34;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a framework for model-based development of critical systems. HAMR emphasizes three layers of development, explained below.
+  <meta name="twitter:description" content="How HAMR Works HAMR (&#34;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems’’) is a framework for model-based development of critical systems. HAMR emphasizes three layers of development, explained below.
 System architecture models are specified using either the Architecture Analysis and Design Language (AADL) or SysMLv2.
 HAMR generates code for system infrastructure including inter-component communication, real-time tasking infrastructure, and scheduling. For application components, HAMR generates code skeletons with entry points that are invoked by the underlying scheduling framework. Developers fill in these code skeletons with application logic to complete the behavior of the system. HAMR supports code generation and application development in Rust, C, and Slang (a safety-critical subset of Scala).">
 
@@ -136,7 +136,7 @@ HAMR generates code for system infrastructure including inter-component communic
     
       <div>
         <li>
-          <a href="https://doc.sireum.org" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
             <span class="responsive-title-long">Doc</span>
             <span class="responsive-title-short">Doc</span>
           </a>
@@ -220,7 +220,8 @@ HAMR generates code for system infrastructure including inter-component communic
 
             <div id="home" class="post">
               
-                <p>HAMR (&quot;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems&rsquo;&rsquo;) is a framework for model-based development of critical systems.  HAMR emphasizes three layers of development, explained below.</p>
+                <h2 id="how-hamr-works">How HAMR Works</h2>
+<p>HAMR (&quot;[H]igh [A]ssurance [M]odeling and [R]apid engineering for embedded systems&rsquo;&rsquo;) is a framework for model-based development of critical systems.  HAMR emphasizes three layers of development, explained below.</p>
 <ul>
 <li>
 <p>System architecture models are specified using either the <a href="https://www.sei.cmu.edu/our-work/projects/display.cfm?customel_datapageid_4050=191439">Architecture Analysis and Design Language</a> (AADL) or <a href="https://www.omg.org/sysml/sysmlv2/">SysMLv2</a>.</p>
@@ -232,14 +233,16 @@ HAMR generates code for system infrastructure including inter-component communic
 <p>HAMR generates deployment infrastructure for the JVM, Linux, and the seL4 microkernel.</p>
 </li>
 </ul>
+<h2 id="integrated-developer-friendly-formal-methods">Integrated Developer-Friendly Formal Methods</h2>
 <p>A key theme of HAMR is the incorporation of developer-friendly formal methods that are integrated to work synergistically across the three development layers above.  For example, in models, developers can include behavior contracts written the GUMBO contract language.  When HAMR generates code, it translates GUMBO contract down into source code contract languages.  This enables code level verification tools (e.g., <a href="https://verus-lang.github.io/verus/guide/">Verus</a> for Rust, and <a href="https://logika.sireum.org">Logika</a> for Slang) to verify the application code conforms to code-level and model-level contracts.  HAMR also generates infrastructure for property-based testing against GUMBO-derived test oracles, allowing developers to seamlessly switch between using testing and formal verification to ensure that application conforms to contracts.  HAMR deploys code on the <a href="https://sel4.systems">seL4 micro-kernel</a>, whose functionality and partitioning have been mathematically proven correct in the Isabelle theorem prover.  HAMR&rsquo;s <a href="https://drive.google.com/file/d/18wNRhNNgmnWXZAEsFSgvYZAzNh5JDrRE/view?usp=sharing">run-time semantics</a> is modeled in the Isabelle theorem prover, which guides HAMR implementation and enables to prove the soundness of HAMR analysis and verification techniques.  HAMR&rsquo;s application assurance framework helps developers organize correctness claims about their system and to manage the accumulation of assurance evidence for those claims across all three layers of development.</p>
+<h2 id="more-information">More Information</h2>
 <p>To learn more about HAMR,</p>
 <ul>
 <li>
 <p>read a <a href="https://drive.google.com/file/d/1jOlRWmIKwLm_a74U0iqzBAnqH1TTMqTy/view?usp=sharing">short paper from DASC 2025</a> about how HAMR is being used in the Collins Aerospace INSPECTA tool chain for high assurance systems</p>
 </li>
 <li>
-<p>read a short <a href="https://hamr.sireum.org/hamr-doc/ch00-hamr-overview/">HAMR Overview</a>, then a longer <a href="https://hamr.sireum.org/hamr-doc/ch0x-hamr-tour/">HAMR Tour</a></p>
+<p>read a short HAMR Overview, then a longer HAMR Tour (documentation being updated)</p>
 </li>
 <li>
 <p>watch overview videos</p>
@@ -252,13 +255,15 @@ HAMR generates code for system infrastructure including inter-component communic
 <p>read an older <a href="https://drive.google.com/file/d/133BqXLUtsCHH3Ievq1VDDocLaxJKLQgI/view?usp=sharing">journal article</a> on HAMR C code generation for the seL4 micro-kernel using the CAmkES framework and its application on the DARPA CASE project.</p>
 </li>
 </ul>
+<h2 id="sponsors">Sponsors</h2>
 <p>HAMR is being used in several US Department of Defense research projects.  The links below include information on the broader objectives of these projects,</p>
 <ul>
 <li><a href="https://loonwerks.com/projects/inspecta.html">The INSPECTA Project</a> - DARPA PROVERS program - with Collins Aerospace (lead), Dornerworks, CMU, University of New South Wales, University of Kansas.</li>
 <li>(concluded) DARPA Cyber-Assured Systems Engineering (CASE) - with Collins Aerospace (lead), Adventium Labs, and Data61.  Collins Aerospace team web site: <a href="http://loonwerks.com/projects/case.html">CASE Overview</a></li>
 </ul>
+<h2 id="license">License</h2>
 <p>HAMR is an project released under the <a href="https://github.com/sireum/kekinian/blob/master/license.md">Simplified BSD</a> license.</p>
-<p><a href="https://hamr.sireum.org/hamr-doc/file-outliner/">file-outliner</a></p>
+<!-- file-outliner link removed (content being reorganized) -->
 <hr>
 <div style="display: grid; grid-template-columns: auto auto;">
   <div class="col" style="text-align: left; margin-top: -2px; border: 1px;">

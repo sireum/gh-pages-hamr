@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="AADL Concepts in SysMLv2: HAMR Library Documentation Table of Contents Purpose and Scope SysMLv2 Primer for AADL Engineers The Core AADL Library (AADL.sysml) 3.1 Component Categories 3.2 Software Components 3.3 Hardware and Execution Platform Components 3.4 Composite Components 3.5 Ports and Features 3.6 Connections Data Modeling: Data_Model.sysml and Base_Types.sysml Property Sets 5.1 AADL_Project.sysml — Shared Enumerations and Types 5.2 Timing_Properties.sysml 5.3 Thread_Properties.sysml 5.4 Communication_Properties.sysml 5.5 Deployment_Properties.sysml 5.6 Memory_Properties.sysml 5.7 Programming_Properties.sysml 5.8 Behavior_Properties.sysml HAMR Customizations Walkthrough: Isolette Example References 1. Purpose and Scope This document explains how the Architecture Analysis and Design Language (AADL) concepts are represented in SysMLv2, a next-generation systems modeling language standardized by the Object Management Group (OMG). The representation is achieved through a set of SysMLv2 library packages that define part definitions, port definitions, connection definitions, enumerations, and attribute definitions that mirror AADL&rsquo;s component categories, features, connections, and property sets.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/sysmlv2/" />
+
+
+    <title>
+        
+            AADL Concepts in SysMLv2: HAMR Library Documentation :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.9b7fec326fab4b320f3a6ebff5b2cd1a56f40af9971ff15a0213c97eff1ce5d0.css" integrity="sha256-m3/sMm&#43;rSzIPOm6/9bLNGlb0CvmXH/FaAhPJfv8c5dA=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="AADL Concepts in SysMLv2: HAMR Library Documentation">
+  <meta itemprop="description" content="AADL Concepts in SysMLv2: HAMR Library Documentation Table of Contents Purpose and Scope SysMLv2 Primer for AADL Engineers The Core AADL Library (AADL.sysml) 3.1 Component Categories 3.2 Software Components 3.3 Hardware and Execution Platform Components 3.4 Composite Components 3.5 Ports and Features 3.6 Connections Data Modeling: Data_Model.sysml and Base_Types.sysml Property Sets 5.1 AADL_Project.sysml — Shared Enumerations and Types 5.2 Timing_Properties.sysml 5.3 Thread_Properties.sysml 5.4 Communication_Properties.sysml 5.5 Deployment_Properties.sysml 5.6 Memory_Properties.sysml 5.7 Programming_Properties.sysml 5.8 Behavior_Properties.sysml HAMR Customizations Walkthrough: Isolette Example References 1. Purpose and Scope This document explains how the Architecture Analysis and Design Language (AADL) concepts are represented in SysMLv2, a next-generation systems modeling language standardized by the Object Management Group (OMG). The representation is achieved through a set of SysMLv2 library packages that define part definitions, port definitions, connection definitions, enumerations, and attribute definitions that mirror AADL’s component categories, features, connections, and property sets.">
+  <meta itemprop="wordCount" content="4641">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="AADL Concepts in SysMLv2: HAMR Library Documentation">
+  <meta name="twitter:description" content="AADL Concepts in SysMLv2: HAMR Library Documentation Table of Contents Purpose and Scope SysMLv2 Primer for AADL Engineers The Core AADL Library (AADL.sysml) 3.1 Component Categories 3.2 Software Components 3.3 Hardware and Execution Platform Components 3.4 Composite Components 3.5 Ports and Features 3.6 Connections Data Modeling: Data_Model.sysml and Base_Types.sysml Property Sets 5.1 AADL_Project.sysml — Shared Enumerations and Types 5.2 Timing_Properties.sysml 5.3 Thread_Properties.sysml 5.4 Communication_Properties.sysml 5.5 Deployment_Properties.sysml 5.6 Memory_Properties.sysml 5.7 Programming_Properties.sysml 5.8 Behavior_Properties.sysml HAMR Customizations Walkthrough: Isolette Example References 1. Purpose and Scope This document explains how the Architecture Analysis and Design Language (AADL) concepts are represented in SysMLv2, a next-generation systems modeling language standardized by the Object Management Group (OMG). The representation is achieved through a set of SysMLv2 library packages that define part definitions, port definitions, connection definitions, enumerations, and attribute definitions that mirror AADL’s component categories, features, connections, and property sets.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/getting-started/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Download</span>
+            <span class="responsive-title-short">Download</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/papers" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/team" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+        <hr />
+        <aside id="toc">
+            <div class="toc-title">Table of Contents</div>
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#who-should-read-this">Who Should Read This</a></li>
+    <li><a href="#file-overview">File Overview</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#packages">Packages</a></li>
+    <li><a href="#part-definitions-and-parts">Part Definitions and Parts</a></li>
+    <li><a href="#specialization-">Specialization (<code>:&gt;</code>)</a></li>
+    <li><a href="#attributes">Attributes</a></li>
+    <li><a href="#port-definitions-and-ports">Port Definitions and Ports</a></li>
+    <li><a href="#connection-definitions-and-connections">Connection Definitions and Connections</a></li>
+    <li><a href="#enumeration-definitions">Enumeration Definitions</a></li>
+    <li><a href="#allocation-definitions">Allocation Definitions</a></li>
+    <li><a href="#interface-definitions">Interface Definitions</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#31-component-categories">3.1 Component Categories</a></li>
+    <li><a href="#32-software-components">3.2 Software Components</a>
+      <ul>
+        <li><a href="#thread">Thread</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#data">Data</a></li>
+        <li><a href="#subprogram">Subprogram</a></li>
+      </ul>
+    </li>
+    <li><a href="#33-hardware-and-execution-platform-components">3.3 Hardware and Execution Platform Components</a>
+      <ul>
+        <li><a href="#processor">Processor</a></li>
+        <li><a href="#memory">Memory</a></li>
+        <li><a href="#bus">Bus</a></li>
+        <li><a href="#device">Device</a></li>
+        <li><a href="#virtualprocessor-and-virtualbus">VirtualProcessor and VirtualBus</a></li>
+      </ul>
+    </li>
+    <li><a href="#34-composite-components">3.4 Composite Components</a>
+      <ul>
+        <li><a href="#system">System</a></li>
+        <li><a href="#threadgroup">ThreadGroup</a></li>
+      </ul>
+    </li>
+    <li><a href="#35-ports-and-features">3.5 Ports and Features</a>
+      <ul>
+        <li><a href="#dataport">DataPort</a></li>
+        <li><a href="#eventdataport">EventDataPort</a></li>
+        <li><a href="#eventport">EventPort</a></li>
+        <li><a href="#access-features">Access Features</a></li>
+        <li><a href="#how-direction-is-specified">How Direction is Specified</a></li>
+      </ul>
+    </li>
+    <li><a href="#36-connections">3.6 Connections</a>
+      <ul>
+        <li><a href="#portconnection">PortConnection</a></li>
+        <li><a href="#other-connection-types">Other Connection Types</a></li>
+      </ul>
+    </li>
+  </ul>
+
+  <ul>
+    <li><a href="#data_modelsysml">Data_Model.sysml</a></li>
+    <li><a href="#base_typessysml">Base_Types.sysml</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#51-aadl_projectsysml--shared-enumerations-and-types">5.1 AADL_Project.sysml — Shared Enumerations and Types</a></li>
+    <li><a href="#52-timing_propertiessysml">5.2 Timing_Properties.sysml</a></li>
+    <li><a href="#53-thread_propertiessysml">5.3 Thread_Properties.sysml</a></li>
+    <li><a href="#54-communication_propertiessysml">5.4 Communication_Properties.sysml</a></li>
+    <li><a href="#55-deployment_propertiessysml">5.5 Deployment_Properties.sysml</a></li>
+    <li><a href="#56-memory_propertiessysml">5.6 Memory_Properties.sysml</a></li>
+    <li><a href="#57-programming_propertiessysml">5.7 Programming_Properties.sysml</a></li>
+    <li><a href="#58-behavior_propertiessysml">5.8 Behavior_Properties.sysml</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#hamrsysml--hamr-specific-properties">HAMR.sysml — HAMR-Specific Properties</a></li>
+    <li><a href="#hamr_aadlsysml--extended-component-definitions">HAMR_AADL.sysml — Extended Component Definitions</a></li>
+    <li><a href="#hamr_time_unitssysml--convenience-time-units">HAMR_Time_Units.sysml — Convenience Time Units</a></li>
+    <li><a href="#case_schedulingsysml--domain-scheduling">CASE_Scheduling.sysml — Domain Scheduling</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#package-and-import">Package and Import</a></li>
+    <li><a href="#data-types">Data Types</a></li>
+    <li><a href="#thread-definitions">Thread Definitions</a></li>
+    <li><a href="#process-definitions">Process Definitions</a></li>
+    <li><a href="#system-definition">System Definition</a></li>
+    <li><a href="#architecture-summary">Architecture Summary</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#aadl">AADL</a></li>
+    <li><a href="#sysmlv2">SysMLv2</a></li>
+    <li><a href="#hamr">HAMR</a></li>
+    <li><a href="#presentations-and-talks">Presentations and Talks</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+        <h1>AADL Concepts in SysMLv2: HAMR Library Documentation</h1>
+
+        
+          <div class="post-content"><h1 id="aadl-concepts-in-sysmlv2-hamr-library-documentation">AADL Concepts in SysMLv2: HAMR Library Documentation</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#1-purpose-and-scope">Purpose and Scope</a></li>
+<li><a href="#2-sysmlv2-primer-for-aadl-engineers">SysMLv2 Primer for AADL Engineers</a></li>
+<li><a href="#3-the-core-aadl-library-aadlsysml">The Core AADL Library (<code>AADL.sysml</code>)</a>
+<ul>
+<li>3.1 <a href="#31-component-categories">Component Categories</a></li>
+<li>3.2 <a href="#32-software-components">Software Components</a></li>
+<li>3.3 <a href="#33-hardware-and-execution-platform-components">Hardware and Execution Platform Components</a></li>
+<li>3.4 <a href="#34-composite-components">Composite Components</a></li>
+<li>3.5 <a href="#35-ports-and-features">Ports and Features</a></li>
+<li>3.6 <a href="#36-connections">Connections</a></li>
+</ul>
+</li>
+<li><a href="#4-data-modeling-data_modelsysml-and-base_typessysml">Data Modeling: <code>Data_Model.sysml</code> and <code>Base_Types.sysml</code></a></li>
+<li><a href="#5-property-sets">Property Sets</a>
+<ul>
+<li>5.1 <a href="#51-aadl_projectsysml--shared-enumerations-and-types">AADL_Project.sysml — Shared Enumerations and Types</a></li>
+<li>5.2 <a href="#52-timing_propertiessysml">Timing_Properties.sysml</a></li>
+<li>5.3 <a href="#53-thread_propertiessysml">Thread_Properties.sysml</a></li>
+<li>5.4 <a href="#54-communication_propertiessysml">Communication_Properties.sysml</a></li>
+<li>5.5 <a href="#55-deployment_propertiessysml">Deployment_Properties.sysml</a></li>
+<li>5.6 <a href="#56-memory_propertiessysml">Memory_Properties.sysml</a></li>
+<li>5.7 <a href="#57-programming_propertiessysml">Programming_Properties.sysml</a></li>
+<li>5.8 <a href="#58-behavior_propertiessysml">Behavior_Properties.sysml</a></li>
+</ul>
+</li>
+<li><a href="#6-hamr-customizations">HAMR Customizations</a></li>
+<li><a href="#7-walkthrough-isolette-example">Walkthrough: Isolette Example</a></li>
+<li><a href="#8-references">References</a></li>
+</ol>
+<hr>
+<h2 id="1-purpose-and-scope">1. Purpose and Scope</h2>
+<p>This document explains how the Architecture Analysis and Design Language (<a href="https://www.sae.org/standards/content/as5506d/">AADL</a>) concepts are represented in <a href="https://www.omgsysml.org/SysML-2.htm">SysMLv2</a>, a next-generation systems modeling language standardized by the Object Management Group (OMG). The representation is achieved through a set of SysMLv2 <strong>library packages</strong> that define part definitions, port definitions, connection definitions, enumerations, and attribute definitions that mirror AADL&rsquo;s component categories, features, connections, and property sets.</p>
+<p>The libraries are designed so that an application engineer can <strong>import the AADL library and model an AADL-style system architecture entirely in SysMLv2</strong>, using SysMLv2 inheritance (specialization) to create application-specific components that carry AADL semantics. A companion set of <strong>HAMR library files</strong> extends the core AADL libraries with additional properties and conventions used by the <a href="https://hamr.sireum.org/">HAMR</a> model-driven development tool for generating executable code from AADL/SysMLv2 models.</p>
+<h3 id="who-should-read-this">Who Should Read This</h3>
+<ul>
+<li>Software and systems engineers who know AADL and want to understand how to express AADL models in SysMLv2.</li>
+<li>Engineers learning SysMLv2 who want a concrete, domain-specific example of how SysMLv2 libraries are built.</li>
+<li>Users of HAMR who need to understand the SysMLv2 representation that HAMR consumes.</li>
+</ul>
+<h3 id="file-overview">File Overview</h3>
+<table>
+  <thead>
+      <tr>
+          <th>File</th>
+          <th>Role</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>AADL.sysml</code></td>
+          <td>Core library: component categories, ports, connections</td>
+      </tr>
+      <tr>
+          <td><code>AADL_Project.sysml</code></td>
+          <td>Shared enumeration types (dispatch protocols, scheduling, etc.)</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types.sysml</code></td>
+          <td>Primitive data types (Boolean, Integer, Float, String, etc.)</td>
+      </tr>
+      <tr>
+          <td><code>Data_Model.sysml</code></td>
+          <td>Data modeling properties (size, representation)</td>
+      </tr>
+      <tr>
+          <td><code>Timing_Properties.sysml</code></td>
+          <td>Time-related properties (period, deadline, execution time)</td>
+      </tr>
+      <tr>
+          <td><code>Thread_Properties.sysml</code></td>
+          <td>Thread dispatch, priority, concurrency control</td>
+      </tr>
+      <tr>
+          <td><code>Communication_Properties.sysml</code></td>
+          <td>Queue sizes, timing, transmission</td>
+      </tr>
+      <tr>
+          <td><code>Deployment_Properties.sysml</code></td>
+          <td>Processor/memory binding, scheduling protocol</td>
+      </tr>
+      <tr>
+          <td><code>Memory_Properties.sysml</code></td>
+          <td>Sizes, access rights, addresses</td>
+      </tr>
+      <tr>
+          <td><code>Programming_Properties.sysml</code></td>
+          <td>Source language, source text references</td>
+      </tr>
+      <tr>
+          <td><code>Behavior_Properties.sysml</code></td>
+          <td>Subprogram call protocols</td>
+      </tr>
+      <tr>
+          <td><code>HAMR.sysml</code></td>
+          <td>HAMR-specific properties (implementation language, array sizing)</td>
+      </tr>
+      <tr>
+          <td><code>HAMR_AADL.sysml</code></td>
+          <td>HAMR-extended component definitions</td>
+      </tr>
+      <tr>
+          <td><code>HAMR_Time_Units.sysml</code></td>
+          <td>Convenience time units (ms, us, ns, ps)</td>
+      </tr>
+      <tr>
+          <td><code>CASE_Scheduling.sysml</code></td>
+          <td>Domain-based scheduling properties</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="2-sysmlv2-primer-for-aadl-engineers">2. SysMLv2 Primer for AADL Engineers</h2>
+<p>SysMLv2 is a textual and graphical modeling language for systems engineering. Before diving into the AADL libraries, here are the key SysMLv2 concepts used throughout.</p>
+<h3 id="packages">Packages</h3>
+<p>A <strong>package</strong> is a namespace that groups related definitions. Packages can be marked as <code>library</code> packages, meaning they provide reusable definitions intended to be imported by other models.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">library package AADL {
+  // definitions go here
+}
+</code></pre><p>An application model imports a library with the <code>import</code> keyword:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package MySystem {
+  private import AADL::*;
+  // now all definitions from AADL are available
+}
+</code></pre><p><strong>(TBD: Further explain the difference between library packages and regular packages)</strong></p>
+<h3 id="part-definitions-and-parts">Part Definitions and Parts</h3>
+<p>A <strong><code>part def</code></strong> (part definition) defines a type of structural element — analogous to an AADL component type or component implementation. A <strong><code>part</code></strong> is an instance (usage) of that definition within a containing context — analogous to an AADL subcomponent declaration.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Definition (like an AADL component type)
+part def Thermostat :&gt; Thread { ... }
+
+// Usage (like an AADL subcomponent)
+part thermostat : Thermostat;
+</code></pre><h3 id="specialization-">Specialization (<code>:&gt;</code>)</h3>
+<p>The <code>:&gt;</code> operator declares that one definition <strong>specializes</strong> (inherits from) another. This is how AADL&rsquo;s component hierarchy is built: all AADL component categories specialize a base <code>Component</code>, and application-specific components specialize the appropriate category.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Thread specializes Component
+part def Thread :&gt; Component { ... }
+
+// Application-level TempSensor specializes Thread
+part def TempSensor :&gt; Thread { ... }
+</code></pre><p>All attributes, ports, and constraints from the parent definition are <strong>inherited</strong> by the child. The child can <strong>override</strong> inherited attributes using the <code>:&gt;&gt;</code> (redefinition) operator.</p>
+<h3 id="attributes">Attributes</h3>
+<p>An <strong><code>attribute</code></strong> declares a named property on a definition. Attributes have a type and can have default values. The <code>:&gt;&gt;</code> operator overrides an inherited attribute&rsquo;s value.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Thread :&gt; Component {
+  attribute Period : Timing_Properties::Period;           // declare
+  attribute Dispatch_Protocol : Thread_Properties::Dispatch_Protocol;
+}
+
+part def TempSensor :&gt; Thread {
+  attribute :&gt;&gt; Period = 1000 [ms];                       // override value
+  attribute :&gt;&gt; Dispatch_Protocol = Periodic;             // override value
+}
+</code></pre><h3 id="port-definitions-and-ports">Port Definitions and Ports</h3>
+<p>A <strong><code>port def</code></strong> defines a type of interface point. A <strong><code>port</code></strong> is a usage of that definition on a component. Ports can carry directional flow items (<code>in</code>, <code>out</code>, <code>inout</code>).</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port def DataPort :&gt; Feature {
+  inout part type : Data;
+}
+
+// Usage on a component
+part def TempSensor :&gt; Thread {
+  port current_temp : DataPort { out :&gt;&gt; type : Temp; }
+}
+</code></pre><p><strong>(TBD: Explain that HAMR doesn&rsquo;t support <code>inout</code> and explain why.)</strong></p>
+<p>The <code>out :&gt;&gt; type : Temp</code> syntax means: &ldquo;redefine the inherited <code>type</code> item to be outgoing and of type <code>Temp</code>.&rdquo;</p>
+<h3 id="connection-definitions-and-connections">Connection Definitions and Connections</h3>
+<p>A <strong><code>connection def</code></strong> defines a type of link between parts or ports. A <strong><code>connection</code></strong> is a usage that binds specific source and target endpoints.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">connection def PortConnection :&gt; Connection { ... }
+
+// Usage inside a system
+connection tc : PortConnection connect
+  temp_sensor.temp_changed to thermostat.temp_changed;
+</code></pre><h3 id="enumeration-definitions">Enumeration Definitions</h3>
+<p>An <strong><code>enum def</code></strong> defines a set of named constants, directly analogous to AADL enumeration types.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">enum def ComponentCategory {
+  enum Abstract;
+  enum Bus;
+  enum Data;
+  // ...
+}
+</code></pre><h3 id="allocation-definitions">Allocation Definitions</h3>
+<p>An <strong><code>allocation def</code></strong> defines a mapping relationship between model elements — used in these libraries to represent AADL&rsquo;s binding properties (e.g., binding a thread to a processor).</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">allocation def Actual_Processor_Binding {
+  end part sw : AADL::Component;
+  end part hw : AADL::Component;
+}
+</code></pre><h3 id="interface-definitions">Interface Definitions</h3>
+<p>An <strong><code>interface def</code></strong> defines a contract between two or more ports, including the flows and behaviors that occur across the connection. The AADL library uses this to model <code>PortConnection</code> with data flow semantics.</p>
+<p><strong>(TBD: Explain this in greater detail with more examples.)</strong></p>
+<hr>
+<h2 id="3-the-core-aadl-library-aadlsysml">3. The Core AADL Library (<code>AADL.sysml</code>)</h2>
+<p>The file <code>AADL.sysml</code> is the heart of the library. It defines:</p>
+<ul>
+<li>An enumeration of all 14 AADL <strong>component categories</strong></li>
+<li>A <code>part def</code> for each category, carrying the relevant AADL properties as attributes</li>
+<li><strong>Port definitions</strong> for AADL features (DataPort, EventPort, EventDataPort, access features)</li>
+<li><strong>Connection definitions</strong> for AADL connection types</li>
+</ul>
+<p>The library is declared as:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">library package AADL {
+  public import AADL_Project::*;
+  public import Deployment_Properties::*;
+  public import Thread_Properties::*;
+  public import Timing_Properties::*;
+  public import Communication_Properties::*;
+  public import Memory_Properties::*;
+  public import Programming_Properties::*;
+  public import Data_Model::*;
+  public import Behavior_Properties::*;
+  // ...
+}
+</code></pre><p>The <code>public import</code> statements mean that when an application model writes <code>import AADL::*</code>, it automatically gets access to all property set enumerations and types — mirroring how AADL property sets are globally available.</p>
+<h3 id="31-component-categories">3.1 Component Categories</h3>
+<p>AADL defines 14 component categories. The library represents them as an enumeration and as a hierarchy of <code>part def</code> definitions.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">enum def ComponentCategory {
+  enum Abstract;
+  enum Bus;
+  enum Data;
+  enum Device;
+  enum Memory;
+  enum Process;
+  enum Processor;
+  enum System;
+  enum Subprogram;
+  enum SubprogramGroup;
+  enum Thread;
+  enum ThreadGroup;
+  enum VirtualProcessor;
+  enum VirtualBus;
+}
+
+abstract part def Component {
+  attribute category : ComponentCategory;
+}
+</code></pre><p>Every concrete component category specializes <code>Component</code> and fixes its <code>category</code> attribute. This mirrors the AADL rule that every component belongs to exactly one category.</p>
+<h3 id="32-software-components">3.2 Software Components</h3>
+<p>AADL software components represent the executable parts of a system.</p>
+<h4 id="thread">Thread</h4>
+<p>An AADL <strong>thread</strong> is a schedulable unit of concurrent execution. Threads have dispatch protocols (periodic, sporadic, etc.), timing properties (period, deadline, execution time), and memory-related properties. The SysMLv2 representation carries all of these as typed attributes:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Thread :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Thread;
+
+  attribute Dispatch_Protocol : Thread_Properties::Dispatch_Protocol;
+  attribute Period : Timing_Properties::Period;
+  attribute Deadline : Timing_Properties::Deadline;
+  attribute Compute_Execution_Time : Timing_Properties::Compute_Execution_Time;
+  attribute Priority : Thread_Properties::Priority;
+  attribute Stack_Size : Memory_Properties::Stack_Size;
+  attribute Source_Language : Programming_Properties::Source_Language;
+  // ... many more timing and thread properties
+}
+</code></pre><p>An application model creates a specific thread by specializing this definition and overriding the desired properties:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def TempSensor :&gt; Thread {
+  attribute :&gt;&gt; Period = 1000 [ms];
+  attribute :&gt;&gt; Dispatch_Protocol = Periodic;
+
+  port current_temp : DataPort { out :&gt;&gt; type : Temp; }
+  out port temp_changed : EventPort;
+}
+</code></pre><h4 id="process">Process</h4>
+<p>An AADL <strong>process</strong> represents a protected address space that contains threads. In the SysMLv2 library, a <code>Process</code> contains <code>Thread</code> parts as subcomponents and connections between them:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Process :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Process;
+  attribute Period : Timing_Properties::Period;
+}
+</code></pre><h4 id="data">Data</h4>
+<p>An AADL <strong>data</strong> component represents a data type. It carries properties like <code>Data_Size</code>, <code>Source_Language</code>, and <code>Access_Right</code>:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Data :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Data;
+
+  attribute Data_Size : Memory_Properties::Data_Size;
+  attribute Source_Language : Programming_Properties::Source_Language;
+  attribute Source_Name : Programming_Properties::Source_Name;
+  attribute value : Base::DataValue;
+  // ...
+}
+</code></pre><h4 id="subprogram">Subprogram</h4>
+<p>An AADL <strong>subprogram</strong> represents a callable sequence of code (like a function). It carries execution time, memory size, and source language properties:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Subprogram :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Subprogram;
+
+  attribute Compute_Execution_Time : Timing_Properties::Compute_Execution_Time;
+  attribute Code_Size : Memory_Properties::Code_Size;
+  attribute Source_Language : Programming_Properties::Source_Language;
+  // ...
+}
+</code></pre><p><strong>(TBD: HAMR doesn&rsquo;t support Subprogram components.)</strong></p>
+<h3 id="33-hardware-and-execution-platform-components">3.3 Hardware and Execution Platform Components</h3>
+<p>AADL hardware components represent the physical execution platform.</p>
+<h4 id="processor">Processor</h4>
+<p>An AADL <strong>processor</strong> is the hardware that executes threads. It has scheduling-related properties:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Processor :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Processor;
+
+  attribute Scheduling_Protocol : Deployment_Properties::Scheduling_Protocol;
+  attribute Preemptive_Scheduler : Deployment_Properties::Preemptive_Scheduler;
+  attribute Thread_Limit : Deployment_Properties::Thread_Limit;
+  attribute Scheduler_Quantum : Timing_Properties::Scheduler_Quantum;
+}
+</code></pre><h4 id="memory">Memory</h4>
+<p>An AADL <strong>memory</strong> component represents storage (RAM, ROM, etc.):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Memory :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Memory;
+
+  attribute Memory_Size : Memory_Properties::Memory_Size;
+  attribute Word_Size : Memory_Properties::Word_Size;
+  attribute Base_Address : Memory_Properties::Base_Address;
+  attribute Memory_Protocol : Deployment_Properties::Memory_Protocol
+    default Deployment_Properties::Supported_Memory_Protocols::Read_Write;
+}
+</code></pre><h4 id="bus">Bus</h4>
+<p>An AADL <strong>bus</strong> represents a communication channel connecting hardware components:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Bus :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Bus;
+
+  attribute Transmission_Time : Communication_Properties::Transmission_Time;
+  attribute Transmission_Type : Communication_Properties::Transmission_Type;
+  attribute Period : Timing_Properties::Period;
+}
+</code></pre><h4 id="device">Device</h4>
+<p>An AADL <strong>device</strong> represents an interface to the external environment (sensors, actuators). Devices can have dispatch protocols and execution times, making them similar to threads from a scheduling perspective:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Device :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::Device;
+
+  attribute Compute_Execution_Time : Timing_Properties::Compute_Execution_Time;
+  attribute Dispatch_Protocol : Thread_Properties::Dispatch_Protocol;
+  attribute Period : Timing_Properties::Period;
+}
+</code></pre><h4 id="virtualprocessor-and-virtualbus">VirtualProcessor and VirtualBus</h4>
+<p>These represent virtualized versions of their physical counterparts, used for modeling partitioned or virtualized execution platforms.</p>
+<h3 id="34-composite-components">3.4 Composite Components</h3>
+<h4 id="system">System</h4>
+<p>An AADL <strong>system</strong> is the top-level composite component that organizes all other components:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def System :&gt; Component {
+  attribute :&gt;&gt; category = ComponentCategory::System;
+  attribute Period : Timing_Properties::Period;
+}
+</code></pre><h4 id="threadgroup">ThreadGroup</h4>
+<p>A <strong>thread group</strong> organizes threads within a process.</p>
+<h3 id="35-ports-and-features">3.5 Ports and Features</h3>
+<p>AADL features (ports) are the interface points of components. The library defines a base <code>Feature</code> and concrete port types.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">abstract port def Feature {
+  attribute Transmission_Type : Communication_Properties::Transmission_Type;
+}
+</code></pre><h4 id="dataport">DataPort</h4>
+<p>A <strong>data port</strong> carries typed data. It represents a continuous data stream — the most recent value is always available (no queuing). It is used for sampled communication:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port def DataPort :&gt; Feature {
+  inout part type : Data;
+  attribute Base_Address : Memory_Properties::Base_Address;
+}
+</code></pre><h4 id="eventdataport">EventDataPort</h4>
+<p>An <strong>event data port</strong> carries both an event notification and associated data. It supports queuing, so multiple values can be buffered:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port def EventDataPort :&gt; Feature {
+  inout part type : Data;
+  attribute Queue_Size : Communication_Properties::Queue_Size default 1;
+  attribute Base_Address : Memory_Properties::Base_Address;
+}
+</code></pre><h4 id="eventport">EventPort</h4>
+<p>An <strong>event port</strong> carries only an event notification (no data payload). Like event data ports, it supports queuing:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port def EventPort :&gt; Feature {
+  attribute Queue_Size : Communication_Properties::Queue_Size default 1;
+  attribute Base_Address : Memory_Properties::Base_Address;
+}
+</code></pre><h4 id="access-features">Access Features</h4>
+<p>Access features represent shared access to components (data, buses, subprograms):</p>
+<ul>
+<li><strong><code>DataAccess</code></strong> — provides or requires access to a shared data component</li>
+<li><strong><code>BusAccess</code></strong> — provides or requires access to a bus</li>
+<li><strong><code>SubprogramAccess</code></strong> — provides or requires access to a callable subprogram</li>
+</ul>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port def DataAccess :&gt; Feature {
+  inout ref type : Component;
+  attribute Access_Right : Memory_Properties::Access_Right;
+}
+</code></pre><h4 id="how-direction-is-specified">How Direction is Specified</h4>
+<p>In AADL, ports are declared as <code>in</code>, <code>out</code>, or <code>in out</code>. In SysMLv2, direction is specified at the port usage site by redefining the port&rsquo;s flow item:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// An output data port of type Temp
+port current_temp : DataPort { out :&gt;&gt; type : Temp; }
+
+// An input event data port of type On_Off
+port heat_control : EventDataPort { in :&gt;&gt; type : On_Off; }
+</code></pre><h3 id="36-connections">3.6 Connections</h3>
+<p>AADL connections link ports of subcomponents. The library defines a <code>Connection</code> hierarchy.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">abstract connection def Connection :&gt; Connections::BinaryConnection {
+  attribute Transmission_Type : Communication_Properties::Transmission_Type;
+  attribute Timing : Communication_Properties::Timing;
+}
+</code></pre><h4 id="portconnection">PortConnection</h4>
+<p>The most commonly used connection type. It is defined as an <code>interface def</code> (rather than a <code>connection def</code>) to include flow semantics — data moves from source to target:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">interface def PortConnection :&gt; Connection, BinaryInterface {
+  end port source : Feature;
+  end port target : Feature;
+
+  flow move {
+    ref :&gt;&gt; payload : Data;
+    end occurrence source : Feature :&gt;&gt; source = BinaryInterface::source;
+    end occurrence target : Feature :&gt;&gt; target = BinaryInterface::target;
+
+    action flow_action {
+      accept d : Data via source;
+      accept after 100.0 [s];
+      send d via target;
+    }
+  }
+}
+</code></pre><p>Usage in an application model:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">connection tc : PortConnection connect
+  temp_sensor.temp_changed to thermostat.temp_changed;
+</code></pre><h4 id="other-connection-types">Other Connection Types</h4>
+<ul>
+<li><strong><code>FeatureConnection</code></strong> — a general-purpose connection between features</li>
+<li><strong><code>ParameterConnection</code></strong> — connects parameters of subprograms</li>
+<li><strong><code>AccessConnection</code></strong> — connects access features (data access, bus access)</li>
+<li><strong><code>FeatureGroupConnection</code></strong> — connects feature groups</li>
+</ul>
+<hr>
+<h2 id="4-data-modeling-data_modelsysml-and-base_typessysml">4. Data Modeling: <code>Data_Model.sysml</code> and <code>Base_Types.sysml</code></h2>
+<h3 id="data_modelsysml">Data_Model.sysml</h3>
+<p>This small package defines the fundamental data modeling properties, corresponding to the AADL Data Modeling Annex:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package Data_Model {
+  private import SI::*;
+
+  attribute def Data_Size :&gt; StorageCapacityUnit;
+
+  enum def Number_Representation_enum {
+    enum Signed;
+    enum Unsigned;
+  }
+
+  enum def IEEE754_Precision {
+    enum Simple;
+    enum Double;
+  }
+}
+</code></pre><ul>
+<li><strong><code>Data_Size</code></strong> — specifies the storage size of a data type (in bytes or bits, using the SI units library)</li>
+<li><strong><code>Number_Representation_enum</code></strong> — whether an integer is <code>Signed</code> or <code>Unsigned</code></li>
+<li><strong><code>IEEE754_Precision</code></strong> — whether a floating point value is <code>Simple</code> (32-bit) or <code>Double</code> (64-bit)</li>
+</ul>
+<h3 id="base_typessysml">Base_Types.sysml</h3>
+<p>This package provides the standard primitive data types from AADL&rsquo;s Data Modeling Annex, each specializing <code>AADL::Data</code>:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package Base_Types {
+  private import AADL::*;
+  private import Data_Model::*;
+
+  part def Boolean :&gt; Data {
+    :&gt; value : ScalarValues::Boolean;
+  }
+
+  part def Integer :&gt; Data {
+    :&gt; value : ScalarValues::Integer;
+    attribute Number_Representation : Number_Representation_enum
+      = Number_Representation_enum::Signed;
+  }
+
+  part def Integer_8 :&gt; Base_Types::Integer {
+    :&gt; Data_Size = 1 [byte];
+  }
+
+  part def Integer_16 :&gt; Base_Types::Integer {
+    :&gt; Data_Size = 2 [byte];
+  }
+
+  part def Integer_32 :&gt; Base_Types::Integer {
+    :&gt; Data_Size = 4 [byte];
+  }
+
+  part def Float :&gt; Data {
+    :&gt; value : ScalarValues::Real;
+  }
+
+  part def Float_32 :&gt; Float {
+    :&gt; Data_Size = 4 [byte];
+    attribute IEEE754_Precisiion : IEEE754_Precision = IEEE754_Precision::Simple;
+  }
+
+  part def Float_64 :&gt; Float {
+    :&gt; Data_Size = 48 [byte];
+    attribute IEEE754_Precisiion : IEEE754_Precision = IEEE754_Precision::Double;
+  }
+
+  part def String :&gt; Data {
+    :&gt; value : ScalarValues::String;
+  }
+}
+</code></pre><p>The pattern is consistent: each base type <strong>specializes <code>Data</code></strong>, binds the <code>value</code> attribute to the appropriate SysMLv2 scalar type, and sets size and representation properties. Application models can then use these as the data type carried by ports:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">port current_temp : DataPort { out :&gt;&gt; type : Temp; }
+</code></pre><p>where <code>Temp</code> itself specializes <code>Data</code> (see the <a href="#7-walkthrough-isolette-example">Isolette walkthrough</a>).</p>
+<hr>
+<h2 id="5-property-sets">5. Property Sets</h2>
+<p>AADL organizes configurable properties into <strong>property sets</strong> — named collections of typed property definitions. Each property set is represented as a SysMLv2 package containing <code>attribute def</code> declarations. The property definitions use SysMLv2 <strong>multiple specialization</strong> to inherit from both <code>AADL::Property</code> (marking them as AADL properties) and a value type (e.g., <code>Time</code>, <code>ScalarValues::Integer</code>, an enumeration).</p>
+<p>The general pattern is:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// In the property set package:
+attribute def Period :&gt; AADL::Property, Time;
+
+// In a component definition:
+attribute Period : Timing_Properties::Period;
+
+// In an application model (overriding the value):
+attribute :&gt;&gt; Period = 1000 [ms];
+</code></pre><h3 id="51-aadl_projectsysml--shared-enumerations-and-types">5.1 AADL_Project.sysml — Shared Enumerations and Types</h3>
+<p>The <code>AADL_Project</code> package defines shared enumeration types and measurement types that are referenced by multiple property sets. This corresponds to the AADL <code>AADL_Project</code> property set (SAE AS-5506D Appendix A8).</p>
+<p>Key definitions include:</p>
+<p><strong>Dispatch Protocols</strong> — how threads are triggered:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">enum def Supported_Dispatch_Protocols {
+  enum Periodic;    // dispatched at regular time intervals
+  enum Sporadic;    // dispatched by arriving events
+  enum Aperiodic;   // dispatched by events, no minimum inter-arrival time
+  enum Timed;       // dispatched by timeout
+  enum Hybrid;      // combination of periodic and sporadic
+  enum Background;  // runs when no other thread is ready
+}
+</code></pre><p><strong>Scheduling Protocols</strong> — how the processor selects which thread to run:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">enum def Supported_Scheduling_Protocols {
+  enum Rate_Monotonic_Protocol;
+  enum Earliest_Deadline_First_Protocol;
+  enum POSIX_1003_Highest_Priority_First_Protocol;
+  enum Round_Robin_Protocol;
+  enum ARINC653;
+  // ...
+}
+</code></pre><p><strong>Concurrency Control Protocols</strong> — how shared data is protected:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">enum def Supported_Concurrency_Control_Protocols {
+  enum Priority_Inheritance;
+  enum Priority_Ceiling;
+  enum Spin_Lock;
+  enum Semaphore;
+  // ...
+}
+</code></pre><p><strong>Time and Size Types</strong> — foundational measurement types:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">attribute def Time :&gt; ISQBase::DurationValue {
+  attribute :&gt;&gt; num : ScalarValues::Integer;
+}
+
+attribute def Time_Range {
+  attribute minimum : Time;
+  attribute maximum : Time;
+  attribute delta : Time;
+}
+
+attribute def Size :&gt; StorageCapacityValue;
+</code></pre><p>Convenient <code>alias</code> declarations allow using short names (e.g., <code>Periodic</code> instead of <code>Supported_Dispatch_Protocols::Periodic</code>).</p>
+<h3 id="52-timing_propertiessysml">5.2 Timing_Properties.sysml</h3>
+<p>Defines time-related properties from SAE AS-5506D Appendix A3. These control the temporal behavior of threads, processors, and other components.</p>
+<p>Key properties:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Period</code></td>
+          <td><code>Time</code></td>
+          <td>Dispatch interval for periodic threads</td>
+      </tr>
+      <tr>
+          <td><code>Deadline</code></td>
+          <td><code>Time</code></td>
+          <td>Latest acceptable completion time</td>
+      </tr>
+      <tr>
+          <td><code>Compute_Execution_Time</code></td>
+          <td><code>Time_Range</code></td>
+          <td>Min/max execution time per dispatch</td>
+      </tr>
+      <tr>
+          <td><code>Compute_Deadline</code></td>
+          <td><code>Time</code></td>
+          <td>Deadline for compute phase</td>
+      </tr>
+      <tr>
+          <td><code>First_Dispatch_Time</code></td>
+          <td><code>Time</code></td>
+          <td>Delay before first dispatch</td>
+      </tr>
+      <tr>
+          <td><code>Dispatch_Jitter</code></td>
+          <td><code>Time</code></td>
+          <td>Maximum variation in dispatch time</td>
+      </tr>
+      <tr>
+          <td><code>Scheduler_Quantum</code></td>
+          <td><code>Time</code></td>
+          <td>Time slice for round-robin scheduling</td>
+      </tr>
+      <tr>
+          <td><code>Frame_Period</code></td>
+          <td><code>Time</code></td>
+          <td>Period of a scheduling frame</td>
+      </tr>
+  </tbody>
+</table>
+<p>All timing properties specialize both <code>AADL::Property</code> and the appropriate time type:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">attribute def Period :&gt; AADL::Property, Time;
+attribute def Compute_Execution_Time :&gt; AADL::Property, Time_Range;
+</code></pre><h3 id="53-thread_propertiessysml">5.3 Thread_Properties.sysml</h3>
+<p>Defines properties related to thread scheduling and dispatch from SAE AS-5506D Appendix A2.</p>
+<p>Key properties:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Dispatch_Protocol</code></td>
+          <td>enum</td>
+          <td>How the thread is triggered (Periodic, Sporadic, etc.)</td>
+      </tr>
+      <tr>
+          <td><code>Priority</code></td>
+          <td>Integer</td>
+          <td>Scheduling priority (higher = more urgent)</td>
+      </tr>
+      <tr>
+          <td><code>Criticality</code></td>
+          <td>Integer</td>
+          <td>Safety criticality level</td>
+      </tr>
+      <tr>
+          <td><code>Dequeue_Protocol</code></td>
+          <td>enum</td>
+          <td>How events are dequeued (OneItem, AllItems, MultipleItems)</td>
+      </tr>
+      <tr>
+          <td><code>Concurrency_Control_Protocol</code></td>
+          <td>enum</td>
+          <td>How shared data is protected</td>
+      </tr>
+      <tr>
+          <td><code>POSIX_Scheduling_Policy</code></td>
+          <td>enum</td>
+          <td>POSIX scheduling class</td>
+      </tr>
+      <tr>
+          <td><code>Runtime_Protection</code></td>
+          <td>Boolean</td>
+          <td>Whether address space isolation is enforced</td>
+      </tr>
+      <tr>
+          <td><code>Synchronized_Component</code></td>
+          <td>Boolean</td>
+          <td>Whether the component is synchronized</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="54-communication_propertiessysml">5.4 Communication_Properties.sysml</h3>
+<p>Defines properties governing data exchange between components, from SAE AS-5506D Appendix A4.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">attribute def Queue_Size :&gt; AADL::Property, ScalarValues::Integer;
+
+enum def Supported_Timing_Protocols {
+  enum Sampled;     // reader samples latest value at dispatch
+  enum Immediate;   // data transfer occurs at sender&#39;s dispatch
+  enum Delayed;     // data transfer occurs at sender&#39;s deadline
+}
+attribute def Timing :&gt; AADL::Property, Supported_Timing_Protocols;
+
+enum def Supported_Transmission_Types {
+  enum Push;   // sender initiates transfer
+  enum Pull;   // receiver initiates transfer
+}
+attribute def Transmission_Type :&gt; AADL::Property, Supported_Transmission_Types;
+</code></pre><ul>
+<li><strong><code>Queue_Size</code></strong> — depth of the event/event-data port queue (default is 1)</li>
+<li><strong><code>Timing</code></strong> — <code>Sampled</code>, <code>Immediate</code>, or <code>Delayed</code> communication semantics</li>
+<li><strong><code>Latency</code></strong> and <strong><code>Actual_Latency</code></strong> — expected and measured end-to-end latency as <code>Time_Range</code></li>
+</ul>
+<h3 id="55-deployment_propertiessysml">5.5 Deployment_Properties.sysml</h3>
+<p>Defines properties for binding software to hardware, from SAE AS-5506D Appendix A1. This package uses SysMLv2 <strong>allocation definitions</strong> to represent AADL bindings:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">allocation def Actual_Processor_Binding {
+  end part sw : AADL::Component;
+  end part hw : AADL::Component;
+}
+
+allocation def Actual_Memory_Binding {
+  end part sw : AADL::Component;
+  end part hw : AADL::Component;
+}
+
+allocation def Actual_Connection_Binding {
+  end part cnx : AADL::Component;
+  end part bus : AADL::Component;
+}
+</code></pre><p>These allocations model which processor executes a given thread, which memory stores a given process, and which bus carries a given connection.</p>
+<p>Additional properties include:</p>
+<ul>
+<li><strong><code>Scheduling_Protocol</code></strong> — which scheduling algorithm the processor uses</li>
+<li><strong><code>Preemptive_Scheduler</code></strong> — whether the scheduler can preempt running threads</li>
+<li><strong><code>Thread_Limit</code></strong> — maximum number of threads a processor can host</li>
+</ul>
+<h3 id="56-memory_propertiessysml">5.6 Memory_Properties.sysml</h3>
+<p>Defines size and access properties for memory and data, from SAE AS-5506D Appendix A5.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Property</th>
+          <th>Type</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Data_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Size of a data component</td>
+      </tr>
+      <tr>
+          <td><code>Code_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Size of compiled code</td>
+      </tr>
+      <tr>
+          <td><code>Stack_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Thread stack allocation</td>
+      </tr>
+      <tr>
+          <td><code>Heap_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Dynamic memory allocation</td>
+      </tr>
+      <tr>
+          <td><code>Memory_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Total capacity of a memory component</td>
+      </tr>
+      <tr>
+          <td><code>Word_Size</code></td>
+          <td><code>Size</code></td>
+          <td>Word width (default 8 bits)</td>
+      </tr>
+      <tr>
+          <td><code>Base_Address</code></td>
+          <td><code>Integer</code></td>
+          <td>Starting address in memory</td>
+      </tr>
+      <tr>
+          <td><code>Access_Right</code></td>
+          <td>enum</td>
+          <td><code>Read_Only</code>, <code>Write_Only</code>, <code>Read_Write</code>, <code>By_Method</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="57-programming_propertiessysml">5.7 Programming_Properties.sysml</h3>
+<p>Defines properties relating components to source code, from SAE AS-5506D Appendix A6.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">attribute def Source_Language :&gt; AADL::Property, Supported_Source_Languages;
+attribute def Source_Name :&gt; AADL::Property, ScalarValues::String;
+attribute def Source_Text :&gt; AADL::Property, ScalarValues::String;
+attribute def Type_Source_Name :&gt; AADL::Property, ScalarValues::String;
+</code></pre><ul>
+<li><strong><code>Source_Language</code></strong> — the programming language (Ada95, C, Java, etc.)</li>
+<li><strong><code>Source_Name</code></strong> — fully qualified name of the implementing code element</li>
+<li><strong><code>Source_Text</code></strong> — path to source files</li>
+<li><strong><code>Type_Source_Name</code></strong> — name of the data type in the source language</li>
+</ul>
+<h3 id="58-behavior_propertiessysml">5.8 Behavior_Properties.sysml</h3>
+<p>Defines properties from the AADL Behavior Annex (SAE AS-5506/3 Annex D):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package Behavior_Properties {
+  enum def Supported_Subprogram_Call_Protocols {
+    enum HSER;   // High-Speed Event Response
+    enum LSER;   // Low-Speed Event Response
+    enum ASER;   // Asynchronous Event Response
+  }
+  attribute def Subprogram_Call_Protocol :&gt; Supported_Subprogram_Call_Protocols;
+}
+</code></pre><hr>
+<h2 id="6-hamr-customizations">6. HAMR Customizations</h2>
+<p>The <a href="https://hamr.sireum.org/">HAMR</a> tool extends the base AADL libraries with additional definitions tailored for code generation. These are found in the <code>hamr.aadl.library</code> folder.</p>
+<h3 id="hamrsysml--hamr-specific-properties">HAMR.sysml — HAMR-Specific Properties</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">library package HAMR {
+  public import HAMR_Time_Units::*;
+  public import HAMR_AADL::*;
+  public import AADL::*;
+
+  attribute def Array_Size_Kind :&gt; AADL::Property, Array_Size_Kinds;
+
+  enum def Array_Size_Kinds {
+    enum Fixed;      // exact size, statically allocated
+    enum Bound;      // maximum size, may be partially filled
+    enum Unbounded;  // no static limit, runtime checked
+  }
+
+  attribute def Implementation_Language :&gt; AADL::Property, Implementation_Languages;
+
+  enum def Implementation_Languages {
+    enum Slang;   // Sireum Slang (Scala subset)
+    enum C;
+    enum Rust;
+  }
+}
+</code></pre><ul>
+<li><strong><code>Array_Size_Kind</code></strong> — controls how HAMR generates array types: <code>Fixed</code> means a compile-time constant size, <code>Bound</code> means a maximum capacity with a runtime length, and <code>Unbounded</code> means dynamic allocation.</li>
+<li><strong><code>Implementation_Language</code></strong> — specifies the target language for code generation (<code>Slang</code>, <code>C</code>, or <code>Rust</code>).</li>
+</ul>
+<p>The <code>HAMR</code> package re-exports all of <code>AADL</code>, <code>HAMR_AADL</code>, and <code>HAMR_Time_Units</code>, so application models only need <code>import HAMR::*</code> to access everything.</p>
+<h3 id="hamr_aadlsysml--extended-component-definitions">HAMR_AADL.sysml — Extended Component Definitions</h3>
+<p>HAMR extends certain AADL component definitions with additional properties:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package HAMR_AADL {
+  private import AADL::*;
+
+  part def Processor :&gt; AADL::Processor {
+    attribute Frame_Period : Timing_Properties::Frame_Period;
+    attribute Clock_Period : Timing_Properties::Clock_Period;
+  }
+
+  part def Process :&gt; AADL::Process {
+    attribute Domain : CASE_Scheduling::Domain;
+  }
+
+  part def Thread :&gt; AADL::Thread {
+    attribute Implementation_Language : HAMR::Implementation_Language;
+  }
+}
+</code></pre><ul>
+<li><strong><code>HAMR_AADL::Processor</code></strong> adds <code>Frame_Period</code> and <code>Clock_Period</code> (used for static scheduling frame configuration).</li>
+<li><strong><code>HAMR_AADL::Process</code></strong> adds <code>Domain</code> (the scheduling domain ID for CASE/seL4-based partitioning).</li>
+<li><strong><code>HAMR_AADL::Thread</code></strong> adds <code>Implementation_Language</code> (the target language for the generated thread code).</li>
+</ul>
+<p>When an application model imports <code>HAMR::*</code>, the HAMR-extended definitions shadow the base AADL ones, so <code>Thread</code> refers to <code>HAMR_AADL::Thread</code> (which inherits all of <code>AADL::Thread</code>&rsquo;s properties plus <code>Implementation_Language</code>).</p>
+<h3 id="hamr_time_unitssysml--convenience-time-units">HAMR_Time_Units.sysml — Convenience Time Units</h3>
+<p>AADL models frequently use milliseconds, microseconds, and nanoseconds, but the SysMLv2 SI library only pre-defines seconds. This package adds the common subunits:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package HAMR_Time_Units {
+  public import SI::*;
+
+  attribute ps : DurationUnit = s * pico;   // picoseconds
+  attribute ms : DurationUnit = s * milli;  // milliseconds
+  attribute us : DurationUnit = s * micro;  // microseconds
+  attribute ns : DurationUnit = s * nano;   // nanoseconds
+}
+</code></pre><p>This allows writing <code>1000 [ms]</code> or <code>500 [us]</code> in attribute assignments.</p>
+<h3 id="case_schedulingsysml--domain-scheduling">CASE_Scheduling.sysml — Domain Scheduling</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package CASE_Scheduling {
+  attribute def Domain :&gt; AADL::Property, ScalarValues::Integer;
+  attribute def Max_Domain :&gt; AADL::Property, ScalarValues::Integer;
+}
+</code></pre><ul>
+<li><strong><code>Domain</code></strong> — the numeric scheduling domain ID assigned to a process or thread. This is used in CASE (Cyber Assured Systems Engineering) and seL4-based platforms where threads are partitioned into time-isolated domains.</li>
+<li><strong><code>Max_Domain</code></strong> — the maximum domain ID supported by the platform.</li>
+</ul>
+<hr>
+<h2 id="7-walkthrough-isolette-example">7. Walkthrough: Isolette Example</h2>
+<p>The <code>simple-isolette/Isolette.sysml</code> file demonstrates how an application model uses the AADL libraries to define a complete system. The <strong>Isolette</strong> is a standard example system — a baby incubator that maintains a set temperature range.</p>
+<h3 id="package-and-import">Package and Import</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">//@ HAMR: --platform JVM --output-dir . --slang-output-dir . --package-name cis771
+package Isolette {
+    private import HAMR::*;
+    // ...
+}
+</code></pre><p>The comment line <code>//@ HAMR:</code> is a HAMR directive that tells the code generator which platform and output settings to use. The single <code>import HAMR::*</code> brings in all AADL component definitions, port types, property enumerations, and time units.</p>
+<h3 id="data-types">Data Types</h3>
+<p>The model defines its application-specific data types by specializing the AADL <code>Data</code> component (via <code>Struct</code>, a convention for record/struct data types):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Temp :&gt; Struct {
+    degrees : Base_Types::Integer;
+}
+
+part def Set_Points :&gt; Struct {
+    lower : Temp;
+    upper : Temp;
+}
+
+enum def On_Off {
+    enum On;
+    enum Off;
+}
+</code></pre><ul>
+<li><strong><code>Temp</code></strong> — a temperature reading with an integer <code>degrees</code> field</li>
+<li><strong><code>Set_Points</code></strong> — a pair of temperatures defining the desired range</li>
+<li><strong><code>On_Off</code></strong> — an enumeration for the heater control signal</li>
+</ul>
+<h3 id="thread-definitions">Thread Definitions</h3>
+<p>The model defines reusable thread templates and concrete thread components:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Reusable template: a 1-second periodic thread
+part def PeriodicThread1s :&gt; Thread {
+    attribute :&gt;&gt; Period = 1 [s];
+    attribute :&gt;&gt; Dispatch_Protocol = Periodic;
+}
+
+// Reusable template: a sporadic thread
+part def SporadicThread :&gt; Thread {
+    attribute :&gt;&gt; Dispatch_Protocol = Sporadic;
+}
+</code></pre><p>These intermediate definitions show how SysMLv2 specialization can be layered — <code>PeriodicThread1s</code> specializes <code>Thread</code> (which comes from <code>HAMR_AADL::Thread</code>, which specializes <code>AADL::Thread</code>), and concrete threads specialize these templates:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def TempSensor :&gt; Thread {
+    port current_temp : DataPort { out :&gt;&gt; type : Temp; }
+    out port temp_changed : EventPort;
+
+    attribute :&gt;&gt; Period = 1000 [ms];
+    attribute :&gt;&gt; Dispatch_Protocol = Periodic;
+}
+
+part def OperatorInterface :&gt; PeriodicThread1s {
+    port desired_temp : EventDataPort { out :&gt;&gt; type : Set_Points; }
+}
+
+part def HeatSource :&gt; SporadicThread {
+    port heat_control : EventDataPort { in :&gt;&gt; type : On_Off; }
+}
+
+part def Thermostat :&gt; SporadicThread {
+    port current_temp : DataPort { in :&gt;&gt; type : Temp; }
+    in port temp_changed : EventPort;
+    port desired_temp : EventDataPort { in :&gt;&gt; type : Set_Points; }
+    port heat_control : EventDataPort { out :&gt;&gt; type : On_Off; }
+}
+</code></pre><p>Each thread declares its ports with direction and data type, demonstrating the SysMLv2 pattern of overriding the <code>type</code> attribute in the port definition.</p>
+<h3 id="process-definitions">Process Definitions</h3>
+<p>Threads are grouped into processes (protected address spaces):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def OperatorInterface_Process :&gt; Process {
+    part operator_interface : OperatorInterface;
+
+    port desired_temp : EventDataPort { out :&gt;&gt; type : Set_Points; }
+    connection dt : PortConnection connect
+        operator_interface.desired_temp to desired_temp;
+}
+
+part def Control_Process :&gt; Process {
+    part temp_sensor : TempSensor;
+    part thermostat : Thermostat;
+    part heat_source : HeatSource;
+
+    port desired_temp : EventDataPort { in :&gt;&gt; type : Set_Points; }
+
+    connection tc : PortConnection connect
+        temp_sensor.temp_changed to thermostat.temp_changed;
+    connection ct : PortConnection connect
+        temp_sensor.current_temp to thermostat.current_temp;
+    connection hc : PortConnection connect
+        thermostat.heat_control to heat_source.heat_control;
+    connection dt : PortConnection connect
+        desired_temp to thermostat.desired_temp;
+}
+</code></pre><p>Key points:</p>
+<ul>
+<li><strong>Subcomponents</strong> are declared as <code>part</code> usages (e.g., <code>part thermostat : Thermostat</code>)</li>
+<li><strong>Process-level ports</strong> allow data to cross process boundaries (e.g., <code>desired_temp</code> on <code>Control_Process</code>)</li>
+<li><strong>Connections</strong> use <code>PortConnection connect ... to ...</code> syntax to wire subcomponent ports together</li>
+<li>A connection from a process-level port to a subcomponent port (e.g., <code>desired_temp to thermostat.desired_temp</code>) represents a port delegation</li>
+</ul>
+<h3 id="system-definition">System Definition</h3>
+<p>The top-level system composes the processes:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Isolette_System :&gt; System {
+    part operator_interface_process : OperatorInterface_Process;
+    part control_process : Control_Process;
+
+    connection dt : PortConnection connect
+        operator_interface_process.desired_temp to control_process.desired_temp;
+}
+</code></pre><p>This system contains two processes and a single cross-process connection carrying the <code>Set_Points</code> data from the operator interface to the control logic.</p>
+<h3 id="architecture-summary">Architecture Summary</h3>
+<pre tabindex="0"><code>Isolette_System (System)
+├── operator_interface_process (Process)
+│   └── operator_interface (PeriodicThread1s, 1s)
+│       └── out desired_temp : EventDataPort [Set_Points]
+│
+└── control_process (Process)
+    ├── temp_sensor (Thread, Periodic, 1000ms)
+    │   ├── out current_temp : DataPort [Temp]
+    │   └── out temp_changed : EventPort
+    │
+    ├── thermostat (SporadicThread)
+    │   ├── in current_temp : DataPort [Temp]
+    │   ├── in temp_changed : EventPort
+    │   ├── in desired_temp : EventDataPort [Set_Points]
+    │   └── out heat_control : EventDataPort [On_Off]
+    │
+    └── heat_source (SporadicThread)
+        └── in heat_control : EventDataPort [On_Off]
+</code></pre><p>Connections:</p>
+<ul>
+<li><code>operator_interface.desired_temp</code> → <code>thermostat.desired_temp</code> (across process boundary)</li>
+<li><code>temp_sensor.temp_changed</code> → <code>thermostat.temp_changed</code></li>
+<li><code>temp_sensor.current_temp</code> → <code>thermostat.current_temp</code></li>
+<li><code>thermostat.heat_control</code> → <code>heat_source.heat_control</code></li>
+</ul>
+<hr>
+<h2 id="8-references">8. References</h2>
+<h3 id="aadl">AADL</h3>
+<ul>
+<li><strong>SAE AS-5506D</strong> — Architecture Analysis &amp; Design Language (AADL) v2.3 Standard: <a href="https://www.sae.org/standards/content/as5506d/">https://www.sae.org/standards/content/as5506d/</a></li>
+<li><strong>AADL Wiki</strong> — Community resource for AADL documentation: <a href="https://wiki.sei.cmu.edu/aadl/">https://wiki.sei.cmu.edu/aadl/</a></li>
+<li><strong>AADL Book</strong> — <em>Model-Based Engineering with AADL</em> by Peter Feiler and David Gluch (Addison-Wesley): <a href="https://resources.sei.cmu.edu/library/asset-view.cfm?assetid=30826">https://resources.sei.cmu.edu/library/asset-view.cfm?assetid=30826</a></li>
+</ul>
+<h3 id="sysmlv2">SysMLv2</h3>
+<ul>
+<li><strong>OMG SysML v2 Specification</strong> — Official specification: <a href="https://www.omgsysml.org/SysML-2.htm">https://www.omgsysml.org/SysML-2.htm</a></li>
+<li><strong>SysML v2 Pilot Implementation</strong> — Open-source reference implementation and examples: <a href="https://github.com/Systems-Modeling/SysML-v2-Release">https://github.com/Systems-Modeling/SysML-v2-Release</a></li>
+<li><strong>SysML v2 Textual Notation Quick Reference</strong> — Helpful for understanding the syntax used in the library files</li>
+</ul>
+<h3 id="hamr">HAMR</h3>
+<ul>
+<li><strong>HAMR Documentation</strong> — The HAMR model-driven development framework: <a href="https://hamr.sireum.org/">https://hamr.sireum.org/</a></li>
+<li><strong>Sireum</strong> — The broader Sireum platform that hosts HAMR: <a href="https://sireum.org/">https://sireum.org/</a></li>
+</ul>
+<h3 id="presentations-and-talks">Presentations and Talks</h3>
+<ul>
+<li><strong>Representing AADL in SysMLv2</strong> — Presentations on the AADL-to-SysMLv2 mapping approach are periodically given at SAE AADL meetings and OMG SysML workshops. Check the <a href="https://wiki.sei.cmu.edu/aadl/">AADL wiki events page</a> for recordings and slides.</li>
+<li><strong>CASE (Cyber Assured Systems Engineering)</strong> — DARPA program that uses AADL/HAMR for high-assurance system development: <a href="https://loonwerks.com/projects/case.html">https://loonwerks.com/projects/case.html</a></li>
+</ul>
+</div>
+        
+
+        
+          <hr/>
+          Sections
+          <div id="page-tree" style="background: transparent;"><ul><li>
+        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/aadl-lib/readme/"><span></span></a></li><li>
+        <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/claude/"><span></span></a></li></ul></div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
