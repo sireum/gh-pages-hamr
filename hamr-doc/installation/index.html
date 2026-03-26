@@ -49,7 +49,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <meta itemprop="description" content="Distribution Mechanism HAMR is distributed as part of the Sireum tool framework developed at Kansas State University. Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools. These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang. Installation instructions are given below.
 The primary tools provided by HAMR are..
 tools for checking the well-formedness of the SysMLv2 and AADL modeling language subsets supported by HAMR, tools for performing different forms of light-weight verification on HAMR models, and tools for generating code and system build infrastructure for HAMR models. These tools can be invoked from the command line using Sireum’s CLI interface or agentically using HAMR’s MCP interfaces.">
-  <meta itemprop="wordCount" content="1000">
+  <meta itemprop="wordCount" content="1087">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -217,21 +217,22 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
             <div class="toc-title">Table of Contents</div>
             <nav id="TableOfContents">
   <ul>
-    <li><a href="#1-buildinstall-sireum">1. Build\Install <strong>Sireum</strong></a></li>
-    <li><a href="#2-install-codeive">2. Install <strong>CodeIVE</strong></a></li>
-    <li><a href="#3-install-ive">3. Install <strong>IVE</strong></a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#1-buildinstall-sireum-1">1. Build\Install <strong>Sireum</strong></a></li>
-    <li><a href="#2-install-codeive-1">2. Install CodeIVE</a></li>
-    <li><a href="#3-install-ive-1">3. Install <strong>IVE</strong></a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#1-buildinstall-sireum-2">1. Build\Install <strong>Sireum</strong></a></li>
-    <li><a href="#2-install-codeive-2">2. Install CodeIVE</a></li>
-    <li><a href="#3-install-ive-2">3. Install <strong>IVE</strong></a></li>
+    <li><a href="#distribution-mechanism">Distribution Mechanism</a></li>
+    <li><a href="#supported-platforms">Supported Platforms</a></li>
+    <li><a href="#installation-options">Installation Options</a>
+      <ul>
+        <li><a href="#sireumhamr">Sireum/HAMR</a></li>
+        <li><a href="#ive">IVE</a></li>
+        <li><a href="#codeive">CodeIVE</a></li>
+        <li><a href="#fmide">FMIDE</a></li>
+        <li><a href="#sel4-microkit-development-optional">seL4 Microkit Development (Optional)</a>
+          <ul>
+            <li><a href="#rust">Rust</a></li>
+            <li><a href="#verus">Verus</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
   </ul>
 </nav>
         </aside>
@@ -240,7 +241,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
         <h1>HAMR Installation</h1>
 
         
-          <div class="post-content"><h2 id="distribution-mechanism">Distribution Mechanism</h2>
+          <div class="post-content"><h3 id="distribution-mechanism">Distribution Mechanism</h3>
 <p>HAMR is distributed as part of the <a href="https://sireum.org">Sireum</a>  tool framework developed at Kansas State University.  Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools.  These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang.  Installation instructions are given below.</p>
 <p>The primary tools provided by HAMR are..</p>
 <ul>
@@ -252,87 +253,353 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>More commonly, HAMR is used in conjuction with IDEs for the modeling languages supported by HAMR including..</p>
 <ul>
 <li>A VSCode extension called &ldquo;CodeIVE&rdquo; for HAMR SysMLv2 models based on the SysIDE SysMLv2 VSCode extension, and</li>
-<li>An Exclipse plug-in for HAMR AADL models based on the OSATE Eclipse plug-in for AADL.
-Both of these expose the HAMR tools for model analysis and code generation described above as menu options within the IDEs.  Problems/errors detected by HAMR are presented to the developer using the conventional IDE problems markers.</li>
+<li>An Exclipse plug-in for HAMR AADL models based on the OSATE Eclipse plug-in for AADL.</li>
 </ul>
+<p>Both of these expose the HAMR tools for model analysis and code generation described above as menu options within the IDEs.  Problems/errors detected by HAMR are presented to the developer using the conventional IDE problems markers.</p>
 <p>When installing Sireum, you can use included support to install the CodeIVE for using HAMR with SysMLv2 models and/or the HAMR customatization of the OSATE IDE for working with AADL models.</p>
 <p>Depending on the programming language that you want to use to program HAMR components (e.g., Rust, Slang, or C) and the target platform (e.g., seL4) you may want to install additional language tools and associated verification tools.</p>
-<h2 id="supported-platforms">Supported Platforms</h2>
-<p>HAMR is supported for MacOS, Linux, and Windows 10</p>
-<h2 id="installation-options">Installation Options</h2>
-<p>Sireum and associated tools can be installed from sources or from prepackaged binaries.</p>
-<p>We present the most common source-based installation approach used by our close collaborators below.  Additional options can be found in the <a href="https://sireum.org/getting-started/">Sireum installation</a>.</p>
+<h3 id="supported-platforms">Supported Platforms</h3>
+<p>HAMR is supported for macOS, Linux, and Windows</p>
+<h3 id="installation-options">Installation Options</h3>
 <p>For work related to the DARPA PROVERS INSPECTA project which focuses on SysMLv2 and Rust development/verification, you will typically want to</p>
 <ul>
 <li>Install Sireum (which includes HAMR)</li>
 <li>Install CodeIVE for editing SysMLv2 models and invoking HAMR</li>
 <li>Install Rust (if not already installed)</li>
-<li>Install Verus for supporting verification of HAMR-support Rust components
-Instructions for all these are provided below.</li>
+<li>Install Verus for supporting verification of HAMR-support Rust components</li>
 </ul>
-<h2 id="windows-setup-instructions">Windows Setup Instructions</h2>
-<h3 id="1-buildinstall-sireum">1. Build\Install <strong>Sireum</strong></h3>
-<p>Open a <strong>Command Prompt</strong> and run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl">git clone --recursive https://github.com/sireum/kekinian Sireum
+<p>Instructions for all these are provided below.</p>
+<h4 id="sireumhamr">Sireum/HAMR</h4>
+<p>You can install Sireum and its tools via source or prepackaged binaries. We outline the source-based method below, but you can find binary installers on the <a href="https://sireum.org/getting-started/">Sireum installation</a> page.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="sireum-install"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'sireum-install','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="sireum-install"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'sireum-install','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="sireum-install" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">git clone --recursive https://github.com/sireum/kekinian Sireum
+</span></span><span class="line"><span class="cl">Sireum/bin/build.cmd
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="sireum-install" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl">git clone --recursive https://github.com/sireum/kekinian Sireum
 </span></span><span class="line"><span class="cl">Sireum\bin\build.cmd
-</span></span></code></pre></div><p>(Recommended) Add the following environment variables so Sireum tools are available from any shell:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">set</span> <span class="nv">SIREUM_HOME</span><span class="p">=&lt;</span>path-to-Sireum<span class="p">&gt;</span>\Sireum
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>(Recommended) Add the following environment variables so Sireum tools are available from any shell:</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="sireum-env-var"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'sireum-env-var','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="sireum-env-var"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'sireum-env-var','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="sireum-env-var" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SIREUM_HOME</span><span class="o">=</span>&lt;path-to-Sireum&gt;/Sireum
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$SIREUM_HOME</span>/bin:<span class="nv">$PATH</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="sireum-env-var" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">set</span> <span class="nv">SIREUM_HOME</span><span class="p">=&lt;</span>path-to-Sireum<span class="p">&gt;</span>\Sireum
 </span></span><span class="line"><span class="cl"><span class="k">set</span> <span class="nv">PATH</span><span class="p">=</span><span class="nv">%SIREUM_HOME%</span>\bin;<span class="nv">%PATH%</span>
-</span></span></code></pre></div><h3 id="2-install-codeive">2. Install <strong>CodeIVE</strong></h3>
-<p><em><strong>(Interactive Verification Environment based on VS Codium, for Rust and SysMLv2 IDE support)</strong></em></p>
-<p>From a command prompt:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup vscode
-</span></span></code></pre></div><p>Launch CodeIVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\vscodium\CodeIVE.exe
-</span></span></code></pre></div><h3 id="3-install-ive">3. Install <strong>IVE</strong></h3>
-<p><em><strong>(Interactive Verification Environment based on IntelliJ, for Slang/Logika IDE support)</strong></em></p>
-<p>From a command prompt:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup ive
-</span></span></code></pre></div><p>Launch IVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\idea\bin\IVE.exe
-</span></span></code></pre></div><h2 id="linux-setup-instructions">Linux Setup Instructions</h2>
-<h3 id="1-buildinstall-sireum-1">1. Build\Install <strong>Sireum</strong></h3>
-<p>Open a <strong>terminal</strong> and run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone --recursive https://github.com/sireum/kekinian Sireum
-</span></span><span class="line"><span class="cl">Sireum/bin/build.cmd
-</span></span></code></pre></div><p>(Recommended) Add the following environment variables so Sireum tools are available from any shell:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SIREUM_HOME</span><span class="o">=</span>&lt;path-to-Sireum&gt;/Sireum
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$SIREUM_HOME</span>/bin:<span class="nv">$PATH</span>
-</span></span></code></pre></div><h3 id="2-install-codeive-1">2. Install CodeIVE</h3>
-<p>Interactive Verification Environment based on VS Codium, for Rust and SysMLv2 IDE support</p>
-<p>From a terminal:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup vscode
-</span></span></code></pre></div><p>Launch CodeIVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/vscodium/bin/codeive &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
-</span></span></code></pre></div><h3 id="3-install-ive-1">3. Install <strong>IVE</strong></h3>
-<p><em>(Interactive Verification Environment based on IntelliJ)</em></p>
-<p>From a terminal</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup ive
-</span></span></code></pre></div><p>Launch IVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/idea/bin/IVE.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
-</span></span></code></pre></div><h2 id="macos-setup-instructions">macOS Setup Instructions</h2>
-<h3 id="1-buildinstall-sireum-2">1. Build\Install <strong>Sireum</strong></h3>
-<p>Open a <strong>terminal</strong> and run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">git clone --recursive https://github.com/sireum/kekinian Sireum
-</span></span><span class="line"><span class="cl">Sireum/bin/build.cmd
-</span></span></code></pre></div><p>(Recommended) Add the following environment variables so Sireum tools are available from any shell:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">SIREUM_HOME</span><span class="o">=</span>&lt;path-to-Sireum&gt;/Sireum
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$SIREUM_HOME</span>/bin:<span class="nv">$PATH</span>
-</span></span></code></pre></div><h3 id="2-install-codeive-2">2. Install CodeIVE</h3>
-<p>Interactive Verification Environment based on VS Codium, for Rust and SysMLv2 IDE support</p>
-<p>From a terminal:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup vscode
-</span></span></code></pre></div><p>Launch CodeIVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/vscodium/CodeIVE.app
-</span></span></code></pre></div><h3 id="3-install-ive-2">3. Install <strong>IVE</strong></h3>
-<p><em>(Interactive Verification Environment based on IntelliJ)</em></p>
-<p>From a terminal</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup ive
-</span></span></code></pre></div><p>Launch IVE</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">open %SIREUM_HOME/bin/mac/idea/IVE.app
-</span></span></code></pre></div><h1 id="rust">Rust</h1>
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<h4 id="ive">IVE</h4>
+<p>The Sireum Integrated Verification Environment (IVE) is a customized distribution of IntelliJ IDEA specifically designed for developing high-assurance and verified software. It provides out-of-the-box support for the Slang programming language and integrates the Logika verification framework to allow for real-time, automated formal proofs of code correctness.</p>
+<p>IVE is recommended when working with Slang/Logika projects.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="ive-install"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'ive-install','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="ive-install"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'ive-install','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="ive-install" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup ive
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="ive-install" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup ive
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>Launch CodeIVE
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'launch-ive','macOS')"
+        >macOS</button>
+        
+        <button
+                data-tab-item="Linux"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-ive','Linux')"
+        >Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-ive','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS" data-tab-group="launch-ive" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/idea/IVE.app
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Linux" data-tab-group="launch-ive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/idea/bin/IVE.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="launch-ive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\idea\bin\IVE.exe
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div></p>
+<h4 id="codeive">CodeIVE</h4>
+<p>CodeIVE is Sireum’s Interactive Verification Environment built on VSCodium. It provides a ready-to-use development setup with the Sireum extension, enabling users to invoke Sireum tools such as Logika and HAMR directly within the editor. In addition, CodeIVE bundles commonly used extensions like SysIDE and Rust Analyzer, offering an integrated environment for modeling, verification, and development workflows.</p>
+<p>CodeIVE is recommended when working with SysMLv2 models and developing Microkit projects that utilize Rust or Verus code.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="codeive-install"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'codeive-install','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="codeive-install"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'codeive-install','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="codeive-install" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup vscode
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="codeive-install" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup vscode
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>Launch CodeIVE
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS"
+                data-tab-group="lanuch-codeive"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'lanuch-codeive','macOS')"
+        >macOS</button>
+        
+        <button
+                data-tab-item="Linux"
+                data-tab-group="lanuch-codeive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'lanuch-codeive','Linux')"
+        >Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="lanuch-codeive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'lanuch-codeive','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS" data-tab-group="lanuch-codeive" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/vscodium/CodeIVE.app
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Linux" data-tab-group="lanuch-codeive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/vscodium/bin/codeive &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="lanuch-codeive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\vscodium\CodeIVE.exe
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div></p>
+<h4 id="fmide">FMIDE</h4>
+<p>The Formal Methods Intergrated Development Environment (FMIDE) is a customized distribution of OSATE and is recommended for high-level architectural modeling and cyber-resiliency analysis using AADL within the DARPA CASE workflow. It integrates a suite of formal analysis tools—such as AGREE, Resolute, and BriefCASE—to verify system-level safety and security properties before a single line of code is written. The bundled Sireum plugin intergrates HAMR for automated, &ldquo;correct-by-construction&rdquo; code generation from AADL models. Additionally, the plugin integrates <a href="https://awas.sireum.org">AWAS</a> for visualizing and analyzing complex system information flows, ensuring safety and security properties are met at the architectural level.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="fmide-install"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'fmide-install','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="fmide-install"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'fmide-install','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="fmide-install" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/install/fmide.cmd -v 
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="fmide-install" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\install\fmide.cmd -v
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>Launch CodeIVE
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS"
+                data-tab-group="launch-fmide"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'launch-fmide','macOS')"
+        >macOS</button>
+        
+        <button
+                data-tab-item="Linux"
+                data-tab-group="launch-fmide"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-fmide','Linux')"
+        >Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="launch-fmide"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-fmide','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS" data-tab-group="launch-fmide" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/fmide/fmide.app
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Linux" data-tab-group="launch-fmide" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/fmide/fmide &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="launch-fmide" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\fmide\fmide.exe
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div></p>
+<h4 id="sel4-microkit-development-optional">seL4 Microkit Development (Optional)</h4>
+<p>The following tools are only required if you intend to work on seL4 Microkit systems requiring Rust/Verus formal verification.</p>
+<h5 id="rust">Rust</h5>
 <p>Install Rust via <code>rustup</code> according to the <a href="https://rust-lang.org/tools/install/">official Rust installation instructions</a>.   You might want to take a look at the discussion of &ldquo;Rust tool chains&rdquo; (essentially, having different versions of Rust installed).  When using Verus, you will need to rely on older version(s) of Rust (see below).</p>
-<h1 id="verus">Verus</h1>
+<h5 id="verus">Verus</h5>
 <p>The Verus verification tool provides contract-based verification for Rust programs.  What makes things a little tricky is that..</p>
 <ul>
 <li>due to a variety of dependency issues, HAMR needs to work with specific versions of Verus</li>
@@ -346,20 +613,19 @@ Instructions for all these are provided below.</li>
 </ul>
 <p>Verus binaries are distributed in <code>.zip</code> files; there is no dedicated installer.  So you need to place the unzipped Verus files in a location of your choice, and set your <code>PATH</code> environment variable to include that location.</p>
 <p>Note: Versus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues that those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
-<h2 id="verus-installation--command-line">Verus Installation &ndash; Command Line</h2>
 <p>The current Versus version supported by HAMR is</p>
 <pre tabindex="0"><code>Version: 0.2026.01.23.1650a05
 Profile: release
 </code></pre><p>With the following version of the Rust toolchain</p>
 <pre tabindex="0"><code>1.92.0
-</code></pre><p>Follow the installation instructions at [https://github.com/verus-lang/verus/blob/main/INSTALL.md] <strong>but with two differences</strong>:</p>
+</code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
 <ul>
 <li>
 <p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.01.23.1650a05">specific version above</a></p>
 </li>
 <li>
 <p>When you get to the step &ldquo;Install the correct Rust toolchain&rdquo;, use the specific version of the Rust tool chain listed above.
-For example, here are the instructions for MacOSx Arm</p>
+For example, here are the instructions for macOS Arm</p>
 </li>
 </ul>
 <pre tabindex="0"><code>rustup toolchain install 1.92.0-aarch64-apple-darwin
