@@ -49,7 +49,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <meta itemprop="description" content="Distribution Mechanism HAMR is distributed as part of the Sireum tool framework developed at Kansas State University. Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools. These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang. Installation instructions are given below.
 The primary tools provided by HAMR are..
 tools for checking the well-formedness of the SysMLv2 and AADL modeling language subsets supported by HAMR, tools for performing different forms of light-weight verification on HAMR models, and tools for generating code and system build infrastructure for HAMR models. These tools can be invoked from the command line using Sireum’s CLI interface or agentically using HAMR’s MCP interfaces.">
-  <meta itemprop="wordCount" content="1087">
+  <meta itemprop="wordCount" content="1115">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -616,21 +616,18 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>The current Versus version supported by HAMR is</p>
 <pre tabindex="0"><code>Version: 0.2026.01.23.1650a05
 Profile: release
-</code></pre><p>With the following version of the Rust toolchain</p>
-<pre tabindex="0"><code>1.92.0
 </code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
 <ul>
 <li>
 <p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.01.23.1650a05">specific version above</a></p>
 </li>
 <li>
-<p>When you get to the step &ldquo;Install the correct Rust toolchain&rdquo;, use the specific version of the Rust tool chain listed above.
-For example, here are the instructions for macOS Arm</p>
-</li>
+<p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
+<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.01.23.1650a05</code> requires the <code>1.92.0-aarch64-apple-darwin</code> toolchain, so you would run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.92.0-aarch64-apple-darwin
+</span></span></code></pre></div></li>
 </ul>
-<pre tabindex="0"><code>rustup toolchain install 1.92.0-aarch64-apple-darwin
-rustup component add rust-src --toolchain 1.92.0-aarch64-apple-darwin
-</code></pre></div>
+</div>
         
         <hr/>
 
