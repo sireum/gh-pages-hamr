@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "main.css",
-	"sourceRoot": "/Users/belt/devel/git/website-hamr",
+	"sourceRoot": "/Users/hatcliff/Dev/git-repos/website-hamr-git",
 	"sources": [
 		"themes/sireum/assets/scss/main.scss",
 		"themes/sireum/assets/scss/_normalize.scss",

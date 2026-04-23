@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="HAMR Rust Thread Component Development - Manual Unit Testing Recall that HAMR auto-generates support for three types of thread component testing:
+manual tests - the developer supplies manually-constructed inputs (a test vector) for input ports, runs the component, and checks output ports against manually indicated expected results, manual GUMBOX tests - the developer supplies manually constructed inputs for input ports and then uses an automatically generated test API call to check that the component application code outputs (together with the supplied inputs) conform to an executable version of the component&rsquo;s model-level GUMBO contracts (referred to as the GUMBO eXecutable, i.e., GUMBOX contract), automated randomized GUMBOX tests (property-based testing) - the developer users HAMR auto-generated random-value generators to generate component inputs and HAMR auto-generated APIs to test that the component inputs/outputs conform to GUMBOX contracts. These three styles of testing provide increasing levels of automation. Illustrations of each style of testing can be found in HAMR tutorial examples, e.g., here are the tests for the thermostat component of the Simple Isolette Example (periodic threads, with data ports).
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="HAMR Rust Thread Component Development - Manual Unit Testing Recall that HAMR auto-generates support for three types of thread component testing:
+manual tests - the developer supplies manually-constructed inputs (a test vector) for input ports, runs the component, and checks output ports against manually indicated expected results, manual GUMBOX tests - the developer supplies manually constructed inputs for input ports and then uses an automatically generated test API call to check that the component application code outputs (together with the supplied inputs) conform to an executable version of the component’s model-level GUMBO contracts (referred to as the GUMBO eXecutable, i.e., GUMBOX contract), automated randomized GUMBOX tests (property-based testing) - the developer users HAMR auto-generated random-value generators to generate component inputs and HAMR auto-generated APIs to test that the component inputs/outputs conform to GUMBOX contracts. These three styles of testing provide increasing levels of automation. Illustrations of each style of testing can be found in HAMR tutorial examples, e.g., here are the tests for the thermostat component of the Simple Isolette Example (periodic threads, with data ports).">
+  <meta itemprop="wordCount" content="2983">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="HAMR Rust Thread Component Development - Manual Unit Testing Recall that HAMR auto-generates support for three types of thread component testing:
+manual tests - the developer supplies manually-constructed inputs (a test vector) for input ports, runs the component, and checks output ports against manually indicated expected results, manual GUMBOX tests - the developer supplies manually constructed inputs for input ports and then uses an automatically generated test API call to check that the component application code outputs (together with the supplied inputs) conform to an executable version of the component’s model-level GUMBO contracts (referred to as the GUMBO eXecutable, i.e., GUMBOX contract), automated randomized GUMBOX tests (property-based testing) - the developer users HAMR auto-generated random-value generators to generate component inputs and HAMR auto-generated APIs to test that the component inputs/outputs conform to GUMBOX contracts. These three styles of testing provide increasing levels of automation. Illustrations of each style of testing can be found in HAMR tutorial examples, e.g., here are the tests for the thermostat component of the Simple Isolette Example (periodic threads, with data ports).">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="hamr-rust-thread-component-development---manual-unit-testing">HAMR Rust Thread Component Development - Manual Unit Testing</h1>
+<p>Recall that HAMR auto-generates support for three types of thread component testing:</p>
+<ul>
+<li>manual tests - the developer supplies manually-constructed inputs (a test vector) for input ports, runs the component, and checks output ports against manually indicated expected results,</li>
+<li>manual GUMBOX tests - the developer supplies manually constructed inputs for input ports and then uses an automatically generated test API call to check that the component application code outputs (together with the supplied inputs) conform to an executable version of the component&rsquo;s model-level GUMBO contracts (referred to as the GUMBO eXecutable, i.e., GUMBOX contract),</li>
+<li>automated randomized GUMBOX tests (property-based testing) - the developer users HAMR auto-generated random-value generators to generate component inputs and HAMR auto-generated APIs to test that the component inputs/outputs conform to GUMBOX contracts.</li>
+</ul>
+<p>These three styles of testing provide increasing levels of automation.  Illustrations of each style of testing can be found in HAMR tutorial examples, e.g., <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/tests.rs">here</a> are the tests for the <code>thermostat</code> component of the Simple Isolette Example (periodic threads, with data ports).</p>
+<p>In this chapter, we describe HAMR manual unit tests for Rust-based thread components.  The other forms of testing build off of the APIs and concepts presented here.</p>
+<h2 id="example-files">Example Files</h2>
+<p>This documentation uses the Simple Isolette system with periodic threads and data ports as a running example.  If you want to browse the code and run the tests described here, you can download/clone the <a href="https://github.com/santoslab/hamr-tutorials/tree/main">HAMR tutorials repository</a> and work with the system in the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example"><code>HAMR-SysMLv2-Rust-seL4-P-DP-Example</code></a> folder.</p>
+<p>The SysMLv2 declaration of the <code>thermostat</code> thread from that example is given below.  If you haven&rsquo;t studied HAMR GUMBO contracts yet, you can ignore all of the content of the <code>language &quot;GUMBO&quot;</code> block below.  You&rsquo;ll be able to learn about the HAMR manual unit tests without knowing GUMBO (though understanding GUMBO is required for both the GUMBOX manual tests and automated property-based testing).</p>
+<p>The intutition behind the thread behavior is as follows.  On each dispatch of the compute entry point, the thread will receive a <code>current_temp</code> temperature value an <code>desired_temp</code> range implemented as a struct containing an lower and upper temperature bound.   The application logic will compare the <code>current_temp</code> to the desired temp range, and follow some simple control logic to make a decision to send an on/off <code>heat_control</code> command.   In the control laws, the command to send is sometimes based on the previously sent command, which is held in the state variable <code>lastCmd</code>.  You can find the thread implementation in the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/component/thermostat_thermostat_app.rs"><code>timetriggered</code> method here</a>.</p>
+<pre tabindex="0"><code>  //===============================================================================
+  // 
+  //  T h e r m o s t a t   Thread  
+  // 
+  //===============================================================================
+  part def Thermostat :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port current_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
+    port desired_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Set_Points; }
+    port heat_control : DataPort { out :&gt;&gt; type : Isolette_Data_Model::On_Off; }
+    
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      state
+         lastCmd: Isolette_Data_Model::On_Off;
+            
+      functions
+      //  -- desired bounds on temperature values in the thermostat
+      def Temp_Lower_Bound(): Base_Types::Integer_32 := 95 [i32];
+      def Temp_Upper_Bound(): Base_Types::Integer_32 := 104 [s32];
+          
+	  //-- == I n t e g r a t i o n     C o n s t r a i n t s	
+	  integration
+  	    assume ASSM_CT_Range: 
+  	    //-- Literals used in spec below
+  	      Temp_Lower_Bound() &lt;= current_temp.degrees &amp; current_temp.degrees &lt;= Temp_Upper_Bound();
+
+
+  		//--  == I n i t i a l i z e    E n t r y    P o i n t    Behavior Constraints  ==
+        initialize
+	      guarantee  //-- note: anonymous guarantee clause
+		    initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+		  guarantee REQ_THERM_1 &#34;The Heat Control command shall be Off initially.&#34;:
+		    heat_control == Isolette_Data_Model::On_Off.Off;
+		
+		//--  ====== C o m p u t e    E n t r y    P o i n t   Behavior Constraints =====      
+		  compute
+        // -- we assume that Operator Interface enforces the contraint below on incoming 
+        //    set points (desired temperature range)
+        assume ASSM_LDT_LE_UDT: desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+			
+		    //-- the lastCmd state variable is always equal to the value of the heat_control output port
+		    guarantee lastCmd &#34;Set lastCmd to value of output Cmd port&#34;:
+			  lastCmd == heat_control;
+			
+		    compute_cases
+			  case REQ_THERM_2 &#34;If Current Temperature is less than
+                                |the Lower Desired Temperature, the Heat Control shall be set to On.&#34;:
+			
+			    assume (current_temp.degrees &lt; desired_temp.lower.degrees);
+			    guarantee heat_control == Isolette_Data_Model::On_Off.Onn;
+			
+    		  case REQ_THERM_3 &#34;If the Current Temperature is greater than
+                                |the Upper Desired Temperature, the Heat Control shall be set to Off.&#34;:
+			    assume (current_temp.degrees &gt; desired_temp.upper.degrees);
+			    guarantee heat_control == Isolette_Data_Model::On_Off.Off;
+			
+			  case REQ_THERM_4 &#34;If the Current Temperature is greater than or equal 
+                                |to the Lower Desired Temperature
+                                |and less than or equal to the Upper Desired Temperature, the value of
+                                |the Heat Control shall not be changed.&#34;:
+			    assume (current_temp.degrees &gt;= desired_temp.lower.degrees
+				    	&amp; current_temp.degrees &lt;= desired_temp.upper.degrees); 
+			    guarantee heat_control == In(lastCmd);
+        }*/
+    }
+</code></pre><h2 id="relevant-infrastructure-and-application-testing-files">Relevant Infrastructure and Application Testing Files</h2>
+<p>Recall that the code for each Rust-based HAMR thread is organized in a <code>crate</code>.   HAMR code generation will generate a folder in the crate for supporting component testing (e.g., for the <code>thermostat</code> component, <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit-initial/crates/thermostat_thermostat/src/test">..crates/thermostat_thermostat/src/test</a>).  The general structure of the testing folder for an arbitrary component is as follows&hellip;</p>
+<pre tabindex="0"><code>test/                       # Test infrastructure
+  mod.rs                    # [auto-gen] Module declarations
+  tests.rs                  # [EDITABLE] Unit tests and property-based test configurations
+  util/
+    mod.rs                  # [auto-gen] Module declarations
+    test_apis.rs            # [auto-gen] Test helper APIs: put_/get_ for ports and GUMBO state variables, PreStateContainer structs
+    cb_apis.rs              # [auto-gen] Contract-based test harness: testInitializeCB, testComputeCB, testComputeCBwGSV, PropTest macros
+    generators.rs           # [auto-gen] PropTest value generators for each data type (default and customizable strategies)
+</code></pre><p>From these files, the primary file relevant to developer is <code>tests.rs</code>.  This is the default file used by the developer for writing tests for component, and it will not be modified by HAMR after initial code generation.  In this documentation, we will assume that tests are always written in <code>tests.rs</code>, but tests may be separated into different files, using <code>mod.rs</code> to refer to those files (HAMR will not modify <code>mod.rs</code> after initial code generation).</p>
+<p>HAMR will generate examples of how to write tests in the three styles above in the initial version of <code>tests.rs</code> (e.g., for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit-initial/crates/thermostat_thermostat/src/test/tests.rs"><code>thermostat</code> component</a>).</p>
+<p>In the <code>util</code> folder, HAMR generates helper methods used for the three styles of testing:</p>
+<ul>
+<li><code>test_apis.rs</code> contains the base methods putting test inputs into component input ports, invoking component entry points, and getting outputs from component input ports.</li>
+<li><code>cb_apis.rs</code> contains test harnesses for <code>cb</code>=&ldquo;contract-based&rdquo;.  These test harnesses utilize the auto-generated GUMBOX executable versions of GUMBO contracts and aggregate the steps of receiving an input test vector, checking the input test vector against GUMBOX pre-condition, running a component entry point, retrieve output values and checking the inputs/outputs using the GUMBOX post-condition.</li>
+<li><code>generators.rs</code> contains HAMR-generated random value generators component inputs built using the PropTest framework.</li>
+</ul>
+<p><code>test_apis.rs</code> is most relevant for this chapter, and it is recommended to read through that file (e.g., for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>thermostat</code> component</a> as concepts are discussed below.</p>
+<h2 id="manual-unit-tests-for-thread-entry-points">Manual Unit Tests for Thread Entry Points</h2>
+<p>The application code for a HAMR thread component is held in two entry points, as explained in the
+&ldquo;HAMR Modeling Elements and Semantics Concepts&rdquo; chapter and as seen in the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/component/thermostat_thermostat_app.rs"><code>thermostat</code> application code</a>.  The tests for these have slightly different structure.  For manual unit tests, the outline of test methods is as follows.</p>
+<ul>
+<li>
+<p>Initialize Entry Point Tests - the Initialize Entry Point does not read component input ports or local state; it only writes to output ports and local state.  Therefore, tests for a thread Initialize Entry Point will have following structure:</p>
+<ul>
+<li>(a) run the entry point method,</li>
+<li>(b) retreive the results from output ports and local state, and</li>
+<li>(c) check that the outputs match expected results,</li>
+</ul>
+</li>
+<li>
+<p>Compute Entry Point Tests - tests for a thread Compute Entry Point will have following structure:</p>
+<ul>
+<li>(a) run the Initialize Entry Point method to ensure that component state is properly initialized,</li>
+<li>(b) supply values (test vector) for input ports (and optionally, local state variables)</li>
+<li>(c) run the Compute entry point method,</li>
+<li>(d) retreive the results from output ports and local state,</li>
+<li>(e) check that the outputs match expected results.</li>
+</ul>
+</li>
+</ul>
+<p>Excerpts of the initial HAMR-generated version of the <code>tests.rs</code> for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit-initial/crates/thermostat_thermostat/src/test/tests.rs"><code>thermostat</code> component</a>) are shown below (some additional comments have been added in the code associated with the outlines above).</p>
+<p>Note that the file has two modules: one for manual unit tests, and one for GUMBOX tests.<br>
+This structure is only a suggestion.   In each module, some example skeleton tests are provided.  The developer is free to reorganize these modules or even separate them into different files as explained above (<code>test/mod.rs</code> may need to be adjusted if different files are introduced).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// NOTE: need to run tests sequentially to prevent race conditions
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//       on the app and the testing apis which are static
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">test</span>::<span class="n">util</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_initialization</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (a) run the entry point method,
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (b) retreive the results from output ports and local state, and 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (c) check that the outputs match expected results, 
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (a) run the Initialize Entry Point method to ensure that component state is properly 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//     initialized
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (b) supply values (test vector) for input ports (and optionally, local state variables) 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (c) run the Compute entry point method, 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (d) retreive the results from output ports and local state, 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (e) check that the outputs match expected results.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">GUMBOX_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// .. details omitted
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Note that the auto-generated HAMR skeletons don&rsquo;t illustrate all aspects of the tests, e.g., retrieving outputs and comparing to expected results are not provided, since those are often test-specific.   We will illustrate how these aspects to coded below.</p>
+<p>We first discuss the more general <code>Compute</code> Entry Point tests.</p>
+<h2 id="compute-entry-point-tests">Compute Entry Point Tests</h2>
+<p>We&rsquo;ll illustrate some concepts using the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/tests.rs">tests in the completed <code>tests.rs</code> for the thermostat thread</a>.</p>
+<p>Here&rsquo;s a slightly expanded sketch of the typical actions that we would perform in our tests.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// initialize entry point should always be called to initialize 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// output ports and local state
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// implement input of &#34;test vector&#34;
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..set values for input data ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..[optional] set values for GUMBO-declared local state variables
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_lastCmd</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// invoke compute entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// use auto-generated test APIs to retrieve values of 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// output ports and GUMBO-defined local state as illustrated below
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// let heat_control: On_Off = test_apis::get_heat_control();
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// let post_lastCmd : On_Off = test_apis::get_lastCmd();
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..compare outputs to expected results..
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assert!(..)   
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>First, we see the call of the initialize entry point to initialize the state of the thread as explained earlier.</p>
+<p>Then, we use auto-generated apis to set the input values for the thread.  In the auto-generated examples, HAMR uses the <code>default()</code> values.  When constructing an actual test, these should be replaced with actual values.</p>
+<p>All of the auto-generated APIs for putting and getting values from ports for the component can be found in the <code>util/test_apis.rs</code> file.  Note that several variations of <code>put</code> methods are generated, including versions with multiple parameters (one for each component input).   These versions are straightforward to understand by looking at the source code; some will be illustrated below in discussion of &ldquo;containers&rdquo;.</p>
+<p>Note that if the thread has GUMBO state variables declared in the model-level GUMBO contracts, HAMR will generate a helper method such as <code>put_lastCmd</code> above for mutating the state of the auto-generated local state variable.  While setting the GUMBO state variables is optional (they already have a value set by the initialize entry point), setting the input values for the input ports is <em>required</em> for data ports.  If the test fails to set the input values for all data ports, a run-time exception will result (this follows the AADL philosophy that threads should not set the values of their input ports, so the external test must set the values to avoid an exception).</p>
+<p>Following the invocation of the <code>compute</code> entry point, <code>get</code> apis are used to retrieve relevant values from output port (e.g., <code>test_apis::get_heat_control</code>) and/or the update values of local state variables (e.g., <code>test_apis::get_lastCmd()</code>).</p>
+<h3 id="a-basic-compute-entry-point-test">A Basic Compute Entry Point Test</h3>
+<p>A good strategy for writing a test is to begin with comments that explain the intent of the
+test.  When natural language requirements for the thread have been written, it is good to reference the requirement that the test is addressing.</p>
+<p>As part of this documentation, it is good to summarize the designed inputs (test vector) and then indicate the expected outcomes.  Sometimes, a particular input needs to be provided (to avoid a run-time exception), but its value is (conjectured to be) irrelevant to the test.  It&rsquo;s useful to document these situations.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//========================================================================
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//  REQ-THERM-2: If Current Temperature is less than the Lower Desired Temperature,
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//  the Heat Control shall be set to On.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//========================================================================
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="cm">/*
+</span></span></span><span class="line"><span class="cl"><span class="cm">       Inputs:
+</span></span></span><span class="line"><span class="cl"><span class="cm">         current_temp:  95f 
+</span></span></span><span class="line"><span class="cl"><span class="cm">         lower_desired_temp: 98f
+</span></span></span><span class="line"><span class="cl"><span class="cm">         upper_desired_temp: *irrelevant to requirement* (use 100f)
+</span></span></span><span class="line"><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="cl"><span class="cm">       Expected Outputs:
+</span></span></span><span class="line"><span class="cl"><span class="cm">         heat_control: On
+</span></span></span><span class="line"><span class="cl"><span class="cm">         last_cmd (post): On
+</span></span></span><span class="line"><span class="cl"><span class="cm">    */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_REQ_THERM_2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// generate values for the incoming data ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lower_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">upper_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="n">lower</span>: <span class="nc">lower_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">upper_desired_temp</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [PutInPorts]: put values on the input ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// get result values from output ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>In the construction of the test, you can see concrete input values constructed using the expected Rust code matching the data types of the ports and state variables.</p>
+<p>Finally, several different styles are possible for asserting the correspondence to expected results.  In the example above, a separate <code>assert!</code> is used for each port value.  These could also be combined into a single assert with a conjunction, or other richer forms of assertions could be used.</p>
+<h3 id="running-tests">Running Tests</h3>
+<p>Within VSCode with the Rust Analyzer extension installed (CodeIVE automatically includes the Rust Analyzer), a single test can be run by clicking on the &ldquo;Run Test&rdquo; VSCode annotation above each test method.</p>
+<p><img src="images/CodeIVE-single-test-runner.png" alt="Single Test Runner"></p>
+<p>VSCode injects a similar annotation exists at the top of each Rust module used for testing, and clicking on that annotation runs all the tests in the module.</p>
+<p>All the tests for a crate can be run from the command line using <code>make test</code> in the root folder of the crate.   Looking at the make file for the crate (e.g., for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/Makefile"><code>thermostat</code></a> shows that the tests can be selected by substrings appearing in the test name as shown in the make file inline documentation below.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># Test Example:</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   Run all unit tests</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   Usage: make test</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   Run only unit tests whose name contains &#39;proptest&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#   Usage: make test args=proptest</span>
+</span></span></code></pre></div><p>Finally, there is a top-level make file for all the crates in top-level folder for the seL4 microkit HAMR generated folder (e.g., <code>hamr/microkit</code>), and all the tests for all crates can be run with <code>make test</code> from the command line at the level of the <code>microkit</code> folder.</p>
+<p>If you have cloned or downloaded the HAMR Tutorials repository, now would be a good time to actually run some of the <code>thermostat</code> tests using one of the methods above.</p>
+<h3 id="test-vectors--aggregating-component-inputs">Test Vectors &ndash; Aggregating Component Inputs</h3>
+<p>Sometimes it is useful to aggregate all input values for a component into a single structure.  HAMR auto-generates data structures and auxiliary functions for this purpose.   This support will be used extensively in GUMBOX-based testing, but you may also find them useful for HAMR manual tests.  A common use case is declaring and naming test vectors so that they can be used in multiple places or so the name for a particular test vector can be traced so some form of documentation external to the test code.</p>
+<p>The <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>util/test_apis.rs</code></a> file contains declarations of Rust structs referred to in HAMR parlance as &ldquo;containers&rdquo;.   For testing, HAMR generates &ldquo;pre-state&rdquo; containers to hold values for each component input.  There are two versions of containers: one that holds only input port values and another holds input values for GUMBO state variables in addition to port input values (HAMR generates this second version only if GUMBO state variables are declared).</p>
+<p>Below are the containers generated for the <code>thermostat</code> component.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values and GUMBO state variables
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer_wGSV</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>In the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>util/test_apis.rs</code></a> file,
+HAMR auto-generates variants of the <code>put</code> methods that take these containers as arguments.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// setter for component&#39;s incoming port values
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/// setter for component&#39;s incoming port values and GUMBO state variables
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container_wGSV</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer_wGSV</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_lastCmd</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">In_lastCmd</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The following version of the previous test for Requirement 2 of the <code>thermostat</code> illustrates the use of the container features above.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_REQ_THERM_2_container</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Alternate version: Illustrate &#34;container&#34;-based APIs
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Inputs can be &#34;bundled&#34; into a container and put &#34;all at once&#34;.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// There are two versions Pre-State-Container: one without inputs
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// for GUMBO state variables (GSV) and one that includes them.  Below
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// illustrates the version without.   In this case, GSVs retain
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// whatever value they have at the time of the Compute entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (timeTriggered method) invocation.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">preStateContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api_current_temp</span><span class="w"> </span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api_desired_temp</span><span class="w"> </span>: <span class="nc">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">lower</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>:  <span class="mi">98</span><span class="w"> </span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">upper</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">}</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [PutInPorts]: put values on the input ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_concrete_inputs_container</span><span class="p">(</span><span class="n">preStateContainer</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// get result values from output ports
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div></div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
