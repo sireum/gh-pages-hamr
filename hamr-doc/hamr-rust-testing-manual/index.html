@@ -47,7 +47,7 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
   <meta itemprop="name" content="Sireum HAMR">
   <meta itemprop="description" content="HAMR Rust Thread Component Development - Manual Unit Testing Recall that HAMR auto-generates support for three types of thread component testing:
 manual tests - the developer supplies manually-constructed inputs (a test vector) for input ports, runs the component, and checks output ports against manually indicated expected results, manual GUMBOX tests - the developer supplies manually constructed inputs for input ports and then uses an automatically generated test API call to check that the component application code outputs (together with the supplied inputs) conform to an executable version of the component’s model-level GUMBO contracts (referred to as the GUMBO eXecutable, i.e., GUMBOX contract), automated randomized GUMBOX tests (property-based testing) - the developer users HAMR auto-generated random-value generators to generate component inputs and HAMR auto-generated APIs to test that the component inputs/outputs conform to GUMBOX contracts. These three styles of testing provide increasing levels of automation. Illustrations of each style of testing can be found in HAMR tutorial examples, e.g., here are the tests for the thermostat component of the Simple Isolette Example (periodic threads, with data ports).">
-  <meta itemprop="wordCount" content="2983">
+  <meta itemprop="wordCount" content="4369">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -335,8 +335,7 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
 </li>
 </ul>
 <p>Excerpts of the initial HAMR-generated version of the <code>tests.rs</code> for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit-initial/crates/thermostat_thermostat/src/test/tests.rs"><code>thermostat</code> component</a>) are shown below (some additional comments have been added in the code associated with the outlines above).</p>
-<p>Note that the file has two modules: one for manual unit tests, and one for GUMBOX tests.<br>
-This structure is only a suggestion.   In each module, some example skeleton tests are provided.  The developer is free to reorganize these modules or even separate them into different files as explained above (<code>test/mod.rs</code> may need to be adjusted if different files are introduced).</p>
+<p>Note that the file has two modules: one for manual unit tests, and one for GUMBOX tests.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">tests</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// NOTE: need to run tests sequentially to prevent race conditions
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//       on the app and the testing apis which are static
@@ -377,7 +376,15 @@ This structure is only a suggestion.   In each module, some example skeleton tes
 </span></span></span><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">GUMBOX_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// .. details omitted
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
-</span></span></span></code></pre></div><p>Note that the auto-generated HAMR skeletons don&rsquo;t illustrate all aspects of the tests, e.g., retrieving outputs and comparing to expected results are not provided, since those are often test-specific.   We will illustrate how these aspects to coded below.</p>
+</span></span></span></code></pre></div><p>This above structure is only a suggestion.   In each module, some example skeleton tests are provided.  The developer is free to reorganize these modules or even separate them into different files as explained above.  If you test files are created, <code>test/mod.rs</code> will need to be updated to reference those files.  For example, if you added new files <code>test/manual_unit_tests.rs</code> and <code>test/manual_GUMBOX_tests.rs</code>,  <code>test/mod.rs</code> will need to be updated to look something like this&hellip;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// This file will not be overwritten if HAMR codegen is rerun
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">util</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">tests</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_unit_tests</span><span class="p">;</span><span class="w">    </span><span class="c1">// reference to new test file added
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_GUMBOX_tests</span><span class="p">;</span><span class="w">  </span><span class="c1">// reference to new test file added
+</span></span></span></code></pre></div><p>Returning to the listing above, note that the auto-generated HAMR skeletons don&rsquo;t illustrate all aspects of the tests, e.g., retrieving outputs and comparing to expected results are not provided, since those are often test-specific.   We will illustrate how these aspects to coded below.</p>
 <p>We first discuss the more general <code>Compute</code> Entry Point tests.</p>
 <h2 id="compute-entry-point-tests">Compute Entry Point Tests</h2>
 <p>We&rsquo;ll illustrate some concepts using the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/tests.rs">tests in the completed <code>tests.rs</code> for the thermostat thread</a>.</p>
@@ -475,7 +482,13 @@ test.  When natural language requirements for the thread have been written, it i
 </span></span></code></pre></div><p>Finally, there is a top-level make file for all the crates in top-level folder for the seL4 microkit HAMR generated folder (e.g., <code>hamr/microkit</code>), and all the tests for all crates can be run with <code>make test</code> from the command line at the level of the <code>microkit</code> folder.</p>
 <p>If you have cloned or downloaded the HAMR Tutorials repository, now would be a good time to actually run some of the <code>thermostat</code> tests using one of the methods above.</p>
 <h3 id="test-vectors--aggregating-component-inputs">Test Vectors &ndash; Aggregating Component Inputs</h3>
-<p>Sometimes it is useful to aggregate all input values for a component into a single structure.  HAMR auto-generates data structures and auxiliary functions for this purpose.   This support will be used extensively in GUMBOX-based testing, but you may also find them useful for HAMR manual tests.  A common use case is declaring and naming test vectors so that they can be used in multiple places or so the name for a particular test vector can be traced so some form of documentation external to the test code.</p>
+<p>Sometimes it is useful to aggregate all input values for a component into a single structure.  HAMR auto-generates data structures and auxiliary functions for this purpose.   This support will be used extensively in GUMBOX-based testing, but you may also find them useful for HAMR manual tests.</p>
+<p>The potential benefits of using the containers for test inputs are as follows.</p>
+<ul>
+<li>You can declare and name test vectors so that they can be used in multiple places or so the name for a particular test vector can be traced so some form of documentation external to the test code.</li>
+<li>Since containers are Rust structs, and Rust requires struct elements to be named when constructing the struct, defining test inputs are a bit more robust to changes.  For example, when generating apis (including test infrastructure methods) for components, HAMR uses a default ordering for arguments.  If the model-level component type for a component is modified or if the HAMR strategy for ordering arguments is changed, test inputs &ldquo;passed by position&rdquo; would become invalid, while test inputs passed by name to the contrainer/struct may still be valid.</li>
+<li>Related to the above, since containers/structs are always built by naming values using component port names, this ensures a consistent code-based documentation and traceability to the original port names.</li>
+</ul>
 <p>The <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>util/test_apis.rs</code></a> file contains declarations of Rust structs referred to in HAMR parlance as &ldquo;containers&rdquo;.   For testing, HAMR generates &ldquo;pre-state&rdquo; containers to hold values for each component input.  There are two versions of containers: one that holds only input port values and another holds input values for GUMBO state variables in addition to port input values (HAMR generates this second version only if GUMBO state variables are declared).</p>
 <p>Below are the containers generated for the <code>thermostat</code> component.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values
@@ -540,7 +553,141 @@ HAMR auto-generates variants of the <code>put</code> methods that take these con
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></div></div>
+</span></span></span></code></pre></div><h2 id="generating-coverage-reports">Generating Coverage Reports</h2>
+<p>Looking at how much of a component&rsquo;s code (and how much of its GUMBOX contract oracles) is actually exercised by the test suite is one of the most direct ways to gauge the quality of your testing.   HAMR generates a <code>coverage</code> Make target in each component crate that wraps the standard Rust source-based code-coverage workflow (LLVM instrumentation + <a href="https://github.com/mozilla/grcov"><code>grcov</code></a>).</p>
+<h3 id="running-make-coverage">Running <code>make coverage</code></h3>
+<p>From the root of any component crate (e.g., <code>..crates/thermostat_thermostat/</code>), simply run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make coverage              <span class="c1"># build with coverage instrumentation, run all tests, render HTML</span>
+</span></span><span class="line"><span class="cl">make coverage <span class="nv">args</span><span class="o">=</span>proptest <span class="c1"># restrict to tests whose name contains &#34;proptest&#34;</span>
+</span></span></code></pre></div><p>Looking at the <code>coverage</code> rule in the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/Makefile">crate Makefile</a>, the target</p>
+<ul>
+<li>installs <code>grcov</code> if it is not already on <code>PATH</code> (<code>cargo install grcov</code>),</li>
+<li>clears <code>target/coverage/</code> and re-runs <code>cargo test</code> with <code>RUSTFLAGS='-Cinstrument-coverage'</code> and <code>LLVM_PROFILE_FILE='target/coverage/cargo-test-%p-%m.profraw'</code> (so each test process drops a profile file under <code>target/coverage/</code>), and</li>
+<li>invokes <code>grcov</code> to merge those profiles and emit an HTML report.</li>
+</ul>
+<p>The <code>args=</code> parameter is forwarded to <code>cargo test</code>, so the same name-substring filter that works for <code>make test</code> works for <code>make coverage</code>.</p>
+<h3 id="where-the-report-lives">Where the report lives</h3>
+<p>The rendered HTML report is written to</p>
+<pre tabindex="0"><code>&lt;crate&gt;/target/coverage/report/
+</code></pre><p>with <code>index.html</code> as the top-level entry point.  The page summarizes line-, function-, and (where available) branch-coverage percentages for the crate as a whole, and links to per-directory and per-file pages that show each source line annotated with hit counts and red/green/yellow shading.</p>
+<p>On macOS, the Make target tries to open <code>target/coverage/report/index.html</code> in your default browser the <strong>first</strong> time it generates a report (it tests for an existing <code>index.html</code> and only invokes <code>open</code> when none was present).  Subsequent runs do not re-open the browser; you can re-view the report any time by opening that <code>index.html</code> manually, and you can force the auto-open behavior to fire again by deleting <code>target/coverage/</code> before running the target.</p>
+<h3 id="what-to-look-at-first">What to look at first</h3>
+<p>For a HAMR thread component, two files dominate the &ldquo;is my testing actually exercising the component?&rdquo; question:</p>
+<ol>
+<li>
+<p><strong><code>src/component/&lt;component&gt;_app.rs</code></strong> — your hand-written application code.  Focus on coverage of the <code>initialize</code> and <code>timeTriggered</code> (or sporadic-handler) bodies.  The same file also contains seL4/Microkit error-handling helpers (e.g., <code>notify</code>, <code>log_warn_channel</code>) that are not normally exercised by unit tests; it is fine for those to remain uncovered.</p>
+</li>
+<li>
+<p><strong><code>src/bridge/&lt;component&gt;_GUMBOX.rs</code></strong> — the auto-generated executable versions of the GUMBO contracts (one boolean function per integration constraint, initialize guarantee, and <code>compute_case</code>).  These are only relevant when you run <strong>GUMBOX-style</strong> tests (manual <code>cb_apis::testComputeCB...</code> calls and the <code>testComputeCB_macro!</code> propTest macros); pure manual unit tests never call them.  When you do use them, GUMBOX coverage tells you whether each contract case is actually being driven by your inputs.</p>
+</li>
+</ol>
+<h3 id="example-full-thermostat-test-suite">Example: full thermostat test suite</h3>
+<p>Running <code>make coverage</code> against the unmodified <code>tests.rs</code> for the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/tests.rs"><code>thermostat</code> component</a> (19 tests covering REQ_THERM_1 through REQ_THERM_4, in manual, manual-GUMBOX, and propTest variants) produces this report:</p>
+<ul>
+<li><a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/full/index.html">Top-level coverage report (full suite)</a> — 90.93% line coverage overall.</li>
+<li><a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/full/src/component/thermostat_thermostat_app.rs.html"><code>thermostat_thermostat_app.rs</code></a> — 85.44% lines (88/103); the only gaps are the seL4 <code>notify</code> / logging helpers.</li>
+<li><a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/full/src/bridge/thermostat_thermostat_GUMBOX.rs.html"><code>thermostat_thermostat_GUMBOX.rs</code></a> — every <code>compute_case_REQ_THERM_*</code> body shows a non-zero hit count for both the antecedent and consequent of its <code>implies!</code> clause.</li>
+</ul>
+<h3 id="example-a-reduced-suite-that-exposes-coverage-gaps">Example: a reduced suite that exposes coverage gaps</h3>
+<p>To illustrate what missing coverage looks like, we replaced <code>tests.rs</code> with a deliberately thin version that keeps only:</p>
+<ul>
+<li><code>test_initialization_REQ_THERM_1</code> — exercises the initialize entry point,</li>
+<li><code>test_compute</code> — exercises <code>timeTriggered</code>, but with <code>Temp::default()</code> / <code>Set_Points::default()</code> (i.e., all fields equal to 0), so the temperature comparisons inside <code>timeTriggered</code> never trigger either of the inequality branches,</li>
+<li><code>test_compute_GUMBOX_manual_1_a</code> — a single manual GUMBOX test using <code>current_temp = 98</code> against <code>lower=98 / upper=100</code>, i.e., inputs that exercise only REQ_THERM_4.</li>
+</ul>
+<p>The full reduced source is shown below (also available as a <a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/reduced/tests.rs">downloadable file</a>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">test</span>::<span class="n">util</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="n">Isolette_Data_Model</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_initialization_REQ_THERM_1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">heat_control</span>: <span class="nc">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">post_lastCmd</span><span class="w"> </span>: <span class="nc">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// REQ_THERM_1: The Heat Control command shall be initially Off
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">post_lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Default-valued inputs leave currentTemp.degrees neither greater than the
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// upper bound nor less than the lower bound, so timeTriggered only executes
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// the REQ_THERM_4 fall-through path.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_lastCmd</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">GUMBOX_manual_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">test</span>::<span class="n">util</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="n">Isolette_Data_Model</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Manual GUMBOX test that exercises only the REQ_THERM_4 case
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// (current_temp 98 lies inside the desired range [98, 100]).
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_GUMBOX_manual_1_a</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lower_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">upper_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lower</span>: <span class="nc">lower_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">upper_desired_temp</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">last_cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">harness_result</span><span class="w"> </span><span class="o">=</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">       </span><span class="n">cb_apis</span>::<span class="n">testComputeCBwGSV</span><span class="p">(</span><span class="n">last_cmd</span><span class="p">,</span><span class="w"> </span><span class="n">current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">harness_result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The corresponding coverage run drops to <strong>65.35%</strong> overall:</p>
+<ul>
+<li><a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/reduced/index.html">Top-level coverage report (reduced suite)</a></li>
+</ul>
+<h4 id="gap-1-timetriggered-branches">Gap 1: <code>timeTriggered</code> branches</h4>
+<p>Open <a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/reduced/src/component/thermostat_thermostat_app.rs.html"><code>thermostat_thermostat_app.rs</code></a> and scroll to the control-logic block (around line 117).  Both inequality branches show as uncovered (red, hit count 0):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">L117  [4 hits]  if (currentTemp.degrees &gt; desired_temp.upper.degrees) {
+</span></span><span class="line"><span class="cl">L118  [0 hits]     // REQ-THERM-3
+</span></span><span class="line"><span class="cl">L119  [0 hits]     currentCmd = On_Off::Off;
+</span></span><span class="line"><span class="cl">L120  [4 hits]  } else if (currentTemp.degrees &lt; desired_temp.lower.degrees) {
+</span></span><span class="line"><span class="cl">L121  [0 hits]     assert(...);
+</span></span><span class="line"><span class="cl">L122  [0 hits]     // REQ-THERM-2
+</span></span><span class="line"><span class="cl">L123  [0 hits]     //currentCmd = On_Off::Off; // seeded bug/error
+</span></span><span class="line"><span class="cl">L124  [0 hits]     currentCmd = On_Off::Onn;
+</span></span><span class="line"><span class="cl">L125  [4 hits]  }
+</span></span></code></pre></div><p>The <code>if</code> and <code>else if</code> <em>conditions</em> are evaluated on every test invocation (4 hits = 3 invocations from the manual tests + 1 from the GUMBOX harness), but neither ever takes its <code>true</code> branch.  The reason is intuitive: <code>test_compute</code> uses <code>Temp::default()</code> (degrees 0), so 0 is neither greater than nor less than 0, and the GUMBOX test deliberately picks <code>current_temp = 98</code> inside the desired range.  No test in the reduced suite drives <code>current_temp</code> outside the desired range, so the REQ_THERM_2 and REQ_THERM_3 code paths are never reached.</p>
+<h4 id="gap-2-gumbox-case-oracles">Gap 2: GUMBOX case oracles</h4>
+<p>Open <a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/reduced/src/bridge/thermostat_thermostat_GUMBOX.rs.html"><code>thermostat_thermostat_GUMBOX.rs</code></a> and look at the three <code>compute_case_REQ_THERM_*</code> functions.  Each one is <em>called</em> on every GUMBOX run (because <code>compute_CEP_T_Case</code> aggregates all three), so the function signature and <code>implies!(...)</code> line show 2 hits each.  But the <em>consequent</em> of each implication is only evaluated when its antecedent is true:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">compute_case_REQ_THERM_2:
+</span></span><span class="line"><span class="cl">  L165  [2 hits]    api_current_temp.degrees &lt; api_desired_temp.lower.degrees,
+</span></span><span class="line"><span class="cl">  L166  [0 hits]    api_heat_control == Isolette_Data_Model::On_Off::Onn)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">compute_case_REQ_THERM_3:
+</span></span><span class="line"><span class="cl">  L182  [2 hits]    api_current_temp.degrees &gt; api_desired_temp.upper.degrees,
+</span></span><span class="line"><span class="cl">  L183  [0 hits]    api_heat_control == Isolette_Data_Model::On_Off::Off)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">compute_case_REQ_THERM_4:
+</span></span><span class="line"><span class="cl">  L203  [2 hits]    (api_current_temp.degrees &gt;= api_desired_temp.lower.degrees) &amp;
+</span></span><span class="line"><span class="cl">  L204  [2 hits]      (api_current_temp.degrees &lt;= api_desired_temp.upper.degrees),
+</span></span><span class="line"><span class="cl">  L205  [2 hits]    api_heat_control == In_lastCmd)
+</span></span></code></pre></div><p>Only the REQ_THERM_4 oracle&rsquo;s consequent is actually checked, because that is the only case whose pre-condition is satisfied by the test inputs.  The REQ_THERM_2 and REQ_THERM_3 oracles are vacuously true on every call (<code>!false || _</code> short-circuits to <code>true</code>), so the code that would actually compare <code>heat_control</code> against the expected value is never executed.  This is precisely the signal that the auto-generated propTest macros are designed to fix: by sweeping inputs across the full range of each generator, they drive the antecedent of every case to <code>true</code> at least once, lighting up the consequent.</p>
+<p>A useful rule of thumb: high coverage of <code>*_GUMBOX.rs</code> (especially the consequent lines of each <code>compute_case_*</code> body) tells you that your tests are actually exercising the contract.  It does <strong>not</strong> by itself say the contract is correct; that is what manual unit tests and contract reviews are for.</p>
+</div>
         
         <hr/>
 
