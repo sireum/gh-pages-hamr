@@ -49,7 +49,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <meta itemprop="description" content="Distribution Mechanism HAMR is distributed as part of the Sireum tool framework developed at Kansas State University. Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools. These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang. Installation instructions are given below.
 The primary tools provided by HAMR are..
 tools for checking the well-formedness of the SysMLv2 and AADL modeling language subsets supported by HAMR, tools for performing different forms of light-weight verification on HAMR models, and tools for generating code and system build infrastructure for HAMR models. These tools can be invoked from the command line using Sireum’s CLI interface or agentically using HAMR’s MCP interfaces.">
-  <meta itemprop="wordCount" content="1125">
+  <meta itemprop="wordCount" content="1245">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -219,18 +219,22 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <ul>
     <li><a href="#distribution-mechanism">Distribution Mechanism</a></li>
     <li><a href="#supported-platforms">Supported Platforms</a></li>
-    <li><a href="#installation-options">Installation Options</a>
+    <li><a href="#installation-steps---primary-workflow-sysml-rust">Installation Steps - Primary Workflow (SysML, Rust)</a>
       <ul>
         <li><a href="#sireum">Sireum</a></li>
-        <li><a href="#ive">IVE</a></li>
         <li><a href="#codeive">CodeIVE</a></li>
-        <li><a href="#fmide">FMIDE</a></li>
         <li><a href="#sel4-microkit-development">seL4 Microkit Development</a>
           <ul>
             <li><a href="#rust">Rust</a></li>
             <li><a href="#verus">Verus</a></li>
           </ul>
         </li>
+      </ul>
+    </li>
+    <li><a href="#installation-steps---alternate-workflows">Installation Steps - Alternate Workflows</a>
+      <ul>
+        <li><a href="#fmide-for-aadl">FMIDE (for AADL)</a></li>
+        <li><a href="#ive-for-slang-and-logika">IVE (for Slang and Logika)</a></li>
       </ul>
     </li>
   </ul>
@@ -260,18 +264,17 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>Depending on the programming language that you want to use to program HAMR components (e.g., Rust, Slang, or C) and the target platform (e.g., seL4) you may want to install additional language tools and associated verification tools.</p>
 <h3 id="supported-platforms">Supported Platforms</h3>
 <p>HAMR is supported for macOS, Linux, and Windows</p>
-<h3 id="installation-options">Installation Options</h3>
+<h3 id="installation-steps---primary-workflow-sysml-rust">Installation Steps - Primary Workflow (SysML, Rust)</h3>
 <p>For work related to the DARPA PROVERS INSPECTA project which focuses on SysMLv2 and Rust development/verification, you will typically want to</p>
 <ul>
 <li>Install Sireum (which includes HAMR)</li>
 <li>Install CodeIVE for editing SysMLv2 models and invoking HAMR</li>
-<li>Install FMIDE for editing AADL models and invoking HAMR</li>
 <li>Install Rust (if not already installed)</li>
 <li>Install Verus for supporting verification of HAMR-support Rust components</li>
 </ul>
-<p>Instructions for all these are provided below.</p>
+<p>Tools supporting other workflows (such as using AADL for modeling or Slang for component development) are listed at the end of this page</p>
 <h4 id="sireum">Sireum</h4>
-<p>You can install Sireum and its tools via source or prepackaged binaries. We outline the source-based method below, but you can find binary installers on the <a href="https://sireum.org/getting-started/">Sireum installation</a> page.</p>
+<p>You can install Sireum and its tools via source or prepackaged binaries. We outline the source-based method below which is what is emphasized on the DARPA PROVERS program, but you can find binary installers on the <a href="https://sireum.org/getting-started/">Sireum installation</a> page.</p>
 
 
 <div class="tab-panel">
@@ -345,90 +348,6 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
     
 </div>
 </div>
-<h4 id="ive">IVE</h4>
-<p>The Sireum Integrated Verification Environment (IVE) is a customized distribution of IntelliJ IDEA specifically designed for developing high-assurance and verified software. It provides out-of-the-box support for the Slang programming language and integrates the Logika verification framework to allow for real-time, automated formal proofs of code correctness.</p>
-<p>IVE is recommended when working with Slang/Logika projects.</p>
-
-
-<div class="tab-panel">
-    <div class="tab-nav">
-        
-        <button
-                data-tab-item="macOS/Linux"
-                data-tab-group="ive-install"
-                class="tab-nav-button btn active"
-        onclick="switchTab(true, 'ive-install','macOS\/Linux')"
-        >macOS/Linux</button>
-        
-        <button
-                data-tab-item="Windows"
-                data-tab-group="ive-install"
-                class="tab-nav-button btn "
-        onclick="switchTab(true, 'ive-install','Windows')"
-        >Windows</button>
-        
-    </div>
-    <div class="tab-content">
-        
-        <div data-tab-item="macOS/Linux" data-tab-group="ive-install" class="tab-item active">
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup ive
-</span></span></code></pre></div>
-    </div>
-    
-        <div data-tab-item="Windows" data-tab-group="ive-install" class="tab-item ">
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup ive
-</span></span></code></pre></div>
-    </div>
-    
-</div>
-</div>
-<p>Launch IVE
-
-
-<div class="tab-panel">
-    <div class="tab-nav">
-        
-        <button
-                data-tab-item="macOS"
-                data-tab-group="launch-ive"
-                class="tab-nav-button btn active"
-        onclick="switchTab(true, 'launch-ive','macOS')"
-        >macOS</button>
-        
-        <button
-                data-tab-item="Linux"
-                data-tab-group="launch-ive"
-                class="tab-nav-button btn "
-        onclick="switchTab(true, 'launch-ive','Linux')"
-        >Linux</button>
-        
-        <button
-                data-tab-item="Windows"
-                data-tab-group="launch-ive"
-                class="tab-nav-button btn "
-        onclick="switchTab(true, 'launch-ive','Windows')"
-        >Windows</button>
-        
-    </div>
-    <div class="tab-content">
-        
-        <div data-tab-item="macOS" data-tab-group="launch-ive" class="tab-item active">
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/idea/IVE.app
-</span></span></code></pre></div>
-    </div>
-    
-        <div data-tab-item="Linux" data-tab-group="launch-ive" class="tab-item ">
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/idea/bin/IVE.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
-</span></span></code></pre></div>
-    </div>
-    
-        <div data-tab-item="Windows" data-tab-group="launch-ive" class="tab-item ">
-        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\idea\bin\IVE.exe
-</span></span></code></pre></div>
-    </div>
-    
-</div>
-</div></p>
 <h4 id="codeive">CodeIVE</h4>
 <p>CodeIVE is Sireum’s Interactive Verification Environment built on VSCodium. It provides a ready-to-use development setup with the Sireum extension, enabling users to invoke Sireum tools such as Logika and HAMR directly within the editor. In addition, CodeIVE bundles commonly used extensions like SysIDE and Rust Analyzer, offering an integrated environment for modeling, verification, and development workflows.</p>
 <p>CodeIVE is recommended when working with SysMLv2 models and developing Microkit projects that utilize Rust or Verus code.</p>
@@ -513,7 +432,49 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
     
 </div>
 </div></p>
-<h4 id="fmide">FMIDE</h4>
+<h4 id="sel4-microkit-development">seL4 Microkit Development</h4>
+<p>The following tools are only required if you intend to work on seL4 Microkit systems requiring Rust/Verus formal verification.</p>
+<h5 id="rust">Rust</h5>
+<p>Install Rust via <code>rustup</code> according to the <a href="https://rust-lang.org/tools/install/">official Rust installation instructions</a>.   You might want to take a look at the discussion of &ldquo;Rust tool chains&rdquo; (essentially, having different versions of Rust installed).  When using Verus, you will need to rely on older version(s) of Rust (see below).</p>
+<h5 id="verus">Verus</h5>
+<p>The Verus verification tool provides contract-based verification for Rust programs.  What makes things a little tricky is that..</p>
+<ul>
+<li>due to a variety of dependency issues, HAMR needs to work with specific versions of Verus</li>
+<li>similarly, each version of Verus is tied to a specific version of Rust.</li>
+</ul>
+<p>Fortunately, the <code>rustup</code> utility for Rust makes it easy to manage different versions of the Rust toolchain; you can even have multiple versions of Rust installed at the same time.</p>
+<p>What this means is for using Rust/Verus with HAMR is&hellip;</p>
+<ul>
+<li><strong>you need to install the specific version of Verus listed on this web page</strong></li>
+<li><strong>you need to use <code>rustup</code> to install/set the Rust tool chain to the specific version of Rust that both HAMR and Versus need</strong></li>
+</ul>
+<p>Verus binaries are distributed in <code>.zip</code> files; there is no dedicated installer.  So you need to place the unzipped Verus files in a location of your choice, and set your <code>PATH</code> environment variable to include that location.</p>
+<p>Note: Versus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues that those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
+<p><strong>Installing Verus</strong></p>
+<p>The current Versus version supported by HAMR is</p>
+<pre tabindex="0"><code>Version: 0.2026.01.23.1650a05
+Profile: release
+</code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
+<ul>
+<li>
+<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.01.23.1650a05">specific version above</a></p>
+</li>
+<li>
+<p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
+<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.01.23.1650a05</code> requires the <code>1.92.0-aarch64-apple-darwin</code> toolchain, so you would run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.92.0-aarch64-apple-darwin
+</span></span></code></pre></div></li>
+</ul>
+<h3 id="installation-steps---alternate-workflows">Installation Steps - Alternate Workflows</h3>
+<p>HAMR supports modeling in AADL or SysMLv2, and component application development in Rust, C, and Slang.   Workflows based on any combination of these is possible.  For example,</p>
+<ul>
+<li>AADL for modeling, Rust for component implementation</li>
+<li>AADL for modeling, Slang for component implementation</li>
+<li>SysMLv2 for modeling, Slang for component implementation</li>
+<li>AADL for modeling, C for component implementation</li>
+</ul>
+<p>The instructions above focus on installations to support HAMR&rsquo;s current research emphases (SysMLv2 with Rust).  If you want to use workflows involving AADL or Slang, you will need the following additional tools.</p>
+<h4 id="fmide-for-aadl">FMIDE (for AADL)</h4>
 <p>The Formal Methods Intergrated Development Environment (FMIDE) is a customized distribution of OSATE and is recommended for high-level architectural modeling and cyber-resiliency analysis using AADL within the DARPA CASE workflow. It integrates a suite of formal analysis tools—such as AGREE, Resolute, and BriefCASE—to verify system-level safety and security properties before a single line of code is written. The bundled Sireum plugin intergrates HAMR for automated, &ldquo;correct-by-construction&rdquo; code generation from AADL models. Additionally, the plugin integrates <a href="https://awas.sireum.org">AWAS</a> for visualizing and analyzing complex system information flows, ensuring safety and security properties are met at the architectural level.</p>
 
 
@@ -596,39 +557,90 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
     
 </div>
 </div></p>
-<h4 id="sel4-microkit-development">seL4 Microkit Development</h4>
-<p>The following tools are only required if you intend to work on seL4 Microkit systems requiring Rust/Verus formal verification.</p>
-<h5 id="rust">Rust</h5>
-<p>Install Rust via <code>rustup</code> according to the <a href="https://rust-lang.org/tools/install/">official Rust installation instructions</a>.   You might want to take a look at the discussion of &ldquo;Rust tool chains&rdquo; (essentially, having different versions of Rust installed).  When using Verus, you will need to rely on older version(s) of Rust (see below).</p>
-<h5 id="verus">Verus</h5>
-<p>The Verus verification tool provides contract-based verification for Rust programs.  What makes things a little tricky is that..</p>
-<ul>
-<li>due to a variety of dependency issues, HAMR needs to work with specific versions of Verus</li>
-<li>similarly, each version of Verus is tied to a specific version of Rust.</li>
-</ul>
-<p>Fortunately, the <code>rustup</code> utility for Rust makes it easy to manage different versions of the Rust toolchain; you can even have multiple versions of Rust installed at the same time.</p>
-<p>What this means is for using Rust/Verus with HAMR is&hellip;</p>
-<ul>
-<li><strong>you need to install the specific version of Verus listed on this web page</strong></li>
-<li><strong>you need to use <code>rustup</code> to install/set the Rust tool chain to the specific version of Rust that both HAMR and Versus need</strong></li>
-</ul>
-<p>Verus binaries are distributed in <code>.zip</code> files; there is no dedicated installer.  So you need to place the unzipped Verus files in a location of your choice, and set your <code>PATH</code> environment variable to include that location.</p>
-<p>Note: Versus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues that those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
-<p><strong>Installing Verus</strong></p>
-<p>The current Versus version supported by HAMR is</p>
-<pre tabindex="0"><code>Version: 0.2026.01.23.1650a05
-Profile: release
-</code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
-<ul>
-<li>
-<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.01.23.1650a05">specific version above</a></p>
-</li>
-<li>
-<p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
-<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.01.23.1650a05</code> requires the <code>1.92.0-aarch64-apple-darwin</code> toolchain, so you would run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.92.0-aarch64-apple-darwin
-</span></span></code></pre></div></li>
-</ul>
+<h4 id="ive-for-slang-and-logika">IVE (for Slang and Logika)</h4>
+<p>The Sireum Integrated Verification Environment (IVE) is a customized distribution of IntelliJ IDEA specifically designed for developing high-assurance and verified software. It provides out-of-the-box support for the Slang programming language and integrates the Logika verification framework to allow for real-time, automated formal proofs of code correctness.</p>
+<p>IVE is recommended when working with Slang/Logika projects.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="ive-install"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'ive-install','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="ive-install"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'ive-install','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="ive-install" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/sireum setup ive
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="ive-install" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="nv">%SIREUM_HOME%</span>\bin\sireum setup ive
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>Launch IVE
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'launch-ive','macOS')"
+        >macOS</button>
+        
+        <button
+                data-tab-item="Linux"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-ive','Linux')"
+        >Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="launch-ive"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'launch-ive','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS" data-tab-group="launch-ive" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">open <span class="nv">$SIREUM_HOME</span>/bin/mac/idea/IVE.app
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Linux" data-tab-group="launch-ive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">$SIREUM_HOME</span>/bin/linux/idea/bin/IVE.sh &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="launch-ive" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">start</span> /B <span class="nv">%SIREUM_HOME%</span>\bin\win\idea\bin\IVE.exe
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div></p>
 </div>
         
         <hr/>
