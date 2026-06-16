@@ -47,7 +47,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
   <meta itemprop="name" content="Recommended Reading Order">
   <meta itemprop="description" content="This page suggests an order for working through the HAMR lecture videos, tutorials, and reference documentation. It is aimed at readers who are new to HAMR and want a guided path; experienced readers should feel free to jump directly to the reference documentation chapters most relevant to their work.
 Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Overview — start here to understand HAMR’s three development layers, HAMR as a formal-methods pipeline, and the kinds of systems HAMR targets. HAMR Overview (Part 1 - General concepts and modeling)">
-  <meta itemprop="wordCount" content="755">
+  <meta itemprop="wordCount" content="689">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -234,32 +234,33 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 </ul>
 </li>
 <li>
-<p>HAMR Overview (Part 2 - Rust thread component development) <em>(forthcoming)</em></p>
+<p>HAMR Overview (Part 2 - Rust thread component development)</p>
+<ul>
+<li><a href="https://drive.google.com/file/d/11wRpte0upgL6zxezIwj8Ks-_4kjMt6TL/view?usp=sharing">Video - lecture</a></li>
+<li><a href="https://drive.google.com/file/d/1VAp1GsyvccXPDpbW2G8dt6wIFK3fRcAT/view?usp=sharing">Slides</a> &ndash; slides used in the video above</li>
+</ul>
 </li>
 </ul>
 <ol start="2">
-<li><strong>Installation</strong> - install Sireum/HAMR and the IDEs and platform tools (CodeIVE, Rust/Verus, seL4 Microkit) you will need for the rest of the documentation.  (Notes to John: Avoid overwhelming with different options - give some hints for installation for particular workflows, mention that environment variables go in .bashrc, etc., make updating clear)</li>
+<li><strong>Installation</strong> - install Sireum/HAMR and the IDEs and platform tools (CodeIVE, Rust/Verus, seL4 Microkit) you will need for the rest of the documentation.</li>
 </ol>
 <ul>
 <li>
 <p>Installation</p>
 <ul>
-<li><a href="../Installation/">Documentation</a> <em>ToDo: update documentation to give specific instructions for SysMLv2/Rust installation</em></li>
-<li><a href="">Video - demo</a> <em>Forthcoming</em></li>
+<li><a href="../Installation/">Documentation</a></li>
 </ul>
 </li>
 <li>
 <p>Cloning / Downloading Example Repository</p>
 <ul>
 <li><a href="">Documentation</a> <em>Forthcoming</em></li>
-<li><a href="">Video - demo</a> <em>Forthcoming</em></li>
 </ul>
 </li>
 <li>
 <p>Confirming installation</p>
 <ul>
 <li><a href="">Documentation</a> <em>Forthcoming</em></li>
-<li><a href="">Video - demo</a> <em>Forthcoming</em></li>
 </ul>
 </li>
 </ul>
@@ -267,26 +268,23 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li><strong>Semantics Concepts</strong> — read the informal semantics of AADL modeling elements (threads, processes, ports, communication patterns) using the Simple Isolette as the running example.</li>
 </ol>
 <ul>
-<li><a href="">Video - lecture</a> <em>Forthcoming</em></li>
 <li><a href="../hamr-semantics-concepts/">Documentation</a></li>
 </ul>
 <ol start="4">
 <li><strong>Editing and Code Generation Using SysMLv2 Models</strong> — set up and use the VSCodium-based IDE to actually author SysMLv2 models, run the type checker, and configure code generation.</li>
 </ol>
 <ul>
-<li><a href="">Video - lecture</a> <em>Forthcoming</em></li>
 <li><a href="../SysMLv2-CodeIVE/">Documentation</a></li>
 </ul>
 <ol start="5">
 <li><strong>Thread Component Application Code Development in Rust and Manual Unit Testing</strong> — fill in the Rust application logic for generated HAMR thread skeletons: entry points, port APIs.</li>
 </ol>
 <ul>
-<li><a href="">Lecture Video</a> - <em>Forthcoming</em></li>
 <li><a href="../hamr-rust-implementation/">Documentation - Thread Component Application Code Development in Rust</a></li>
 <li><a href="../hamr-rust-testing-manual/">Documentation - Thread Component Manual Unit Testing in Rust</a></li>
 </ul>
 <ol start="6">
-<li><strong>Tutorial: Refactoring an Existing System (Part 1 - Working with SysMLv2 in the CodeIVE)</strong></li>
+<li><strong>Tutorial: Refactoring an Existing System - The Simple Isolette (Part 1 - Working with SysMLv2 in the CodeIVE)</strong></li>
 </ol>
 <ul>
 <li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-add-DT/01-Ex-Simple-Isolette-add-Display-Temp-model.md">Tutorial instructions</a></li>
@@ -294,10 +292,10 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li>Note: Starting files and solution files are linked in tutorial description</li>
 </ul>
 <ol start="7">
-<li><strong>Tutorial: Refactoring an Existing System (Part 2 - Code Generation and Working with HAMR-generated Rust Code and Manual Unit Tests)</strong></li>
+<li><strong>Tutorial: Refactoring an Existing System - The Simple Isolette (Part 2 - Code Generation and Working with HAMR-generated Rust Code and Manual Unit Tests)</strong></li>
 </ol>
 <ul>
-<li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-add-DT/02-Ex-Simple-Isolette-add-Display-Temp-code.md">Tutorial instructions</a> - <em>(Need to update to point to starting code)</em></li>
+<li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-add-DT/02-Ex-Simple-Isolette-add-Display-Temp-code.md">Tutorial instructions</a></li>
 <li><a href="https://drive.google.com/file/d/1y4P1ETp8Mh9HVyydHPQlsjWxzosi6-Ah/view?usp=sharing">Video - walkthrough of solution</a></li>
 <li>Note: Starting files and solution files are linked in tutorial description</li>
 </ul>
@@ -306,31 +304,28 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <p><a href="../Microkit-Folder-Structure/">Microkit Folder Structure</a> — get oriented to the folder layout that HAMR generates for seL4 Microkit projects with Rust components.</p>
 </li>
 <li>
-<p><strong>Tutorial: Building a HAMR System From Scratch (Part 1 - Working with SysMLv2 in the CodeIVE)</strong></p>
+<p><strong>Tutorial: Building a HAMR System From Scratch - The Simple Network Guard (Part 1 - Working with SysMLv2 in the CodeIVE)</strong></p>
 </li>
 </ol>
 <ul>
-<li><a href="">Tutorial instructions</a> <em>ToDo: Need to move these over from course repository</em></li>
-<li><a href="">Video - walkthrough of solution</a> <em>Forthcoming</em></li>
+<li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Network-Guard/Ex-Simple-Network-Guard-model.md">Tutorial instructions</a></li>
 <li>Completed models and code for Parts 1 and 2 can be found at the conclusion of Part 2 of the tutorial below.</li>
 </ul>
 <ol start="10">
-<li><strong>Tutorial: Building a HAMR System From Scratch (Part 2 - Code Generation and Working with HAMR-generated Rust Code and Manual Unit Tests)</strong></li>
+<li><strong>Tutorial: Building a HAMR System From Scratch - The Simple Network Guard (Part 2 - Code Generation and Working with HAMR-generated Rust Code and Manual Unit Tests)</strong></li>
 </ol>
 <ul>
-<li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-add-DT/02-Ex-Simple-Isolette-add-Display-Temp-code.md">Tutorial instructions</a> - <em>(Need to update to point to starting code)</em></li>
-<li><a href="https://drive.google.com/file/d/1y4P1ETp8Mh9HVyydHPQlsjWxzosi6-Ah/view?usp=sharing">Video - walkthrough of solution</a></li>
-<li><a href="">Completed code</a> - <em>(Need to update to point to completed code)</em></li>
+<li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Network-Guard/Ex-Simple-Network-Guard-code.md">Tutorial instructions</a></li>
+<li>Link to completed models and code are provided in the tutorial text.</li>
 </ul>
 <ol start="11">
 <li><strong>GUMBO Component Contracts</strong> — learn the GUMBO contract language for specifying component behavior and the contracts that downstream tooling will reason about</li>
 </ol>
 <ul>
-<li><a href="">Lecture video</a> <em>Forthcoming</em></li>
 <li><a href="../gumbo-overview/">Documentation</a></li>
 </ul>
 <ol start="12">
-<li><strong>Tutorial: Adding GUMBO Thread Component Contracts to an Existing System (Part 1 - Adding GUMBO Thread Contracts to SysMLv2 Models)</strong></li>
+<li><strong>Tutorial: Adding GUMBO Thread Component Contracts to an Existing System - The Simple Isolette System (Part 1 - Adding GUMBO Thread Contracts to SysMLv2 Models)</strong></li>
 </ol>
 <ul>
 <li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/01-Ex-Simple-Isolette-DT-add-GUMBO-model.md">Tutorial instructions</a></li>
@@ -340,11 +335,10 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li><strong>GUMBOX Rust Executable Contracts and Manual GUMBOX Testing</strong> — learn how HAMR translates GUMBO thread contracts to executable Rust boolean functions that can be used for both testing and run-time monitoring</li>
 </ol>
 <ul>
-<li><a href="">Lecture video</a> <em>Forthcoming</em></li>
 <li><a href="">Documentation</a> <em>Forthcoming</em></li>
 </ul>
 <ol start="13">
-<li><strong>Tutorial: Adding GUMBO Thread Component Contracts to an Existing System (Part 2 - GUMBOX executable Rust contracts and Manual GUMBOX Testing)</strong></li>
+<li><strong>Tutorial: Adding GUMBO Thread Component Contracts to an Existing System - The Simple Isolette System (Part 2 - GUMBOX executable Rust contracts and Manual GUMBOX Testing)</strong></li>
 </ol>
 <ul>
 <li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/02-Ex-Simple-Isolette-DT-add-GUMBO-GUMBOX.md">Tutorial instructions</a></li>
@@ -354,7 +348,6 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li><strong>HAMR Translation of GUMBO Contracts to Verus Contracts and Verus Formal Verification</strong> — learn how HAMR translates GUMBO thread contracts to Verus Rust code contracts to support formal verification of HAMR thread component application code</li>
 </ol>
 <ul>
-<li><a href="">Lecture video</a> <em>Forthcoming</em></li>
 <li><a href="">Documentation</a> <em>Forthcoming</em></li>
 </ul>
 <ol start="15">
@@ -362,12 +355,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 </ol>
 <ul>
 <li><a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/03-Ex-Simple-Isolette-DT-add-GUMBO-Verus.md">Tutorial instructions</a></li>
-<li><a href="">Completed models and code</a> <em>Forthcoming</em></li>
-</ul>
-<h2 id="external-resources">External resources</h2>
-<ul>
-<li>Tutorials repository: <strong>TUTORIALS_REPO_LINK_HERE</strong></li>
-<li>Video collection: <strong>VIDEO_CHANNEL_LINK_HERE</strong></li>
+<li>Completed models and code for Parts 1, 2, and 3 can be found in the tutorial text.</li>
 </ul>
 </div>
         
