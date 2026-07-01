@@ -45,7 +45,7 @@
 
   <meta itemprop="name" content="AADL Concepts in SysMLv2: HAMR Library Documentation">
   <meta itemprop="description" content="AADL Concepts in SysMLv2: HAMR Library Documentation Table of Contents Purpose and Scope SysMLv2 Primer for AADL Engineers The Core AADL Library (AADL.sysml) 3.1 Component Categories 3.2 Software Components 3.3 Hardware and Execution Platform Components 3.4 Composite Components 3.5 Ports and Features 3.6 Connections Data Modeling: Data_Model.sysml and Base_Types.sysml Property Sets 5.1 AADL_Project.sysml — Shared Enumerations and Types 5.2 Timing_Properties.sysml 5.3 Thread_Properties.sysml 5.4 Communication_Properties.sysml 5.5 Deployment_Properties.sysml 5.6 Memory_Properties.sysml 5.7 Programming_Properties.sysml 5.8 Behavior_Properties.sysml HAMR Customizations Walkthrough: Isolette Example References 1. Purpose and Scope This document explains how the Architecture Analysis and Design Language (AADL) concepts are represented in SysMLv2, a next-generation systems modeling language standardized by the Object Management Group (OMG). The representation is achieved through a set of SysMLv2 library packages that define part definitions, port definitions, connection definitions, enumerations, and attribute definitions that mirror AADL’s component categories, features, connections, and property sets.">
-  <meta itemprop="wordCount" content="4641">
+  <meta itemprop="wordCount" content="4794">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -357,6 +357,8 @@
 <li>Users of HAMR who need to understand the SysMLv2 representation that HAMR consumes.</li>
 </ul>
 <h3 id="file-overview">File Overview</h3>
+<p>The SysMLv2 AADL library files currently used by HAMR can be found <a href="https://github.com/santoslab/sysml-aadl-libraries">here</a>.  These are slightly different than the official OMG RTESC working group release found <a href="https://github.com/Systems-Modeling/SysML-v2-AADL-Release">here</a>.  Without going into a detailed explanation, the main point is that HAMR needs its own version of the libraries until some minor technical differences can be worked out with the OMG RTESC working group.  When one starts building a new HAMR SysMLv2 project, you currently need to copy (or set up a git submodule) to make the libraries available to the HAMR CodeIVE SysMLv2 front-end.  You can see how to place the files in a project structure from one of the existing HAMR examples (e.g., the <code>aadl-lib</code> folder in the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/sysmlv2">Simple Isolette example</a>).   A future update to the HAMR SysMLv2 CodeIVE will automatically include the latest version of the libraries needed for HAMR.</p>
+<p>Below is a listing of the files in the HAMR SysMLv2 AADL library.</p>
 <table>
   <thead>
       <tr>
