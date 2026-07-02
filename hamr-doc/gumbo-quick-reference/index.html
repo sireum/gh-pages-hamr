@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="GUMBO Quick Reference This chapter provides a quick reference (&ldquo;cheat sheet&rdquo;-like) illustration of GUMBO component contracts for HAMR SysMLv2. A longer rationale and motivational walkthrough still needs to be written.
+In the meantime, here are some resources.
+The three-part HAMR tutorial &ldquo;Adding GUMBO Thread Component Contracts to an Existing System&rdquo; for the Simple Isolette example provide a good illustration of how different types of GUMBO contracts are written and how they are translated down to code-level Rust executable contracts for testing and code-level Verus contracts for Verus verification (These tutorials are link off of the recommended reading order page). These tutorials only address periodic components with data ports (which model shared data communication and are never empty).
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-quick-reference/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="GUMBO Quick Reference This chapter provides a quick reference (“cheat sheet”-like) illustration of GUMBO component contracts for HAMR SysMLv2. A longer rationale and motivational walkthrough still needs to be written.
+In the meantime, here are some resources.
+The three-part HAMR tutorial “Adding GUMBO Thread Component Contracts to an Existing System” for the Simple Isolette example provide a good illustration of how different types of GUMBO contracts are written and how they are translated down to code-level Rust executable contracts for testing and code-level Verus contracts for Verus verification (These tutorials are link off of the recommended reading order page). These tutorials only address periodic components with data ports (which model shared data communication and are never empty).">
+  <meta itemprop="wordCount" content="2571">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="GUMBO Quick Reference This chapter provides a quick reference (“cheat sheet”-like) illustration of GUMBO component contracts for HAMR SysMLv2. A longer rationale and motivational walkthrough still needs to be written.
+In the meantime, here are some resources.
+The three-part HAMR tutorial “Adding GUMBO Thread Component Contracts to an Existing System” for the Simple Isolette example provide a good illustration of how different types of GUMBO contracts are written and how they are translated down to code-level Rust executable contracts for testing and code-level Verus contracts for Verus verification (These tutorials are link off of the recommended reading order page). These tutorials only address periodic components with data ports (which model shared data communication and are never empty).">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="gumbo-quick-reference">GUMBO Quick Reference</h1>
+<p>This chapter provides a quick reference (&ldquo;cheat sheet&rdquo;-like) illustration of GUMBO component contracts for HAMR SysMLv2.  A longer rationale and motivational walkthrough still needs to be written.</p>
+<p>In the meantime, here are some resources.</p>
+<ul>
+<li>
+<p>The three-part HAMR tutorial &ldquo;Adding GUMBO Thread Component Contracts to an Existing System&rdquo; for the Simple Isolette example provide a good illustration of how different types of GUMBO contracts are written and how they are translated down to code-level Rust executable contracts for testing and code-level Verus contracts for Verus verification (These tutorials are link off of the <a href="../reading-order/">recommended reading order</a> page).   These tutorials only address periodic components with <em>data ports</em> (which model shared data communication and are never empty).</p>
+</li>
+<li>
+<p>The <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-EDP-SNG-Example/sysmlv2/sng/SNG_Software.sysml">solution</a> to the HAMR tutorial series &ldquo;Building a HAMR System From Scratch&rdquo; illustrates how to specify properties for <em>event data</em> ports (which model queued communication and use the &lsquo;HasEvent&rsquo; construct to reason about presence or absence of messages on a port).</p>
+</li>
+<li>
+<p>The <a href="https://github.com/loonwerks/INSPECTA-models/tree/main/isolette">Isolette example</a> from the INSPECTA models repo includes at least six thread components with extensive use of GUMBO specifications for periodic components with <em>data ports</em>.   In particular, here are the <a href="https://github.com/loonwerks/INSPECTA-models/blob/f6f3d2929e3f5b218cb022d3c692cc137a3993f2/isolette/sysml/Regulate.sysml#L446-L506">GUMBO contracts for the Manage Heat Source component</a>.  Looking at these contracts from all thread components and associated HAMR-generated Verus contracts and executable contracts is one of the best example-based resources for understanding how GUMBO works.</p>
+</li>
+<li>
+<p>The contracts for the firewall components of the <a href="https://github.com/loonwerks/INSPECTA-Open-Platform/blob/main/ardupilot-basic/sysml/SW.sysml">INSPECTA Open Platform example</a> provide a good illustration of more complex properties for periodic components with <em>event data</em> ports.</p>
+</li>
+</ul>
+<h2 id="gumbo-specification-blocks">GUMBO Specification Blocks</h2>
+<p>GUMBO contracts are embedded in <code>Thread</code> or <code>Data</code> part defs using:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">language &#34;GUMBO&#34; /*{
+  // GUMBO specification here
+}*/
+</code></pre><p>The content is inside a block comment <code>/* ... */</code> so standard SysMLv2 parsers ignore it, but HAMR parses and processes it.</p>
+<h3 id="overall-structure-thread">Overall Structure (Thread)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def MyThread :&gt; Thread {
+  // ... ports, properties ...
+
+  language &#34;GUMBO&#34; /*{
+    state
+      // state variable declarations
+
+    functions
+      // helper function definitions
+
+    integration
+      // port-level assume/guarantee constraints
+
+    initialize
+      // modifies clause (optional)
+      // guarantee clauses for initialization
+
+    compute
+      // modifies clause (optional)
+      // assume clauses
+      // guarantee clauses
+      // compute_cases
+      // handle clauses (sporadic threads)
+  }*/
+}
+</code></pre><h3 id="data-invariants">Data Invariants</h3>
+<p>Note: Data invariants are not currently supported in HAMR Rust code generation.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Temperature :&gt; Data {
+  part degrees : Base_Types::Float_32;
+
+  language &#34;GUMBO&#34; /*{
+    invariants
+      inv AbsZero:
+        degrees &gt;= GUMBO_Periodic_Definitions::GUMBO__Library::absoluteZero();
+  }*/
+}
+
+part def TempWstatus_i :&gt; Data {
+  part degrees : Base_Types::Integer_32;
+  attribute status : ValueStatus;
+
+  language &#34;GUMBO&#34; /*{
+    invariants
+      inv MaxMinEarthTemperatures &#34;Temps should fall within the max/min temperatures
+                                  |recorded on planet Earth&#34; :
+        -128 [s32] &lt;= degrees and degrees &lt;= 134 [s32];
+  }*/
+}
+
+part def SetPoint :&gt; Data {
+  part low : Temperature;
+  part high : Temperature;
+
+  language &#34;GUMBO&#34; /*{
+    invariants
+      inv SetPoint_Data_Invariant:
+        (low.degrees &gt;= 50.0 [f32]) &amp;
+        (high.degrees &lt;= 110.0 [f32]) &amp;
+        (low.degrees &lt;= high.degrees);
+  }*/
+}
+</code></pre><hr>
+<h2 id="11-gumbo-library-functions">11. GUMBO Library Functions</h2>
+<p>GUMBO library functions are defined in a dedicated package and can be called from any GUMBO block.</p>
+<h3 id="defining-library-functions">Defining Library Functions</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package GUMBO_Periodic_Definitions {
+  language &#34;GUMBO&#34; /*{
+    library
+      functions
+        def absoluteZero(): Base_Types::Float_32 := -459.67 [f32];
+  }*/
+}
+</code></pre><pre tabindex="0"><code class="language-sysml" data-lang="sysml">package GumboLib {
+  language &#34;GUMBO&#34; /*{
+    library
+      functions
+        def normalLibraryFunction(a: MyArrayInt32): Base_Types::Boolean :=
+          (0 .. size(a) - 2) -&gt; forAll {i; a#(i) &lt;= a#(i + 1)};
+
+        // Spec function (abstract, no body -- implemented externally)
+        @spec def librarySpecFunction_Assume(a: MyArrayInt32): Base_Types::Boolean;
+        @spec def librarySpecFunction_Guarantee(a: MyArrayInt32): Base_Types::Boolean;
+  }*/
+}
+</code></pre><h3 id="complex-library-example-isolette">Complex Library Example (Isolette)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package GUMBO_Library {
+  language &#34;GUMBO&#34; /*{
+    library
+      functions
+        def LowerAlarmTemp_lower(): Base_Types::Integer_32 := 96[s32];
+        def LowerAlarmTemp_upper(): Base_Types::Integer_32 := 101[s32];
+
+        def Allowed_LowerAlarmTemp(lower: Base_Types::Integer_32): Base_Types::Boolean :=
+          LowerAlarmTemp_lower() &lt;= lower &amp; lower &lt;= LowerAlarmTemp_upper();
+
+        def Allowed_LowerAlarmTempWStatus(
+              lower: Isolette_Data_Model::TempWstatus_i): Base_Types::Boolean :=
+          (isValidTempWstatus(lower) implies
+                Allowed_LowerAlarmTemp(lower.degrees));
+
+        def isValidTempWstatus(
+              value: Isolette_Data_Model::TempWstatus_i): Base_Types::Boolean :=
+          value.status == Isolette_Data_Model::ValueStatus.Valid;
+  }*/
+}
+</code></pre><h3 id="calling-library-functions">Calling Library Functions</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Fully qualified: PackageName::GUMBO__Library::functionName(args)
+GUMBO_Library::GUMBO__Library::Allowed_LowerAlarmTemp(lower_alarm_temp.degrees)
+GUMBO_Periodic_Definitions::GUMBO__Library::absoluteZero()
+TempControlPeriodic::GUMBO__Library::inRange(currentTemp)
+</code></pre><p>Note: The <code>GUMBO__Library</code> (double underscore) is the auto-generated container name for library functions.</p>
+<h3 id="inline-library-within-a-component-package">Inline Library (within a component package)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package TempControlPeriodic {
+  private import HAMR::*;
+
+  language &#34;GUMBO&#34; /*{
+    library
+      functions
+        def inRange(temp: Temperature): Base_Types::Boolean :=
+          temp.degrees &gt;= -40.0 [f32] and temp.degrees &lt;= 122.0 [f32];
+  }*/
+
+  // ... component definitions follow ...
+}
+</code></pre><hr>
+<h2 id="12-gumbo-state-declarations">12. GUMBO State Declarations</h2>
+<p>State variables represent persistent internal component state that influences behavior across dispatches.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">language &#34;GUMBO&#34; /*{
+  state
+    lastRegulatorMode: Isolette_Data_Model::Regulator_Mode;
+}*/
+</code></pre><pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  lastCmd: Isolette_Data_Model::On_Off;
+</code></pre><pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  currentSetPoint: SetPoint;
+  currentFanState: FanCmd;
+  latestTemp: Temperature;
+</code></pre><pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  myArrayInt32_StateVar: MyArrayInt32;
+  myArrayStruct_StateVar: MyArrayStruct;
+  myStructArray_StateVar: MyStructArray_i;
+</code></pre><hr>
+<h2 id="13-gumbo-subclause-functions">13. GUMBO Subclause Functions</h2>
+<p>Functions defined within a thread&rsquo;s GUMBO block (not in a library).</p>
+<h3 id="regular-functions">Regular Functions</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def ROUND(num: Base_Types::Integer_32): Base_Types::Integer_32 := num;
+
+  def timeout_condition_satisfied(): Base_Types::Boolean := T;
+
+  def defaultTempDegrees(): Base_Types::Float_32 := 72 [f32];
+</code></pre><h3 id="functions-operating-on-arrays">Functions Operating on Arrays</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def myArrayInt32_FunctionReturn(v: MyArrayInt32): MyArrayInt32 := v;
+
+  def myArrayInt32_FunctionParam(v: MyArrayInt32): Base_Types::Boolean :=
+    (0 .. size(v) - 1) -&gt; exists {i; v#(i) == 0[i32] };
+
+  def myStructArray_i_FunctionParam(v: MyStructArray_i): Base_Types::Boolean :=
+    (0 .. size(v.fieldArray) - 1) -&gt; exists {i;
+      v.fieldArray#(i).fieldSInt32 == 0[i32] };
+</code></pre><h3 id="spec-functions-abstract--no-body">Spec Functions (Abstract &ndash; no body)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  // For assume contexts
+  @spec def subclauseSpecFunction_Assume(a: MyArrayInt32): Base_Types::Boolean;
+
+  // For guarantee contexts
+  def subclauseSpecFunction_Guarantee(a: MyArrayInt32): Base_Types::Boolean;
+</code></pre><h3 id="calling-a-library-function-from-a-subclause-function">Calling a Library Function from a Subclause Function</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def Allowed_UpperAlarmTempWStatus(
+        upper: Isolette_Data_Model::TempWstatus_i): Base_Types::Boolean :=
+    GUMBO_Library::GUMBO__Library::Allowed_UpperAlarmTempWStatus(upper);
+</code></pre><hr>
+<h2 id="14-gumbo-integration-constraints">14. GUMBO Integration Constraints</h2>
+<p>Integration constraints specify assumptions and guarantees on ports that hold between dispatches &ndash; they constrain the values flowing through connections.  Integration constraints can also be understood as invariants on values flowing through ports.</p>
+<h3 id="assume-on-input-ports--receiver-side">Assume (on input ports &ndash; receiver side)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  assume currentTempRange:
+    (currentTemp.degrees &gt;= -40.0 [f32]) &amp; (currentTemp.degrees &lt;= 122.0 [f32]);
+
+  assume Allowed_LowerAlarmTemp:
+    GUMBO_Library::GUMBO__Library::Allowed_LowerAlarmTempWStatus(
+      lower_alarm_tempWstatus);
+
+  assume Allowed_UpperAlarmTemp:
+    GUMBO_Library::GUMBO__Library::Allowed_UpperAlarmTempWStatus(
+      upper_alarm_tempWstatus);
+</code></pre><h3 id="guarantee-on-output-ports--sender-side">Guarantee (on output ports &ndash; sender side)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  guarantee Sensor_Temperature_Range:
+    TempControlPeriodic::GUMBO__Library::inRange(currentTemp);
+
+  guarantee Allowed_LowerAlarmTempWstatus
+    &#34;Table_A_12_LowerAlarmTemp: Range [96..101]&#34; :
+    (GUMBO_Library::GUMBO__Library::isValidTempWstatus(lower_alarm_tempWstatus) implies
+          (96[i32] &lt;= lower_alarm_tempWstatus.degrees
+          &amp; lower_alarm_tempWstatus.degrees &lt;= 101[i32]));
+</code></pre><h3 id="integration-with-array-quantifiers">Integration with Array Quantifiers</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  guarantee integrationArrayInt32_DataPort:
+    p_myArrayInt32_DataPort#(0) == 1[s32] &amp;
+    GumboLib::GUMBO__Library::librarySpecFunction_Guarantee(
+      p_myArrayInt32_DataPort) &amp;
+    (0 .. size(p_myArrayInt32_DataPort) - 2) -&gt; forAll {i;
+      p_myArrayInt32_DataPort#(i) &lt;= p_myArrayInt32_DataPort#(i + 1) };
+
+  assume integrationStructArray_EventDataPort
+    &#34;Example of optional descriptor&#34; :
+    (0 .. size(c_myStructArray_EventDataPort.fieldArray) - 2) -&gt; forAll {i;
+      c_myStructArray_EventDataPort.fieldArray#(i).fieldSInt32
+        &lt;= c_myStructArray_EventDataPort.fieldArray#(i + 1).fieldSInt32 };
+</code></pre><hr>
+<h2 id="15-gumbo-initialize-contracts">15. GUMBO Initialize Contracts</h2>
+<p>Initialize contracts specify what must hold after the component&rsquo;s initialize entrypoint executes.  The only include <code>guarantee</code> clauses on output ports and GUMBO-declared state variables since AADL semantics disallows reading of input ports in the initialize entrypoint.</p>
+<h3 id="basic-guarantee">Basic Guarantee</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee
+    RegulatorStatusIsInitiallyInit:
+      regulator_status == Isolette_Data_Model::Status.Init_Status;
+</code></pre><h3 id="multiple-guarantees">Multiple Guarantees</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee
+    initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+  guarantee REQ_MHS_1 &#34;If the Regulator Mode is INIT, the Heat Control
+                       |shall be set to Off.&#34; :
+    heat_control == Isolette_Data_Model::On_Off.Off;
+</code></pre><h3 id="with-modifies-clause">With Modifies Clause</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  modifies (latestFanCmd);
+  guarantee initLatestFanCmd &#34;Initialize state variable&#34;:
+    latestFanCmd == FanCmd.Off;
+  guarantee initFanCmd &#34;Initial fan command&#34;:
+    fanCmd == FanCmd.Off;
+</code></pre><pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  modifies currentSetPoint, currentFanState, latestTemp;
+
+  guarantee defaultSetPoint:
+    (currentSetPoint.low.degrees == 70 [f32])
+    and (currentSetPoint.high.degrees == 80 [f32]);
+  guarantee defaultFanStates:
+    currentFanState == FanCmd.Off;
+  guarantee defaultLatestTemp:
+    latestTemp.degrees == 72.0[f32];
+</code></pre><h3 id="compound-guarantee">Compound Guarantee</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee REQ_MA_1 &#34;...&#34; :
+    alarm_control == Isolette_Data_Model::On_Off.Off &amp;
+    lastCmd == Isolette_Data_Model::On_Off.Off;
+</code></pre><h3 id="output-port-initialization">Output Port Initialization</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee initOutputDataPort
+    &#34;The Initialize Entry Point must initialize all component
+    |local state and all output data ports.&#34; :
+    output == false;
+</code></pre><hr>
+<h2 id="16-gumbo-compute-contracts">16. GUMBO Compute Contracts</h2>
+<p>Compute contracts specify the behavior of the compute entrypoint.</p>
+<h3 id="assume-clauses">Assume Clauses</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  assume lower_is_not_higher_than_upper:
+    lower_desired_tempWstatus.degrees &lt;= upper_desired_tempWstatus.degrees;
+
+  assume Figure_A_7 &#34;This is not explicitly stated in the requirements...&#34; :
+    upper_alarm_temp.degrees - lower_alarm_temp.degrees &gt;= 1 [s32];
+</code></pre><h3 id="guarantee-clauses-general">Guarantee Clauses (General)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  guarantee lastCmd &#34;Set lastCmd to value of output Cmd port&#34;:
+    lastCmd == heat_control;
+
+  guarantee orOutput:
+    actuate == (channel1 | channel2);
+
+  guarantee coincidenceOutput &#34;description...&#34; :
+    actuate == ((channel1 &amp; channel2) |
+                (channel1 &amp; channel3) |
+                (channel1 &amp; channel4) |
+                (channel2 &amp; channel3) |
+                (channel2 &amp; channel4) |
+                (channel3 &amp; channel4));
+</code></pre><h3 id="modifies-clause-in-compute">Modifies Clause in Compute</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  modifies (latestFanCmd);
+  // or
+  modifies currentSetPoint, currentFanState, latestTemp;
+</code></pre><h3 id="compute-cases">Compute Cases</h3>
+<p>Compute cases provide case-based specifications with per-case assumes and guarantees.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  compute_cases
+
+    case REQ_MRI_1 &#34;If the Regulator Mode is INIT,
+                    |the Regulator Status shall be set to Init.&#34; :
+      assume regulator_mode == Isolette_Data_Model::Regulator_Mode.Init_Regulator_Mode;
+      guarantee regulator_status == Isolette_Data_Model::Status.Init_Status;
+
+    case REQ_MRI_2 &#34;If the Regulator Mode is NORMAL,
+                    |the Regulator Status shall be set to On&#34; :
+      assume regulator_mode == Isolette_Data_Model::Regulator_Mode.Normal_Regulator_Mode;
+      guarantee regulator_status == Isolette_Data_Model::Status.On_Status;
+
+    case REQ_MRI_3 &#34;If the Regulator Mode is FAILED,
+                    |the Regulator Status shall be set to Failed.&#34; :
+      assume regulator_mode == Isolette_Data_Model::Regulator_Mode.Failed_Regulator_Mode;
+      guarantee regulator_status == Isolette_Data_Model::Status.Failed_Status;
+</code></pre><h3 id="mixed-general--case-based-guarantees">Mixed General + Case-Based Guarantees</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  assume lower_is_lower_temp:
+    lower_desired_temp.degrees &lt;= upper_desired_temp.degrees;
+
+  // General guarantee (always holds)
+  guarantee lastCmd &#34;Set lastCmd to value of output Cmd port&#34;:
+    lastCmd == heat_control;
+
+  // Case-specific guarantees
+  compute_cases
+    case REQ_MHS_1 &#34;...&#34; :
+      assume regulator_mode ==
+        Isolette_Data_Model::Regulator_Mode.Init_Regulator_Mode;
+      guarantee heat_control == Isolette_Data_Model::On_Off.Off;
+
+    case REQ_MHS_4 &#34;If ... in range, the value shall not be changed.&#34; :
+      assume (regulator_mode ==
+          Isolette_Data_Model::Regulator_Mode.Normal_Regulator_Mode)
+        &amp; (current_tempWstatus.degrees &gt;= lower_desired_temp.degrees
+        &amp; current_tempWstatus.degrees &lt;= upper_desired_temp.degrees);
+      guarantee heat_control == In(lastCmd);
+</code></pre><h3 id="guarantee-with-implication">Guarantee with Implication</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">guarantee
+  (not interface_failure.flag) implies
+    (lower_alarm_temp.degrees == lower_alarm_tempWstatus.degrees
+    &amp;
+    upper_alarm_temp.degrees == upper_alarm_tempWstatus.degrees);
+</code></pre><h3 id="using-the-implication-operator">Using the Implication Operator</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">guarantee altCurrentTempLTSetPoint &#34;If current temperature is less than
+                                   |the current low set point, then the
+                                   |fan state shall be Off&#34; :
+  (currentTemp.degrees &lt; setPoint.low.degrees implies
+        (latestFanCmd == FanCmd.Off and fanCmd == FanCmd.Off));
+
+guarantee REQ_MRI_8 &#34;...&#34; :
+  (not interface_failure.flag implies
+        ((lower_desired_temp.degrees == lower_desired_tempWstatus.degrees)
+        &amp; (upper_desired_temp.degrees == upper_desired_tempWstatus.degrees)));
+</code></pre><h3 id="unspecified-behavior">Unspecified Behavior</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">case REQ_MRI_5 &#34;If the Regulator Mode is not NORMAL,
+                |the value of the Display Temperature is UNSPECIFIED.&#34; :
+  guarantee true;
+
+case REQ_MRI_9 &#34;...&#34; :
+  guarantee true;
+</code></pre><hr>
+<h2 id="17-gumbo-handler-contracts-sporadic-threads">17. GUMBO Handler Contracts (Sporadic Threads)</h2>
+<p>For sporadic (event-driven) threads, handler contracts specify behavior per event handler.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  modifies currentSetPoint, currentFanState, latestTemp;
+
+  // General guarantees (hold for all handlers)
+  guarantee TC_Req_01 &#34;...&#34; :
+    (latestTemp.degrees &lt; currentSetPoint.low.degrees implies
+          currentFanState == FanCmd.Off);
+
+  guarantee mustSendFanCmd &#34;...&#34; :
+    (In(currentFanState) != currentFanState)
+      implies MustSend(fanCmd, currentFanState) and
+    (currentFanState == In(currentFanState))
+      implies NoSend(fanCmd);
+
+  // Per-handler contracts
+  handle setPoint:
+    modifies (currentSetPoint);
+    guarantee setPointChanged:
+      currentSetPoint == setPoint;
+    guarantee latestTempNotModified:
+      (latestTemp == In(latestTemp));
+
+  handle tempChanged:
+    modifies (latestTemp);
+    guarantee tempChanged:
+      latestTemp == currentTemp;
+    guarantee setPointNotModified:
+      currentSetPoint == In(currentSetPoint);
+
+  handle fanAck:
+    guarantee setPointNotModified:
+      currentSetPoint == In(currentSetPoint);
+    guarantee lastTempNotModified:
+      latestTemp == In(latestTemp);
+    guarantee currentFanState:
+      currentFanState == In(currentFanState);
+    guarantee noEventsSent:
+      NoSend(fanCmd);
+</code></pre><hr>
+<h2 id="18-gumbo-operators-and-expressions">18. GUMBO Operators and Expressions</h2>
+<h3 id="the-in-operator-pre-state-values">The In() Operator (Pre-State Values)</h3>
+<p><code>In(stateVar)</code> refers to the value of a state variable at the beginning of the current dispatch (pre-state). It can only be used on state variables, not on ports.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// State variable unchanged
+guarantee heat_control == In(lastCmd);
+
+// Comparing pre and post state
+guarantee
+  latestFanCmd == In(latestFanCmd) &amp; fanCmd == latestFanCmd;
+
+// In() with array indexing
+guarantee noChange:
+  In(myArrayInt32_StateVar)#(0) == myArrayInt32_StateVar#(0);
+
+// In() with struct field access on arrays
+guarantee:
+  In(myArrayStruct_StateVar)#(0).fieldSInt32
+    == myArrayStruct_StateVar#(0).fieldSInt32;
+
+// In() passed to functions
+guarantee:
+  myArrayInt32_FunctionParam(In(myArrayInt32_StateVar));
+</code></pre><h3 id="gumbo-on-event-data-ports">GUMBO on Event Data Ports</h3>
+<p>Event data ports can be empty (no message) or contain a message on any given cycle. GUMBO
+provides three operators for reasoning about event data port state:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Operator</th>
+          <th>Meaning</th>
+          <th>Slang Translation</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>HasEvent(port)</code></td>
+          <td>Port contains a message</td>
+          <td><code>port.nonEmpty</code></td>
+      </tr>
+      <tr>
+          <td><code>MustSend(port)</code></td>
+          <td>A message must be sent on the port</td>
+          <td><code>port.nonEmpty</code></td>
+      </tr>
+      <tr>
+          <td><code>MustSend(port, value)</code></td>
+          <td>A message with the given value must be sent</td>
+          <td><code>port == Some(value)</code></td>
+      </tr>
+      <tr>
+          <td><code>NoSend(port)</code></td>
+          <td>No message must be sent on the port</td>
+          <td><code>port.isEmpty</code></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="integration-constraints-on-event-data-ports">Integration Constraints on Event Data Ports</h4>
+<p>Integration constraints on event data ports apply only when a message is present:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Producer: guarantee output payload is in range when a message is sent
+part def Prod :&gt; Thread {
+    port output : EventDataPort { out :&gt;&gt; type : Message; }
+
+    language &#34;GUMBO&#34; /*{
+        integration
+            guarantee Payload_Range:
+                (0 [i32] &lt;= output.payload) &amp; (output.payload &lt;= 90 [i32]);
+    }*/
+}
+
+// Consumer: assume input payload is in range when a message is received
+part def Cons :&gt; Thread {
+    port input : EventDataPort { in :&gt;&gt; type : Message; }
+
+    language &#34;GUMBO&#34; /*{
+        integration
+            assume Payload_Range:
+                (0 [i32] &lt;= input.payload) &amp; (input.payload &lt;= 100 [i32]);
+    }*/
+}
+</code></pre><p>The Producer&rsquo;s integration <strong>guarantee</strong> on output becomes the Consumer&rsquo;s integration
+<strong>assume</strong> on input — this is compositional reasoning across the pipeline.</p>
+<h4 id="state-and-initialize-with-event-data-ports">State and Initialize with Event Data Ports</h4>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Cons :&gt; Thread {
+    port input : EventDataPort { in :&gt;&gt; type : Message; }
+
+    language &#34;GUMBO&#34; /*{
+        state
+            payload_sum: Base_Types::Integer_32;
+
+        functions
+            def Init_Payload_Sum(): Base_Types::Integer_32 := 0 [i32];
+
+        integration
+            assume Payload_Range:
+                (0 [i32] &lt;= input.payload) &amp; (input.payload &lt;= 100 [i32]);
+
+        initialize
+            guarantee initSum: payload_sum == Init_Payload_Sum();
+    }*/
+}
+</code></pre><h4 id="compute-guarantees-with-hasevent--nosend">Compute Guarantees with HasEvent / NoSend</h4>
+<p>Compute contracts use <code>HasEvent</code> to check if a message is present on an event data port,
+then <code>NoSend</code> or field-level guarantees to specify output behavior.</p>
+<p><strong>Important:</strong> Use <code>and</code> (conditional/short-circuit) rather than <code>&amp;</code> (logical) when combining
+<code>HasEvent</code> with field access. With <code>&amp;</code>, both sides are evaluated — so <code>HasEvent(input) &amp; input.payload &gt; 0</code>
+would attempt to access <code>input.payload</code> even when there is no message, causing a verification error.
+With <code>and</code>, the field access is only evaluated when <code>HasEvent(input)</code> is true.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+    // No input → no output
+    guarantee No_Input_No_Output:
+        (not HasEvent(input)) implies NoSend(output);
+
+    // Critical input → drop (no output)
+    guarantee Critical_Dropped:
+        (HasEvent(input) and input.security_level == SecurityLevel.Critical)
+        implies NoSend(output);
+
+    // Non-critical input → forward unchanged
+    guarantee Non_Critical_Forwarded:
+        (HasEvent(input) and input.security_level != SecurityLevel.Critical)
+        implies (HasEvent(output) and output == input);
+
+    // Restricted payload &gt; 100 → clamp to 100
+    guarantee Restricted_Clamped_High:
+        (HasEvent(input) and input.security_level == SecurityLevel.Restricted
+            and input.payload &gt; 100)
+        implies (HasEvent(output)
+                 and output.security_level == input.security_level
+                 and output.payload == 100);
+</code></pre><h3 id="hasevent-with-array-quantifiers">HasEvent with Array Quantifiers</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">HasEvent(c_myArrayInt32_EventDataPort) implies
+  (0 .. size(c_myArrayInt32_EventDataPort) - 2) -&gt; forAll { in i;
+    c_myArrayInt32_EventDataPort#(i)
+      &lt;= c_myArrayInt32_EventDataPort#(i + 1) };
+</code></pre><h3 id="logical-operators">Logical Operators</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Operator</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>&amp;</code></td>
+          <td>Logical AND (evaluates both sides)</td>
+      </tr>
+      <tr>
+          <td><code>and</code></td>
+          <td>Conditional AND (short-circuit: skips right side if left is false)</td>
+      </tr>
+      <tr>
+          <td><code>|</code></td>
+          <td>Logical OR (evaluates both sides)</td>
+      </tr>
+      <tr>
+          <td><code>or</code></td>
+          <td>Conditional OR (short-circuit: skips right side if left is true)</td>
+      </tr>
+      <tr>
+          <td><code>not</code></td>
+          <td>Logical NOT</td>
+      </tr>
+      <tr>
+          <td><code>implies</code></td>
+          <td>Conditional implication (short-circuit: skips consequent if antecedent is false)</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Note:</strong> <code>&amp;</code>/<code>|</code> are defined in KerML&rsquo;s <code>BooleanFunctions</code> as non-conditional (evaluate both sides).
+<code>and</code>/<code>or</code>/<code>implies</code> are defined in KerML&rsquo;s <code>ControlFunctions</code> as conditional (second operand is an <code>expr</code> — short-circuit).</p>
+<h3 id="comparison-and-arithmetic">Comparison and Arithmetic</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Operator</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>==</code></td>
+          <td>Equality</td>
+      </tr>
+      <tr>
+          <td><code>!=</code></td>
+          <td>Inequality</td>
+      </tr>
+      <tr>
+          <td><code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code></td>
+          <td>Relational</td>
+      </tr>
+      <tr>
+          <td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code></td>
+          <td>Arithmetic</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="type-annotated-literals">Type-Annotated Literals</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">-128 [s32]        // signed 32-bit integer literal
+134 [s32]         // signed 32-bit integer literal
+96 [i32]          // integer 32 literal (alternative)
+72 [f32]          // float 32 literal
+-459.67 [f32]     // negative float 32 literal
+50.0 [f32]        // float 32 literal
+1 [s32]           // signed 32 literal
+0 [i32]           // integer 32 literal
+</code></pre><h3 id="boolean-literals">Boolean Literals</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">true
+false
+T     // shorthand for true
+F     // shorthand for false
+</code></pre><h3 id="field-access">Field Access</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Simple field access
+current_tempWstatus.degrees
+current_tempWstatus.status
+interface_failure.flag
+
+// Nested field access
+setPoint.low.degrees
+setPoint.high.degrees
+
+// Array element field access
+v.fieldArray#(i).fieldSInt32
+</code></pre><hr>
+<h2 id="19-gumbo-quantified-expressions-arrays">19. GUMBO Quantified Expressions (Arrays)</h2>
+<h3 id="array-element-access">Array Element Access</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Index-based access with #()
+p_myArrayInt32_DataPort#(0)
+myArrayInt32_StateVar#(i)
+v.fieldArray#(i).fieldSInt32
+</code></pre><h3 id="array-size">Array Size</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">size(p_myArrayInt32_DataPort)
+size(v)
+size(v.fieldArray)
+</code></pre><h3 id="forall-universal-quantifier">ForAll (Universal Quantifier)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// All adjacent elements are sorted
+(0 .. size(p_myArrayInt32_DataPort) - 2) -&gt; forAll {i;
+  p_myArrayInt32_DataPort#(i) &lt;= p_myArrayInt32_DataPort#(i + 1) };
+
+// With `in` keyword (alternative form)
+(0 .. size(myArrayInt32_StateVar) - 2) -&gt; forAll { in i;
+  myArrayInt32_StateVar#(i) &lt;= myArrayInt32_StateVar#(i + 1) };
+
+// Over struct array fields
+(0 .. size(c_myArrayStruct_DataPort) - 2) -&gt; forAll { in i;
+  c_myArrayStruct_DataPort#(i).fieldSInt32
+    &lt;= c_myArrayStruct_DataPort#(i + 1).fieldSInt32 };
+
+// Over nested array in struct
+(0 .. size(c_myStructArray_DataPort.fieldArray) - 2) -&gt; forAll { in i;
+  c_myStructArray_DataPort.fieldArray#(i).fieldSInt32
+    &lt;= c_myStructArray_DataPort.fieldArray#(i + 1).fieldSInt32 };
+</code></pre><h3 id="exists-existential-quantifier">Exists (Existential Quantifier)</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">(0 .. size(c_myArrayInt32_DataPort) - 1) -&gt; exists { in i;
+  c_myArrayInt32_DataPort#(i) == 0[i32] };
+
+(0 .. size(v) - 1) -&gt; exists {i; v#(i) == 0[i32] };
+</code></pre><h3 id="combining-in-with-array-quantifiers">Combining In() with Array Quantifiers</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">// Compare pre-state array with post-state
+guarantee isSorted_MyArrayInt32_StateVar_Guarantee:
+  (0 .. size(myArrayInt32_StateVar) - 2) -&gt; forAll { in i;
+    In(myArrayInt32_StateVar)#(i)
+      &lt;= myArrayInt32_StateVar#(i + 1) };
+
+// In() on struct containing array
+guarantee:
+  (0 .. size(myStructArray_StateVar.fieldArray) - 2) -&gt; forAll { in i;
+    In(myStructArray_StateVar).fieldArray#(i).fieldSInt32
+      &lt;= myStructArray_StateVar.fieldArray#(i + 1).fieldSInt32 };
+
+// In() passed to function returning array
+guarantee:
+  (0 .. size(myArrayInt32_FunctionReturn(myArrayInt32_StateVar)) - 2)
+    -&gt; forAll { in i;
+      myArrayInt32_FunctionReturn(In(myArrayInt32_StateVar))#(i) &lt;=
+        myArrayInt32_FunctionReturn(myArrayInt32_StateVar)#(i + 1) };
+</code></pre><h3 id="gumbo-literal-suffixes">GUMBO Literal Suffixes</h3>
+<table>
+  <thead>
+      <tr>
+          <th>Suffix</th>
+          <th>Type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>[s32]</code></td>
+          <td>Signed 32-bit integer</td>
+      </tr>
+      <tr>
+          <td><code>[i32]</code></td>
+          <td>Integer 32 (alias)</td>
+      </tr>
+      <tr>
+          <td><code>[f32]</code></td>
+          <td>Float 32</td>
+      </tr>
+      <tr>
+          <td><code>[ms]</code></td>
+          <td>Milliseconds (for Period, etc.)</td>
+      </tr>
+      <tr>
+          <td><code>[s]</code></td>
+          <td>Seconds</td>
+      </tr>
+      <tr>
+          <td><code>[byte]</code></td>
+          <td>Bytes (for Data_Size)</td>
+      </tr>
+  </tbody>
+</table>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="GUMBO Component Contracts - BNF Reference (SysMLv2 Version) This document provides a grammar-based presentation of the syntax of GUMBO component contracts.
+Documentation for GUMBO system specifications is currently presented elsewhere.
+It is important to understand that this grammar presentation is &ldquo;informal&rdquo; in the sense that the grammar presented here is not actually used to parse GUMBO specifications (therefore, there might be some slight divergence from what is actually accepted by the HAMR front-end). GUMBO syntax is formally based on the ANTLR grammar in the Sireum distribution sireum/hamr-sysml-parser GUMBO.g4 and augmented with predicates and operators that are realized as uninterpreted functions in KerML (these do not appear in the ANTLR grammar file).
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-grammar/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="GUMBO Component Contracts - BNF Reference (SysMLv2 Version) This document provides a grammar-based presentation of the syntax of GUMBO component contracts.
+Documentation for GUMBO system specifications is currently presented elsewhere.
+It is important to understand that this grammar presentation is “informal” in the sense that the grammar presented here is not actually used to parse GUMBO specifications (therefore, there might be some slight divergence from what is actually accepted by the HAMR front-end). GUMBO syntax is formally based on the ANTLR grammar in the Sireum distribution sireum/hamr-sysml-parser GUMBO.g4 and augmented with predicates and operators that are realized as uninterpreted functions in KerML (these do not appear in the ANTLR grammar file).">
+  <meta itemprop="wordCount" content="1820">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="GUMBO Component Contracts - BNF Reference (SysMLv2 Version) This document provides a grammar-based presentation of the syntax of GUMBO component contracts.
+Documentation for GUMBO system specifications is currently presented elsewhere.
+It is important to understand that this grammar presentation is “informal” in the sense that the grammar presented here is not actually used to parse GUMBO specifications (therefore, there might be some slight divergence from what is actually accepted by the HAMR front-end). GUMBO syntax is formally based on the ANTLR grammar in the Sireum distribution sireum/hamr-sysml-parser GUMBO.g4 and augmented with predicates and operators that are realized as uninterpreted functions in KerML (these do not appear in the ANTLR grammar file).">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="gumbo-component-contracts---bnf-reference-sysmlv2-version">GUMBO Component Contracts - BNF Reference (SysMLv2 Version)</h1>
+<p>This document provides a grammar-based presentation of the syntax of GUMBO component contracts.</p>
+<p>Documentation for GUMBO system specifications is currently presented elsewhere.</p>
+<p>It is important to understand that this grammar presentation is &ldquo;informal&rdquo; in the sense that the grammar presented here is not actually used to parse GUMBO specifications (therefore, there might be some slight divergence from what is actually accepted by the HAMR front-end).   GUMBO syntax is formally based on the ANTLR grammar in the Sireum distribution <code>sireum/hamr-sysml-parser GUMBO.g4</code> and augmented with predicates and operators that are realized as uninterpreted functions in KerML (these do not appear in the ANTLR grammar file).</p>
+<p>This is <em>reference</em> documentation &ndash; not an introduction to GUMBO.  Please consult other HAMR documentation and tutorials for an introduction.</p>
+<p>Conventions:</p>
+<ul>
+<li><code>?</code> = optional, <code>*</code> = zero-or-more, <code>+</code> = one-or-more</li>
+<li><code>|</code> separates alternatives</li>
+<li><code>'keyword'</code> = literal terminal</li>
+<li>UPPER_CASE = lexical tokens</li>
+<li>Semicolons are terminators (required after each clause body expression).</li>
+</ul>
+<p>Sources consulted when deriving this informal grammar: SNG evaluation project, isolette-simple, ProdCons (from the HAMR tutorial examples), ardupilot-basic (INSPECTA-Open-Platform), isolette (INSPECTA-models).</p>
+<hr>
+<p>&ldquo;To Do&rdquo; notes from Jason:</p>
+<ul>
+<li>The documentation doesn&rsquo;t reflect that &lsquo;implies&rsquo; is a short-circuit op in KerML and therefore &lsquo;-&gt;:&rsquo; is used for logical implication</li>
+<li>The documentation should indicate how to write quantified expressions — forAll and exists are actually KerML functions rather than baked into the language.  Note that only a single quantified variable is allowed per expr (and &lsquo;in&rsquo; is optional, though it must be &lsquo;in&rsquo; rather than &lsquo;out&rsquo; if provided).  The following model contains example usages
+<a href="https://github.com/loonwerks/INSPECTA-models/blob/main/micro-examples/microkit/gumbo-verus/structs_arrays/sysml/Gumbo_Structs_Arrays.sysml">https://github.com/loonwerks/INSPECTA-models/blob/main/micro-examples/microkit/gumbo-verus/structs_arrays/sysml/Gumbo_Structs_Arrays.sysml</a></li>
+</ul>
+<hr>
+<h2 id="1-embedding-in-sysmlv2">1. Embedding in SysMLv2</h2>
+<p>GUMBO blocks appear inside <code>part def</code> (thread or data type) or <code>package</code>
+declarations using the SysMLv2 <code>language</code> annotation:</p>
+<pre tabindex="0"><code>language &#34;GUMBO&#34; /*{ &lt;GumboContent&gt; }*/
+</code></pre><p>The delimiters MUST be <code>/*{</code> and <code>}*/</code> — not <code>{</code> and <code>}</code>.</p>
+<p>A GUMBO block at package level is a <strong>library</strong> (GumboLibrary).
+A GUMBO block inside a <code>part def :&gt; Thread</code> is a <strong>subclause</strong> (GumboSubclause).
+A GUMBO block inside a <code>part def :&gt; Data</code> is a <strong>data invariant</strong>.</p>
+<hr>
+<h2 id="2-top-level-structure">2. Top-Level Structure</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">GumboContent       <span class="o">::=</span> GumboLibrary | GumboSubclause | DataInvariants
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Package-level GUMBO block — defines reusable functions *)
+</span></span><span class="line"><span class="cl">GumboLibrary       <span class="o">::=</span> &#39;library&#39; Functions
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Thread-level GUMBO block — specifies component behavior *)
+</span></span><span class="line"><span class="cl">GumboSubclause     <span class="o">::=</span> State? Functions? Invariants? Integration?
+</span></span><span class="line"><span class="cl">                        Initialize? Compute?
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Data-type-level GUMBO block — constrains data values *)
+</span></span><span class="line"><span class="cl">DataInvariants     <span class="o">::=</span> Invariants
+</span></span></code></pre></div><hr>
+<h2 id="3-state-declarations">3. State Declarations</h2>
+<p>Declare component-local state variables visible in contracts.
+These generate fields in the Rust component struct.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">State              <span class="o">::=</span> &#39;state&#39; StateVarDecl+
+</span></span><span class="line"><span class="cl">StateVarDecl       <span class="o">::=</span> ID &#39;:&#39; QualifiedName &#39;;&#39;
+</span></span></code></pre></div><p>Example:</p>
+<pre tabindex="0"><code>state
+    lastCmd: Isolette_Data_Model::On_Off;
+    payload_sum: Base_Types::Integer_32;
+</code></pre><hr>
+<h2 id="4-functions">4. Functions</h2>
+<p>Define pure helper functions usable in contracts.
+In a <code>library</code> block, these become available to other packages via
+qualified name <code>PackageName::GUMBO__Library::functionName(...)</code>.
+In a subclause, they are local to the thread definition.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Functions          <span class="o">::=</span> &#39;functions&#39; FuncDef+
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">FuncDef            <span class="o">::=</span> DefMods? &#39;def&#39; ID FuncParams &#39;:&#39; Type
+</span></span><span class="line"><span class="cl">                       (&#39;:=&#39; DefContract? Expr)? &#39;;&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">DefMods            <span class="o">::=</span> &#39;@strictpure&#39; | &#39;@pure&#39; | &#39;@spec&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">FuncParams         <span class="o">::=</span> &#39;(&#39; (FuncParam (&#39;,&#39; FuncParam)*)? &#39;)&#39;
+</span></span><span class="line"><span class="cl">FuncParam          <span class="o">::=</span> ID &#39;:&#39; Type
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Contract on function body — rarely used in practice *)
+</span></span><span class="line"><span class="cl">DefContract        <span class="o">::=</span> (Reads &#39;;&#39;)? (FuncRequires &#39;;&#39;)?
+</span></span><span class="line"><span class="cl">                       (Modifies &#39;;&#39;)? (FuncEnsures &#39;;&#39;)?
+</span></span><span class="line"><span class="cl">Reads              <span class="o">::=</span> &#39;reads&#39; Expr (&#39;,&#39; Expr)*
+</span></span><span class="line"><span class="cl">FuncRequires       <span class="o">::=</span> &#39;assume&#39; Expr (&#39;,&#39; Expr)*
+</span></span><span class="line"><span class="cl">Modifies           <span class="o">::=</span> &#39;modifies&#39; Expr (&#39;,&#39; Expr)*
+</span></span><span class="line"><span class="cl">FuncEnsures        <span class="o">::=</span> &#39;guarantee&#39; Expr (&#39;,&#39; Expr)*
+</span></span></code></pre></div><p>Example (library):</p>
+<pre tabindex="0"><code>functions
+    def clampedPayload(m: SNG_Data_Model::Message): Base_Types::Boolean :=
+        (clampedPayloadLowerBound() &lt;= m.payload)
+        and (m.payload &lt;= clampedPayloadUpperBound());
+</code></pre><p>Example (subclause):</p>
+<pre tabindex="0"><code>functions
+    def Temp_Lower_Bound(): Base_Types::Integer_32 := 95 [i32];
+</code></pre><hr>
+<h2 id="5-invariants">5. Invariants</h2>
+<p>Constrain data type values or component state. Used in <code>part def :&gt; Data</code>
+blocks and occasionally in subclauses.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Invariants         <span class="o">::=</span> &#39;invariants&#39; InvSpec+
+</span></span><span class="line"><span class="cl">InvSpec            <span class="o">::=</span> &#39;inv&#39; ID STRING? &#39;:&#39; Expr &#39;;&#39;
+</span></span></code></pre></div><p>Example (on a data type):</p>
+<pre tabindex="0"><code>invariants
+    inv MaxMinEarthTemperatures &#34;Temps within recorded range&#34; :
+        -128 [s32] &lt;= degrees and degrees &lt;= 134 [s32];
+</code></pre><hr>
+<h2 id="6-integration-constraints">6. Integration Constraints</h2>
+<p>Constraints on port values at component boundaries. Assumes constrain
+inputs (what this component may receive); guarantees constrain outputs
+(what this component promises to send). Checked across connections
+by HAMR Logika.</p>
+<p>Integration constraints apply to the <strong>payload</strong> of the port directly —
+the port name refers to the unwrapped value, not <code>Option&lt;T&gt;</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Integration        <span class="o">::=</span> &#39;integration&#39; SpecStatement+
+</span></span><span class="line"><span class="cl">SpecStatement      <span class="o">::=</span> AssumeStatement | GuaranteeStatement
+</span></span></code></pre></div><p>Example:</p>
+<pre tabindex="0"><code>integration
+    assume No_Critical_Input:
+        GumboLib::GUMBO__Library::allowedSecurityLevel(input);
+    guarantee No_Critical_Output:
+        GumboLib::GUMBO__Library::allowedSecurityLevel(output);
+</code></pre><hr>
+<h2 id="7-initialize-contracts">7. Initialize Contracts</h2>
+<p>Constrain the initialize entry point. Only guarantee clauses allowed
+(no assumes — there are no inputs during initialization).
+May include a <code>modifies</code> clause for state variables.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Initialize         <span class="o">::=</span> &#39;initialize&#39; (Modifies &#39;;&#39;)? GuaranteeStatement*
+</span></span><span class="line"><span class="cl">                        InfoFlowClause*
+</span></span></code></pre></div><p>Example:</p>
+<pre tabindex="0"><code>initialize
+    guarantee initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+    guarantee REQ_THERM_1 &#34;Heat Control Off initially&#34;:
+        heat_control == Isolette_Data_Model::On_Off.Off;
+</code></pre><hr>
+<h2 id="8-compute-contracts">8. Compute Contracts</h2>
+<p>Constrain the compute entry point (timeTriggered for periodic threads).
+Supports three contract styles that can be mixed:</p>
+<ol>
+<li><strong>General assumes/guarantees</strong> — top-level preconditions and postconditions</li>
+<li><strong>Compute cases</strong> — case-by-case specifications with paired assume/guarantee</li>
+<li><strong>Handler clauses</strong> — for sporadic threads, per-port event handlers</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Compute            <span class="o">::=</span> &#39;compute&#39; (Modifies &#39;;&#39;)?
+</span></span><span class="line"><span class="cl">                        AssumeStatement*
+</span></span><span class="line"><span class="cl">                        GuaranteeStatement*
+</span></span><span class="line"><span class="cl">                        ComputeCases*
+</span></span><span class="line"><span class="cl">                        HandlerClause*
+</span></span><span class="line"><span class="cl">                        InfoFlowClause*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ComputeCases       <span class="o">::=</span> &#39;compute_cases&#39; CaseClause+
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CaseClause         <span class="o">::=</span> &#39;case&#39; ID STRING? &#39;:&#39;
+</span></span><span class="line"><span class="cl">                        AnonAssume? AnonGuarantee
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Assumes/guarantees in case clauses are anonymous — no name *)
+</span></span><span class="line"><span class="cl">AnonAssume         <span class="o">::=</span> &#39;assume&#39; Expr &#39;;&#39;
+</span></span><span class="line"><span class="cl">AnonGuarantee      <span class="o">::=</span> &#39;guarantee&#39; Expr &#39;;&#39;
+</span></span></code></pre></div><h3 id="style-a-guarantee-only-with-implies-eg-sng-gate">Style A: Guarantee-only with <code>implies</code> (e.g., SNG Gate)</h3>
+<p>Each guarantee covers one scenario using <code>implies</code> to guard:</p>
+<pre tabindex="0"><code>compute
+    guarantee Req_C_Drop_Critical:
+        HasEvent(input) and (input.security_level == SecurityLevel.Critical)
+        implies NoSend(output);
+    guarantee No_Input_No_Output:
+        (not HasEvent(input)) implies NoSend(output);
+</code></pre><h3 id="style-b-compute-cases-eg-sng-filter-isolette-thermostat">Style B: Compute cases (e.g., SNG Filter, Isolette Thermostat)</h3>
+<p>Cases partition the input space with assume/guarantee pairs:</p>
+<pre tabindex="0"><code>compute
+  compute_cases
+    case Req_P_Public_Pass:
+        assume HasEvent(input) and (input.security_level == SecurityLevel.Public);
+        guarantee HasEvent(output) and equalMessage(input, output);
+    case No_Input:
+        assume (not HasEvent(input));
+        guarantee NoSend(output);
+</code></pre><h3 id="style-c-mixed-general--cases-eg-isolette-thermostat">Style C: Mixed general + cases (e.g., Isolette Thermostat)</h3>
+<p>A general guarantee combined with compute_cases:</p>
+<pre tabindex="0"><code>compute
+    assume ASSM_LDT_LE_UDT: desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+    guarantee lastCmd &#34;Set lastCmd&#34;: lastCmd == heat_control;
+    compute_cases
+        case REQ_THERM_2: ...
+        case REQ_THERM_3: ...
+</code></pre><hr>
+<h2 id="9-handler-clauses-sporadic-threads">9. Handler Clauses (Sporadic Threads)</h2>
+<p>For sporadic threads, contracts are specified per triggering event port:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">HandlerClause      <span class="o">::=</span> &#39;handle&#39; ID &#39;:&#39;
+</span></span><span class="line"><span class="cl">                        (Modifies &#39;;&#39;)?
+</span></span><span class="line"><span class="cl">                        AssumeStatement*
+</span></span><span class="line"><span class="cl">                        GuaranteeStatement*
+</span></span><span class="line"><span class="cl">                        ComputeCases*
+</span></span></code></pre></div><hr>
+<h2 id="10-named-assumes-and-guarantees">10. Named Assumes and Guarantees</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">AssumeStatement    <span class="o">::=</span> &#39;assume&#39; ID STRING? &#39;:&#39; Expr &#39;;&#39;
+</span></span><span class="line"><span class="cl">GuaranteeStatement <span class="o">::=</span> &#39;guarantee&#39; ID STRING? &#39;:&#39; Expr &#39;;&#39;
+</span></span></code></pre></div><p>The STRING is an optional documentation string. Multi-line strings
+use <code>|</code> as a continuation character:</p>
+<pre tabindex="0"><code>guarantee REQ_THERM_2 &#34;If Current Temperature is less than
+                      |the Lower Desired Temperature, the
+                      |Heat Control shall be set to On.&#34;:
+    heat_control == Isolette_Data_Model::On_Off.Onn;
+</code></pre><hr>
+<h2 id="11-information-flow-clauses">11. Information Flow Clauses</h2>
+<p>Declare information flow relationships (rarely used in practice):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">InfoFlowClause     <span class="o">::=</span> &#39;infoflow&#39; ID STRING? &#39;:&#39;
+</span></span><span class="line"><span class="cl">                        &#39;from&#39; &#39;(&#39; (ID (&#39;,&#39; ID)*)? &#39;)&#39; &#39;,&#39;
+</span></span><span class="line"><span class="cl">                        &#39;to&#39; &#39;(&#39; (ID (&#39;,&#39; ID)*)? &#39;)&#39; &#39;;&#39;
+</span></span></code></pre></div><hr>
+<h2 id="12-expressions">12. Expressions</h2>
+<h3 id="precedence-lowest-to-highest">Precedence (lowest to highest)</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Expr               <span class="o">::=</span> CondExpr
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* if-then-else *)
+</span></span><span class="line"><span class="cl">CondExpr           <span class="o">::=</span> ImpliesExpr
+</span></span><span class="line"><span class="cl">                     | &#39;if&#39; ImpliesExpr &#39;?&#39; Expr &#39;else&#39; Expr
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* logical implication — right-associative *)
+</span></span><span class="line"><span class="cl">ImpliesExpr        <span class="o">::=</span> OrExpr (&#39;implies&#39; OrExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* logical or — &#39;or&#39; is short-circuit, &#39;|&#39; is non-short-circuit *)
+</span></span><span class="line"><span class="cl">OrExpr             <span class="o">::=</span> XorExpr ((&#39;or&#39; | &#39;|&#39;) XorExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* logical xor *)
+</span></span><span class="line"><span class="cl">XorExpr            <span class="o">::=</span> AndExpr (&#39;xor&#39; AndExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* logical and — &#39;and&#39; is short-circuit, &#39;&amp;&#39; is non-short-circuit *)
+</span></span><span class="line"><span class="cl">AndExpr            <span class="o">::=</span> EqExpr ((&#39;and&#39; | &#39;&amp;&#39;) EqExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* equality *)
+</span></span><span class="line"><span class="cl">EqExpr             <span class="o">::=</span> RelExpr ((&#39;==&#39; | &#39;!=&#39;) RelExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* relational *)
+</span></span><span class="line"><span class="cl">RelExpr            <span class="o">::=</span> AddExpr ((&#39;<span class="p">&lt;</span><span class="nc">&#39; | &#39;</span><span class="p">&gt;</span>&#39; | &#39;<span class="p">&lt;</span><span class="nc">=&#39; | &#39;</span><span class="p">&gt;</span>=&#39;) AddExpr)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* arithmetic *)
+</span></span><span class="line"><span class="cl">AddExpr            <span class="o">::=</span> MulExpr ((&#39;+&#39; | &#39;-&#39;) MulExpr)*
+</span></span><span class="line"><span class="cl">MulExpr            <span class="o">::=</span> ExpExpr ((&#39;*&#39; | &#39;/&#39; | &#39;%&#39;) ExpExpr)*
+</span></span><span class="line"><span class="cl">ExpExpr            <span class="o">::=</span> UnaryExpr ((&#39;**&#39; | &#39;^&#39;) ExpExpr)?
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* unary *)
+</span></span><span class="line"><span class="cl">UnaryExpr          <span class="o">::=</span> (&#39;+&#39; | &#39;-&#39; | &#39;~&#39; | &#39;not&#39;) UnaryExpr
+</span></span><span class="line"><span class="cl">                     | PostfixExpr
+</span></span></code></pre></div><h3 id="postfix-and-primary-expressions">Postfix and Primary Expressions</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">PostfixExpr        <span class="o">::=</span> PrimaryExpr (&#39;.&#39; FieldAccess)*
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Field access and array indexing *)
+</span></span><span class="line"><span class="cl">FieldAccess        <span class="o">::=</span> ID
+</span></span><span class="line"><span class="cl">                     | &#39;#&#39; &#39;(&#39; Expr &#39;)&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PrimaryExpr        <span class="o">::=</span> Literal
+</span></span><span class="line"><span class="cl">                     | PortOrVarRef
+</span></span><span class="line"><span class="cl">                     | FunctionCall
+</span></span><span class="line"><span class="cl">                     | BuiltInPredicate
+</span></span><span class="line"><span class="cl">                     | &#39;(&#39; Expr &#39;)&#39;
+</span></span></code></pre></div><h3 id="literals">Literals</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Literal            <span class="o">::=</span> BoolLiteral | IntLiteral | RealLiteral | StringLiteral
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">BoolLiteral        <span class="o">::=</span> &#39;true&#39; | &#39;false&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Typed integer literal — type suffix in brackets *)
+</span></span><span class="line"><span class="cl">IntLiteral         <span class="o">::=</span> DECIMAL_VALUE &#39;[&#39; TypeSuffix &#39;]&#39;
+</span></span><span class="line"><span class="cl">                     | DECIMAL_VALUE
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Common type suffixes *)
+</span></span><span class="line"><span class="cl">TypeSuffix         <span class="o">::=</span> &#39;i32&#39; | &#39;s32&#39; | &#39;u8&#39; | &#39;u16&#39; | &#39;u32&#39; | &#39;i64&#39;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">RealLiteral        <span class="o">::=</span> DECIMAL_VALUE? &#39;.&#39; DECIMAL_VALUE
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">StringLiteral      <span class="o">::=</span> &#39;&#34;&#39; ... &#39;&#34;&#39;
+</span></span></code></pre></div><h3 id="references">References</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">(* Port name, state variable, enum value, or function parameter *)
+</span></span><span class="line"><span class="cl">PortOrVarRef       <span class="o">::=</span> QualifiedName
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">(* Function call — may be to local, library, or subclause function *)
+</span></span><span class="line"><span class="cl">FunctionCall       <span class="o">::=</span> QualifiedName &#39;(&#39; (Expr (&#39;,&#39; Expr)*)? &#39;)&#39;
+</span></span></code></pre></div><hr>
+<h2 id="13-built-in-predicates-not-in-grammar">13. Built-In Predicates (Not in Grammar)</h2>
+<p>These are realized as uninterpreted KerML functions. They do NOT
+appear in the GUMBO.g4 grammar — they parse as ordinary function
+calls — but they have special semantics in HAMR.</p>
+<h3 id="event-port-predicates-eventdataport-only">Event Port Predicates (EventDataPort only)</h3>
+<pre tabindex="0"><code>HasEvent(portName)    -- true if the port received a value this dispatch
+NoSend(portName)      -- guarantees no value is sent on this output port
+MustSend(portName)    -- guarantees a value IS sent on this output port
+</code></pre><ul>
+<li><code>HasEvent</code> is used in assumes and guarantees for <strong>both</strong> input and output ports</li>
+<li><code>NoSend</code> is used <strong>only</strong> in guarantees on <strong>output</strong> ports</li>
+<li><code>MustSend</code> is used <strong>only</strong> in guarantees on <strong>output</strong> ports</li>
+<li>There is NO <code>NoEvent</code> predicate — use <code>not HasEvent(portName)</code> instead</li>
+</ul>
+<p>When <code>HasEvent(port)</code> is true, <code>port</code> refers to the unwrapped payload value
+(not <code>Option&lt;T&gt;</code>). Always guard field access with <code>HasEvent</code>:</p>
+<pre tabindex="0"><code>HasEvent(input) and (input.security_level == SecurityLevel.Public)
+</code></pre><h3 id="state-variable-previous-value-reference">State Variable Previous-Value Reference</h3>
+<pre tabindex="0"><code>In(stateVarName)      -- value of state variable at start of current dispatch
+</code></pre><p>Used in compute contracts to reference the previous-dispatch value:</p>
+<pre tabindex="0"><code>guarantee heat_control == In(lastCmd);
+</code></pre><h3 id="implication-operator-alternative-syntax">Implication Operator (Alternative Syntax)</h3>
+<pre tabindex="0"><code>&#39;-&gt;:&#39; (antecedent, consequent)
+</code></pre><p>Function-call-style implication, equivalent to <code>antecedent implies consequent</code>.
+Used in some projects (isolette INSPECTA-models). Example:</p>
+<pre tabindex="0"><code>def Allowed_LowerAlarmTempWStatus(lower: TempWstatus_i): Base_Types::Boolean :=
+    &#39;-&gt;:&#39; (isValidTempWstatus(lower), Allowed_LowerAlarmTemp(lower.degrees));
+</code></pre><hr>
+<h2 id="14-qualified-names-and-naming-conventions">14. Qualified Names and Naming Conventions</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">QualifiedName      <span class="o">::=</span> (Name &#39;::&#39;)* Name
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Name               <span class="o">::=</span> ID | UNRESTRICTED_NAME
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">ID                 <span class="o">::=</span> [a-zA-Z_][a-zA-Z0-9_]*
+</span></span><span class="line"><span class="cl">UNRESTRICTED_NAME  <span class="o">::=</span> &#39;\&#39;&#39; ... &#39;\&#39;&#39;
+</span></span></code></pre></div><h3 id="library-function-qualification">Library Function Qualification</h3>
+<p>When a GUMBO <code>library</code> block is defined inside a package, the <code>library</code>
+keyword creates an intermediate namespace called <code>GUMBO__Library</code>.
+To call library functions from other packages:</p>
+<pre tabindex="0"><code>PackageName::GUMBO__Library::functionName(args)
+</code></pre><p>Example: <code>GumboLib::GUMBO__Library::allowedSecurityLevel(output)</code></p>
+<p>Within the same library block, functions call each other unqualified:
+<code>clampedPayloadLowerBound()</code>.</p>
+<h3 id="enum-value-notation">Enum Value Notation</h3>
+<p>Enum values use <strong>dot</strong> notation (not <code>::</code>):</p>
+<pre tabindex="0"><code>Package::EnumDef.EnumValue
+</code></pre><p>Example: <code>SNG_Data_Model::SecurityLevel.Public</code></p>
+<p>Note the asymmetry: <code>::</code> separates packages/types, <code>.</code> separates
+the enum type from its value.</p>
+<h3 id="field-access">Field Access</h3>
+<p>Struct fields use dot notation. Port names resolve to their payload type:</p>
+<pre tabindex="0"><code>input.security_level           -- field of the port&#39;s data type
+input.payload                  -- another field
+desired_temp.lower.degrees     -- nested struct field access
+EthernetFramesTx0.amessage     -- struct field of port payload
+</code></pre><h3 id="array-element-access">Array Element Access</h3>
+<p>Array elements use <code>#(index)</code> syntax (not <code>[index]</code>):</p>
+<pre tabindex="0"><code>aframe#(12)                    -- element at index 12
+</code></pre><hr>
+<h2 id="15-types-in-gumbo">15. Types in GUMBO</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">Type               <span class="o">::=</span> QualifiedName
+</span></span></code></pre></div><p>Common base types:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO Type</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>Base_Types::Boolean</code></td>
+          <td>Boolean</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types::Integer_32</code></td>
+          <td>32-bit signed integer</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types::Integer_8</code></td>
+          <td>8-bit signed integer</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types::Unsigned_8</code></td>
+          <td>8-bit unsigned integer</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types::Unsigned_16</code></td>
+          <td>16-bit unsigned integer</td>
+      </tr>
+      <tr>
+          <td><code>Base_Types::Float_32</code></td>
+          <td>32-bit float</td>
+      </tr>
+  </tbody>
+</table>
+<p>Application types use package-qualified names: <code>SNG_Data_Model::Message</code>.</p>
+<hr>
+<h2 id="16-lexical-tokens">16. Lexical Tokens</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bnf" data-lang="bnf"><span class="line"><span class="cl">DECIMAL_VALUE      <span class="o">::=</span> [0-9]+
+</span></span><span class="line"><span class="cl">ID                 <span class="o">::=</span> [a-zA-Z_][a-zA-Z0-9_]*
+</span></span><span class="line"><span class="cl">STRING             <span class="o">::=</span> &#39;&#34;&#39; (escape | ~[&#34;\\])* &#39;&#34;&#39;
+</span></span><span class="line"><span class="cl">COMMENT            <span class="o">::=</span> &#39;//&#39; ...           (* line comment, ignored *)
+</span></span></code></pre></div><hr>
+<h2 id="17-dataport-vs-eventdataport-contract-patterns">17. DataPort vs EventDataPort Contract Patterns</h2>
+<p><strong>DataPort</strong> — always has a value after initialization. Port name refers
+directly to the value. No <code>HasEvent</code>/<code>NoSend</code> needed:</p>
+<pre tabindex="0"><code>integration
+    guarantee temp_range:
+        96 [i32] &lt;= current_temp.degrees &amp; current_temp.degrees &lt;= 103 [i32];
+</code></pre><p><strong>EventDataPort</strong> — may or may not have a value each dispatch. Use
+<code>HasEvent</code> to guard access, <code>NoSend</code> to specify no output:</p>
+<pre tabindex="0"><code>compute
+    guarantee Req_C_Drop_Critical:
+        HasEvent(input) and (input.security_level == SecurityLevel.Critical)
+        implies NoSend(output);
+</code></pre><p>Integration constraints on EventDataPort apply to the unwrapped
+value (when present) — no <code>HasEvent</code> guard needed in integration blocks.</p>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
