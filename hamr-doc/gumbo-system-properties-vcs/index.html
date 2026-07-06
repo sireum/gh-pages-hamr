@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-system-properties-vcs/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.">
+  <meta itemprop="wordCount" content="7617">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="gumbo-system-level-property-verification-conditions">GUMBO System-Level Property Verification Conditions</h1>
+<p>This chapter provides a a detailed look at the <strong>verification conditions (VCs)</strong> HAMR generates for Verus to discharge when it proves a <code>composition</code> system-level property.
+We use the <strong>SysPropStructSplit</strong> example (<code>examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example</code>) as the running case.</p>
+<p>This is the companion document to <code>gumbo-system-properties.md</code> (which covers <em>how to author</em> the
+<code>composition</code>/<code>property</code> syntax). Here we look at the generated <code>sys_proof_XXX</code> crate and
+explain what each kind of VC is for, how the system assertions and component contracts are
+compiled into VCs, what the overall soundness argument is, and how independence and
+commutativity make the parallel schedule sound.</p>
+<p>Unless labeled otherwise, generated code is quoted verbatim from this repository&rsquo;s crate
+<code>hamr/microkit/crates/sys_proof_nominal/</code>. A few examples are quoted (also verbatim) from
+the Isolette and TempControl system-verification examples in
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models @ 4da74d7</a>,
+which exercise VC forms this example does not (event data ports, requirement-case
+contracts at scale) and which were generated by a newer toolchain (see the note in §3.2).</p>
+<hr>
+<h2 id="1-the-proof-model-induction-over-a-schedule-schema">1. The proof model: induction over a schedule schema</h2>
+<p>The system proof is an <strong>induction over major frames (hyperperiods)</strong> of a schedule
+schema. The schedule schema potentially represents multiple possible linear static
+schedules. Assuming that the linear static schedule specified for the seL4 system conforms
+to the schedule schema, verification of a property stated in terms of the schedule schema
+also holds for the linear schedule (the property holds for <em>any</em> linear schedule that
+conforms to the schedule schema).</p>
+<p>Typically, one has in mind a property that relates inputs occurring earlier in the
+schedule cycle (e.g., inputs from sensors) to outputs occurring later in the schedule
+(e.g., outputs to actuators). This property is stated as a system assertion attached to
+the schedule schema anywhere after the input and output values have materialized. The act
+of &ldquo;proving&rdquo; such a property requires placing <strong>auxiliary system assertions</strong> that
+reference the system state at other points in the schedule schema. These assertions
+capture facts about system state at various points in the schedule; together they form a
+Hoare-style proof outline of the property.</p>
+<p>HAMR transforms the schedule schema and system assertions into verification conditions:
+small, independent logical obligations whose conjunction implies that every assertion
+holds at its place, in every frame, forever. Concretely, each VC is emitted as a Verus
+<code>proof fn</code> with an <strong>empty body</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_</span><span class="o">..</span><span class="p">.(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">  </span><span class="cm">/* the VC&#39;s premises */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">   </span><span class="cm">/* the VC&#39;s conclusion */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>Verus discharges <code>requires ⟹ ensures</code> as an SMT query. If a VC does not discharge, the
+property (or the placement of its auxiliary assertions) is at fault far more often than
+the components are — §5 and the authoring tips in <code>gumbo-system-properties.md</code> show how to
+read a failure. Proof hints can be added to the body as a last resort, but the intended
+mode of use is that every VC discharges automatically.</p>
+<p>The induction has the classic shape, distributed across VC categories (§3):</p>
+<ul>
+<li><strong>Base case</strong> — the initial system state (after all <code>initialize</code> entry points)
+establishes the assertion at the schema&rsquo;s <code>START</code> place (<em>Init-State VC</em>).</li>
+<li><strong>Inductive step within a frame</strong> — each schedule transition pushes the assertions
+forward: the assertion before a component implies the component&rsquo;s preconditions
+(<em>Pre-Assert VC</em>), and, given the component&rsquo;s contract and write frame, the assertion
+after it holds (<em>Next-Assert VCs</em>).</li>
+<li><strong>Closing the loop</strong> — the assertion at <code>END</code> re-establishes the assertion at <code>START</code>,
+so the whole argument repeats for every subsequent hyperperiod (<em>Post-Pre VC</em>).</li>
+<li><strong>Justifying the schema&rsquo;s parallelism</strong> — for branches the schema declares independent
+(<code>split</code>), reasoning about one linearization is shown to stand in for every conforming
+order (<em>Non-Blocking, Preservation, Commutativity VCs</em>).</li>
+<li><strong>Justifying the contract handshakes</strong> — every connection&rsquo;s producer guarantee is shown
+to imply the consumer&rsquo;s integration assume, once, statically (<em>Integration VCs</em>).</li>
+</ul>
+<p>What the system proof does <strong>not</strong> do is re-verify the components: each component&rsquo;s own
+conformance to its GUMBO contract is discharged separately by that component crate&rsquo;s Verus
+run, and the system proof consumes the contracts as axioms. §6 makes this trust boundary
+precise.</p>
+<h3 id="where-the-vcs-live">Where the VCs live</h3>
+<p>When a <code>composition &lt;name&gt;</code> block is present, codegen emits the proof crate
+<code>hamr/microkit/crates/sys_proof_&lt;name&gt;/</code> (here: <code>sys_proof_nominal</code>). Shared,
+property-independent modules sit at the top of <code>src/</code>; each <strong>concrete</strong> property gets its
+own module directory (abstract properties get none):</p>
+<pre tabindex="0"><code>crates/sys_proof_nominal/src/
+  system_state.rs        # SystemState: channels + GUMBO state variables        (§2.1)
+  contracts.rs           # component contracts as spec fns — the axioms         (§2.2)
+  assertions.rs          # the composition&#39;s `functions` as shared spec fns     (§2.5)
+  write_frames.rs        # per-component local/global write frames              (§2.4)
+  actions.rs             # uninterpreted action abstractions (commutativity)    (§2.6)
+  vc_integration.rs      # Integration VCs — shared, one per connection         (§3.6)
+  vc_commutativity.rs    # Commutativity VCs — shared, one per MHIP pair        (§3.8)
+  &lt;property&gt;/            # one directory per concrete property
+    assertions.rs        #   place-assertion spec fns (unbound places = true)   (§2.3)
+    vc_init.rs           #   Init-State VC                                      (§3.1)
+    vc_sequential.rs     #   Pre-Assert + Next-Assert VCs, one pair/transition  (§3.2–3.4)
+    vc_post_pre.rs       #   Post-Pre VC                                        (§3.5)
+    vc_independence.rs   #   Non-Blocking + Preservation VCs                    (§3.8)
+</code></pre><p><code>make -C crates/sys_proof_nominal</code> verifies everything; each concrete property also gets
+its own Makefile target (<code>make -C crates/sys_proof_nominal consume_range_loop_invariant</code>),
+implemented with Verus <code>--verify-module</code> flags, for a fast loop on one property.</p>
+<p>For SysPropStructSplit&rsquo;s four concrete properties the counts are: <strong>3 shared VCs</strong>
+(1 Integration + 2 Commutativity) plus <strong>27 VCs per property</strong> (1 Init-State +
+17 Sequential + 1 Post-Pre + 8 Independence), for <strong>111 VCs total</strong> — all discharging with
+0 errors.</p>
+<hr>
+<h2 id="2-what-the-vcs-are-stated-over">2. What the VCs are stated over</h2>
+<p>Five shared modules set up the vocabulary the VCs are written in.</p>
+<h3 id="21-systemstate--the-flat-system-state-system_staters">2.1 <code>SystemState</code> — the flat system state (<code>system_state.rs</code>)</h3>
+<p>HAMR system verification reasons about the evolution of key points of the system state (e.g., values of component ports and GUMBO-declared state variables) as execution proceeds through the system schedule.  The generated <code>SystemState</code> structure is essentially an abstraction of the system state that is referenced by generated VCs.  Phrasing the abstract state as a Rust struct enables the Rust-based specification to reasoning abstractly about state changes (e.g., relating the possible values of the system state before a component executes to the possible values of the system state after the component executes).  Thus, we commonly see constraints on pre/before and post/after versions of the system state.</p>
+<p>The whole composition&rsquo;s state is one flat record with <strong>one field per connection channel</strong>
+(owned by the source out-port), plus unconnected ports and <strong>every GUMBO state variable</strong>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">SystemState</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.gen.gen --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">gen_out</span>: <span class="nc">SysPropStructSplit_Data_Model</span>::<span class="n">StructXY</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.splitter.splitter --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">x0</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">y0</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.incx.incx --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">x1</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.clampx.clampx --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">x2</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.decy.decy --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">y1</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.merger.merger --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">merged</span>: <span class="nc">SysPropStructSplit_Data_Model</span>::<span class="n">StructXY</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- StructSplit_System_Instance.consume.consume --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">consume_last_x</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="c1">// state variable
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>A connection is modeled as a single shared variable: a component &ldquo;reads&rdquo; the fields wired
+to its in-ports and &ldquo;writes&rdquo; the fields owned by its out-ports and its own state
+variables. The field names are the composition&rsquo;s port and state <strong>aliases</strong>, so assertions
+and VCs read the way the model was written.</p>
+<p>Data ports appear as plain values. <strong>Event data ports</strong> appear as <code>Option&lt;T&gt;</code> (a message
+may or may not be present in a given frame). From the TempControl example
+(INSPECTA-models, <code>temp-control/.../sys_proof_nominal/src/system_state.rs</code>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">SystemState</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- TempControlSystem_Instance.tsp.tst --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">sensedTemp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">TempControl_SysVerif</span>::<span class="n">Temperature</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- TempControlSystem_Instance.tcp.tct --
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">setPoint</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">TempControl_SysVerif</span>::<span class="n">SetPoint</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">fanCmd</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">TempControl_SysVerif</span>::<span class="n">FanCmd</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">sv_currentSetPoint</span>: <span class="nc">TempControl_SysVerif</span>::<span class="n">SetPoint</span><span class="p">,</span><span class="w"> </span><span class="c1">// state variable
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">..</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="22-component-gumbo-contracts--the-axioms-contractsrs">2.2 Component GUMBO contracts — the axioms (<code>contracts.rs</code>)</h3>
+<p>Every component&rsquo;s GUMBO contract is re-emitted as <code>open spec fn</code>s, grouped in one module
+per component. These are the <strong>axioms</strong> of the system proof: it <em>assumes</em> each component
+satisfies its own contract, and those obligations are discharged <strong>separately</strong> by each
+component crate&rsquo;s own Verus run (<code>make -C crates/&lt;comp&gt; verus</code>) — see §3.7 and §6. Both
+copies are generated from the same GUMBO source, so they are identical by construction.</p>
+<p>Six contract flavors appear:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">gen</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 1. initialize guarantee — what the initialize entry point establishes
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize_init_outstruct</span><span class="p">(</span><span class="n">api_outstruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="n">api_outstruct</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">api_outstruct</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 2. integration guarantee (I-Guar) on an OUTGOING port
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">integration_spec_outstruct_range_guarantee</span><span class="p">(</span><span class="n">api_outstruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">split_stage</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 3. integration assume (I-Assm) on an INCOMING port
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">integration_spec_instruct_range_assume</span><span class="p">(</span><span class="n">api_instruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">]</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 4. compute guarantee — functional post-condition of the compute entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_split_x_guarantee</span><span class="p">(</span><span class="n">api_instruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">,</span><span class="w"> </span><span class="n">api_xfield</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="n">api_xfield</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_instruct</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">consume</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 5. compute assume — the component&#39;s own precondition on its inputs/state
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_instruct_range_assume</span><span class="p">(</span><span class="n">api_instruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">]</span><span class="w"> </span><span class="err">…</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// compute guarantee relating a state variable to an input
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_track_x_guarantee</span><span class="p">(</span><span class="n">last_x</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">api_instruct</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w"> </span><span class="n">last_x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_instruct</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The sixth flavor, <strong>compute cases</strong> (GUMBO <code>compute_cases</code>), comes from ClampX&rsquo;s
+saturating-clamp contract: each <code>case</code> becomes its own spec fn — the case&rsquo;s <code>assume</code> as
+antecedent, its <code>guarantee</code> as consequent — over exactly the pre-state inputs and
+post-state outputs it mentions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">clampx</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="sd">/** compute case In_Range
+</span></span></span><span class="line"><span class="cl"><span class="sd">    *   values already in [-100, 100] pass through unchanged
+</span></span></span><span class="line"><span class="cl"><span class="sd">    */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_case_In_Range</span><span class="p">(</span><span class="n">api_inxfield</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">api_outxfield</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">((</span><span class="o">-</span><span class="mi">100</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">api_inxfield</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api_inxfield</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="k">i32</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">==&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">api_outxfield</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_inxfield</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="sd">/** compute case Above
+</span></span></span><span class="line"><span class="cl"><span class="sd">    *   values above 100 saturate to 100
+</span></span></span><span class="line"><span class="cl"><span class="sd">    */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_case_Above</span><span class="p">(</span><span class="n">api_inxfield</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">api_outxfield</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">api_inxfield</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span><span class="k">i32</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">==&gt;</span><span class="w"> </span><span class="p">(</span><span class="n">api_outxfield</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">100</span><span class="k">i32</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// … compute_case_Below analogously
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>All the cases of a component are supplied together as premises of its Next-Assert VCs
+(§3.3), so the prover can dispatch on whichever case the carried facts select.</p>
+<p>IncX and DecY contribute further instances of flavors 4 and 5: functional compute
+guarantees (<code>outxfield == inxfield + 1</code>, <code>outyfield == inyfield - 1</code>) and their
+[-1000, 1000] overflow/underflow-guard compute assumes. Note the distribution across the
+pipeline: <strong>GenStruct and SplitStruct are the only components carrying integration
+constraints</strong> — everything downstream of the splitter is specified purely with compute
+contracts (a deliberate reusable-component design; see <code>gumbo-system-properties.md</code> §1.2).</p>
+<p>The distinction between <strong>integration</strong> contracts (<code>I-Assm</code>/<code>I-Guar</code>, attached to a
+<em>port</em>, part of the cross-component handshake) and <strong>compute</strong> contracts (attached to the
+<em>entry point</em>) determines where each clause shows up in the VCs — §3.2, §3.3, §3.6.</p>
+<h3 id="23-how-a-place-assertion-becomes-a-spec-function-propassertionsrs">2.3 How a place assertion becomes a spec function (<code>&lt;prop&gt;/assertions.rs</code>)</h3>
+<p>Each place assertion in a <code>property</code> is compiled into one <code>open spec fn</code> over
+<code>SystemState</code>, named <code>sys_assert_&lt;property&gt;_&lt;place&gt;</code>. The transformation:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO source</th>
+          <th>Generated spec-fn body</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>port alias <code>x1</code>, state alias <code>consume_last_x</code></td>
+          <td><code>st.x1</code>, <code>st.consume_last_x</code> (<code>SystemState</code> fields)</td>
+      </tr>
+      <tr>
+          <td>struct-field access <code>merged.x</code></td>
+          <td><code>st.merged.x</code></td>
+      </tr>
+      <tr>
+          <td>GUMBO function <code>inRange100(v)</code></td>
+          <td>a shared spec fn in <code>assertions.rs</code> (§2.5)</td>
+      </tr>
+      <tr>
+          <td><code>&amp;</code> / <code>|</code> / <code>implies</code></td>
+          <td><code>&amp;&amp;</code> / <code>||</code> / <code>==&gt;</code></td>
+      </tr>
+      <tr>
+          <td>typed literal <code>-99 [i32]</code></td>
+          <td><code>-99i32</code></td>
+      </tr>
+      <tr>
+          <td><code>after incx</code> / <code>before incx</code> / <code>at branches_joined</code> / <code>at START</code></td>
+          <td>place <code>after_incx</code> / <code>before_incx</code> / <code>post_join_1</code> / <code>START</code></td>
+      </tr>
+      <tr>
+          <td>an <em>unbound</em> place</td>
+          <td><code>true</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>For example <code>after incx: (-99 [i32] &lt;= x1) &amp; (x1 &lt;= 101 [i32])</code> becomes:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">sys_assert_merged_in_consume_range_after_incx</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">99</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">x1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">x1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">101</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Inheritance is compiled to conjunction.</strong> A property&rsquo;s <em>effective</em> assertion at a place
+is the conjunction of every binding of that place along its inheritance chain(s).
+<code>End_To_End_Functional :&gt; Pipeline_Functional :&gt; Pipeline_Ranges</code> binds <code>after split_stage</code> twice up the chain; the generated assertion conjoins them:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">sys_assert_end_to_end_functional_after_split_stage</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">(</span><span class="n">inRange100</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">x0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">inRange100</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">y0</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">        </span><span class="c1">// from Pipeline_Ranges
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">((</span><span class="n">st</span><span class="p">.</span><span class="n">x0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">.</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">y0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">.</span><span class="n">y</span><span class="p">))</span><span class="w">                       </span><span class="c1">// from Pipeline_Functional
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The same flattening handles <strong>multiple inheritance</strong>:
+<code>Consume_Range_Loop_Invariant :&gt; Pipeline_Ranges, Consume_State_Base</code> simply takes the
+union of both bases&rsquo; bindings (they bind disjoint places here; shared places would be
+conjoined). Abstract properties themselves generate no spec fns and no VCs.</p>
+<h3 id="24-write-frames-write_framesrs">2.4 Write frames (<code>write_frames.rs</code>)</h3>
+<p>For each component, a <strong>global write frame</strong> pins every <code>SystemState</code> field <em>outside</em> the
+component&rsquo;s write set (its out-port channels plus its own state variables) to be unchanged
+across its firing; the <strong>local write frame</strong> is <code>true</code> (the component may do anything
+within its own scope). <code>IncX</code> writes only <code>x1</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** INCX writes: x1.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * Everything else must be unchanged.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">incx_global_write_frame</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">pre</span><span class="p">.</span><span class="n">gen_out</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">gen_out</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">x0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">y0</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">y0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">x2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">y1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">y1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">merged</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">merged</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">consume_last_x</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">consume_last_x</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Write frames are derived automatically from the model (connection topology + GUMBO <code>state</code>
+sections). They are how facts &ldquo;survive&rdquo; a step that doesn&rsquo;t touch them (frame reasoning),
+and they are the crux of why the independence VCs discharge (§3.8).</p>
+<h3 id="25-shared-gumbo-functions-assertionsrs">2.5 Shared GUMBO functions (<code>assertions.rs</code>)</h3>
+<p>The composition-level <code>functions</code> become shared spec fns used by the place assertions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inRange100</span><span class="p">(</span><span class="n">v</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inConsumeRange</span><span class="p">(</span><span class="n">s</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w"> </span><span class="p">(((</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inRange200</span><span class="p">(</span><span class="n">v</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="26-action-abstractions-actionsrs--only-for-commutativity">2.6 Action abstractions (<code>actions.rs</code>) — only for commutativity</h3>
+<p>Each component gets an <strong>uninterpreted</strong> action function per written field plus a
+<code>&lt;comp&gt;_fire</code> predicate: the written fields are an (unknown) function of the component&rsquo;s
+<em>read scope</em>, and everything else is framed.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">uninterp</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">incx_action_outxfield</span><span class="p">(</span><span class="n">inxfield</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">outxfield</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">i32</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/** &#34;INCX fires&#34;: every written field is determined by the read scope;
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * everything else is framed.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">incx_fire</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">post</span><span class="p">.</span><span class="n">x1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">incx_action_outxfield</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x0</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">x1</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">incx_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Note the <em>read scope</em> is encoded as the arguments of the action function (<code>incx</code> reads
+<code>x0</code> and its own prior <code>x1</code>). Verus proves the commutativity VCs for <strong>all</strong>
+interpretations of these functions; the real component behavior is one such
+interpretation, so a discharged commutativity VC holds for it too. Why this encoding is
+needed — rather than write frames alone — is explained in §3.8.</p>
+<hr>
+<h2 id="3-vc-taxonomy">3. VC taxonomy</h2>
+<p>Every obligation the proof depends on falls into one of the categories below. For each
+category we give: <strong>Informal</strong> (its role in the argument), <strong>Inputs</strong> (what feeds it),
+<strong>Generated form</strong> (the logical schema of the emitted VC — premises <code>⊢</code> conclusion), and
+generated <strong>example(s)</strong>.</p>
+<p>Overview, with this example&rsquo;s counts (4 concrete properties):</p>
+<table>
+  <thead>
+      <tr>
+          <th>#</th>
+          <th>Category</th>
+          <th>File</th>
+          <th>Scope</th>
+          <th>Count here</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>3.1</td>
+          <td>Init-State</td>
+          <td><code>&lt;prop&gt;/vc_init.rs</code></td>
+          <td>per property</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>3.2</td>
+          <td>Pre-Assert</td>
+          <td><code>&lt;prop&gt;/vc_sequential.rs</code></td>
+          <td>per property, per component transition</td>
+          <td>28</td>
+      </tr>
+      <tr>
+          <td>3.3</td>
+          <td>Next-Assert (component)</td>
+          <td><code>&lt;prop&gt;/vc_sequential.rs</code></td>
+          <td>per property, per component transition</td>
+          <td>28</td>
+      </tr>
+      <tr>
+          <td>3.4</td>
+          <td>Next-Assert (control point)</td>
+          <td><code>&lt;prop&gt;/vc_sequential.rs</code></td>
+          <td>per property, per control-point transition</td>
+          <td>12</td>
+      </tr>
+      <tr>
+          <td>3.5</td>
+          <td>Post-Pre</td>
+          <td><code>&lt;prop&gt;/vc_post_pre.rs</code></td>
+          <td>per property</td>
+          <td>4</td>
+      </tr>
+      <tr>
+          <td>3.6</td>
+          <td>Integration</td>
+          <td><code>vc_integration.rs</code></td>
+          <td>shared, per connection</td>
+          <td>1</td>
+      </tr>
+      <tr>
+          <td>3.7</td>
+          <td>Contract Conformance</td>
+          <td><em>(not emitted — see §3.7)</em></td>
+          <td>per component</td>
+          <td>0</td>
+      </tr>
+      <tr>
+          <td>3.8</td>
+          <td>Non-Blocking / Preservation</td>
+          <td><code>&lt;prop&gt;/vc_independence.rs</code></td>
+          <td>per property, per MHIP pair</td>
+          <td>16 + 16</td>
+      </tr>
+      <tr>
+          <td>3.8</td>
+          <td>Commutativity</td>
+          <td><code>vc_commutativity.rs</code></td>
+          <td>shared, per MHIP pair</td>
+          <td>2</td>
+      </tr>
+      <tr>
+          <td></td>
+          <td><strong>Total</strong></td>
+          <td></td>
+          <td></td>
+          <td><strong>111</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>Trivial instances (a <code>true</code> premise or conclusion, from an unbound place or a projected
+contract) are emitted anyway — uniformity keeps the VC set in one-to-one correspondence
+with the obligations of the soundness argument, and Verus discharges them instantly.</p>
+<h3 id="31-init-state-vc">3.1 Init-State VC</h3>
+<p><strong>Informal.</strong> The base case of the frame induction: the initial state — reached after
+every component&rsquo;s <code>initialize</code> entry point has run — must satisfy the assertion at the
+schema&rsquo;s <code>START</code> place. Since the initialize entry points are also required to establish
+the integration guarantees on their output ports, those are available as premises too.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>All component <code>initialize</code> guarantees</li>
+<li>All component integration guarantees (out-port constraints), over the initial channel values</li>
+<li>The property&rsquo;s <code>START</code> assertion</li>
+</ul>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>∧ (all component initialize guarantees)
+∧ (all component integration guarantees)
+⊢ START assertion
+</code></pre><p>Note this VC substitutes the initialize <em>contracts</em> for the real initial state; it is
+sound only because each component&rsquo;s initialize entry point is separately verified to
+satisfy those guarantees (assumption T2 in §6).</p>
+<p><strong>Example</strong> — <code>consume_range_loop_invariant/vc_init.rs</code>. The property binds
+<code>at START: inRange200(consume_last_x)</code>, and ConsumeStruct&rsquo;s initialize guarantee
+<code>last_x == 0</code> establishes it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[0]: Init-State -- all initialize + integration guarantees |- START */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_init_state</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">gen</span>::<span class="n">initialize_init_outstruct</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">gen</span>::<span class="n">integration_spec_outstruct_range_guarantee</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">split_stage</span>::<span class="n">integration_spec_xfield_range_guarantee</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">x0</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">split_stage</span>::<span class="n">integration_spec_yfield_range_guarantee</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">y0</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">consume</span>::<span class="n">initialize_init_last_x</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">consume_last_x</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_START</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>(Only GenStruct and SplitStruct carry integration guarantees in this example, so only
+their I-Guars appear alongside the initialize guarantees.) For a property with no
+<code>at START</code> binding (the other three here), the conclusion is
+<code>true /* START has no assertion */</code> and the VC is trivial.</p>
+<h3 id="32-pre-assert-vc-one-per-component-transition">3.2 Pre-Assert VC (one per component transition)</h3>
+<p><strong>Informal.</strong> At every point in the schedule where a component fires, the assertion
+carried into its <code>before</code> place must imply the component&rsquo;s precondition — the component is
+only ever invoked in a state its contract covers. This is the VC that fails when a
+property &ldquo;reaches&rdquo; a component but the proof outline does not carry the needed fact to its
+<code>before</code> place.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>The assertion at the transition&rsquo;s in-place(s)</li>
+<li>The component&rsquo;s compute <code>assume</code> clauses</li>
+</ul>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>assertion(before C)
+⊢ ∧ (C&#39;s compute assume clauses)
+</code></pre><blockquote>
+<p><strong>Toolchain note — integration assumes.</strong> In the current design, a component&rsquo;s
+integration assumes (in-port constraints) are <strong>not</strong> Pre-Assert obligations: they are
+<em>assumed</em> as premises of the component&rsquo;s Next-Assert VC (§3.3), a substitution justified
+once per connection by the Integration VCs (§3.6). Toolchains predating this
+integration-constraint folding — including the one that generated this repository&rsquo;s
+example crate — instead emit the integration assumes as additional Pre-Assert
+obligations (conclusions) and omit them from the Next-Assert premises. Both forms are
+sound; the folded form is cheaper because the handshake is proved once per connection
+instead of being re-derived from carried facts at every firing. Both example styles are
+shown below.</p>
+</blockquote>
+<p><strong>Example (a compute assume)</strong> — <code>merged_in_consume_range/vc_sequential.rs</code>.
+<code>Pipeline_Ranges</code> carries <code>before incx: inRange100(x0)</code>, which discharges IncX&rsquo;s
+[-1000, 1000] overflow-guard compute assume (<code>[-100,100] ⊂ [-1000,1000]</code>, so the
+discharge is immediate — the carried system-context fact is much stronger than the
+component&rsquo;s reusable-envelope precondition):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[5]: Pre-Assert -- before_incx |- INCX compute + integration assumes */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_incx</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// inRange100(x0)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx</span>::<span class="n">compute_spec_inxfield_bounded_assume</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">x0</span><span class="p">),</span><span class="w">   </span><span class="c1">// -1000 &lt;= x0 &lt;= 1000
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>(In the first draft of the example the <code>before incx</code> clause was missing and this VC
+failed; see <code>gumbo-system-properties.md</code> §5.)</p>
+<p>The x branch&rsquo;s second element, ClampX, has <strong>no assumes of any kind</strong> — its compute cases
+are total — so its Pre-Assert is trivial and a property may cover it without carrying
+anything to its dispatch:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[7]: Pre-Assert -- after_incx |- CLAMPX compute + integration assumes */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_clampx</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_incx</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// x1 ∈ [-99,101]
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kc">true</span><span class="w"> </span><span class="cm">/* no assertions at out-places */</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>(The <strong>shared-place rule</strong> is still doing work here: <code>after incx</code> <em>is</em> the place
+<code>before clampx</code> — consecutive branch elements share a place — so the single <code>after incx</code>
+binding is both IncX&rsquo;s post-fact and the input fact ClampX&rsquo;s compute cases will dispatch
+on in its Next-Assert VC, §3.3.)</p>
+<p><strong>Example (a defensive compute assume at the sink)</strong> —
+<code>consume_range_loop_invariant/vc_sequential.rs</code>. Because this property binds
+<code>after consume</code>, ConsumeStruct is <em>covered</em> (§4) and its defensive compute assume becomes
+a real obligation, discharged by the <code>inConsumeRange(merged)</code> fact the property binds at
+<code>before consume</code> (canonical place name <code>after_merge_stage</code> in the generated code — the
+two are the same place):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[15]: Pre-Assert -- after_merge_stage |- CONSUME compute + integration assumes */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_consume</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_after_merge_stage</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// inConsumeRange(merged)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">consume</span>::<span class="n">compute_spec_instruct_range_assume</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">merged</span><span class="p">),</span><span class="w">         </span><span class="c1">// merged ∈ [-200,200]
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Example (this repository&rsquo;s crate — pre-folding form, an integration assume)</strong> —
+<code>merged_in_consume_range/vc_sequential.rs</code>. SplitStruct is the one component here that
+still carries an in-port integration assume, and in the pre-folding toolchain that
+generated this crate it surfaces as a Pre-Assert obligation, discharged by the carried
+<code>after gen</code> fact:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[3]: Pre-Assert -- after_gen |- SPLIT_STAGE compute + integration assumes */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_split_stage</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_gen</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">         </span><span class="c1">// gen_out ∈ [-100,100]
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">split_stage</span>::<span class="n">integration_spec_instruct_range_assume</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Example (current toolchains — folded form)</strong> — Isolette,
+<code>normal_mode_heat/vc_sequential.rs</code> (INSPECTA-models @ 4da74d7). Only MRI&rsquo;s <em>compute</em>
+assume is an obligation; its integration assumes appear instead as Next-Assert premises:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[9]: Pre-Assert -- after_drf |- MRI compute assumes */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_mri</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_normal_mode_heat_after_drf</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mri</span>::<span class="n">compute_spec_lower_is_not_higher_than_upper_assume</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">st</span><span class="p">.</span><span class="n">lower_desired_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">upper_desired_tempWstatus</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="33-next-assert-vc--component-one-per-component-transition">3.3 Next-Assert VC — component (one per component transition)</h3>
+<p><strong>Informal.</strong> The inductive step across a firing: if the assertion at the component&rsquo;s
+<code>before</code> place holds, and the component behaves according to its contract, and everything
+outside its write set is unchanged, then the assertion at its <code>after</code> place holds. This is
+where a component&rsquo;s guarantees are <em>spent</em> to advance the property.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>The assertion at the in-place(s), over the pre-state</li>
+<li>The component&rsquo;s integration assumes (in-port constraints), over the pre-state — <em>assumed</em>, justified by the Integration VCs (§3.6; pre-folding toolchains discharge them at Pre-Assert instead and omit them here)</li>
+<li>Local and global write frames over (pre, post)</li>
+<li>The component&rsquo;s post-condition: compute guarantees, compute cases, and integration guarantees on out-ports</li>
+<li>The assertion at the out-place(s), over the post-state</li>
+</ul>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>assertion(before C)(pre)
+∧ (C&#39;s integration assumes)(pre)
+∧ local_write_frame(pre, post)
+∧ global_write_frame(pre, post)
+∧ (C&#39;s compute guarantees/cases + integration guarantees)(pre, post)
+⊢ assertion(after C)(post)
+</code></pre><p><strong>Example (this repository&rsquo;s crate)</strong> — <code>merged_in_consume_range/vc_sequential.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[6]: Next-Assert (task) -- before_incx + frames + INCX postcondition |- after_incx */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_incx</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">        </span><span class="c1">// inRange100(x0)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_local_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">                          </span><span class="c1">// true
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">                         </span><span class="c1">// everything but x1 unchanged
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx</span>::<span class="n">compute_spec_incx_guarantee</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x0</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x1</span><span class="p">),</span><span class="w">         </span><span class="c1">// x1 == x0 + 1
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_incx</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">        </span><span class="c1">// x1 ∈ [-99,101]
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>IncX carries no integration guarantee, so its functional compute guarantee is the <em>only</em>
+post-fact available — the conclusion <code>x1 ∈ [-99,101]</code> must be <strong>derived</strong>: the carried
+<code>x0 ∈ [-100,100]</code> plus <code>x1 == x0 + 1</code> yield it by arithmetic. For
+<code>end_to_end_functional</code> the <em>same</em> VC shape instead concludes <code>x1 == gen_out.x + 1</code>,
+discharged by the same guarantee combined with the carried <code>x0 == gen_out.x</code>. One
+transition, two properties, two different proofs — each property&rsquo;s VC sees only its own
+assertions.</p>
+<p><strong>Example (compute cases)</strong> — ClampX&rsquo;s contract is written as <code>compute_cases</code>; every case
+spec fn (§2.2) is supplied as a premise, and the prover selects the applicable case from
+the carried facts (here <code>x1 ∈ [-99,101]</code>, and for <code>end_to_end_functional</code> additionally
+<code>x1 == gen_out.x + 1</code>, which decides between <code>In_Range</code> and <code>Above</code>):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[8]: Next-Assert (task) -- after_incx + frames + CLAMPX postcondition |- after_clampx */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_clampx</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">          </span><span class="c1">// x1 ∈ [-99,101]
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">clampx_local_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">clampx_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">clampx</span>::<span class="n">compute_case_In_Range</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x2</span><span class="p">),</span><span class="w">              </span><span class="c1">// in range ⟹ identity
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">clampx</span>::<span class="n">compute_case_Above</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x2</span><span class="p">),</span><span class="w">                 </span><span class="c1">// above ⟹ 100
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">clampx</span>::<span class="n">compute_case_Below</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">x2</span><span class="p">),</span><span class="w">                 </span><span class="c1">// below ⟹ -100
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_clampx</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">       </span><span class="c1">// inRange100(x2)
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>The conclusion <code>x2 ∈ [-100,100]</code> — formerly ClampX&rsquo;s integration guarantee — is here
+derived from the cases alone: In_Range yields <code>x2 == x1 ∈ [-100,100]</code>, Above yields
+<code>100</code>, Below yields <code>-100</code>.</p>
+<p><strong>Example (state variable)</strong> — <code>consume_range_loop_invariant/vc_sequential.rs</code>. Consume&rsquo;s
+compute guarantee relates its post-state variable to its pre-state input, re-establishing
+the loop invariant:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[16]: Next-Assert (task) -- after_merge_stage + frames + CONSUME postcondition |- after_consume */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_consume</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_after_merge_stage</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">    </span><span class="c1">// inConsumeRange(merged)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">consume_local_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">consume_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">                             </span><span class="c1">// everything but consume_last_x unchanged
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">consume</span>::<span class="n">compute_spec_track_x_guarantee</span><span class="p">(</span><span class="n">post</span><span class="p">.</span><span class="n">consume_last_x</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">merged</span><span class="p">),</span><span class="w">  </span><span class="c1">// last_x&#39; == merged.x
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_after_consume</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">       </span><span class="c1">// inRange200(consume_last_x&#39;)
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Example (current toolchains — folded integration assumes, cases at scale)</strong> —
+Isolette, <code>normal_mode_alarm/vc_sequential.rs</code> (INSPECTA-models @ 4da74d7). MMI&rsquo;s seven
+requirement cases are premises exactly as above, and — this is the folded form of §3.2&rsquo;s
+toolchain note — MMI&rsquo;s in-port integration assumes appear as premises over the pre-state:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[18]: Next-Assert (task) -- after_dmf + frames + MMI postcondition |- after_mmi */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_mmi</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_normal_mode_alarm_after_dmf</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi_local_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_1</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">monitor_mode</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">monitor_status</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_2</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">monitor_mode</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">monitor_status</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_3</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">monitor_mode</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">monitor_status</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_4</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">lower_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">upper_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">mon_interface_failure</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_5</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">lower_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">upper_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">mon_interface_failure</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_6</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">lower_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">.</span><span class="n">upper_alarm_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">mon_interface_failure</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">lower_alarm_temp</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">upper_alarm_temp</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">compute_case_REQ_MMI_7</span><span class="p">(</span><span class="n">post</span><span class="p">.</span><span class="n">mon_interface_failure</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">integration_spec_Allowed_UpperAlarmTemp_assume</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">upper_alarm_tempWstatus</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mmi</span>::<span class="n">integration_spec_Allowed_LowerAlarmTemp_assume</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">lower_alarm_tempWstatus</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_normal_mode_alarm_after_mmi</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="34-next-assert-vc--control-point-one-per-control-point-transition">3.4 Next-Assert VC — control point (one per control-point transition)</h3>
+<p><strong>Informal.</strong> At a schedule control point (split fan-out, join, pass-through to <code>END</code>) no
+component runs and the state is unchanged; the assertions at the in-place(s) must directly
+imply the assertions at the out-place(s), over a single state.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>Assertions at the in-place(s)</li>
+<li>Assertions at the out-place(s)</li>
+</ul>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>∧ (assertions at in-places)
+⊢ ∧ (assertions at out-places)
+</code></pre><p>Sub-cases:</p>
+<ul>
+<li><strong>Split fan-out</strong> (1 in-place → N out-places): the pre-split assertion must imply each branch-entry assertion.</li>
+<li><strong>Join exit</strong> (N in-places → 1 out-place): the conjunction of all branch-end assertions must imply the post-join assertion.</li>
+</ul>
+<p><strong>Examples</strong> — <code>merged_in_consume_range/vc_sequential.rs</code>. The fan-out copies the
+pre-split facts into both branch entries:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[11]: Next-Assert (control point) -- after_split_stage |- before_incx, before_decy (state unchanged) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_skip_t5</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_split_stage</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// inRange100(x0) &amp; inRange100(y0)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">        </span><span class="c1">// inRange100(x0)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_decy</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">        </span><span class="c1">// inRange100(y0)
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>The join conjoins the branches&rsquo; <em>end</em> post-conditions — for the x branch that is the
+assertion after its <strong>last</strong> element, <code>after clampx</code> — making both branch results
+simultaneously available downstream:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[12]: Next-Assert (control point) -- after_clampx, after_decy |- post_join_1 (state unchanged) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_skip_t6</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_clampx</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w"> </span><span class="c1">// inRange100(x2)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_decy</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">   </span><span class="c1">// y1 ∈ [-101,99]
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_post_join_1</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// both, conjoined
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>The soundness of treating the two branch posts as jointly available at the join is <em>not</em>
+assumed — it is exactly what the Preservation VCs discharge (§3.8).</p>
+<h3 id="35-post-pre-vc-one-per-property">3.5 Post-Pre VC (one per property)</h3>
+<p><strong>Informal.</strong> Loop closure of the frame induction: the assertion at <code>END</code> must
+re-establish the assertion at <code>START</code>, so whatever held at the end of one hyperperiod
+holds at the start of the next — turning &ldquo;held this frame&rdquo; into &ldquo;holds every frame&rdquo;.</p>
+<p><strong>Inputs.</strong> The property&rsquo;s <code>END</code> and <code>START</code> assertions.</p>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>END assertion
+⊢ START assertion
+</code></pre><p><strong>Example</strong> — <code>consume_range_loop_invariant/vc_post_pre.rs</code>. Both places carry
+<code>inRange200(consume_last_x)</code>, so the invariant survives the frame boundary:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[18]: Post-Pre -- END |- START (hyperperiod loop invariant) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_post_pre</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_END</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_START</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>For properties with no <code>at START</code>/<code>at END</code> bindings this VC is <code>true ⊢ true</code>. A more
+consequential instance is the Isolette&rsquo;s <code>Regulator_Failsafe_Latching</code> property
+(INSPECTA-models): its invariant <code>FailedModeImpliesHeatOff(reg_last_mode, heat_control)</code>
+is asserted at both boundaries, and — because MRM&rsquo;s Failed mode is absorbing — the
+discharged Post-Pre VC yields &ldquo;once the regulator fails, the heat stays off <em>forever</em>.&rdquo;</p>
+<h3 id="36-integration-vc-shared-one-per-connection">3.6 Integration VC (shared, one per connection)</h3>
+<p><strong>Informal.</strong> For every connection whose destination in-port carries an integration
+<code>assume</code>, the <strong>sender&rsquo;s integration guarantee must imply the receiver&rsquo;s integration
+assume</strong>, over the value the wire carries. This is the assume/guarantee <em>handshake</em> — the
+code-level twin of the model-level <code>sireum hamr sysml logika</code> integration check. It is
+property-independent and schedule-independent.</p>
+<p>This VC is what licenses the folding described in §3.2/§3.3: since whatever a producer
+places on a channel already satisfies the consumer&rsquo;s integration assume, the consumer&rsquo;s
+Next-Assert VC may take that assume as a premise at every dispatch without it being
+re-derived from carried facts. It also closes a soundness loop for the <em>component-level</em>
+verification: each component crate verifies its compute entry point assuming its in-port
+constraints hold; the Integration VCs prove the upstream producers actually deliver them,
+so no component verifies vacuously against an unjustified assumption.</p>
+<p><strong>Inputs.</strong></p>
+<ul>
+<li>The source out-port&rsquo;s integration guarantee</li>
+<li>The destination in-port&rsquo;s integration assume</li>
+</ul>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>sender&#39;s integration guarantee (wire value)
+⊢ receiver&#39;s integration assume (wire value)
+</code></pre><p><strong>Example</strong> — <code>vc_integration.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[0]: Integration -- connection StructSplit_System_Instance.gen.gen.outstruct -&gt; StructSplit_System_Instance.splitter.splitter.instruct: gen.outstruct&#39;s I-Guar `outstruct_range`
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * implies split_stage.instruct&#39;s I-Assm `instruct_range`, over
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * the value the connection carries. Discharges when the sender&#39;s
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * guarantee is at least as strong as the receiver&#39;s assume. */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_integration_gen_outstruct_to_split_stage_instruct</span><span class="p">(</span><span class="n">wire</span>: <span class="nc">SysPropStructSplit_Data_Model</span>::<span class="n">StructXY</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">gen</span>::<span class="n">integration_spec_outstruct_range_guarantee</span><span class="p">(</span><span class="n">wire</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">split_stage</span>::<span class="n">integration_spec_instruct_range_assume</span><span class="p">(</span><span class="n">wire</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>SysPropStructSplit has exactly <strong>one</strong> such VC: <code>gen.outstruct → splitter.instruct</code>, the
+only connection whose destination carries an integration assume. Every other connection
+produces <strong>no</strong> Integration VC, for one of two reasons that are both design points of the
+example. Downstream of the splitter, IncX and DecY state their input constraints as
+<em>compute</em> assumes (per-dispatch preconditions, discharged by Pre-Assert VCs from carried
+facts — §3.2) and ClampX and MergeStruct assume nothing at all — so there is no port-level
+handshake to check. And at the far end, <code>merger.outstruct → consume.instruct</code> has no
+<em>producer-side</em> guarantee: with no handshake at the merger, the merged range cannot be
+established by integration checking and must instead be recovered by a <em>system property</em>
+(§5.1).</p>
+<h3 id="37-component-contract-conformance-assumed--not-emitted">3.7 Component Contract Conformance (assumed — not emitted)</h3>
+<p><strong>Informal.</strong> Each component&rsquo;s implementation must satisfy its own GUMBO contract: if the
+component&rsquo;s assumes hold when it is dispatched, executing its actual entry-point code
+yields a state satisfying its guarantees. Every Next-Assert VC uses the contract as a
+<em>proxy</em> for the real behavior, so the whole system proof is sound only if this proxy is
+faithful.</p>
+<p><strong>Generated form</strong> (for the reader&rsquo;s mental model — the system-level generator emits no
+such VC):</p>
+<pre tabindex="0"><code>∧ (C&#39;s assume clauses, over the pre-state)
+∧ (C&#39;s entry point executes)
+⊢ ∧ (C&#39;s guarantee/case clauses, over pre- and post-state)
+</code></pre><p>This obligation is discharged <strong>per component</strong> by each component crate&rsquo;s own Verus run —
+the HAMR-generated <code>requires</code>/<code>ensures</code> on the <code>initialize</code> and compute entry points are
+precisely these clauses (see <code>component-implementation-guide.md</code>). In the trust accounting
+of §6 these are assumptions T1 (compute) and T2 (initialize): the system-level VC set
+depends on them but does not check them.</p>
+<h3 id="38-independence-requirements-per-mhip-pair">3.8 Independence requirements (per MHIP pair)</h3>
+<p>A <code>split { sequence{incx; clampx}, sequence{decy} }</code> declares that the two branches <strong>may
+happen in parallel (MHIP)</strong>. The Sequential VCs reason about <em>one</em> linearization (incx,
+then clampx, then decy, then join). Three obligation kinds justify that this single-order
+reasoning stands in for every order the schema permits.</p>
+<p><strong>The MHIP relation</strong> ranges over all pairs of schedule transitions that can be
+<em>co-enabled</em> — both fireable at some reachable point of the schema&rsquo;s control structure.
+This includes (component, control-point) pairs, which arise with nested splits or
+multi-element branches. Emission per pair:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Pair kind</th>
+          <th>VCs emitted</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>component / component</td>
+          <td>2 Non-Blocking + 2 Preservation + 1 Commutativity = 5</td>
+      </tr>
+      <tr>
+          <td>component / control-point</td>
+          <td>1 Non-Blocking + 1 Preservation = 2 (only the component-firing direction)</td>
+      </tr>
+      <tr>
+          <td>control-point / control-point</td>
+          <td>0 (no state changes; nothing to check)</td>
+      </tr>
+  </tbody>
+</table>
+<p>SysPropStructSplit has two MHIP pairs — <code>decy</code> is co-enabled with each element of the
+multi-element x branch: <code>incx</code>/<code>decy</code> (transitions <code>t2</code>/<code>t4</code>) and <code>clampx</code>/<code>decy</code>
+(<code>t3</code>/<code>t4</code>) — hence 8 per-property independence VCs plus 2 shared commutativity VCs.
+Note which pair is <em>absent</em>: <code>incx</code>/<code>clampx</code> are consecutive elements of one <code>sequence</code>,
+never co-enabled, so no independence obligations arise between them — which is just as
+well, since <code>clampx</code> reads <code>incx</code>&rsquo;s output (§3.8.4).</p>
+<h4 id="381-non-blocking--a-firing-does-not-disable-its-sibling">3.8.1 Non-Blocking — a firing does not disable its sibling</h4>
+<p><strong>Informal.</strong> Executing one branch must not invalidate the assertion at the sibling&rsquo;s
+<code>before</code> place (its enabledness). Bidirectional: one VC per direction.</p>
+<p><strong>Inputs.</strong> Both transitions&rsquo; pre-assertions; the firing component&rsquo;s global write frame.</p>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>pre-asserts(t1) ∧ pre-asserts(t2) ∧ (t1 fires: global_write_frame(t1))
+⊢ pre-asserts(t2) still hold in the post-state        (and symmetrically for t2)
+</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_independence.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[19]: Non-Blocking -- INCX firing does not block DECY (MHIP pair t2/t4) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_non_blocking_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">   </span><span class="c1">// inRange100(x0)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_decy</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">   </span><span class="c1">// inRange100(y0)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">                    </span><span class="c1">// everything but x1 unchanged
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_decy</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">  </span><span class="c1">// inRange100(y0) still holds
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><h4 id="382-preservation--a-firing-does-not-destroy-an-established-post">3.8.2 Preservation — a firing does not destroy an established post</h4>
+<p><strong>Informal.</strong> Executing one branch must not invalidate the sibling&rsquo;s already-established
+<code>after</code> assertion — this is exactly what the join VC (§3.4) relies on when it conjoins the
+branch posts. Bidirectional.</p>
+<p><strong>Inputs.</strong> The firing transition&rsquo;s pre-assertions; the sibling&rsquo;s post-assertions; the
+firing component&rsquo;s global write frame.</p>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>pre-asserts(t1) ∧ post-asserts(t2) ∧ (t1 fires: global_write_frame(t1))
+⊢ post-asserts(t2) still hold in the post-state       (and symmetrically for t2)
+</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_independence.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[21]: Preservation -- INCX firing preserves DECY&#39;s post-assertions (MHIP pair t2/t4) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_preservation_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_decy</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">    </span><span class="c1">// y1 ∈ [-101,99]
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_decy</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">   </span><span class="c1">// y1 ∈ [-101,99] survives
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>Both kinds discharge from <strong>write-frame disjointness</strong>: the <code>before_decy</code>/<code>after_decy</code>
+assertions are over <code>{y0}</code>/<code>{y1}</code>, which <code>incx_global_write_frame</code> holds fixed (incx
+writes only <code>x1</code>).</p>
+<h4 id="383-commutativity--the-state-comes-out-the-same-in-either-order">3.8.3 Commutativity — the state comes out the same in either order</h4>
+<p><strong>Informal.</strong> Firing the pair in either order yields the <em>same</em> <code>SystemState</code>, so the one
+linearization the Sequential VCs analyzed represents both. This is property-independent —
+a structural fact about the two components&rsquo; read/write behavior — and symmetric in the
+pair, so exactly one VC is emitted per component-component MHIP pair.</p>
+<p><strong>Inputs.</strong> Both components&rsquo; <code>fire</code> predicates (action abstractions + global write
+frames, §2.6).</p>
+<p><strong>Generated form.</strong></p>
+<pre tabindex="0"><code>(t1 fires; then t2 fires)  ∧  (t2 fires; then t1 fires)   -- from the same start state
+⊢ the two resulting states are equal
+</code></pre><p><strong>Example</strong> — <code>vc_commutativity.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[0]: Commutativity (execIndependent) -- firing INCX then DECY
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * yields the same state as DECY then INCX (MHIP pair t2/t4).
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * Discharges by congruence when the write sets are disjoint from each
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * other&#39;s write sets and read scopes. */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_commutativity_incx_decy</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">mid_a</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post_a</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">mid_b</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post_b</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_fire</span><span class="p">(</span><span class="n">st</span><span class="p">,</span><span class="w"> </span><span class="n">mid_a</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">decy_fire</span><span class="p">(</span><span class="n">mid_a</span><span class="p">,</span><span class="w"> </span><span class="n">post_a</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">decy_fire</span><span class="p">(</span><span class="n">st</span><span class="p">,</span><span class="w"> </span><span class="n">mid_b</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">incx_fire</span><span class="p">(</span><span class="n">mid_b</span><span class="p">,</span><span class="w"> </span><span class="n">post_b</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">post_a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">post_b</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Why the action abstractions are needed.</strong> Write-frame disjointness alone is <em>not</em> a
+valid discharge argument for commutativity: frames only pin down the fields a component
+does <strong>not</strong> write — they never determine the <em>written</em> values, and a relational
+postcondition does not either, so a frames-only encoding is unprovable even for perfectly
+disjoint components. Commutativity actually requires <strong>Bernstein&rsquo;s conditions</strong>: each
+component&rsquo;s write set must be disjoint from the other&rsquo;s write set <em>and read scope</em>. The
+uninterpreted-action encoding (§2.6) captures exactly this — each written field is an
+unknown function of the component&rsquo;s read scope — so a genuinely independent pair
+discharges automatically by congruence (<code>incx</code> writes <code>{x1}</code> reading <code>{x0, x1}</code>; <code>clampx</code>
+writes <code>{x2}</code> reading <code>{x1, x2}</code>; <code>decy</code> writes <code>{y1}</code> reading <code>{y0, y1}</code>; in each MHIP
+pair, neither member reads or writes what the other writes), while an interfering pair
+fails.</p>
+<h4 id="384-when-independence-and-commutativity-fail">3.8.4 When independence and commutativity fail</h4>
+<p>These VCs discharge here only because the branches are genuinely independent. They would
+<strong>fail</strong> — correctly flagging an unsound <code>split</code> — in scenarios like these:</p>
+<ul>
+<li><strong>Commutativity fails — shared write (output fan-in).</strong> If both <code>incx</code> and <code>decy</code> wrote
+the same channel, <code>incx;decy</code> leaves the second writer&rsquo;s value and <code>decy;incx</code> the
+other&rsquo;s, so the final states differ. HAMR&rsquo;s channel model (one owning out-port per
+channel) rules this out for well-formed connections, but it is the canonical
+commutativity breaker.</li>
+<li><strong>Commutativity fails — read-after-write dependency.</strong> If <code>decy</code> <em>read</em> <code>x1</code> (IncX&rsquo;s
+output), then <code>decy</code> fired after <code>incx</code> sees the updated <code>x1</code> but fired before <code>incx</code>
+sees the old one — different <code>y1</code>, different final states. Such a data dependency means
+the two are <em>not</em> parallel; they must be modeled in a <code>sequence</code>, not a <code>split</code>. The
+failing VC is the tool telling you so. The example contains the positive counterpart:
+<code>clampx</code> reads <code>incx</code>&rsquo;s output <code>x1</code>, and the schema accordingly places them in one
+<code>sequence { incx; clampx }</code> — had they been put in separate <code>split</code> branches instead,
+<code>vc_commutativity_incx_clampx</code> would be emitted and would fail on exactly this
+dependency (<code>clampx</code>&rsquo;s read scope overlaps <code>incx</code>&rsquo;s write set).</li>
+<li><strong>Non-Blocking fails — a firing disables its sibling.</strong> If <code>incx</code>&rsquo;s write set included
+<code>y0</code> (clobbering the splitter&rsquo;s y channel), then after <code>incx</code> fires,
+<code>before_decy = inRange100(y0)</code> might no longer hold — <code>decy</code> is no longer enabled in a
+state its contract covers.</li>
+<li><strong>Preservation fails — a firing invalidates an established post.</strong> If <code>incx</code>&rsquo;s write
+set included <code>y1</code>, <code>incx</code> firing after <code>decy</code> would overwrite <code>decy</code>&rsquo;s result;
+<code>after_decy</code> would not survive, and the join (§3.4) could not soundly conjoin the branch
+posts.</li>
+</ul>
+<p>In every failing case the root cause is a violation of the read/write disjointness that
+the write frames and action abstractions encode. The remedy is either to fix the modeled
+read/write scopes or to serialize the components with <code>sequence</code> instead of <code>split</code>.</p>
+<hr>
+<h2 id="4-contract-projection--which-contracts-a-property-pays-for">4. Contract projection — which contracts a property pays for</h2>
+<p>Per property, a component&rsquo;s contract is <strong>projected out</strong> — instantiated as
+<code>(assumes, guarantees) := (true, true)</code> — unless the property <strong>binds one of the
+component&rsquo;s out-places</strong> (i.e., that component&rsquo;s Next-Assert conclusion is non-trivial).
+An uncovered component contributes only its write frames (which hold unconditionally), so
+its Pre-Assert VC is trivial and its Next-Assert VC is frame-only.</p>
+<p>The generated code says so explicitly. In <code>merged_in_consume_range</code> (which binds
+<code>before consume</code> — the canonical place <code>after_merge_stage</code> — but not <code>after consume</code>),
+ConsumeStruct is projected away:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[15]: Pre-Assert -- trivial: this property does not use CONSUME&#39;s contract (no bound out-place; contract projection) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_consume</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_merge_stage</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kc">true</span><span class="w"> </span><span class="cm">/* no assertions at out-places */</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>Consequences worth internalizing:</p>
+<ul>
+<li><strong>A property only pays for the components its story concludes something about.</strong>
+<code>Gen_Range_Sanity</code> binds only <code>after gen</code>, so SplitStruct, IncX, ClampX, DecY,
+MergeStruct, and ConsumeStruct are all projected away — no downstream assume must be
+discharged, and the smoke test stays a one-step proof. The moment a property binds
+<code>after incx</code>, IncX&rsquo;s contract turns on and a fact must be carried to <code>before incx</code>.</li>
+<li><strong>Sparse properties stay sparse.</strong> In a multi-property composition each property&rsquo;s VC
+set sees only its own assertions and only its covered components&rsquo; contracts, so adding
+properties scales the proof linearly without entangling the proofs of existing ones.</li>
+<li>Compare <code>merged_in_consume_range</code> (consume projected, VC[15] trivial) with
+<code>consume_range_loop_invariant</code> (consume covered, VC[15] a real obligation — §3.2): the
+<em>same transition</em> generates a different obligation per property, driven solely by which
+out-places each property binds.</li>
+</ul>
+<hr>
+<h2 id="5-two-worked-proofs">5. Two worked proofs</h2>
+<h3 id="51-merged_in_consume_range--recovering-a-range-the-contracts-dont-state">5.1 <code>Merged_In_Consume_Range</code> — recovering a range the contracts don&rsquo;t state</h3>
+<p>This property&rsquo;s payoff VC is where the constraint-free merger&rsquo;s output range is recovered:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[14]: Next-Assert (task) -- post_join_1 + frames + MERGE_STAGE postcondition |- after_merge_stage */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_merge_stage</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_post_join_1</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">   </span><span class="c1">// x2 ∈ [-100,100] &amp; y1 ∈ [-101,99]
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">merge_stage_local_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">merge_stage_global_write_frame</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">merge_stage</span>::<span class="n">compute_spec_merge_x_guarantee</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">x2</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">merged</span><span class="p">),</span><span class="w">  </span><span class="c1">// merged.x == x2
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">merge_stage</span>::<span class="n">compute_spec_merge_y_guarantee</span><span class="p">(</span><span class="n">pre</span><span class="p">.</span><span class="n">y1</span><span class="p">,</span><span class="w"> </span><span class="n">post</span><span class="p">.</span><span class="n">merged</span><span class="p">),</span><span class="w">  </span><span class="c1">// merged.y == y1
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_merge_stage</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">        </span><span class="c1">// inConsumeRange(merged)
+</span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
+</span></span></span></code></pre></div><p>MergeStruct contributes <strong>only</strong> its functional compute guarantee — it has no integration
+guarantee to offer. The range comes entirely from the carried <code>post_join_1</code> fact:
+<code>merged.x == x2 ∈ [-100,100] ⊆ [-200,200]</code>, likewise for <code>y</code>. This is the whole point of
+the system property: <code>inConsumeRange(merged)</code> is <em>the same predicate</em> ConsumeStruct
+assumes, proved at the exact channel feeding <code>consume.instruct</code> — which is why the model
+binds it through the place name <code>before consume</code> (the generated code&rsquo;s canonical name for
+that place is <code>after_merge_stage</code>; they are the same place). With no producer-side
+integration guarantee there is no Integration VC handshake at that connection (§3.6); the
+system property closes that assurance gap as a first-class, machine-checked system fact.</p>
+<p>The full sequential chain (17 VCs, from <code>merged_in_consume_range/vc_sequential.rs</code>):</p>
+<table>
+  <thead>
+      <tr>
+          <th>VC</th>
+          <th>Kind</th>
+          <th>Obligation (informal)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td>Pre-Assert <code>gen</code></td>
+          <td><code>START</code> ⟹ gen&rsquo;s assumes (none — trivial)</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>Next-Assert task <code>gen</code></td>
+          <td><code>START</code> ∧ frames ∧ gen I-Guar ⟹ <code>after_gen</code></td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td>Pre-Assert <code>split_stage</code></td>
+          <td><code>after_gen</code> ⟹ split&rsquo;s <code>instruct</code> I-Assm</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td>Next-Assert task <code>split_stage</code></td>
+          <td><code>after_gen</code> ∧ frames ∧ split guarantees ⟹ <code>after_split_stage</code></td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>Pre-Assert <code>incx</code></td>
+          <td><code>before_incx</code> ⟹ incx&rsquo;s <code>inxfield_bounded</code> compute assume</td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td>Next-Assert task <code>incx</code></td>
+          <td><code>before_incx</code> ∧ frames ∧ incx compute guarantee ⟹ <code>after_incx</code></td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td>Pre-Assert <code>clampx</code></td>
+          <td>(no assumes of any kind — trivial)</td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td>Next-Assert task <code>clampx</code></td>
+          <td><code>after_incx</code> ∧ frames ∧ clampx cases ⟹ <code>after_clampx</code></td>
+      </tr>
+      <tr>
+          <td>9</td>
+          <td>Pre-Assert <code>decy</code></td>
+          <td><code>before_decy</code> ⟹ decy&rsquo;s <code>inyfield_bounded</code> compute assume</td>
+      </tr>
+      <tr>
+          <td>10</td>
+          <td>Next-Assert task <code>decy</code></td>
+          <td><code>before_decy</code> ∧ frames ∧ decy compute guarantee ⟹ <code>after_decy</code></td>
+      </tr>
+      <tr>
+          <td>11</td>
+          <td>Control (split fan-out)</td>
+          <td><code>after_split_stage</code> ⟹ <code>before_incx</code> ∧ <code>before_decy</code></td>
+      </tr>
+      <tr>
+          <td>12</td>
+          <td>Control (join)</td>
+          <td><code>after_clampx</code> ∧ <code>after_decy</code> ⟹ <code>post_join_1</code></td>
+      </tr>
+      <tr>
+          <td>13</td>
+          <td>Pre-Assert <code>merge_stage</code></td>
+          <td><code>post_join_1</code> ⟹ merge&rsquo;s assumes (none — trivial)</td>
+      </tr>
+      <tr>
+          <td>14</td>
+          <td>Next-Assert task <code>merge_stage</code></td>
+          <td><code>post_join_1</code> ∧ frames ∧ merge guarantees ⟹ <code>after_merge_stage</code></td>
+      </tr>
+      <tr>
+          <td>15</td>
+          <td>Pre-Assert <code>consume</code></td>
+          <td>(contract projected — trivial)</td>
+      </tr>
+      <tr>
+          <td>16</td>
+          <td>Next-Assert task <code>consume</code></td>
+          <td><code>after_merge_stage</code> ∧ frames ⟹ <code>after_consume</code> (<code>true</code>)</td>
+      </tr>
+      <tr>
+          <td>17</td>
+          <td>Control (→ END)</td>
+          <td><code>after_consume</code> ⟹ <code>END</code> (<code>true</code>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>(Verus verifies these as independent obligations; the file order — branch VCs 5–10 before
+the fan-out VC 11 — is layout, not proof order. VC numbers restart per file, which is why
+<code>vc_integration.rs</code> and <code>vc_commutativity.rs</code> also start at VC[0].)</p>
+<h3 id="52-consume_range_loop_invariant--a-state-variable-loop-invariant">5.2 <code>Consume_Range_Loop_Invariant</code> — a state-variable loop invariant</h3>
+<p>This property exercises the <code>START</code>/<code>END</code> machinery that <code>Merged_In_Consume_Range</code> leaves
+trivial. Its invariant <code>inRange200(consume_last_x)</code> over ConsumeStruct&rsquo;s GUMBO state
+variable holds <em>every cycle</em>, by exactly the textbook loop-invariant argument:</p>
+<ol>
+<li><strong>Establish</strong> — the Init-State VC (§3.1): consume&rsquo;s initialize guarantee
+<code>last_x == 0</code> implies the <code>START</code> assertion.</li>
+<li><strong>Maintain across the frame</strong> — <code>consume_last_x</code> is in no other component&rsquo;s write set,
+so every other firing&rsquo;s global write frame carries the invariant for free; the property
+need not restate it at intermediate places.</li>
+<li><strong>Re-establish at the firing that writes it</strong> — the Pre-Assert VC discharges consume&rsquo;s
+<code>[-200,200]</code> compute assume from the carried <code>inConsumeRange(merged)</code> (§3.2), and the
+Next-Assert VC derives <code>after consume</code> from <code>track_x: last_x == instruct.x</code> plus that
+same carried range fact (§3.3).</li>
+<li><strong>Close the loop</strong> — <code>after consume</code> flows to <code>END</code> (control-point VC), and the
+Post-Pre VC <code>END ⊢ START</code> (§3.5) extends the invariant to every subsequent hyperperiod.</li>
+</ol>
+<p>The upstream range plumbing (<code>Pipeline_Ranges</code>) and the state plumbing
+(<code>Consume_State_Base</code>) enter by <strong>multiple inheritance</strong> — the flattened assertion set is
+their union, place by place (§2.3).</p>
+<hr>
+<h2 id="6-soundness-and-the-trusted-base">6. Soundness and the trusted base</h2>
+<h3 id="61-what-discharging-all-vcs-establishes">6.1 What discharging all VCs establishes</h3>
+<p>If every generated VC discharges, then: <strong>every place assertion of every concrete property
+holds whenever execution reaches that place, in every major frame, under any linear static
+schedule that conforms to the schedule schema.</strong> The argument is the induction of §1: the
+Init-State VC gives the base case, the Sequential VCs push assertions across each frame,
+the Post-Pre VC closes the frame-to-frame loop, and the Independence/Commutativity VCs
+reduce every schema-conforming order of the <code>split</code> branches to the one linearization the
+Sequential VCs analyzed. The Integration VCs certify the cross-component handshakes those
+steps (and the per-component verifications) rely on.</p>
+<h3 id="62-the-modular-architecture">6.2 The modular architecture</h3>
+<p>Verification is split into two layers connected by a shared contract interface:</p>
+<ul>
+<li><strong>Component level.</strong> Verus verifies each component&rsquo;s entry-point code against its local
+GUMBO contracts (the generated <code>requires</code>/<code>ensures</code> on <code>initialize</code> and the compute
+entry point) — this is §3.7&rsquo;s Contract Conformance.</li>
+<li><strong>System level.</strong> The VCs in this document reason about the schedule structure and the
+place assertions. They never see component code; they work with <strong>copies</strong> of the
+component contracts (<code>contracts.rs</code>).</li>
+</ul>
+<p>The separation is not just conceptual: component crates are compiled as <code>staticlib</code> (a
+Microkit platform requirement), so the proof crate <em>cannot</em> depend on them. The system
+proof is thereby forced to reason only about contract interfaces, never implementations —
+the assume-guarantee boundary is enforced by the build system.</p>
+<h3 id="63-the-trusted-assumptions-tcb">6.3 The trusted assumptions (TCB)</h3>
+<p>&ldquo;Every generated VC discharges&rdquo; does <strong>not</strong> by itself mean &ldquo;the system satisfies the
+properties.&rdquo; It means the properties hold <em>relative to</em> the following assumptions, which
+are discharged outside the system-level VC set or currently trusted. They are the trusted
+computing base (TCB) of the system proof, listed so the trust boundary is explicit and
+auditable:</p>
+<table>
+  <thead>
+      <tr>
+          <th>#</th>
+          <th>Trusted assumption</th>
+          <th>Discharged by</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>T1</td>
+          <td><strong>Compute conformance</strong> — each component&rsquo;s compute entry point satisfies its own compute contract</td>
+          <td>Per-component Verus run (<code>make -C crates/&lt;comp&gt; verus</code>)</td>
+      </tr>
+      <tr>
+          <td>T2</td>
+          <td><strong>Initialize conformance</strong> — each component&rsquo;s initialize entry point establishes its initialize guarantees (and its out-port integration guarantees)</td>
+          <td>Per-component Verus run</td>
+      </tr>
+      <tr>
+          <td>T3</td>
+          <td><strong>Contract identity</strong> — the contract copies the system proof reasons over are identical to the contracts the component proofs discharge</td>
+          <td>By construction: both are generated by HAMR from the same GUMBO source; an audit comparing the copies is optional reinforcement</td>
+      </tr>
+      <tr>
+          <td>T4</td>
+          <td><strong>Semantic correspondence</strong> — the deployed execution of a component (dispatch, port freezing, atomic read-compute-write) corresponds to the abstract component-firing step the VCs model</td>
+          <td>Trusted; rests on the HAMR runtime&rsquo;s implementation of the AADL execution semantics (<code>technical-approach.md</code>)</td>
+      </tr>
+  </tbody>
+</table>
+<p>Why each is load-bearing:</p>
+<ul>
+<li><strong>T1/T2.</strong> Every Next-Assert VC takes a component&rsquo;s guarantees as a premise, and the
+Init-State VC takes the initialize guarantees as premises — the contracts stand proxy
+for the real code (§3.7). The proxy is faithful only if the per-component verifications
+actually pass. Run <code>make verus</code> from <code>hamr/microkit/</code> to discharge T1/T2 and the system
+proof together.</li>
+<li><strong>T3.</strong> If a copied contract diverged from the one the component crate verified, T1/T2
+would be discharged against a different specification than the one the system proof
+consumes. Identity holds because a single generator derives both from one GUMBO source.</li>
+<li><strong>T4.</strong> T1/T2 are discharged as Verus proofs about Rust entry-point functions, but the
+VCs consume them as facts about abstract &ldquo;component firing&rdquo; steps over <code>SystemState</code>.
+That identification assumes the generated infrastructure delivers the read-compute-write
+execution model the VCs encode: inputs frozen at dispatch, one owning writer per
+channel, outputs released on completion, and no writes outside the modeled write set.
+This correspondence is not itself machine-checked; it is the deliberate, standard cost
+of assume-guarantee modularity.</li>
+</ul>
+<p>A practical corollary: because the VCs are <em>proved</em>, a runtime violation of a system
+assertion (e.g., observed by the optional runtime monitor) cannot be a logic error in the
+property chain — it localizes to a TCB breach: a component not conforming to its contract,
+an execution-model deviation (T4), or hardware/environment faults.</p>
+<hr>
+<h2 id="7-how-the-pieces-fit--a-synthesis">7. How the pieces fit — a synthesis</h2>
+<p>The <strong>component contracts</strong> (<code>contracts.rs</code>) are axioms discharged by the per-component
+Verus runs (T1/T2); the <strong>Integration VCs</strong> certify their boundary handshakes so those
+axioms are non-vacuous and so in-port assumes may be assumed at dispatch. Each <strong>property</strong>
+compiles its place assertions into <code>SystemState</code> predicates, with inheritance flattened to
+conjunction. The <strong>Init-State VC</strong> establishes the entry assertion; the <strong>Sequential VCs</strong>
+thread the assertions through the schedule — Pre-Assert VCs guard each covered component&rsquo;s
+preconditions, Next-Assert (component) VCs spend the component&rsquo;s guarantees to advance the
+assertion, Next-Assert (control point) VCs fan out and rejoin the parallel branches — and
+the <strong>Post-Pre VC</strong> closes the frame loop. The <strong>Non-Blocking</strong>, <strong>Preservation</strong>, and
+<strong>Commutativity</strong> VCs certify that the one linearization the Sequential chain reasoned
+about stands in for every legal interleaving of the <code>split</code>. Discharging all of them
+proves the system-level properties of the composed system — given only each component&rsquo;s
+local contract, and relative to the explicit trusted base of §6.</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><code>gumbo-system-properties.md</code> — authoring the <code>composition</code>/<code>property</code> syntax; the verified StructSplit example in full.</li>
+<li><code>gumbo-bnf.md</code>, <code>sysmlv2-gumbo-quick-reference.md</code> — the GUMBO expression language used in assertions.</li>
+<li><code>build-and-verification-commands.md</code> — the component-level Verus targets that discharge T1/T2.</li>
+<li><code>technical-approach.md</code> — the read-compute-write execution semantics underlying T4.</li>
+<li>Further generated-proof examples (INSPECTA-models @ 4da74d7):
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf/isolette">Isolette</a>
+(11 components, 15 properties, compute cases, latched fail-safe invariant) and
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf/micro-examples/microkit/system-verification/temp-control">TempControl</a>
+(event data ports, state-variable loop invariant).</li>
+</ul>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>

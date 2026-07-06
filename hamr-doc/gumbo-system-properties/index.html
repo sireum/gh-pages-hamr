@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="GUMBO System-Level Properties &ndash; Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-system-properties/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="GUMBO System-Level Properties – Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
+  <meta itemprop="wordCount" content="10438">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="GUMBO System-Level Properties – Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="gumbo-system-level-properties--overview">GUMBO System-Level Properties &ndash; Overview</h1>
+<p>This chapter provides an overview of how to specify and verify <strong>system-level properties</strong> in HAMR.
+HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language.  For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts.  System properties are proved when Verus verifies HAMR generated VCs.</p>
+<p>The current state of a the tool is a &ldquo;usable prototype&rdquo;.  The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future.   Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications.  All of these features will be added later.</p>
+<p>In our initial experiments, we have found that HAMR&rsquo;s agentic framework (using Claude code and Codex) can write and verify system specifications in a highly automated fashion.</p>
+<p>The worked example throughout this document is the <strong>Struct Split</strong> example
+(<code>examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example</code>), whose composition
+block and four properties are reproduced verbatim below and verify end-to-end. Two larger
+examples — the Isolette and TempControl system-verification models in
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models</a>
+— are excerpted where they demonstrate things Struct Split cannot (§10).</p>
+<h2 id="1-what-a-system-level-property-is-and-why">1. What a system-level property is (and why)</h2>
+<p>Component-level GUMBO contracts (integration <code>assume</code>/<code>guarantee</code>, compute contracts) specify the behavior of <strong>each component in isolation</strong>. However, we often want to specify and verify behavior properties that address the <strong>combined behavior of components</strong> as they are executed according to some schedule.  A common example is the formalization of &ldquo;system properties&rdquo; that specify some desired &ldquo;end-to-end&rdquo; behavior relating inputs occurring earlier in the schedule cycle (e.g., inputs from sensors or external data sources) to outputs occurring later in the schedule (e.g., outputs to actuators or external data sources).</p>
+<p>GUMBO system specifications layer on top of GUMBO component contracts to specify such properties.  In this approach, verification of system specifications does not &ldquo;see&rdquo; or utilize component implementations (e.g., Rust application code implementing a component).  Instead, system verification uses only information represented in component contracts; each component GUMBO contract provides a &ldquo;summary&rdquo; of the component behavior that is used as the basis of proving the desired system properties.</p>
+<p>Like GUMBO component contracts, GUMBO system specifications support both formal verification, testing, and run-time monitoring.  This chapter focuses on using system specifications for formal verification.</p>
+<p>This documentation uses a contrived example called <code>Struct Split</code> as an example.  The example implements a simple pipeline of components that manipulate a struct  of two <code>int32</code> fields named <code>x</code> and <code>y</code>.</p>
+<ul>
+<li>A <code>GenStruct</code> component generates a struct with arbitrary <code>x</code> and <code>y</code> values between -100 and 100 inclusive (the component has no inputs).  The range constraints on the <code>x</code> and <code>y</code> are expressed as GUMBO integration constraints on the output port</li>
+<li>A <code>SplitStruct</code> component receives a struct and splits out the <code>x</code> and <code>y</code> fields on two separate output ports so that the values can be processed in parallel.</li>
+<li>The processing of the <code>x</code> value proceeds as follows&hellip;
+<ul>
+<li>An <code>IncX</code> component takes in <code>x</code>, increments it, and places the new value of <code>x</code> on the output port.</li>
+<li>Then a <code>ClampX</code> component moves the value of <code>x</code> back to within the range <code>[-100,100]</code> if it happens to lie outside of it.</li>
+</ul>
+</li>
+<li>The processing of the <code>y</code> value proceeds as follows&hellip;
+<ul>
+<li>An <code>DecY</code> component takes in <code>y</code>, decrements it, and places the new value of <code>y</code> on the output port.</li>
+</ul>
+</li>
+<li>A <code>MergeStruct</code> component takes the individual <code>x</code> and <code>y</code> values and re-assembles them into a struct.</li>
+<li>A <code>ConsumeStruct</code> component receives the final struct and logs it.</li>
+</ul>
+<p>One can imagine several system properties for this example:</p>
+<ul>
+<li>Range properties: Struct values initially lie within a small range of -100 and 100.  The operations on values are single increments and decrements as the values flow through the system.  Even though the contracts of the components generally don&rsquo;t mention ranges of the values (except for a few cases), we should be able to prove that values entering <code>ConsumeStruct</code> are still within the tight expected ranges since all intermediate components either copy the values through or just do a single increment or decrement.</li>
+<li>Functional &ldquo;end-to-end&rdquo; properties:  We should be able to verify, e.g., that the final value of <code>x</code> flowing into <code>ConsumeStruct</code> is either (a) one greater than its initial value if the initial value is less than 100 or (b) equal to its initial value if the initial value was 100.</li>
+</ul>
+<p>The example is explicitly constructed to illustrate several concepts:</p>
+<ul>
+<li>the role that component independence and scheduling play in system specifications</li>
+<li>the interplay between component level contracts (which should generally be constructed to be independent of the system contracts) and system specifications (which specify important facts about the system execution and utilize component contracts to verify desired system properties).</li>
+</ul>
+<h3 id="11-scheduling-and-independence">1.1 Scheduling and Independence</h3>
+<p>First, the component computations have natural data dependences on other components leading to execution order dependences.   For example, the data dependences in the system sketch above imply that a system schedule should have&hellip;</p>
+<ul>
+<li><code>GenStruct</code> executed first</li>
+<li><code>SplitStruct</code> executed next</li>
+<li>then components that process of <code>x</code> and <code>y</code> should be scheduled before <code>MergeStruct</code></li>
+<li><code>ConsumeStruct</code> is scheduled last.</li>
+</ul>
+<p>Second, there is natural independence of the <code>x</code> and <code>y</code> processing, leading us to not care about the possible schedule order of the <code>x</code> and <code>y</code> steps.  The only thing to enforce is that <code>IncX</code> happens before <code>ClampX</code>.</p>
+<p>Thus, we can have the following cyclic schedules that satisfy the constraints above.</p>
+<p>Schedule 1: (<code>x</code> processing goes before <code>y</code> processing):</p>
+<ul>
+<li><code>GenStruct</code></li>
+<li><code>SplitStruct</code></li>
+<li><code>IncX</code></li>
+<li><code>ClampX</code></li>
+<li><code>DecY</code></li>
+<li><code>MergeStruct</code></li>
+<li><code>ConsumeStruct</code></li>
+</ul>
+<p>Schedule 2: (<code>y</code> processing goes before <code>x</code> processing):</p>
+<ul>
+<li><code>GenStruct</code></li>
+<li><code>SplitStruct</code></li>
+<li><code>DecY</code></li>
+<li><code>IncX</code></li>
+<li><code>ClampX</code></li>
+<li><code>MergeStruct</code></li>
+<li><code>ConsumeStruct</code></li>
+</ul>
+<p>Schedule 3: (<code>x</code> processing is interleaved with <code>y</code> processing):</p>
+<ul>
+<li><code>GenStruct</code></li>
+<li><code>SplitStruct</code></li>
+<li><code>IncX</code></li>
+<li><code>DecY</code></li>
+<li><code>ClampX</code></li>
+<li><code>MergeStruct</code></li>
+<li><code>ConsumeStruct</code></li>
+</ul>
+<p>Due to the above reasoning, we say that <code>IncX</code> &ldquo;may happen in parallel&rdquo; with <code>DecY</code> because the two are independent.  Similarly, <code>ClampX</code> &ldquo;may happen in parallel&rdquo; with <code>DecY</code> because the two are independent.  Even though we don&rsquo;t have true parallelism in our HAMR executions (except for multi-core, which we don&rsquo;t address here), we use the phrase &ldquo;X may happen in parallel with Y&rdquo; (MHIP(X,Y)) because it is a classic phrase/concept from concurrency theory indicating that two tasks are independent and thus may be scheduled in any order wrt each other (or even executed simultaneously).  MHIP(IncX,DecY) is reflected in schedules 1 and 3 in which the precedence of IncX and DecY is reversed.  MHIP(ClampX,DecY) is reflected in schedules 2 and 3 in which the precedence of ClampX and DecY is reversed.</p>
+<p>Note that MHIP(X,Y) is symmetric, i.e., if MHIP(X,Y) holds, then we also have MHIP(Y,X).</p>
+<p>Because HAMR components do not have shared state, we can tell if two components are independent within a system by analyzing the data flow implied by the system connection topology.  Our verification framework for system properties checks components for the MHIP parallel property.</p>
+<p>When we verify system properties, we want to avoid the burden of having to verify them for every possible schedule that appropriately addresses dependence notions.  Therefore, the HAMR system verification framework allows developers to specify a &ldquo;schedule schema&rdquo; that abstractly represents a family of possible schedules (e.g., the three schedules above) that conform to dependence and indendence notions that we have outlined above.</p>
+<p>For example, after introducing a few more ideas, we will end up writing a GUMBO schedule schema for our running example that looks like this.</p>
+<pre tabindex="0"><code>schema {
+  gen; // GenStruct
+  split_stage; // SplitStruct
+  split {
+    sequence { 
+      incx; // IncX
+      clampx // ClampX
+      },
+    sequence { 
+      decy // DecY
+    }
+  };
+  label branches_joined;
+  merge_stage; // MergeStruct
+  consume // ConsumeStruct
+}
+</code></pre><p>In the above, we see abbreviations like <code>gen</code> used for <code>GenStruct</code>.  We will see how to define these and use them as short-hand to reference component execution steps in schedule schema and in property specifications.  Names like <code>branches_joined</code> can be introduced to label specific control points of interest.</p>
+<p>The schema indicates both required sequencing (such as in <code>gen; split_stage</code> (i.e., <code>SplitStruct</code> must immediately follow <code>GenStruct</code>) as well as independence of the components mentioned in the <code>split</code> construct.  The <code>split</code> structure aligns with the MHIP concept: each item on one branch of the split may happen in parallel with each item on the other branch of the split.  GUMBO schedule schemas have an underlying Petri Net formalization that reflects these notions.</p>
+<p>There is a notion of schedule conformance to a schema: Schedule 1, 2, and 3 above all conform to the given schema because each of the orderings in the given schedules obeys the sequencing and independence properties expressed in the schema.
+The verification framework includes a step to check that HAMR schedule supplied for seL4 scheduling in the deployed system conforms to the given schema.</p>
+<p>Note that one can specify schema that is overly conservative wrt to independence notions.   For example, we could have&hellip;</p>
+<pre tabindex="0"><code>schema {
+  gen; // GenStruct
+  split_stage; // SplitStruct
+  incx; // IncX
+  split {
+    sequence { 
+      clampx // ClampX
+      },
+    sequence { 
+      decy // DecY
+    }
+  };
+  label branches_joined;
+  merge_stage; // MergeStruct
+  consume // ConsumeStruct
+}
+</code></pre><p>&hellip;which forces <code>IncX</code> to come before <code>DecY</code>.  In this case, Schedules 1 and 3 would conform to the schema, but not Schedule 2.</p>
+<p>We can even specify a complete linearization of tasks in a schedule&hellip;</p>
+<pre tabindex="0"><code>schema {
+  gen; // GenStruct
+  split_stage; // SplitStruct
+  incx; // IncX
+  clampx; // ClampX
+  decy; // DecY
+  merge_stage; // MergeStruct
+  consume // ConsumeStruct
+}
+</code></pre><p>In this case, only Schedule 1 would be conformant.</p>
+<p>The point here is that these last two scheduling schemas are overly conservative with respect to required ordering.  We could possibly use them for verification, but the verification would apply to fewer possible schedules.</p>
+<h3 id="12-illustration-of-component-contracts-as-a-foundation-not-a-complete-specification-of-behavior">1.2 Illustration of Component Contracts as a Foundation, not a Complete Specification of Behavior</h3>
+<p>In component-oriented development where the emphasis is on reusable components, one aims to design components to be re-useable, i.e., to be independent of a specific system context so that they can be reused in multiple systems.   With respect to component contracts, that means that we want our GUMBO component contracts to focus on the required behavior of the component itself, not on how the component deals with properties relevant to a larger system context.</p>
+<p>The component contracts in this example have been chosen to illustrate how component contracts can focus on their local behavior, but then how facts about the broader system context can be reasoned about in a layering on top of the component contracts.</p>
+<p>Let&rsquo;s look at each component&rsquo;s GUMBO component contracts</p>
+<p><strong>GenStruct</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def GenStruct :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port outstruct : DataPort { out :&gt;&gt; type : SysPropStructSplit_Data_Model::StructXY; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      integration
+        guarantee outstruct_range &#34;Both fields of the generated struct lie in [-100, 100].&#34;:
+          (-100 [i32] &lt;= outstruct.x) &amp; (outstruct.x &lt;= 100 [i32]) &amp;
+          (-100 [i32] &lt;= outstruct.y) &amp; (outstruct.y &lt;= 100 [i32]);
+
+      initialize
+        guarantee init_outstruct &#34;The output data port must be initialized.&#34;:
+          (outstruct.x == 0 [i32]) &amp; (outstruct.y == 0 [i32]);
+    }*/
+  }
+</code></pre><p>Here we use <em>integration constraints</em> to reflect the fact that field values of the generated structure are limited to the range of -100 to 100.   Note that we could also specify these range constraints as compute guarantees, but then we would lose the benefit if being able to utilize those contraints at the time of model assembly.</p>
+<p><em>Impact on model assembly integration constraint checking</em>: Phrasing the range constraints as integration constraints makes the constraints available for verification <em>before</em> system verification at <em>model assembly time</em>, i.e., by the HAMR SysML Logika Check action.  For any component&rsquo;s input port that connects to the <code>outstruct</code> port, the integration constraint checking will know the range of values guaranteed to be flowing from the <code>outstruct</code> port and will be able to use the fact in the process of trying to discharge any <code>assume</code> integration constraints on the connected input port.  For example, we&rsquo;ll see in the <code>SplitStruct</code> component whose <code>instruct</code> input is connected to <code>outstruct</code> that assumption made on the <code>instruct</code> port can be discharged using the fact represented by the <code>outstruct</code> guarantee above.</p>
+<p><em>Impact on system verification</em>:  The information about the range of values on the <code>outstruct</code> port will also be available for us as we perform system verification.  Specifically, after <code>GenStruct</code> is executed in the system schedule (and also after the system initialize phase completes), we will know that value on the <code>outstruct</code> port satisfies the range constraint.  We will be able to use that knowledge to make deductions about <code>outstruct</code> values as they flow into the inputs of other components.  For example, we may be able to use that knowledge to discharge any <code>compute</code> <code>assume</code> obligations on connected components.</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>:  When we implement our component application logic for <code>GenStruct</code>, e.g., in Rust and use Verus to verify the code against HAMR-generated Verus constracts derived from the GUMBO contracts above, we will be required to prove (via Verus) that any time we call the <code>put_outstruct</code> API method to put a value on the <code>outstruct</code> port, the argument to the <code>put_</code> method satisfies the constraints.   These steps in verifying via Verus that the Rust component application logic conforms to the contract allow us to trust that the constraints in the GUMBO contract are satisfied when we use them in integration constraint checking and system reasoning.</p>
+<p><strong>SplitStruct</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  part def SplitStruct :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port instruct : DataPort { in :&gt;&gt; type : SysPropStructSplit_Data_Model::StructXY; }
+    port xfield   : DataPort { out :&gt;&gt; type : Base_Types::Integer_32; }
+    port yfield   : DataPort { out :&gt;&gt; type : Base_Types::Integer_32; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      integration
+        assume instruct_range &#34;Incoming struct fields lie in [-100, 100].&#34;:
+          (-100 [i32] &lt;= instruct.x) &amp; (instruct.x &lt;= 100 [i32]) &amp;
+          (-100 [i32] &lt;= instruct.y) &amp; (instruct.y &lt;= 100 [i32]);
+        guarantee xfield_range &#34;xfield lies in [-100, 100].&#34;:
+          (-100 [i32] &lt;= xfield) &amp; (xfield &lt;= 100 [i32]);
+        guarantee yfield_range &#34;yfield lies in [-100, 100].&#34;:
+          (-100 [i32] &lt;= yfield) &amp; (yfield &lt;= 100 [i32]);
+
+      compute
+        guarantee split_x &#34;xfield equals the x field of the incoming struct.&#34;:
+          xfield == instruct.x;
+        guarantee split_y &#34;yfield equals the y field of the incoming struct.&#34;:
+          yfield == instruct.y;
+    }*/
+  }
+</code></pre><p>The <code>compute</code> contracts represent the local behavior of the component: the component copies the <code>x</code> and <code>y</code> values from the input struct onto separate output ports.</p>
+<p>The integration constraints in this case are overkill: too much of the system behavior constraints have been pushed down to the component.  Specifically, the act of struct splitting can be expected to work fine regardless of the specific values of the fields.  There is no need to limit the values to the ranges specified by the integration constraints.</p>
+<p>The best contract design for this component would be to eliminate the integration constraints.  However, we keep them in this contrived example to illustrate other aspects of how integration constraints are handled in VC generation and verification.</p>
+<p><em>Impact on model assembly integration constraint checking</em>: When performing HAMR model-level integration constraint checking at model assembly time, the checking will be able to verify that the <code>assume</code> constraint is satisfied because the <code>instruct</code> input is connected to the <code>outstruct</code> output port of the <code>GenStruct</code> component, which guarantees that its output value lies within the same range.</p>
+<p><em>Impact on system verification</em>: The integration <code>assume</code> on <code>instruct</code> is justified once, per connection, by the handshake with <code>GenStruct</code>&rsquo;s output guarantee (the same implication the assembly-time check verifies, re-established as an <em>Integration VC</em> in the generated system proof). After <code>SplitStruct</code> fires in the schedule, the system proof has both its compute guarantees (<code>xfield == instruct.x</code>, <code>yfield == instruct.y</code>) and its integration guarantees (each output in [-100, 100]) available as premises — so a property can establish range facts at the <code>after split_stage</code> place either directly from the output guarantees or by combining the field equalities with the range already known for <code>instruct</code>. In this example, both routes reach the same conclusion.  In contrast, in downstream components (which will omit integration constraints), we will reason about the outputs of components in terms of facts the system specs establish for inputs and the component contract.</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>:  The integration <code>assume</code> becomes an <code>ensures</code> clause on the generated <code>get_instruct</code> API method — the component body may rely on the incoming fields lying in [-100, 100] without checking them. Dually, the integration guarantees become <code>requires</code> clauses on <code>put_xfield</code> and <code>put_yfield</code>, so Verus demands proof that every value the implementation sends is in range. Because the implementation forwards fields of the input struct (whose range the <code>get_</code> ensures supplies), the obligations discharge directly.</p>
+<p><strong>IncX</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  part def IncX :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port inxfield  : DataPort { in :&gt;&gt; type : Base_Types::Integer_32; }
+    port outxfield : DataPort { out :&gt;&gt; type : Base_Types::Integer_32; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      compute
+        assume inxfield_bounded &#34;Overflow guard only: the input lies in a
+          |conservative [-1000, 1000] envelope so the increment cannot overflow.&#34;:
+          (-1000 [i32] &lt;= inxfield) &amp; (inxfield &lt;= 1000 [i32]);
+        guarantee incx &#34;Output is the input incremented by one.&#34;:
+          outxfield == inxfield + 1 [i32];
+    }*/
+  }
+</code></pre><p>Again, the <code>compute</code> guarantee represents the local behavior of the component: the value of <code>x</code> is incremented as it flows through the component.</p>
+<p>This component is written to be <strong>reusable</strong>. One possible approach would be to use integration constraints tying its input to [-100, 100] and its output to [-99, 101] — the ranges of this particular system. That design would push too much of the system context down into the component: a general-purpose increment stage should accept arbitrary values of <code>x</code>. The only thing it genuinely must guard against is overflow of the increment. Ideally the contract would assume just &ldquo;<code>inxfield</code> is below the i32 maximum,&rdquo; but GUMBO currently has no way to reference machine-integer bounds, so we adopt a conservative envelope of [-1000, 1000] — deliberately distinct from the [-100, 100] range of the system context, so the two are easy to tell apart in what follows. We also state the constraint as a <em>compute assume</em> rather than an integration assume, to illustrate how the two kinds of assumptions are handled differently by the verification machinery.</p>
+<p><em>Impact on model assembly integration constraint checking</em>: IncX no longer participates in assembly-time integration checking at all — there is no <code>assume</code> on its input port for the checker to discharge, and it offers no output guarantee for downstream checks to consume; the connection <code>splitter.xfield → incx.inxfield</code> needs no handshake. Note what is given up relative to the alternate design: assembly-time checking can no longer conclude anything about the range of values on <code>outxfield</code>. Recovering such derived facts is exactly what the system-level property layer is for.  Moreover, the current design is more reusable because the input ranges are more permissive.</p>
+<p><em>Impact on system verification</em>: A compute assume is a genuine <strong>per-dispatch precondition</strong>. Whenever a system property covers IncX (binds one of its <code>after</code> places — see §5 on contract projection), the proof must show that the facts carried into the <code>before incx</code> place imply <code>inxfield ∈ [-1000, 1000]</code> (the <em>Pre-Assert VC</em> of <code>gumbo-system-property-vcs.md</code>). Intuitively we expect this to be provable from the contracts of the components that precede IncX in the schedule schema: GenStruct guarantees the generated <code>x</code> lies in [-100, 100], and SplitStruct&rsquo;s compute guarantee forwards it unchanged — so the value reaching IncX lies in [-100, 100], comfortably inside [-1000, 1000]. §5–§6 show how this intuition is written down as a chain of &ldquo;place assertions&rdquo;, and the VCs document shows the mechanics of the formal proof. A second consequence: since IncX no longer publishes an output-range guarantee, any fact about <code>outxfield</code>&rsquo;s range must now be <em>derived</em> — from the compute guarantee <code>outxfield == inxfield + 1</code> combined with whatever input range the property carries into the dispatch.</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>: The <code>compute</code> <code>assume</code> is woven into the <code>requires</code> clause of the <code>timeTriggered</code> entry point, so the body may rely on <code>inxfield ∈ [-1000, 1000]</code> — which is exactly what Verus needs to prove that <code>v + 1</code> cannot overflow. The port APIs are now unconstrained: <code>get_inxfield</code> no longer <code>ensures</code> a range, and <code>put_outxfield</code> no longer <code>requires</code> one.</p>
+<p><strong>ClampX</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  part def ClampX :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port inxfield  : DataPort { in :&gt;&gt; type : Base_Types::Integer_32; }
+    port outxfield : DataPort { out :&gt;&gt; type : Base_Types::Integer_32; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      compute
+        compute_cases
+          case In_Range &#34;values already in [-100, 100] pass through unchanged&#34;:
+            assume (-100 [i32] &lt;= inxfield) &amp; (inxfield &lt;= 100 [i32]);
+            guarantee outxfield == inxfield;
+          case Above &#34;values above 100 saturate to 100&#34;:
+            assume inxfield &gt; 100 [i32];
+            guarantee outxfield == 100 [i32];
+          case Below &#34;values below -100 saturate to -100&#34;:
+            assume inxfield &lt; -100 [i32];
+            guarantee outxfield == -100 [i32];
+    }*/
+  }
+</code></pre><p>The compute contract captures the behavior of the component as follows: The component forwards its scalar input unchanged when it lies in [-100, 100] and saturates it to the nearest bound otherwise.</p>
+<p>ClampX carries <strong>no constraints beyond its compute cases</strong> — no integration constraints, and (unlike IncX and DecY) not even a compute assume. None are needed: the <code>compute_cases</code> are <em>total</em> — the three case assumptions cover every possible i32 input — the clamp performs no arithmetic that could overflow, and the output range is fully determined by the cases themselves. An alternate design might give integration constraint ranges, but as indicated in earlier discussions, that would be <em>over-constraining</em> the components behavior and would limit its reuse.  Without integration constraints, the component works correctly in any context and is maximally reusable.</p>
+<p><em>Impact on model assembly integration constraint checking</em>: Nothing to check — the connection <code>incx.outxfield → clampx.inxfield</code> carries no assume to discharge, and downstream checking receives no guarantee from <code>clampx.outxfield</code>.</p>
+<p><em>Impact on system verification</em>: ClampX imposes <strong>no proof obligation at its dispatch</strong> — with no assumes of any kind, its Pre-Assert VC is trivially true, and a property may cover it without carrying anything to its <code>before</code> place. When it is covered, all three compute cases are available as premises after it fires, and the prover selects the applicable case from whatever input fact the property carries (e.g., knowing <code>x1 ∈ [-99, 101]</code> at the <code>before clampx</code> place). The [-100, 100] output-range fact can be <em>derived</em> from the cases: In_Range yields <code>outxfield == inxfield ∈ [-100, 100]</code>, Above yields <code>100</code>, Below yields <code>-100</code>; in every case the output lies in [-100, 100].</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>: The three cases are woven as <code>ensures</code> implications on the <code>timeTriggered</code> entry point, and the body must satisfy all of them — straightforward, since the implementation&rsquo;s if/else mirrors the case structure. The port APIs carry no range contracts in either direction.</p>
+<p><strong>DecY</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  part def DecY :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port inyfield  : DataPort { in :&gt;&gt; type : Base_Types::Integer_32; }
+    port outyfield : DataPort { out :&gt;&gt; type : Base_Types::Integer_32; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      compute
+        assume inyfield_bounded &#34;Underflow guard only: the input lies in a
+          |conservative [-1000, 1000] envelope so the decrement cannot underflow.&#34;:
+          (-1000 [i32] &lt;= inyfield) &amp; (inyfield &lt;= 1000 [i32]);
+        guarantee decy &#34;Output is the input decremented by one.&#34;:
+          outyfield == inyfield - 1 [i32];
+    }*/
+  }
+</code></pre><p>DecY mirrors IncX: a reusable decrement stage whose only assumption is the guard against <em>underflow</em> of the decrement (the symmetric hazard — here it is the i32 <em>minimum</em> that GUMBO cannot reference, so the same conservative [-1000, 1000] envelope stands in).</p>
+<p>The impacts track IncX&rsquo;s exactly.</p>
+<p><em>Model assembly</em>: no handshake on <code>splitter.yfield → decy.inyfield</code>, and no published output range.</p>
+<p><em>System verification</em>: whenever a property covers DecY, its [-1000, 1000] compute assume must be discharged from the assertion carried to the <code>before decy</code> place — provable by the same intuition as for IncX, since GenStruct&rsquo;s guarantee and SplitStruct&rsquo;s forwarding deliver a <code>y</code> value in [-100, 100]; and the output range [-101, 99] must be derived from the compute guarantee <code>outyfield == inyfield - 1</code> plus the carried input range.</p>
+<p><em>Component Verus verification</em>: the assume is woven as a <code>requires</code> on <code>timeTriggered</code> — sufficient to prove <code>v - 1</code> cannot underflow — and the port APIs are unconstrained.</p>
+<p><strong>MergeStruct</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  //===============================================================================
+  //
+  //  M e r g e S t r u c t   Thread
+  //
+  //  Re-assembles a StructXY from its two scalar inputs.
+  //
+  //  NOTE: this component intentionally carries NO integration
+  //  constraints -- it makes no assumption about the ranges of its
+  //  inputs and offers no range guarantee on its output.  Its only
+  //  contract is the functional compute guarantee below.  Recovering
+  //  the output range is the motivating use case for the system-level
+  //  property feature (see the composition block in SysPropStructSplit.sysml).
+  //===============================================================================
+  part def MergeStruct :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port inxfield : DataPort { in :&gt;&gt; type : Base_Types::Integer_32; }
+    port inyfield : DataPort { in :&gt;&gt; type : Base_Types::Integer_32; }
+    port outstruct : DataPort { out :&gt;&gt; type : SysPropStructSplit_Data_Model::StructXY; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      compute
+        guarantee merge_x &#34;Output struct&#39;s x field equals the inxfield input.&#34;:
+          outstruct.x == inxfield;
+        guarantee merge_y &#34;Output struct&#39;s y field equals the inyfield input.&#34;:
+          outstruct.y == inyfield;
+    }*/
+  }
+</code></pre><p>MergeStruct&rsquo;s only contract is functional: two compute guarantees stating that the output struct&rsquo;s fields equal the respective scalar inputs. It makes <strong>no assumption</strong> about its inputs and offers <strong>no range guarantee</strong> on its output — as the NOTE in the model banner says, this is the deliberate design (not a specification flaw) that motivates the system-property feature: the range of the reassembled struct is a <em>system</em> fact, not a property of the merge operation itself.</p>
+<p><em>Impact on model assembly integration constraint checking</em>: The connections <code>clampx.outxfield → merger.inxfield</code> and <code>decy.outyfield → merger.inyfield</code> carry no assumes to discharge. More consequentially, the connection <code>merger.outstruct → consume.instruct</code> offers <strong>no producer-side guarantee</strong> — so nothing available at assembly time establishes the range of struct values flowing to ConsumeStruct. Whatever the consumer needs must be proved at the system level.</p>
+<p><em>Impact on system verification</em>: When a property covers MergeStruct, its contribution is exactly the two equalities <code>merged.x == inxfield</code> and <code>merged.y == inyfield</code> — nothing more. Any range (or value) fact about <code>merged</code> must be recovered by combining those equalities with facts the property has carried from the two branches to the join. That recovery is precisely Property 1 (<code>Merged_In_Consume_Range</code>) in §6.</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>: The woven <code>ensures</code> clauses force the implementation to copy its two inputs into the output struct&rsquo;s fields; <code>put_outstruct</code> carries no precondition, so no range reasoning is needed in the body.</p>
+<p><strong>ConsumeStruct</strong></p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  //===============================================================================
+  //
+  //  C o n s u m e S t r u c t   Thread
+  //
+  //  Sink component.  Receives a StructXY and logs it; has no output ports.
+  //  Carries a GUMBO state variable `last_x` that records the x field of the
+  //  most recently consumed struct -- persistent component state that the
+  //  system-level loop-invariant property (see the composition block in
+  //  SysPropStructSplit.sysml) reasons about across hyperperiod boundaries.
+  //===============================================================================
+  part def ConsumeStruct :&gt; Periodic_Rust_Thread {
+    //-- I n t e r f a c e  --
+    port instruct : DataPort { in :&gt;&gt; type : SysPropStructSplit_Data_Model::StructXY; }
+
+    //-- B e h a v i o r    C o n s t r a i n t s --
+    language &#34;GUMBO&#34; /*{
+      state
+        last_x: Base_Types::Integer_32;
+
+      initialize
+        guarantee init_last_x &#34;The state variable starts at zero.&#34;:
+          last_x == 0 [i32];
+
+      compute
+        assume instruct_range &#34;Incoming struct fields lie in [-200, 200].&#34;:
+          (-200 [i32] &lt;= instruct.x) &amp; (instruct.x &lt;= 200 [i32]) &amp;
+          (-200 [i32] &lt;= instruct.y) &amp; (instruct.y &lt;= 200 [i32]);
+        guarantee track_x &#34;last_x records the x field of the most recently consumed struct.&#34;:
+          last_x == instruct.x;
+    }*/
+  }
+</code></pre><p>ConsumeStruct is the pipeline&rsquo;s sink. Its compute assume is a contrived <strong>defensive precondition</strong>: the component is specified (and its implementation verified) only for structs whose fields lie in [-200, 200] — a deliberately loose envelope around anything the pipeline could produce.  And this specification is chosen to motivate how we can use system reasoning to satisfy the assumption even though contract of the preceding component is not directly strongly enough to satisfy it.</p>
+<p>Another contrived feature of this component is the <code>last_x</code> state variable, which we introduce to illustrate facts that we want to reason about across schedule boundaries (i.e., from the end of the schedule back to the beginning of the schedule as it cycles/loops).   The guarantee <code>track_x</code> latches the input&rsquo;s <code>x</code> field into the GUMBO state variable <code>last_x</code> on every dispatch, and the initialize guarantee pins the latch&rsquo;s starting value; together they are the raw material for the loop-invariant (i.e., schedule cycle) property (Property 3 in §6).</p>
+<p><em>Impact on model assembly integration constraint checking</em>: The [-200, 200] constraint is a <em>compute</em> assume, not an integration assume, so assembly-time integration checking does not attempt to discharge it — and could not if it tried: the upstream producer, MergeStruct, publishes no integration guarantee for the checker to use.</p>
+<p><em>Impact on system verification</em>: Whenever a property covers ConsumeStruct (binds <code>after consume</code>), the [-200, 200] compute assume becomes a Pre-Assert obligation at the <code>before consume</code> place. The intuition for why it is provable from the upstream contracts along the schedule schema: GenStruct produces <code>x, y ∈ [-100, 100]</code>; the x branch increments (to [-99, 101]) and then clamps back into [-100, 100]; the y branch decrements to [-101, 99]; and MergeStruct reassembles exactly those values — so both fields of the arriving struct lie within [-101, 100], comfortably inside [-200, 200]. §6 writes this chain down as place assertions, and <code>gumbo-system-property-vcs.md</code> shows each link discharged as a VC.</p>
+<p><em>Impact on component implementation verification (e.g., by Verus)</em>: The compute assume is woven as a <code>requires</code> on the <code>timeTriggered</code> entry point (the body may rely on it), <code>track_x</code> becomes an <code>ensures</code> relating the post-state variable to the input, and the initialize guarantee obliges <code>initialize()</code> to set <code>last_x</code> to zero.</p>
+<h2 id="2-where-the-specification-lives">2. Where the specification lives</h2>
+<p>Now that we have discussed the intuition behind system specifications and their relationship to component specifications, we&rsquo;ll start with discuss how the above concepts are actually achieved.</p>
+<p>A system-level specification is a <code>language &quot;GUMBO&quot;</code> block placed <strong>inside the top-level
+<code>System</code> part def</strong>, after the <code>allocation</code> declarations. (The delimiters are <code>/*{</code> … <code>}*/</code>,
+exactly as for component GUMBO blocks; the type checker parses the contents.)</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def StructSplit_System :&gt; System {
+  part gen : Gen_Process;         // … process instances …
+  connection c1 : PortConnection connect gen.outstruct to splitter.instruct;   // … connections …
+  allocation pb0 : Deployment_Properties::Actual_Processor_Binding allocate gen to struct_split_processor;
+
+  language &#34;GUMBO&#34; /*{
+    functions           // optional: reusable spec functions
+      …
+    composition nominal {
+      components …
+      ports …
+      state …           // optional: aliases for component GUMBO state variables
+      schema { … }
+      property … { … }
+    }
+  }*/
+}
+</code></pre><p>Inside the block, <code>functions</code> (optional) is a <strong>sibling</strong> of <code>composition &lt;name&gt; { … }</code>.  Just as in GUMBO component contract specifications, we can use these functions to defined named properties or helper predicates that we want to use in the system specification.</p>
+<p>The composition name (<code>nominal</code> here) names this system-level specification; codegen derives
+a <code>sys_proof_&lt;name&gt;</code> crate from it (<code>sys_proof_nominal</code>).  Multiple <code>composition</code> blocks are allowed.  HAMR will generate a distinct <code>sys_proof_&lt;name&gt;</code> crate for each one.</p>
+<h2 id="3-the-composition-block">3. The <code>composition</code> block</h2>
+<h3 id="31-functions--reusable-spec-patterns">3.1 <code>functions</code> — reusable spec patterns</h3>
+<p>This section contains ordinary GUMBO function definitions, identical in form to component-level or library GUMBO functions. Use them to specify predicates that recur across properties.  Some examples are given below.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def inRange100(v: Base_Types::Integer_32): Base_Types::Boolean :=
+    (-100 [i32] &lt;= v) &amp; (v &lt;= 100 [i32]);
+  def inConsumeRange(s: SysPropStructSplit_Data_Model::StructXY): Base_Types::Boolean :=
+    (-200 [i32] &lt;= s.x) &amp; (s.x &lt;= 200 [i32]) &amp;
+    (-200 [i32] &lt;= s.y) &amp; (s.y &lt;= 200 [i32]);
+  def inRange200(v: Base_Types::Integer_32): Base_Types::Boolean :=
+    (-200 [i32] &lt;= v) &amp; (v &lt;= 200 [i32]);
+  def mergedReflectsGen(m: SysPropStructSplit_Data_Model::StructXY,
+                        g: SysPropStructSplit_Data_Model::StructXY): Base_Types::Boolean :=
+    ((g.x &lt; 100 [i32]) implies (m.x == g.x + 1 [i32])) &amp;
+    ((g.x == 100 [i32]) implies (m.x == 100 [i32])) &amp;
+    (m.y == g.y - 1 [i32]);
+</code></pre><p><strong>Bundle recurring conjunct groups into one function.</strong> Because related properties often
+restate the same group of facts at several places (§5), a group of facts that always &ldquo;travels&rdquo; through schedule schema togther should be a single function — the restatements collapse to one call, the
+definition stays single-sourced, and a change to the group cannot silently diverge between
+properties. (The Isolette does this with <code>sysProp_REQ_MRI_7</code>, <code>sysProp_REQ_MMI_5</code>, etc.)</p>
+<p><strong>Name the property itself as a function when you can.</strong> <code>inConsumeRange</code> <em>is</em> Property 1&rsquo;s
+claim and <code>mergedReflectsGen</code> <em>is</em> Property 2&rsquo;s — each stated once, given a meaningful name,
+and bound at a single place in the concrete property (§6). The function name then serves as
+the property&rsquo;s citable statement in reviews and assurance arguments.</p>
+<h3 id="32-components--short-aliases-for-thread-instances">3.2 <code>components</code> — short aliases for thread instances</h3>
+<p>Each entry aliases a fully-qualified <strong>thread instance</strong> path (<code>&lt;process-instance&gt;.&lt;thread-instance&gt;</code>)
+to a short name used everywhere else in the composition and in the schema. This reduces effort in writing specifications.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">components
+  gen         = gen.gen;             // process `gen`, thread `gen`
+  split_stage = splitter.splitter;
+  incx        = incx.incx;
+  clampx      = clampx.clampx;
+  decy        = decy.decy;
+  merge_stage = merger.merger;
+  consume     = consume.consume;
+</code></pre><h3 id="33-ports--named-handles-for-the-values-properties-reason-about">3.3 <code>ports</code> — named handles for the values properties reason about</h3>
+<p>Each entry aliases <code>&lt;component-alias&gt;.&lt;port&gt;</code>. In assertions the alias denotes the port&rsquo;s
+<strong>value</strong> (for a struct port, use <code>.field</code> access, e.g. <code>merged.x</code>).</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">ports
+  gen_out = gen.outstruct;      // StructXY
+  x0      = split_stage.xfield; // Integer_32
+  x1      = incx.outxfield;
+  x2      = clampx.outxfield;
+  merged  = merge_stage.outstruct;
+</code></pre><h3 id="34-state--aliases-for-component-gumbo-state-variables-optional">3.4 <code>state</code> — aliases for component GUMBO state variables (optional)</h3>
+<p>When properties refer to a component&rsquo;s persistent GUMBO <code>state</code> variable, alias it here as
+<code>&lt;alias&gt; = &lt;component-alias&gt;.&lt;stateVar&gt;</code>. Struct Split aliases ConsumeStruct&rsquo;s latch:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  consume_last_x = consume.last_x;
+</code></pre><p>The Isolette does the same for the mode/command state its properties track:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  ma_lastCmd    = ma.lastCmd;
+  mmi_lastCmd   = mmi.lastCmd;
+  reg_last_mode = mrm.lastRegulatorMode;
+</code></pre><h3 id="35-schema--the-abstract-schedule">3.5 <code>schema</code> — the abstract schedule</h3>
+<p>The schema describes the order in which the components fire within one major frame — the
+abstract control structure the proof reasons over. It is built from:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Construct</th>
+          <th>Meaning</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>comp</code></td>
+          <td>fire component <code>comp</code> (a bare component alias)</td>
+      </tr>
+      <tr>
+          <td><code>sequence { a; b; … }</code></td>
+          <td>fire <code>a</code>, then <code>b</code>, … in order</td>
+      </tr>
+      <tr>
+          <td><code>split { seqA, seqB, … }</code></td>
+          <td>independent (parallel) branches that rejoin afterwards</td>
+      </tr>
+      <tr>
+          <td><code>label NAME;</code></td>
+          <td>name a control point (typically a branch join) so properties can assert <code>at NAME</code></td>
+      </tr>
+      <tr>
+          <td><em>(implicit)</em> <code>START</code> / <code>END</code></td>
+          <td>the frame&rsquo;s entry/exit control points, for loop invariants</td>
+      </tr>
+  </tbody>
+</table>
+<p>Note the punctuation: <code>;</code> separates the elements of a sequence (order is claimed), while
+<code>,</code> separates the branches of a <code>split</code> (order is deliberately <em>not</em> claimed).</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">schema {
+  gen;
+  split_stage;
+  split {
+    sequence { incx; clampx },   // a multi-element branch: incx, then clampx
+    sequence { decy }
+  };
+  label branches_joined;         // the join point after the two branches
+  merge_stage;
+  consume
+}
+</code></pre><p><code>split</code> models genuine independence: the branches must not interfere (codegen emits
+<em>Commutativity</em> and <em>Independence</em> VCs that check this), and at the join the post-conditions
+of <strong>all</strong> branches hold simultaneously — so no cross-branch frame condition is needed. Use a
+plain <code>sequence</code> (or bare list) when stages are strictly ordered.</p>
+<p>Schemas scale to realistic systems. The Isolette&rsquo;s schema has eleven components, two
+splits with multi-element branches, and a label naming the point <em>between</em> the first join
+and the second split (a point no <code>before</code>/<code>after</code> name can reach):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">schema {
+  split {
+    sequence { oi },
+    sequence { ts }
+  };
+  label ts_oi_done;
+  split {
+    sequence { drf; mri; mrm; mhs },
+    sequence { dmf; mmi; mmm; ma }
+  };
+  hs
+}
+</code></pre><h4 id="places-and-their-names">Places and their names</h4>
+<p>Assertions are bound to <strong>places</strong> — the points between component execution in a schedule schema — via the position names of §4.1. The rules:</p>
+<ul>
+<li><strong>Consecutive elements share a place</strong>: <code>after incx</code> and <code>before clampx</code> are two names
+for the <em>same</em> place (likewise Isolette&rsquo;s <code>after mrm</code> ≡ <code>before mhs</code>). All names of a
+place are synonyms, and a property may bind a given place through <strong>only one</strong> of its
+names (binding both is an error). Struct Split&rsquo;s <code>Pipeline_Ranges</code> exploits this: its
+single <code>after incx</code> binding is both IncX&rsquo;s post-fact and the fact ClampX&rsquo;s compute cases
+dispatch on. Pick the synonym that names the <em>role</em> the assertion plays — Struct Split
+binds <code>before consume</code> (not <code>after merge_stage</code>) for the fact that discharges the
+consumer&rsquo;s precondition. Note that generated code uses one canonical identifier per place
+regardless of which synonym bound it: a <code>before consume</code> binding appears in
+<code>sys_proof_&lt;name&gt;</code> under the place name <code>after_merge_stage</code>.</li>
+<li><strong>Labels are optional and purely naming</strong> — never structural. Every point exists in the
+schema whether or not it is labeled; an unlabeled point simply cannot be bound (it
+carries <code>true</code>). A label is needed exactly when a property wants to bind a point with no
+unambiguous derived name (like <code>ts_oi_done</code> above). When a point has both a label and a
+derived name, binding the <strong>label</strong> is the edit-stable choice: it names the point by
+structural role, so inserting a component later does not silently re-point the binding
+the way <code>before &lt;next-component&gt;</code> would.</li>
+<li><strong><code>at &lt;component&gt;</code> is illegal</strong> — it does not say which side of the dispatch is meant;
+use <code>before</code>/<code>after</code>.</li>
+</ul>
+<h2 id="4-properties">4. Properties</h2>
+<p>A <code>property</code> binds <strong>place assertions</strong> (aka <strong>system assertions</strong>) to points in the schedule.
+(ToDo: <code>property</code> may not be the best name for this concept, as it is actually a collection of assertions.  It&rsquo;s more like a proof outline - a collection of assertions positioned in the schedule schema as needed to established the particular property that you have in mind.)
+A concrete <code>property</code> becomes a proof obligation; an <code>abstract property</code> does not (it exists only to be inherited).</p>
+<h3 id="41-place-assertion-system-assertion-clauses">4.1 Place-assertion (System assertion) clauses</h3>
+<pre tabindex="0"><code>&lt;position&gt; &lt;target&gt; [&#34;optional description&#34;] : &lt;boolean-expr&gt; ;
+</code></pre><table>
+  <thead>
+      <tr>
+          <th>Position + target</th>
+          <th>Assertion holds …</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>after &lt;comp&gt;</code></td>
+          <td>immediately after <code>comp</code> fires (its guarantees are available)</td>
+      </tr>
+      <tr>
+          <td><code>before &lt;comp&gt;</code></td>
+          <td>immediately before <code>comp</code> fires (its compute <code>assume</code> must follow from here)</td>
+      </tr>
+      <tr>
+          <td><code>at &lt;label&gt;</code></td>
+          <td>at a named control point (e.g. a branch join)</td>
+      </tr>
+      <tr>
+          <td><code>at START</code> / <code>at END</code></td>
+          <td>at frame entry / exit — used for <strong>loop invariants</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>The optional description may span lines using <code>|</code> continuation (as in component GUMBO).
+Expressions use the full GUMBO expression language (see <code>gumbo-bnf.md</code>): <code>&amp;</code>/<code>|</code>/<code>not</code>
+(non-short-circuit), <code>and</code>/<code>or</code>/<code>implies</code> (short-circuit), <code>==</code>/<code>!=</code>/<code>&lt;</code>/<code>&lt;=</code>, arithmetic,
+typed literals <code>[i32]</code>/<code>[s32]</code>/<code>[f32]</code>, <code>.field</code> access, port and state aliases, and the
+function-call implication <code>'-&gt;:'(antecedent, consequent)</code> used by the Isolette model.</p>
+<h3 id="42-concrete-vs-abstract-and-inheritance">4.2 Concrete vs. abstract, and inheritance</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">abstract property Pipeline_Ranges &#34; … &#34; { … }              // reusable, no proof target
+property Merged_In_Consume_Range :&gt; Pipeline_Ranges { … }  // concrete, inherits the carries
+abstract property Pipeline_Functional :&gt; Pipeline_Ranges { … }   // an abstract extending an abstract
+property Consume_Range_Loop_Invariant :&gt; Pipeline_Ranges, Consume_State_Base { … }  // multiple inheritance
+</code></pre><p>The semantics is <strong>flattening with conjunction</strong>:</p>
+<ul>
+<li>A property&rsquo;s <em>effective</em> binding set is its parent&rsquo;s effective set (transitively)
+extended with its own; <strong>multiple inheritance</strong> takes the union across all parents.</li>
+<li>When two contributions bind the <strong>same place</strong>, the assertions are <strong>conjoined</strong> there.
+This is what lets <code>Pipeline_Functional</code> add value-equality carries onto the same places
+where <code>Pipeline_Ranges</code> already carries range facts. (Unbound places are <code>true</code>, and
+conjunction with <code>true</code> is identity, so sparse bases and children flatten cleanly.)</li>
+<li>Inheritance therefore only <strong>strengthens</strong>: a child implies its parent at every place.
+There is deliberately no override/weaken form (SysMLv2&rsquo;s <code>:&gt;&gt;</code> redefinition is <em>not</em>
+supported here) — replacing a parent&rsquo;s binding could silently drop a safety assertion.</li>
+<li>A concrete property generates exactly the VC set it would have had if its effective
+bindings were written inline. An <code>abstract</code> property is a base only: <strong>no VCs and no
+runtime-monitor checks</strong> are generated for it. Parents must be sibling properties of the
+same composition, and the inheritance graph must be acyclic.</li>
+</ul>
+<h3 id="43-property-name--verification-target">4.3 Property name → verification target</h3>
+<p>Each concrete property name maps to a lowercased proof target: <code>Merged_In_Consume_Range</code> →
+<code>merged_in_consume_range</code>, <code>Consume_Range_Loop_Invariant</code> →
+<code>consume_range_loop_invariant</code>. Abstract properties produce no target.</p>
+<h3 id="44-loop-invariants-at-start--at-end">4.4 Loop invariants: <code>at START</code> / <code>at END</code></h3>
+<p>Properties over <strong>state variables</strong> can assert facts that hold at the frame boundaries.
+Codegen closes the loop with two obligations: the initial system state (after all
+<code>initialize</code> entry points) must establish the <code>START</code> assertion, and the <code>END</code> assertion
+must re-establish <code>START</code> (the <em>Post-Pre</em> VC) — so an invariant asserted at both
+boundaries holds <strong>in every cycle, forever</strong>. The pattern, from
+<code>Consume_Range_Loop_Invariant</code> (§6):</p>
+<ol>
+<li><code>at START: inRange200(consume_last_x)</code> — established initially by ConsumeStruct&rsquo;s
+initialize guarantee <code>last_x == 0</code>.</li>
+<li>Between START and consume&rsquo;s firing, nothing needs restating: <code>consume_last_x</code> is in no
+other component&rsquo;s write set, so the generated write frames preserve it for free.</li>
+<li><code>after consume: inRange200(consume_last_x)</code> — re-established by consume&rsquo;s compute
+guarantee <code>last_x == instruct.x</code> together with the carried <code>inConsumeRange(merged)</code>
+fact at consume&rsquo;s dispatch place.</li>
+<li><code>at END: inRange200(consume_last_x)</code> — closes the loop (<code>END ⊢ START</code>).</li>
+</ol>
+<p>The same pattern carries much stronger safety arguments. The Isolette&rsquo;s
+<code>Regulator_Failsafe_Latching</code> asserts
+<code>FailedModeImpliesHeatOff(reg_last_mode, heat_control)</code> at <code>START</code>, across the regulator
+chain, and at <code>END</code>; combined with MRM&rsquo;s absorbing Failed mode, the discharged Post-Pre VC
+yields <em>&ldquo;once the regulator fails, the heat stays off forever.&rdquo;</em> TempControl&rsquo;s
+<code>Control_Invariant_Base</code> uses the frame boundaries to carry the control component&rsquo;s own
+compute assumes as a system-level invariant.</p>
+<h3 id="45-event-data-ports-and-current-limitations">4.5 Event data ports, and current limitations</h3>
+<p>System assertions may range over <strong>event data port</strong> channels; the channel value is an
+option (a message may or may not be present in a frame), and <code>HasEvent(...)</code> guards
+access, exactly as in component compute contracts. From TempControl&rsquo;s <code>TC_Req_01</code>:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">after control &#34;post-control: the fan state reflects the just-sensed temperature&#34;:
+  &#39;-&gt;:&#39;(HasEvent(sensedTemp) and (not sv_fanError &amp; sensedTemp.degrees &lt; sv_currentSetPoint.low.degrees),
+        sv_currentFanState == FanCmd.Off);
+</code></pre><p>Current limitation: <strong><code>In(...)</code> (pre-state reference) is not yet supported in
+system-property assertions</strong> — a pre/post relationship across one firing (e.g. &ldquo;the fan
+state is unchanged when the temperature is in range&rdquo;) cannot yet be stated directly at the
+system level. The workaround is a component state variable that latches the prior value,
+reasoned about with the loop-invariant pattern of §4.4.</p>
+<h2 id="5-the-modular-proof-model-essential-mental-model">5. The modular proof model (essential mental model)</h2>
+<p>The system proof is <strong>modular and Hoare-style</strong>. For each place in the schedule a property
+binds an assertion (unbound places carry <code>true</code>), and codegen emits, per schedule transition:</p>
+<ul>
+<li>a <strong>Pre-Assert VC</strong>: <code>assertion(before C)  ⟹  C's compute assume</code> (you may run <code>C</code> only
+if its precondition holds here), and</li>
+<li>a <strong>Next-Assert VC</strong>: <code>assertion(before C) ∧ C's integration assumes ∧ frame(C) ∧ C's guarantees  ⟹  assertion(after C)</code>.</li>
+</ul>
+<p>A component&rsquo;s <em>integration</em> assumes (in-port constraints) are handled by a separate,
+per-connection <strong>Integration VC</strong> (<code>sender's guarantee ⟹ receiver's assume</code>), which is why
+the Next-Assert may simply assume them at each dispatch. (Toolchains predating this
+folding — including the one that generated this repository&rsquo;s example crate — discharge the
+integration assumes at the Pre-Assert instead; both forms are sound, and the authoring
+guidance below is the same either way. See <code>gumbo-system-property-vcs.md</code> §3.2.)</p>
+<p>Three consequences drive how you write properties:</p>
+<ol>
+<li>
+<p><strong>Contract projection.</strong> Per property, a component&rsquo;s contract is used <strong>only if the
+property binds one of that component&rsquo;s <code>after</code> places</strong> — otherwise the contract is
+projected to <code>true</code> and only the component&rsquo;s write frame participates. The smoke-test
+property <code>Gen_Range_Sanity</code> binds only <code>after gen</code>, so IncX/ClampX/DecY/Merge/Consume
+generate no assume obligations at all. The moment a property binds <code>after incx</code>, IncX&rsquo;s
+assumes must be discharged — which needs a fact at the <code>before incx</code> place. Compare
+<code>Merged_In_Consume_Range</code> (consume&rsquo;s <code>[-200,200]</code> assume projected away) with
+<code>Consume_Range_Loop_Invariant</code> (binds <code>after consume</code>, so that assume becomes a real
+obligation — discharged by the same <code>inConsumeRange(merged)</code> fact the property carries).</p>
+</li>
+<li>
+<p><strong>Facts do not flow implicitly between places.</strong> Each VC sees only the assertion at its
+own place. To make a fact available where it is needed you must <strong>assert it there</strong>:</p>
+<ul>
+<li>to discharge a component&rsquo;s assume, put the needed fact at its <code>before</code> place
+(the &ldquo;branch entry&rdquo; pattern);</li>
+<li>to make a branch&rsquo;s result available to the merge, assert it at the join <code>label</code>;</li>
+<li>to carry a value across a step that doesn&rsquo;t touch it, rely on the generated <strong>write
+frame</strong> (each component leaves everything outside its write set unchanged) and restate
+the fact at the next place.</li>
+</ul>
+<p>This is why the abstract bases restate the range/equality at <code>after gen</code>, <code>after split_stage</code>, <code>before incx</code>, <code>after incx</code>, <code>at branches_joined</code>, and so on — the chain of
+carries <strong>is</strong> the proof. Factoring that chain into an <code>abstract property</code> is the
+recommended way to avoid repeating it across related properties.</p>
+</li>
+<li>
+<p><strong>Properties are proved independently.</strong> Each property&rsquo;s VCs see only its <em>own</em>
+(flattened) assertions — never another property&rsquo;s. A fact another property establishes
+must be restated (or inherited) to be used. The failure mode is benign: an omission
+fails loudly as an unprovable VC naming the missing premise.</p>
+</li>
+</ol>
+<p><code>at START</code> / <code>at END</code> close a <strong>hyperperiod loop invariant</strong>: codegen emits a <em>Post-Pre</em> VC
+requiring <code>END ⟹ START</code>, so an invariant asserted at both boundaries is proved to hold every
+cycle (§4.4).</p>
+<h2 id="6-worked-example-verified-verbatim">6. Worked example (verified verbatim)</h2>
+<h3 id="61-how-system-property-verification-fits-the-developer-workflow">6.1 How system-property verification fits the developer workflow</h3>
+<p>System-property work starts from <strong>properties the developer already has in mind</strong> —
+claims they believe hold of the system&rsquo;s execution and want machine-checked. Two
+archetypes recur. First, <em>&ldquo;every component is dispatched within its contract&rdquo;</em>: each
+component&rsquo;s compute <code>assume</code> should hold at every dispatch, established by what the rest
+of the system does upstream. ConsumeStruct is our running example — its defensive
+[-200, 200] assume is a per-dispatch precondition that nothing at the component level
+justifies, because its producer (MergeStruct) publishes no guarantee. Second,
+<em>end-to-end functional results</em>: outputs late in the schedule should relate to inputs
+generated early (here, the consumed struct should be a deterministic function of the
+generated one).</p>
+<p>The method, step by step:</p>
+<ol>
+<li><strong>Write the property as a GUMBO function.</strong> <code>inConsumeRange(s)</code> <em>specifies</em> our first &ldquo;in mind&rdquo;
+claim as a GUMBO function; <code>mergedReflectsGen(m, g)</code> <em>specifies</em> the second.
+A named function gives the claim a single-sourced, citable statement (§3.1) that
+assertions can bind at a place.</li>
+<li><strong>Choose the place where the property should hold.</strong> Both of our claims are about what
+<em>reaches the consumer</em>, so their natural home is <code>before consume</code> — the place where
+ConsumeStruct is dispatched.</li>
+<li><strong>Sketch the proof backwards through the schema.</strong> Ask, for the chosen place: which
+component establishes this fact, and what must be true <em>before that component fires</em>?
+Repeat until you reach facts that component contracts supply directly (GenStruct&rsquo;s
+integration guarantee, initialize guarantees). The answers become <strong>supporting
+assertions</strong> at intermediate places: facts that discharge each covered component&rsquo;s
+compute <code>assume</code> at its <code>before</code> place, branch results made available at the join
+label, and restatements that carry a fact across steps that do not touch it (§5).</li>
+<li><strong>Factor shared base facts into <code>abstract property</code> bases.</strong> Related properties tend
+to need the same supporting chains. Stating them once as an abstract property and
+inheriting via <code>:&gt;</code> (§4.2) keeps each concrete property down to its actual conclusion.</li>
+</ol>
+<p>With that method in mind, here are the three properties we verify, stated informally:</p>
+<ol>
+<li><strong>Merged_In_Consume_Range</strong> — the struct handed to ConsumeStruct always lies within
+[-200, 200] on both fields; i.e., ConsumeStruct&rsquo;s defensive compute assume is
+satisfied on every dispatch, in every frame.</li>
+<li><strong>End_To_End_Functional</strong> — the struct arriving at the consumer is exactly
+<code>(gen.x + 1 saturated at 100, gen.y - 1)</code>: the generated values, transformed by the
+two branches, reassembled without loss.</li>
+<li><strong>Consume_Range_Loop_Invariant</strong> — in every hyperperiod, the value latched in
+ConsumeStruct&rsquo;s <code>last_x</code> state variable lies in [-200, 200].</li>
+</ol>
+<p>(A fourth concrete property, <code>Gen_Range_Sanity</code>, is a one-step toolchain smoke test.)
+After the model text below, §6.3 explains how the properties are verified by reading
+their assertion chains as proofs.</p>
+<h3 id="62-the-composition-block">6.2 The composition block</h3>
+<p>The full composition block from <code>SysPropStructSplit.sysml</code> — this verifies with <strong>0 errors</strong>:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">language &#34;GUMBO&#34; /*{
+
+  functions
+
+    // Repeated range predicates, factored as GUMBO functions (spec-pattern reuse).
+    def inRange100(v: Base_Types::Integer_32): Base_Types::Boolean :=
+      (-100 [i32] &lt;= v) &amp; (v &lt;= 100 [i32]);
+
+    def inConsumeRange(s: SysPropStructSplit_Data_Model::StructXY): Base_Types::Boolean :=
+      (-200 [i32] &lt;= s.x) &amp; (s.x &lt;= 200 [i32]) &amp;
+      (-200 [i32] &lt;= s.y) &amp; (s.y &lt;= 200 [i32]);
+
+    def inRange200(v: Base_Types::Integer_32): Base_Types::Boolean :=
+      (-200 [i32] &lt;= v) &amp; (v &lt;= 200 [i32]);
+
+    // The end-to-end functional result, named as a spec function: the struct
+    // arriving at the consumer equals (g.x + 1 saturated at 100, g.y - 1).
+    // ClampX&#39;s saturation only bites at g.x == 100, so the x field is stated
+    // as a case split on g.x.
+    def mergedReflectsGen(m: SysPropStructSplit_Data_Model::StructXY,
+                          g: SysPropStructSplit_Data_Model::StructXY): Base_Types::Boolean :=
+      ((g.x &lt; 100 [i32]) implies (m.x == g.x + 1 [i32])) &amp;
+      ((g.x == 100 [i32]) implies (m.x == 100 [i32])) &amp;
+      (m.y == g.y - 1 [i32]);
+
+  composition nominal {
+
+    // Short alias  =  &lt;process-instance&gt;.&lt;thread-instance&gt;
+    components
+      gen         = gen.gen;
+      split_stage = splitter.splitter;
+      incx        = incx.incx;
+      clampx      = clampx.clampx;
+      decy        = decy.decy;
+      merge_stage = merger.merger;
+      consume     = consume.consume;
+
+    // Named handles for the port values the properties refer to.
+    ports
+      gen_out = gen.outstruct;
+      x0      = split_stage.xfield;
+      y0      = split_stage.yfield;
+      x1      = incx.outxfield;
+      x2      = clampx.outxfield;
+      y1      = decy.outyfield;
+      merged  = merge_stage.outstruct;
+
+    // Named handles for the component GUMBO state variables the properties refer to.
+    state
+      consume_last_x = consume.last_x;
+
+    // Abstract schedule: after the splitter, the x branch (incx then clampx --
+    // a multi-element branch) and the decy branch run independently and rejoin
+    // (branches_joined) before the merger.
+    schema {
+      gen;
+      split_stage;
+      split {
+        sequence { incx; clampx },
+        sequence { decy }
+      };
+      label branches_joined;
+      merge_stage;
+      consume
+    }
+
+    // Smoke test: a minimal single-step property discharged directly by
+    // GenStruct&#39;s integration guarantee -- exercises the whole toolchain path.
+    property Gen_Range_Sanity
+      &#34;toolchain smoke test: the generator output lies in [-100, 100]&#34; {
+      after gen &#34;GenStruct integration guarantee&#34;:
+        inRange100(gen_out.x) &amp; inRange100(gen_out.y);
+    }
+
+    //-----------------------------------------------------------------------------
+    //  Property 1 -- recover the merger&#39;s output range from upstream contracts and
+    //  show it satisfies ConsumeStruct&#39;s defensive [-200, 200] assume.
+    //-----------------------------------------------------------------------------
+
+    abstract property Pipeline_Ranges
+      &#34;shared range plumbing: carry [-100,100] from gen through split into each
+      |branch (discharging IncX&#39;s and DecY&#39;s [-1000,1000] compute assumes), then
+      |carry the transformed ranges across the branch join to the merger&#34; {
+      after gen &#34;GenStruct guarantees both fields in [-100, 100]&#34;:
+        inRange100(gen_out.x) &amp; inRange100(gen_out.y);
+      after split_stage &#34;SplitStruct forwards each field, preserving [-100, 100]&#34;:
+        inRange100(x0) &amp; inRange100(y0);
+      before incx &#34;branch entry: x still in [-100, 100] -- discharges IncX&#39;s
+        |[-1000, 1000] overflow-guard compute assume&#34;:
+        inRange100(x0);
+      after incx &#34;IncX&#39;s compute guarantee (x1 == x0 + 1) plus the carried
+        |[-100, 100] range yield x1 in [-99, 101]; this place IS `before clampx`
+        |(consecutive branch elements share a place), and ClampX -- whose
+        |compute_cases are total -- needs no assume discharged here&#34;:
+        (-99 [i32] &lt;= x1) &amp; (x1 &lt;= 101 [i32]);
+      after clampx &#34;ClampX saturates back into [-100, 100]&#34;:
+        inRange100(x2);
+      before decy &#34;branch entry: y still in [-100, 100] -- discharges DecY&#39;s
+        |[-1000, 1000] underflow-guard compute assume&#34;:
+        inRange100(y0);
+      after decy &#34;DecY&#39;s compute guarantee (y1 == y0 - 1) plus the carried
+        |[-100, 100] range yield y1 in [-101, 99]&#34;:
+        (-101 [i32] &lt;= y1) &amp; (y1 &lt;= 99 [i32]);
+      at branches_joined &#34;join: both transformed ranges are available to the merger&#34;:
+        inRange100(x2) &amp;
+        (-101 [i32] &lt;= y1) &amp; (y1 &lt;= 99 [i32]);
+    }
+
+    property Merged_In_Consume_Range :&gt; Pipeline_Ranges
+      &#34;the merger carries no integration constraint; its output range is recovered
+      |here from the upstream guarantees and shown to satisfy ConsumeStruct&#39;s
+      |defensive [-200, 200] assume&#34; {
+      before consume &#34;ConsumeStruct&#39;s precondition, established at its dispatch
+        |from MergeStruct&#39;s guarantees merged.x == x2 and merged.y == y1
+        |(this place IS `after merge_stage` -- consecutive schema elements
+        |share a place)&#34;:
+        inConsumeRange(merged);
+    }
+
+    //-----------------------------------------------------------------------------
+    //  Property 2 -- end-to-end functional result: the consumer ultimately sees
+    //  (gen.x + 1 saturated at 100, gen.y - 1); ClampX&#39;s saturation only bites
+    //  at gen.x == 100, so the x result is stated as a case split on gen.x.
+    //  Pipeline_Functional EXTENDS Pipeline_Ranges: the range plumbing is still
+    //  needed to discharge each component&#39;s input assume (and to select ClampX&#39;s
+    //  compute case), and the value-equality carries are conjoined onto the same
+    //  schema places.
+    //-----------------------------------------------------------------------------
+
+    abstract property Pipeline_Functional :&gt; Pipeline_Ranges
+      &#34;adds value-equality carries on top of the inherited range plumbing&#34; {
+      after split_stage &#34;SplitStruct forwards the struct fields unchanged&#34;:
+        (x0 == gen_out.x) &amp; (y0 == gen_out.y);
+      before incx &#34;branch entry: x still equals the generated x&#34;:
+        x0 == gen_out.x;
+      after incx &#34;IncX adds one&#34;:
+        x1 == gen_out.x + 1 [i32];
+      after clampx &#34;ClampX&#39;s compute cases yield the saturated value: the clamp
+        |only bites when gen.x == 100 (i.e., x1 == 101)&#34;:
+        ((gen_out.x &lt; 100 [i32]) implies (x2 == gen_out.x + 1 [i32])) &amp;
+        ((gen_out.x == 100 [i32]) implies (x2 == 100 [i32]));
+      before decy &#34;branch entry: y still equals the generated y&#34;:
+        y0 == gen_out.y;
+      after decy &#34;DecY subtracts one&#34;:
+        y1 == gen_out.y - 1 [i32];
+      at branches_joined &#34;join: the transformed values are available to the merger&#34;:
+        ((gen_out.x &lt; 100 [i32]) implies (x2 == gen_out.x + 1 [i32])) &amp;
+        ((gen_out.x == 100 [i32]) implies (x2 == 100 [i32])) &amp;
+        (y1 == gen_out.y - 1 [i32]);
+    }
+
+    property End_To_End_Functional :&gt; Pipeline_Functional
+      &#34;end-to-end: the merged struct equals (gen.x + 1 saturated at 100, gen.y - 1)&#34; {
+      before consume &#34;MergeStruct reassembles the transformed fields; the named
+        |spec function states the end-to-end result at the end of the chain --
+        |the struct arriving at the consumer reflects the generated struct&#34;:
+        mergedReflectsGen(merged, gen_out);
+    }
+
+    //-----------------------------------------------------------------------------
+    //  Property 3 -- a loop invariant over ConsumeStruct&#39;s `last_x` state variable:
+    //  in every hyperperiod, the value it latched lies in [-200, 200].
+    //
+    //  The concrete property uses MULTIPLE inheritance: Pipeline_Ranges supplies
+    //  the range chain that establishes inConsumeRange(merged) at consume&#39;s
+    //  dispatch, and Consume_State_Base supplies the state-variable plumbing.
+    //-----------------------------------------------------------------------------
+
+    abstract property Consume_State_Base
+      &#34;loop-invariant plumbing for ConsumeStruct&#39;s last_x state variable: hold
+      |the invariant at frame entry, carry the merged range to consume&#39;s dispatch,
+      |and re-establish the invariant when consume fires&#34; {
+      at START &#34;frame entry: established initially by consume&#39;s initialize guarantee&#34;:
+        inRange200(consume_last_x);
+      before consume &#34;the merged range fact at consume&#39;s dispatch; discharges
+        |consume&#39;s [-200, 200] compute assume&#34;:
+        inConsumeRange(merged);
+      after consume &#34;consume&#39;s guarantee last_x == instruct.x re-establishes the invariant&#34;:
+        inRange200(consume_last_x);
+    }
+
+    property Consume_Range_Loop_Invariant :&gt; Pipeline_Ranges, Consume_State_Base
+      &#34;every cycle, ConsumeStruct&#39;s latched last_x lies in [-200, 200]; the
+      |Post-Pre VC (END |- START) makes the invariant hold across hyperperiod
+      |boundaries&#34; {
+      at END &#34;loop closure: carried from `after consume` to the frame boundary&#34;:
+        inRange200(consume_last_x);
+    }
+  }
+}*/
+</code></pre><h3 id="63-reading-the-properties-as-proofs">6.3 Reading the properties as proofs</h3>
+<p>Reading <code>Merged_In_Consume_Range</code> as a proof:</p>
+<ul>
+<li><code>after gen</code> gives <code>gen_out ∈ [-100,100]</code> (from GenStruct&rsquo;s integration guarantee; the handshake with SplitStruct&rsquo;s integration <code>assume</code> is certified separately, per connection);</li>
+<li><code>after split_stage</code> gives <code>x0,y0 ∈ [-100,100]</code> (SplitStruct forwards the fields);</li>
+<li><code>before incx</code>/<code>before decy</code> carry each field into its branch — these are the facts that discharge IncX&rsquo;s and DecY&rsquo;s <code>[-1000,1000]</code> compute assumes (<code>[-100,100] ⊂ [-1000,1000]</code>, so the discharge is easy by
+design);</li>
+<li><code>after incx</code> gives <code>x1 ∈ [-99,101]</code> — <em>derived</em> from IncX&rsquo;s compute guarantee
+<code>x1 == x0 + 1</code> plus the carried range, since IncX no longer publishes an output-range
+guarantee — and, being the same place as <code>before clampx</code>, it is also the fact ClampX&rsquo;s
+compute cases will dispatch on;</li>
+<li><code>after clampx</code> gives <code>x2 ∈ [-100,100]</code> (from the cases: In_Range passes the value through, Above/Below saturate to a bound);</li>
+<li><code>after decy</code> gives <code>y1 ∈ [-101,99]</code> (from <code>y1 == y0 − 1</code>); <code>at branches_joined</code> makes both branch results available to the merger;</li>
+<li>then, using MergeStruct&rsquo;s functional guarantees (<code>merged.x == x2</code>, <code>merged.y == y1</code>), <code>before consume</code> concludes <code>merged ∈ [-200,200]</code> — ConsumeStruct&rsquo;s precondition, proved by composition at exactly the place where the consumer is dispatched.</li>
+</ul>
+<p>Reading <code>End_To_End_Functional</code> as a proof: the same chain, with value equalities
+conjoined onto the range facts at each place (<code>Pipeline_Functional :&gt; Pipeline_Ranges</code> —
+the ranges are still needed to discharge the compute assumes and to select ClampX&rsquo;s
+compute case). The conclusion is the single call <code>mergedReflectsGen(merged, gen_out)</code> at
+<code>before consume</code>: the case split on <code>gen_out.x</code> carried through the x branch, and
+<code>y1 == gen_out.y − 1</code> through the y branch, land in the merger&rsquo;s reassembly.</p>
+<p>Reading <code>Consume_Range_Loop_Invariant</code> as a proof: see §4.4 — establish at <code>START</code> from
+the initialize guarantee, preserve across the frame by write frames, re-establish at
+consume&rsquo;s firing from <code>track_x</code> plus the carried merged range, close with <code>END ⟹ START</code>.</p>
+<h2 id="7-what-codegen-generates">7. What codegen generates</h2>
+<p>When a <code>composition &lt;name&gt;</code> block is present, <code>sireum hamr sysml codegen</code> (Microkit target)
+emits a dedicated proof crate <code>hamr/microkit/crates/sys_proof_&lt;name&gt;/</code> <strong>in addition</strong> to the
+per-component crates. No extra codegen flag is required. Structure:</p>
+<pre tabindex="0"><code>crates/sys_proof_nominal/
+  Cargo.toml  Makefile  rust-toolchain.toml
+  src/
+    lib.rs                # wires the shared modules + one module group per concrete property
+    system_state.rs       # `SystemState`: one field per connection channel / unconnected port / GUMBO state var
+    contracts.rs          # copies of the component GUMBO contracts (same GUMBO source; identical by construction)
+    assertions.rs         # the composition&#39;s `functions` (e.g. inRange100, inRange200) as spec fns
+    write_frames.rs       # per-component write frames (out-port channels + own state vars; everything else unchanged)
+    actions.rs            # uninterpreted action abstractions (used only by Commutativity VCs)
+    vc_commutativity.rs   # Commutativity VCs — one per independent component pair; property-independent
+    vc_integration.rs     # Integration-constraint VCs (sender guarantee ⟹ receiver assume); property-independent
+    &lt;property&gt;/           # one directory per CONCRETE property (abstract properties get none)
+      assertions.rs       #   place-assertion spec fns (one per bound place; unbound = true; inheritance flattened)
+      vc_init.rs          #   Init-State VC: initialize + integration guarantees ⟹ START
+      vc_sequential.rs    #   Pre-Assert + Next-Assert VCs for every schema transition (the Hoare chain)
+      vc_independence.rs  #   Non-Blocking / Preservation VCs for each independent transition pair
+      vc_post_pre.rs      #   Post-Pre VC: END ⟹ START (hyperperiod loop invariant)
+      mod.rs
+</code></pre><p>All generated proof files are auto-generated (<code>Do not edit …</code>); the proof fns have empty
+bodies and Verus discharges <code>requires ⟹ ensures</code> by SMT. The system proof <strong>assumes</strong> each
+component satisfies its own contract (discharged separately by the per-component Verus runs)
+and proves the system properties from those contracts. <code>gumbo-system-property-vcs.md</code> walks
+every VC category in detail, including the soundness argument and its trusted assumptions.</p>
+<h2 id="8-running-the-verification">8. Running the verification</h2>
+<p>Requires <strong>Rust + Verus</strong> (<code>cargo-verus</code> on <code>PATH</code>); it does <strong>not</strong> require
+<code>MICROKIT_SDK</code>/<code>MICROKIT_BOARD</code>. From <code>hamr/microkit/</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># whole system proof (all properties + the shared Commutativity/Integration VCs)</span>
+</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal            <span class="c1"># or: make -C crates/sys_proof_nominal all</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># a single property in isolation (target = lowercased property name)</span>
+</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal merged_in_consume_range
+</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal end_to_end_functional
+</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal consume_range_loop_invariant
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># everything: each component crate AND the system proof</span>
+</span></span><span class="line"><span class="cl">make verus
+</span></span></code></pre></div><p>In the Struct Split example each of the four concrete properties discharges 27 VCs
+(1 Init-State + 17 Sequential + 1 Post-Pre + 8 Independence); with the 3 shared VCs
+(1 Integration — only the gen → splitter connection still has an assume/guarantee
+handshake — plus 2 Commutativity, one per independent component pair) the whole
+<code>sys_proof_nominal</code> crate is <strong>111 VCs</strong>; all seven component crates plus the system
+proof verify with 0 errors.</p>
+<h2 id="9-authoring-workflow-and-tips">9. Authoring workflow and tips</h2>
+<ol>
+<li><strong>Type-check first.</strong> <code>sireum hamr sysml tipe --sourcepath ../aadl-lib:. &lt;Model&gt;.sysml</code>
+validates the composition/property syntax before codegen. Run it from the model directory.</li>
+<li><strong>Regenerate from the model directory</strong> (not via the MCP tool) so the relative
+<code>--output-dir</code> resolves correctly and editable files are preserved — see <code>mcp-tools.md</code>.
+Codegen adds <code>crates/sys_proof_&lt;name&gt;/</code>; confirm it appeared and that no stray tree landed
+outside the project. Codegen may also (re)write a <code>hamr/microkit/attestation/</code> tree — this
+example does not commit those artifacts, so delete it after regenerating.</li>
+<li><strong>Start with a one-step smoke property</strong> (like <code>Gen_Range_Sanity</code>) to confirm the whole
+path — codegen → <code>sys_proof_&lt;name&gt;</code> → Verus — works before writing the real carries.</li>
+<li><strong>Factor the carry chain into an <code>abstract property</code>.</strong> The shared plumbing that discharges
+each component&rsquo;s <code>assume</code> and threads facts to the join is identical across related
+properties; write it once and inherit it (multiple bases compose, §4.2).</li>
+<li><strong>Reach for GUMBO <code>functions</code></strong> for range/relationship predicates used at several places
+(<code>inRange100</code>, <code>inConsumeRange</code>), and bundle conjunct groups that always travel together
+into a single function (§3.1).</li>
+<li><strong>When a VC fails</strong>, read <code>crates/sys_proof_&lt;name&gt;/src/&lt;property&gt;/vc_sequential.rs</code>: each
+failing <code>vc_pre_assert_*</code> means a component&rsquo;s <code>assume</code> is not established at its
+<code>before</code> place; each failing <code>vc_next_assert_task_*</code> means the <code>after</code>/join assertion is
+not derivable from the prior place plus the component&rsquo;s contract. Add the missing carry.</li>
+<li><strong>Remember contract projection when a property seems too easy or too hard.</strong> If a
+component&rsquo;s guarantee &ldquo;isn&rsquo;t being used,&rdquo; check whether the property binds one of that
+component&rsquo;s <code>after</code> places (§5.1); if an assume obligation &ldquo;appeared from nowhere,&rdquo;
+a newly bound <code>after</code> place has just made that component covered.</li>
+<li><strong>Alias collisions.</strong> Component/port/state aliases must not collide with SysMLv2
+keywords or with the schema keywords <code>sequence</code>/<code>split</code>/<code>label</code>; the type checker flags
+these (see <code>modeling-tips.md</code>). Rename if <code>tipe</code> objects.</li>
+<li><strong>New state variables need code.</strong> Adding a GUMBO <code>state</code> variable re-weaves the
+component&rsquo;s <code>*_app.rs</code> marker regions with the variable and its contracts, but the
+entry-point <em>bodies</em> are yours: set the variable in <code>initialize()</code> (to satisfy the
+initialize guarantee) and in the compute entry point (to satisfy the compute guarantee),
+then re-run the component&rsquo;s <code>make verus</code>.</li>
+<li><strong>Adding a component to the schema needs deployment follow-up.</strong> Codegen re-weaves
+<code>microkit.system</code>; if it reports a conflict it writes <code>microkit.system_fixme</code> instead —
+reconcile it with the live file (see <code>modeling-tips.md</code>) and delete the <code>_fixme</code>.
+<code>microkit.schedule.xml</code> is never regenerated: hand-add the new component&rsquo;s
+<code>&lt;domain …&gt;</code> slot (and rebalance the padding) so the static schedule matches the
+domain assignments.</li>
+</ol>
+<h2 id="10-further-examples">10. Further examples</h2>
+<p>Two larger system-property compositions (with committed, verifying <code>sys_proof_nominal</code>
+crates) live in
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models @ 4da74d7</a>:</p>
+<ul>
+<li><strong>Isolette</strong> (<code>isolette/sysml/Isolette.sysml</code>, composition at the top-level system) —
+eleven components across regulator and monitor subsystems; two splits with multi-element
+branches and a <code>label</code> between them; <code>state</code> aliases; fifteen concrete properties built
+on two abstract bases (<code>Regulator_Base</code>, <code>Monitor_Base</code>); requirement-linked assertions
+via <code>sysProp_*</code> functions and <code>'-&gt;:'</code>; and the latched fail-safe loop invariant
+<code>Regulator_Failsafe_Latching</code> (&ldquo;once the regulator fails, the heat stays off forever&rdquo;).</li>
+<li><strong>TempControl</strong> (<code>micro-examples/microkit/system-verification/temp-control/sysml/TempControl_SysVerif.sysml</code>)
+— a three-component <strong>event data port</strong> system: <code>HasEvent</code> in system assertions,
+<code>Option&lt;T&gt;</code> channels in the generated <code>SystemState</code>, and a loop invariant
+(<code>Control_Invariant_Base</code>) that carries the control component&rsquo;s compute assumes across
+the frame so every property covering it can discharge its Pre-Assert.</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><code>gumbo-system-property-vcs.md</code> — a detailed walkthrough of the verification conditions generated for these properties (the full VC taxonomy with generated examples, contract projection, independence/commutativity, and the soundness argument with its trusted assumptions).</li>
+<li><code>sysmlv2-gumbo-quick-reference.md</code> — GUMBO expression/operator syntax used inside assertions.</li>
+<li><code>gumbo-bnf.md</code> — grammar and built-in predicates (<code>In</code>, <code>HasEvent</code>, <code>NoSend</code>, <code>MustSend</code>, <code>'-&gt;:'</code>).</li>
+<li><code>mcp-tools.md</code> — running <code>tipe</code> / <code>codegen</code> (and the model-directory codegen procedure).</li>
+<li><code>build-and-verification-commands.md</code> — component-level Verus targets.</li>
+<li><code>component-implementation-guide.md</code> — implementing entry points against the woven contracts.</li>
+</ul>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
