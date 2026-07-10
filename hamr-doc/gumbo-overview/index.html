@@ -5,8 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="The HAMR GUMBO Contract Language The Simple Isolette Example The figure below presents the graphical view of the architecture of a simple system, called the &ldquo;Simple Isolette&rdquo; using AADL iconography.
-The Simple Isolette is an infant (baby) incubator system, the purpose of which is to keep an infant an appropriate temperature in the first hours of its life. A TempSensor component senses the air temperature within the incubator enclosure which holds the infant. A Thermostat component implements control laws to turn the HeatSource on or off to keep the air temperature within a desired temperature range set by a nurse via the OperatorInterface.
+<meta name="description" content="The GUMBO Contract Language — Overview and Rationale GUMBO is HAMR&rsquo;s contract language for specifying the behavior of thread components at the model level. Contracts are written directly in system models — GUMBO is available in both AADL (as an annex language) and SysMLv2, and this documentation focuses on the SysMLv2 form. GUMBO&rsquo;s semantics is aligned with HAMR&rsquo;s execution semantics for threads and port communication, and HAMR automatically translates GUMBO contracts into code-level artifacts that support testing, formal verification, and run-time monitoring of component implementations.
 " />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -45,16 +44,14 @@ The Simple Isolette is an infant (baby) incubator system, the purpose of which i
 
 
   <meta itemprop="name" content="Sireum HAMR">
-  <meta itemprop="description" content="The HAMR GUMBO Contract Language The Simple Isolette Example The figure below presents the graphical view of the architecture of a simple system, called the “Simple Isolette” using AADL iconography.
-The Simple Isolette is an infant (baby) incubator system, the purpose of which is to keep an infant an appropriate temperature in the first hours of its life. A TempSensor component senses the air temperature within the incubator enclosure which holds the infant. A Thermostat component implements control laws to turn the HeatSource on or off to keep the air temperature within a desired temperature range set by a nurse via the OperatorInterface.">
-  <meta itemprop="wordCount" content="3609">
+  <meta itemprop="description" content="The GUMBO Contract Language — Overview and Rationale GUMBO is HAMR’s contract language for specifying the behavior of thread components at the model level. Contracts are written directly in system models — GUMBO is available in both AADL (as an annex language) and SysMLv2, and this documentation focuses on the SysMLv2 form. GUMBO’s semantics is aligned with HAMR’s execution semantics for threads and port communication, and HAMR automatically translates GUMBO contracts into code-level artifacts that support testing, formal verification, and run-time monitoring of component implementations.">
+  <meta itemprop="wordCount" content="2048">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://hamr.sireum.org/">
   <meta name="twitter:title" content="Sireum HAMR">
-  <meta name="twitter:description" content="The HAMR GUMBO Contract Language The Simple Isolette Example The figure below presents the graphical view of the architecture of a simple system, called the “Simple Isolette” using AADL iconography.
-The Simple Isolette is an infant (baby) incubator system, the purpose of which is to keep an infant an appropriate temperature in the first hours of its life. A TempSensor component senses the air temperature within the incubator enclosure which holds the infant. A Thermostat component implements control laws to turn the HeatSource on or off to keep the air temperature within a desired temperature range set by a nurse via the OperatorInterface.">
+  <meta name="twitter:description" content="The GUMBO Contract Language — Overview and Rationale GUMBO is HAMR’s contract language for specifying the behavior of thread components at the model level. Contracts are written directly in system models — GUMBO is available in both AADL (as an annex language) and SysMLv2, and this documentation focuses on the SysMLv2 form. GUMBO’s semantics is aligned with HAMR’s execution semantics for threads and port communication, and HAMR automatically translates GUMBO contracts into code-level artifacts that support testing, formal verification, and run-time monitoring of component implementations.">
 
 
 
@@ -213,339 +210,143 @@ The Simple Isolette is an infant (baby) incubator system, the purpose of which i
         <h1></h1>
 
         
-          <div class="post-content"><h1 id="the-hamr-gumbo-contract-language">The HAMR GUMBO Contract Language</h1>
-<h3 id="the-simple-isolette-example">The Simple Isolette Example</h3>
-<p>The figure below presents the graphical view of the architecture of a simple system, called the &ldquo;Simple Isolette&rdquo; using AADL iconography.</p>
-<p><img src="images/simple-isolette-system-graphical.png" alt="Simple Isolette - Graphical View"></p>
-<p>The Simple Isolette is an infant (baby) incubator system, the purpose of which is to keep an infant an appropriate temperature in the first hours of its life.  A <code>TempSensor</code> component senses the air temperature within the incubator enclosure which holds the infant.  A <code>Thermostat</code> component implements control laws to turn the <code>HeatSource</code> on or off to keep the air temperature within a desired temperature range set by a nurse via the <code>OperatorInterface</code>.</p>
-<p>Several variations of this example are used through the HAMR documentation and tutorials.   This variant is constructed specifically to illustrate&hellip;</p>
+          <div class="post-content"><h1 id="the-gumbo-contract-language--overview-and-rationale">The GUMBO Contract Language — Overview and Rationale</h1>
+<p>GUMBO is HAMR&rsquo;s contract language for specifying the behavior of thread components at the <em>model level</em>.  Contracts are written directly in system models — GUMBO is available in both AADL (as an annex language) and SysMLv2, and this documentation focuses on the SysMLv2 form.  GUMBO&rsquo;s semantics is aligned with HAMR&rsquo;s execution semantics for threads and port communication, and HAMR automatically translates GUMBO contracts into code-level artifacts that support testing, formal verification, and run-time monitoring of component implementations.</p>
+<p>This chapter presents the motivation and rationale for the GUMBO framework as a whole — why contracts belong at the model level, what makes GUMBO&rsquo;s semantic grounding different from generic SysMLv2 constraint notations, and how the framework&rsquo;s layers fit together.  Companion chapters cover the details:</p>
 <ul>
-<li>the three different types of port-based communcation supported by HAMR (<code>event</code>, <code>data</code>, and <code>event data</code>),</li>
-<li>the type different types of thread component supported by HAMR (<code>periodic</code> and <code>sporadic</code>)</li>
-<li>the typical hierachy of <code>system</code>, <code>process</code>, and <code>thread</code> components.</li>
+<li><a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> — an example-based walkthrough of the structure of component contracts (read this next)</li>
+<li><a href="../gumbo-quick-reference/">GUMBO Quick Reference</a> — a &ldquo;cheat sheet&rdquo; catalog of contract constructs</li>
+<li><a href="../gumbo-grammar/">GUMBO Grammar</a> — a BNF-style syntax reference</li>
+<li><a href="../gumbo-system-properties/">GUMBO System Properties</a> — specifying and verifying system-level (cross-component) properties</li>
 </ul>
-<p>We discuss each architectural feature of this example below, but here is the high-level intuition..</p>
+<p>Before reading this chapter, you should be familiar with the <a href="../hamr-overview/">HAMR Overview</a> and with <a href="../hamr-semantics-concepts/">HAMR Modeling Elements and Semantics Concepts</a> — in particular the notions of thread components, ports, entry points, and HAMR&rsquo;s input-compute-output execution model.  GUMBO&rsquo;s design leans directly on those concepts.</p>
+<h2 id="why-contracts-at-the-model-level">Why Contracts at the Model Level?</h2>
+<p>In HAMR development, the architecture model is the single source of truth for a system&rsquo;s structure: its components, their interfaces (ports), and their interconnections.  GUMBO extends this principle to <em>behavior</em> — the specification of what a component is required to do lives in the model, immediately next to the ports and properties it constrains.</p>
+<p>Placing contracts at the model level has several practical payoffs:</p>
 <ul>
-<li>the thread components represent the heart of the system computation.
-<ul>
-<li>the <code>TempSensor</code> is executed periodically (according to a period specified as a component property).  Each time it is executed, it calls a hardware driver (not shown in the architecture) to retreive the current temperature value.  It puts the current temperature value out its <code>current_temp</code> data port, and then sends a notification out its <code>temp_changed</code> event port indicating that an updated temperature reading is available.</li>
-<li>the <code>OperatorInterface</code> is executed periodically to retreive the most desired air temperature range input by the nurse.  It combines the low bound and high bound for the temperature range into a single message which it then puts on its <code>desired_temp</code> output event data port.</li>
-<li>The <code>Thermostat</code> is a sporadic (event triggered) thread.  It&rsquo;s execution is triggered by the arrival of events on either the <code>temp_changed</code> event port or the <code>desired_temp</code> event data port.  During execution, the arriving message is dequeued, then the thread gets the current temperature from its input data port, compares it to the desired temperature range, and puts out an On/Off message on its output <code>heat_control</code> event data port.  If the triggering message is a <code>desired_temp</code> from the operator interface, it also stores the most recent desired temperature settings in local state before computing the control laws and On/Off message.  The <code>current_temp</code> value does not need stored in local state because it is always available for reading on the data port (data ports are not queued).</li>
-<li>The <code>HeatSource</code> is an sporadic thread.  Its execution is triggered by the arrival of a <code>heat_control</code> message.  Upon execution, the incoming message is dequeued and a lower-level driver is called to actuate the heat source appropriately.</li>
-</ul>
+<li>
+<p><strong>Contracts are written in the vocabulary of the architecture.</strong>  A GUMBO contract refers to a component&rsquo;s ports, its declared state, and model-level data types — not to the accidental details of any particular implementation language.  The contract is meaningful to a systems engineer reviewing the model, even one who will never read the Rust or Slang code.</p>
 </li>
-<li>Each of the <code>process</code> components representes a protected memory region in which threads may executed and maintain their local state.  In this variant of the Simple Isolette, the <code>TempSensor</code>, <code>Thermostat</code>, and <code>HeatControl</code> threads are all in one protected memory region, while the <code>OperatorInterace</code> thread is in a separate process.</li>
-<li>A <code>system</code> component aggregates the process components (along with some hardware components, not shown)</li>
+<li>
+<p><strong>Contracts carry requirements traceability.</strong>  GUMBO clauses are named and carry optional documentation strings, so requirements can be transcribed directly into the model with their identifiers intact.  For example, in the Simple Isolette example used throughout the tutorials, the requirement <em>&ldquo;If the Current Temperature is less than the Lower Desired Temperature, the Heat Control shall be set to On&rdquo;</em> becomes a contract case named after the requirement:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">case REQ_THERM_2 &#34;If Current Temperature is less than
+                  |the Lower Desired Temperature, the Heat Control shall be set to On.&#34;:
+  assume (current_temp.degrees &lt; desired_temp.lower.degrees);
+  guarantee heat_control == Isolette_Data_Model::On_Off.Onn;
+</code></pre><p>The name <code>REQ_THERM_2</code> follows the requirement all the way down: HAMR propagates it into the generated code contracts and test oracles, so a failed test or verification report at the code level points back to the requirement in the model.</p>
+</li>
+<li>
+<p><strong>Contracts are the negotiated interface between roles.</strong>  A system architect can specify integration constraints and entry point contracts before any application code exists; component developers then implement against those contracts, and integrators rely on them without inspecting component internals.  The contract is the hand-off artifact.</p>
+</li>
 </ul>
-<p>This example is termed &ldquo;Simple&rdquo; because it is a simplification of a more complex (full) Isolette system, which is also addressed in detail in HAMR documentation.  The requirements and informal design of the full Isolette system were originally presented in the <a href="https://www.faa.gov/sites/faa.gov/files/aircraft/air_cert/design_approvals/air_software/AR-08-32.pdf">FAA Requirements Engineering Management Handbook</a> &ndash; a technical report released by the FAA to document best-practices for requirements engineering.</p>
-<p>A HAMR SysMLv2 textual model specification for the Simple Isolette corresponding to the graphical view above is presented below (a detailed discussion of the SysMLv2 syntax can be found in the chapter on SysMLv2 <strong>ToDo: fix cross reference</strong>.</p>
-<pre tabindex="0"><code>package Isolette {
-
-  private import HAMR::*;
-    
-  //=================================
-  //  S y s t e m   Definition
-  //=================================
-
-  part def Isolette_System :&gt; System {
-    // --- implementation ---
-    // subcomponent instances
-    part operator_interface_process: OperatorInterface_Process;
-    part control_process : Control_Process;
-
-    connection dt : PortConnection connect operator_interface_process.desired_temp to control_process.desired_temp;
-  }
-
-  //=================================
-  //  P r o c e s s   Definitions
-  //=================================
-
-  part def OperatorInterface_Process :&gt; Process {
-    // --- interface ---
-    port desired_temp : EventDataPort { out :&gt;&gt; type : Set_Points; }
-
-    // --- implementation ---
-    // thread subcomponent instances
-    part operator_interface: OperatorInterface;
-
-    connection dt : PortConnection connect operator_interface.desired_temp to desired_temp;
-  }
-
-  part def Control_Process :&gt; Process {
-    // --- interface ---
-    port desired_temp : EventDataPort { in :&gt;&gt; type : Set_Points; }
-
-    // --- implementation ---
-    // thread subcomponent instances
-    part temp_sensor: TempSensor;
-    part thermostat: Thermostat;
-    part heat_source: HeatSource;
-
-    // --- connections ---
-    // interface connection to internal component
-    connection dt : PortConnection connect desired_temp to thermostat.desired_temp;
-    // internal connections
-    connection tc : PortConnection connect temp_sensor.temp_changed to thermostat.temp_changed;
-    connection ct : PortConnection connect temp_sensor.current_temp to thermostat.current_temp;
-    connection hc : PortConnection connect thermostat.heat_control to heat_source.heat_control;
-  }
-
-  //=================================
-  //  T h r e a d   Definitions
-  //=================================
-
-  part def TempSensor :&gt; Thread {
-    // --- interface ---
-    port current_temp : DataPort { out :&gt;&gt; type : Temp; }
-    out port temp_changed : EventPort;
-
-    // properties
-    attribute :&gt;&gt; Period = 1000 [ms];
-    attribute :&gt;&gt; Dispatch_Protocol = Periodic;
-  }
-
-  part def OperatorInterface :&gt; Thread {
-    // --- interface ---
-    port desired_temp : EventDataPort { out :&gt;&gt; type : Set_Points; }
-
-    // properties
-    attribute :&gt;&gt; Period = 1000 [ms];
-    attribute :&gt;&gt; Dispatch_Protocol = Periodic;
-  }
-
-  part def HeatSource :&gt; Thread {
-    // --- interface ---
-    port heat_control : EventDataPort { in :&gt;&gt; type : On_Off; }
-
-    // properties
-    attribute :&gt;&gt; Dispatch_Protocol = Sporadic;
-  }
-
-  part def Thermostat :&gt; Thread {
-    // --- interface ---
-    port current_temp : DataPort { in :&gt;&gt; type : Temp; }
-    in port temp_changed : EventPort;
-    port desired_temp : EventDataPort { in :&gt;&gt; type : Set_Points; }
-    port heat_control : EventDataPort { out :&gt;&gt; type : On_Off; }
-
-    // properties
-    attribute :&gt;&gt; Dispatch_Protocol = Sporadic;
-  }
-
-  //=================================
-  //  D a t a   Type Definitions
-  //=================================
-
-  part def Temp :&gt; Struct {
-    degrees : Base_Types::Integer;
-  }
-
-  part def Set_Points :&gt; Struct {
-    lower : Temp;
-    upper : Temp;
-  }
-
-  enum def On_Off {
-    enum On;
-    enum Off;
-  }
-}
-</code></pre><p>The current implementation of HAMR code generation for seL4 includes a HAMR model restriction that each <code>Process</code> component (corresponding to an seL4 Microkit protection domain) contain exactly one <code>Thread</code> component.  This is due to way HAMR static component scheduling is currently implemented for seL4.  HAMR also does not currently support sporadic components for seL4. (Note: we expect both of these restrictions to be lifted by the end of 2026).</p>
-<p>A variant of the Simple Isolette that supports these restrictions is given below.</p>
-<p><img src="images/simple-isolette-system-graphical-seL4.png" alt="Simple Isolette for seL4 - Graphical View"></p>
-<p>This variant of the architecture differs from the original one above in the following ways&hellip;</p>
+<h2 id="what-gumbo-specifies-today">What GUMBO Specifies Today</h2>
+<p>GUMBO currently addresses <strong>functional properties</strong>: relationships among a component&rsquo;s input port values, its local state, and its output port values, as observed at each dispatch of the component.  These component-level contracts also serve as the foundation for GUMBO <em>system-level</em> properties — end-to-end properties of the composed system, described in <a href="../gumbo-system-properties/">GUMBO System Properties</a>.</p>
+<p>Two important categories of properties are planned as future extensions and are <em>not</em> currently expressible in GUMBO:</p>
 <ul>
-<li>Each process contains exactly one thread (HAMR seL4 code generation restriction)</li>
-<li>All threads are periodic (HAMR seL4 code generation restriction)</li>
-<li>All ports are data ports (HAMR <em>does</em> support <code>event</code> and <code>event data</code> ports for seL4 as will be illustrated in other examples)</li>
-<li>There is no <code>temp_changed</code> event to notify the <code>Thermostat</code>.  Instead, the <code>Thermostat</code> will simply poll the <code>current_temp</code> data port each time it is dispatched.</li>
+<li><strong>Timing properties</strong> (e.g., deadlines, response-time constraints stated as contracts)</li>
+<li><strong>Information flow properties</strong> (e.g., declarations that information from one port must not influence another)</li>
 </ul>
-<p>Note that HAMR models for seL4 are also accompanied by a static cyclic schedule (not shown) that gives the ordering of components.  For example, for this architecture variant, an appropriate schedule would be <code>OperatorInterface</code>, <code>TempSensor</code>, <code>Thermostat</code>, <code>OperatorInterface</code>.</p>
-<p>The notions of execution control (component dispatching) and port access are the main differences observable to the developer between this variant and the original one.</p>
+<p>The GUMBO grammar reserves syntax for some of these (e.g., <code>infoflow</code> clauses), but the current verification and testing framework addresses functional behavior.</p>
+<h2 id="semantic-foundations-aligned-with-hamr-execution-semantics">Semantic Foundations: Aligned with HAMR Execution Semantics</h2>
+<p>The meaning of a GUMBO contract is fixed by HAMR&rsquo;s execution semantics, which derives from AADL&rsquo;s standardized threading and port-communication concepts (see <a href="../hamr-semantics-concepts/">HAMR Modeling Elements and Semantics Concepts</a>).  The key ideas:</p>
 <ul>
-<li>the execution of the <code>OperatorInterface</code> and <code>TempSensor</code> are similar to before.  The key difference is that the <code>TempSensor</code> does not put out a <code>temp_changed</code> event.</li>
-<li>When the <code>Thermostat</code> is dispatched, it will poll both the <code>current_temp</code> and <code>desired_temp</code> data ports, then compute the thermostat control logic to determine the appropriate On/Off command to be placed on the <code>heat_control</code> port.</li>
-<li>When the <code>HeatSource</code> is dispatched, it will poll the <code>heat_control</code> port and then actuate the heat source appropriately.</li>
+<li>A thread&rsquo;s application code is organized into <strong>entry points</strong> invoked by the underlying scheduling framework: the <em>Initialize</em> entry point runs once during the system initialization phase, and the <em>Compute</em> entry point runs at each dispatch during the compute phase.</li>
+<li>Each dispatch is <strong>atomic</strong> with respect to inputs: input port values are <em>frozen</em> at dispatch (moved from the infrastructure port state into the application port state), the application computes over that consistent snapshot, and outputs are released to the communication infrastructure when the entry point completes.  Execution follows the classic <em>Read Inputs; Compute; Write Outputs</em> discipline for analyzable real-time systems.</li>
 </ul>
-<p>HAMR code generation for seL4 ensures that each thread runs in a separate Microkit protection domain, indicated by the containing process for each thread &ndash; guarantee strong space and time partitioning for each thread.</p>
-<h3 id="hamr-software-component-categories-and-hierarchy">HAMR Software Component Categories and Hierarchy</h3>
-<p>HAMR supports the following AADL component categories (&ldquo;role&rdquo; indicates the general purpose of the component within HAMR-built systems).</p>
+<p>Because of this discipline, a GUMBO compute contract has a precise and simple reading: it is a <em>relation between the frozen input port values and pre-state of the component at dispatch, and the output port values and post-state when the entry point completes</em>.  There is no ambiguity about &ldquo;when&rdquo; a contract clause is evaluated — the execution model supplies the pre- and post-points.</p>
+<p>Core aspects of HAMR&rsquo;s execution semantics have been formalized in the Isabelle theorem prover.  While HAMR code generation itself is not proven correct in Isabelle, the mechanized semantics guides the design of code generation and the GUMBO contract framework, and it is used to establish the soundness of HAMR&rsquo;s verification and testing approaches with respect to the abstract execution model.</p>
+<h2 id="stronger-than-generic-sysmlv2-constraints">Stronger than Generic SysMLv2 Constraints</h2>
+<p>SysMLv2 provides general-purpose constraint and assertion mechanisms, and the OMG community continues to develop specification notations around them.  These are valuable for many modeling purposes, but they attach predicates to model elements <em>without a fixed execution semantics</em>: the language itself does not say when a constraint is evaluated, what state it ranges over, or how it relates to the execution of generated or hand-written code.</p>
+<p>GUMBO takes a different approach.  By tying every contract construct to a specific point in HAMR&rsquo;s execution model (integration constraints to values flowing across connections; initialize contracts to the completion of the initialization phase; compute contracts to the pre/post points of each dispatch), GUMBO specifications have a strong, execution-grounded semantics.  This is what makes two things possible that would be very difficult to achieve with generic model-level assertions:</p>
+<ol>
+<li><strong>Stronger reasoning about components and systems</strong> — analyses can soundly compose contracts across connections and schedules because each contract has an unambiguous meaning in the execution model.</li>
+<li><strong>Model-to-code contract correspondence</strong> — HAMR can translate a model-level contract into a code-level contract with the <em>same</em> meaning, so that verifying the code against the generated contract establishes conformance to the model-level specification.</li>
+</ol>
+<h2 id="one-specification-many-verification-and-testing-activities">One Specification, Many Verification and Testing Activities</h2>
+<p>A central GUMBO mantra is that <strong>specifications should support both testing and formal verification</strong>.  HAMR realizes this by translating every GUMBO specification into two code-level forms:</p>
+<ul>
+<li>a <strong>logical form</strong> — contracts in a code-level specification language (Verus contracts for Rust, Logika contracts for Slang) that SMT-based verification tools can discharge, and</li>
+<li>an <strong>executable form</strong> — <em>GUMBOX</em> contracts: executable versions of the contracts rendered as boolean functions (e.g., in Rust) that can be evaluated on concrete pre/post states.</li>
+</ul>
+<p>The same model-level specification therefore drives a whole portfolio of assurance activities:</p>
 <table>
   <thead>
       <tr>
-          <th>Category</th>
-          <th>Role</th>
+          <th>Activity</th>
+          <th>Level</th>
+          <th>GUMBO-derived artifact used</th>
       </tr>
   </thead>
   <tbody>
       <tr>
-          <td><code>System</code></td>
-          <td>Aggregates connected software and hardware components into a system or subsystem</td>
+          <td>Integration constraint checking</td>
+          <td>Model</td>
+          <td>Integration assume/guarantee clauses, checked when ports are connected (HAMR Logika check)</td>
       </tr>
       <tr>
-          <td><code>Process</code></td>
-          <td>A protected address space with one or more threads</td>
+          <td>System property verification</td>
+          <td>Model + generated proof crate</td>
+          <td>Component contracts used as behavioral summaries (<a href="../gumbo-system-properties/">GUMBO System Properties</a>)</td>
       </tr>
       <tr>
-          <td><code>Thread Group</code></td>
-          <td>A logical aggregation of threads</td>
+          <td>Code-level formal verification</td>
+          <td>Code</td>
+          <td>Verus (Rust) / Logika (Slang) contracts woven into entry point skeletons</td>
       </tr>
       <tr>
-          <td><code>Thread</code></td>
-          <td>A real-time task; a unit of schedulable computation</td>
+          <td>Manual unit testing with contract oracles</td>
+          <td>Code</td>
+          <td>GUMBOX executable contracts as test oracles</td>
       </tr>
       <tr>
-          <td><code>Data</code></td>
-          <td>Specifies data types to be used for port-based communication within the system</td>
+          <td>Automated property-based testing</td>
+          <td>Code</td>
+          <td>GUMBOX oracles + generated random-input generators</td>
+      </tr>
+      <tr>
+          <td>Run-time monitoring</td>
+          <td>Deployed system</td>
+          <td>GUMBOX executable contracts evaluated during execution</td>
       </tr>
   </tbody>
 </table>
-<p>Below are some aspects of AADL components that are not supported by HAMR&hellip;</p>
+<p>Developers can move freely along this spectrum — for example, using property-based testing against GUMBOX oracles during early development of a component and switching to full Verus verification for the most critical components — <em>without writing any additional specifications</em>.  The <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> illustrates GUMBOX-based testing in the current Rust workflow.</p>
+<h2 id="source-language-independence">Source-Language Independence</h2>
+<p>GUMBO contracts are deliberately independent of the component implementation language: they reference only the model-level vocabulary of ports, state variables, and model data types.  HAMR currently translates GUMBO to two code-level contract frameworks:</p>
 <ul>
-<li>AADL includes <code>Subprogram</code> and <code>Subprogram Group</code> components, which can be used to model procedure or method-level software architecture within threads, etc.   HAMR doesn&rsquo;t support these because (a) it enforces a common top-level method structure (a notion of &ldquo;entry points&rdquo;) within a thread (thus, there is no need for the developer to specify the method structure) and (b) the HAMR&rsquo;s restricted approach simplifies formal specification, verification, and timing/scheduleability analysis.  In the future, HAMR may add limited notions of <code>Subprogram</code> (e.g., in passive components representing protected memory regions).</li>
-<li>AADL <code>Data</code> components can also represent passive (non-threaded) data blocks shared between threads.  HAMR doesn&rsquo;t support this.  It only uses <code>Data</code> components for specifying data types, following the AADL Data Model Annex.</li>
-<li>AADL <code>Device</code> components represent scheduled driver software interfaces to hardware.  In practice, there is little semantic difference from AADL threads, and so HAMR only supports AADL <code>Thread</code> components.</li>
+<li><strong>Rust / Verus</strong> — contracts woven into HAMR-generated Rust entry point skeletons and port APIs, verified with the <a href="https://verus-lang.github.io/verus/guide/">Verus</a> SMT-based verifier;</li>
+<li><strong>Slang / Logika</strong> — contracts in Slang (a safety-critical subset of Scala developed at Kansas State University), verified with the <a href="https://logika.sireum.org">Logika</a> verifier.</li>
 </ul>
-<p>Even though HAMR supports <code>Thread Group</code>, these are seldom used in HAMR examples.</p>
-<p>Components <em>definitions</em> are given in <code>packages</code> in both AADL and SysMLv2.  This enables defintions of component interfaces and properties to be shared and reused across systems.</p>
-<p>A system is built from <em>instances</em> of components arranged in a hierarchy to reflect the logical structure of the deployed system.  AADL has rules for the hierarchical arrangement of component instances.  The figure below gives a visual depiction these.</p>
-<p><img src="images/aadl-component-nesting-rules.png" alt="HAMR Component Hierarchy"></p>
+<p>The existence of two complete instantiations is evidence that the framework achieves its language-independence goal.  The same strategy could be applied to other contract-equipped targets — for example, C contract languages or SPARK Ada.</p>
+<h2 id="framework-architecture-three-layers">Framework Architecture: Three Layers</h2>
+<p>The GUMBO framework is best understood as three layers, each building on the one below.</p>
+<!-- TODO (follow-up asset): add a three-layer architecture figure here
+     (component contracts -> system reasoning -> code-level logical + executable forms);
+     source could be developed alongside gumbo-component-contracts/images/gcl.pptx -->
+<h3 id="component-contracts-the-core-abstraction">Component Contracts: The Core Abstraction</h3>
+<p>GUMBO component contracts are the core of the framework.  A component&rsquo;s contract is an <em>abstraction</em> — a behavioral summary — of its thread implementation: what it assumes about its inputs, what it guarantees about its outputs and state, at initialization and at every dispatch.  Every other capability in the framework consumes this summary.  The structure of component contracts is the subject of the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter.</p>
+<h3 id="system-reasoning-over-contract-summaries">System Reasoning over Contract Summaries</h3>
+<p>GUMBO system specifications (<a href="../gumbo-system-properties/">GUMBO System Properties</a>) reason about end-to-end properties of the composed system — for example, that a value produced by a sensor early in the static schedule is appropriately reflected in an actuator command later in the schedule.  System verification uses only the component <em>contracts</em> together with HAMR&rsquo;s scheduling model; it never inspects component implementation code.  This is a deliberate scalability decision: system properties can be stated and verified in terms of small behavioral summaries, so the cost of system verification grows with the number of components and the size of their contracts — not with the volume of implementation code.</p>
+<h3 id="code-level-representations-logical-and-executable">Code-Level Representations: Logical and Executable</h3>
+<p>At the bottom layer, HAMR mechanically translates each component contract into its logical form (Verus/Logika contracts) and its executable form (GUMBOX).  Because both are generated from the same model artifact, evidence produced at the code level — a Verus proof, a passing GUMBOX test suite, a clean run-time monitor — discharges obligations stated at the model level.  Dedicated chapters on the GUMBOX translation, the GUMBO-to-Verus translation, and working with Verus are forthcoming (see <a href="#where-to-go-next">Where to Go Next</a>).</p>
+<h2 id="the-trusted-base">The Trusted Base</h2>
+<p>GUMBO reasoning treats the principles of HAMR&rsquo;s infrastructure — the threading semantics, port communication, port freezing, and scheduling behavior described in the <a href="../hamr-semantics-concepts/">semantics chapter</a> — as <em>axioms</em>.  The correctness of HAMR&rsquo;s code generation for infrastructure code is part of the trusted computing base of the framework.</p>
+<p>This has three consequences that matter in practice:</p>
 <ul>
-<li>A <code>System</code> component may contain other <code>System</code> component instances (representing subsystems), and this nesting of <code>System</code>s can be repeated to an arbitrary depth.  A <code>System</code> may also include <code>Process</code> component instances, <code>Data</code> components (declaring data types), and hardware components (not shown).</li>
-<li>A <code>Process</code> component contains one or more <code>Thread</code> or <code>Thread Group</code> component instances.</li>
-<li>A <code>Thread Group</code> contains one or more <code>Thread</code> component instances.</li>
-<li>A <code>Thread</code> contains no component instances; Each <code>Thread</code> is a leaf node in an HAMR architecture (discussed in greater detail below).</li>
+<li><strong>Users never verify infrastructure code.</strong>  Developers write and verify (or test) only the application logic of entry points.  The generated glue code — port APIs, communication queues, scheduling harnesses, platform configuration — is trusted, not verified by the user.</li>
+<li><strong>Infrastructure volume does not degrade verification scalability.</strong>  The quantity of generated infrastructure code (which can be large, particularly for seL4 targets) has no impact on the size or difficulty of the verification problems users face.</li>
+<li><strong>Reasoning is platform-independent.</strong>  Because contracts and their verification are stated against HAMR&rsquo;s abstract execution model rather than a particular platform&rsquo;s mechanisms, the same contracts and the same proofs apply whether the system is deployed to the JVM, Linux, or the seL4 microkernel — and regardless of the optimizations used inside the generated infrastructure.</li>
 </ul>
-<p>Both the OSATE AADL editor and the HAMR SysMLv2 VSCode extension can check that models conform to these hierarchy rules (as well as other well-formedness condtions).</p>
-<h3 id="common-aspects-of-software-component-and-connection-structure">Common Aspects of Software Component and Connection Structure</h3>
-<p>The software components described above have the following characteristics in common&hellip;</p>
+<h2 id="where-to-go-next">Where to Go Next</h2>
 <ul>
-<li><strong>Component interfaces consisting of ports:</strong> Each component&rsquo;s interface consists of zero or more ports, where each port is from one of the AADL port categories &ndash; <code>data</code>, <code>event</code>, or <code>event data</code> port.  Both SysMLv2 and AADL have other notions of interface features (e.g., AADL&rsquo;s <code>subprogram</code> calls) that are not supported by HAMR.</li>
-<li><strong>Ports/connections are unidirectional:</strong> HAMR restricts ports to be unidirectional &ndash; they are classified as either <code>in</code> or <code>out</code>.  While AADL and SysMLv2 both allow bi-directional ports (in AADL, <code>in out</code> ports), the HAMR restriction to uni-directional ports simplifies functional and information contract specification and verification.   The bi-directional communication use cases that might be accomplished with <code>in out</code> ports can be achieved in HAMR using a pair of distinct ports (one <code>in</code>, the other <code>out</code>).</li>
-<li><strong>Ports are typed:</strong> <code>data</code> and <code>event data</code> ports have declared types, where the types are defined via <code>data</code> components following the approach originating in the AADL Data Model Annex (see the chapter of data type definitions <strong>ToDo: give cross reference.</strong>)</li>
-<li><strong>Component connections associate a source port with a destination port:</strong> When component interfaces are integrated by connecting their ports, each connection relates a <em>source</em> port (which originates the communicated event, message, or data) and a <em>destination</em> port (which consumes the communicated event, message, or data).  Each source port may be connected to one or more destination ports (referred to as a &ldquo;fan out&rdquo; situation).  However, only event and event data destination ports can be associated with more than one source port (&ldquo;fan in&rdquo;).  Following the AADL standard, fan-in is not allowed for data ports because this can result in race conditions since data ports are non-queued.</li>
-<li><strong>Well-formed connections:</strong> When component instances are integrated by connecting their ports, the ports on both sides of the connection must have the same port category (<code>event</code>, <code>data</code>, and <code>event data</code>) and equivalent types.  This is more restrictive than AADL, which allows, e.g., an <code>event data</code> port to be connected to a <code>data port</code>.</li>
-<li><strong>Interfaces cannot be by-passed:</strong>  SysMLv2 allows a part to make associations/connections with another part&rsquo;s internal subparts, bypassing the enclosing part&rsquo;s interface.   HAMR follows AADL philosphy and restricts connections to only be given in terms of component/part interfaces.</li>
+<li><strong><a href="../gumbo-component-contracts/">GUMBO Component Contracts</a></strong> — read next: an example-based walkthrough of contract structure using the Simple Isolette.</li>
+<li><strong><a href="../gumbo-quick-reference/">GUMBO Quick Reference</a></strong> and <strong><a href="../gumbo-grammar/">GUMBO Grammar</a></strong> — reference material for the full construct catalog and syntax.</li>
+<li><strong><a href="../gumbo-system-properties/">GUMBO System Properties</a></strong> — the system-level layer, with its own <a href="../gumbo-system-properties-vcs/">technical VC reference</a>.</li>
+<li><strong>GUMBOX Executable Contracts</strong> — <em>(forthcoming)</em> how HAMR translates GUMBO contracts into executable Rust boolean functions for unit testing, property-based testing, and run-time monitoring.</li>
+<li><strong>GUMBO-to-Verus Translation</strong> — <em>(forthcoming)</em> how each GUMBO clause becomes a Verus <code>requires</code>/<code>ensures</code> contract in the generated Rust application code.</li>
+<li><strong>Working with Verus</strong> — <em>(forthcoming)</em> practical guidance for verifying HAMR component implementations with Verus.</li>
+<li>The three-part tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> (Simple Isolette), linked from the <a href="../reading-order/">Recommended Reading Order</a>, exercises the full path from model-level contracts through GUMBOX testing to Verus verification.</li>
 </ul>
-<p>AADL requirements component specifications to be given in two distinct declarations: a component <em>type</em> (i.e., a component &ldquo;interface&rdquo;) and a component <em>implementation</em> (which typically gives subcomponent structures as for non-leaf component categories including <code>system</code>, <code>process</code> and <code>thread group</code>).  This emphasized the notation of an interface (somewhat analogous to <code>interface</code> in Java-like programming languages) which may have multiple conforming implementations from which instances are constructed (analogous to a Java <code>class</code> implementing an <code>interface</code> and then instances between created from the <code>class</code> using <code>new</code>).  This forced separation often results in tedium for the developer since in the common situation of a component with only one implementation both declarations must be given.  SysMLv2 does not force this distinction: both interface (a collection of port usages) and implementation (declaration of subcomponents and connections) can be written in a single SysMLv2 <code>part</code> definition.  The notion of an interface with multiple implementations can be achieved using the native SysMLv2 inheritance mechanisms.   Nevertheless, to emphasize the elements of the interface as distinct from the &ldquo;implementation&rdquo; aspects, HAMR encourages parts representing components to be organized and commented as follows with interface elements occuring at the top of the <code>part</code> definition.</p>
-<pre tabindex="0"><code>  part def Control_Process :&gt; Process {
-    // --- interface ---
-    port desired_temp : EventDataPort { in :&gt;&gt; type : Set_Points; }
-
-    // --- implementation ---
-    // thread subcomponent instances
-    part temp_sensor: TempSensor;
-    part thermostat: Thermostat;
-    part heat_source: HeatSource;
-
-    // --- connections ---
-    // interface connection to internal component
-    connection dt : PortConnection connect desired_temp to thermostat.desired_temp;
-    // internal connections
-    connection tc : PortConnection connect temp_sensor.temp_changed to thermostat.temp_changed;
-    connection ct : PortConnection connect temp_sensor.current_temp to thermostat.current_temp;
-    connection hc : PortConnection connect thermostat.heat_control to heat_source.heat_control;
-  }
-</code></pre><h2 id="hamr-component-categories">HAMR Component Categories</h2>
-<p>In the sections below, we given the informal semantics of each HAMR component category, along with intutition about how that category is represented via code generation for targetted platforms.</p>
-<h3 id="system">System</h3>
-<p>As defined in the AADL standard, &ldquo;a <code>system</code> represents an assembly of interacting application software, execution platform, and <code>system</code> components&rdquo;.  A <code>system</code> component definition may contain <code>system</code> instances as sub-elements (representing subsystems).</p>
-<p>For HAMR models, while there may be multiple <code>system</code> components defined (some representing subsystems, or some representing different architectures for the same system concept), analysis and code generation is performed with a <em>selected root <code>system</code> component</em> that contains all the information necessary to carry out the analysis or code generation.   This will typically be the &ldquo;top-level&rdquo; <code>system</code> component, although there may be situations where an enclosing <code>system</code> is defined for informational purposes only (e.g., representing the context of the system to be analyzed for supported via code generation).   The specific mechanism for selecting a root <code>system</code> component depends on the HAMR modeling language editor being used (e.g., the CodeIVE or OSATE).  When HAMR analysis or code generation is invoked &ldquo;headlessly&rdquo; (without an IDE), command line options are available to indicate the root system.  When there is a single system component defined in the given models, that component is the root system by default.</p>
-<p>When a root <code>system</code> component is selected for HAMR, HAMR will generate an <em>instance model</em> for the system that &ldquo;flattens&rdquo; the architecture down to <code>thread</code> components (see <strong>ToDo: Cross reference later section</strong>).  Typically, HAMR analyses and code generation are performed directly on the instance model since it contains that runtime structure of the system.</p>
-<p>Given that <code>system</code> components will not be present instance models from which code is generated, they have no precise physical representation in the deployed system.  Instead, allow conceptual boundaries to be specified for scoping of responsibilities, defining the boundaries of analysis or code generation, or scoping attributes that are &ldquo;global&rdquo; with respect to analysis or code generation.</p>
-<p><strong>ToDo: Give references to models in the HAMR example repository illustrating some of these aspects</strong></p>
-<h4 id="attributes">Attributes</h4>
-<p><strong>ToDo: list common attributes</strong></p>
-<h3 id="process">Process</h3>
-<p>As defined in the AADL standard, &ldquo;A process represents a virtual address space, i.e., it represents a space partition unit whose boundaries are
-enforced at runtime.&rdquo;</p>
-<table>
-  <thead>
-      <tr>
-          <th>Platform</th>
-          <th>Interpretation</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>seL4</td>
-          <td>Represents a &ldquo;partition&rdquo; in the kernel.  For example, for seL4 Microkit, each model <code>Process</code> component instance causes an seL4 Microkit <em>protection domain</em> to be generated (actually, a tight nesting of two protection domains, one of which provides a thin hosting of another to more easily implement scheduling and error handling).</td>
-      </tr>
-      <tr>
-          <td>JVM</td>
-          <td>HAMR code generation currently implements a complete system in a JVM, which runs as a single OS process.  Therefore, <code>Process</code> boundaries are effectively ignored when targetting the JVM for HAMR code generation.</td>
-      </tr>
-  </tbody>
-</table>
-<h4 id="attributes-1">Attributes</h4>
-<p><strong>ToDo: list common attributes</strong></p>
-<h3 id="thread-group">Thread Group</h3>
-<h3 id="thread">Thread</h3>
-<h3 id="data">Data</h3>
-<h2 id="informal-semantics-of-port-categories">Informal Semantics of Port Categories</h2>
-<h2 id="informal-semantics-of-thread-dispatch-and-port-interactions">Informal Semantics of Thread Dispatch and Port Interactions</h2>
-<p>The AADL standard indicates that a thread&rsquo;s application code is
-organized into entry points (e.g., subprograms that are invoked from
-the AADL run-time).  For example, the Initialize Entry Point
-is called during the system&rsquo;s initialization phase,
-the Compute Entry Point is called during the
-system&rsquo;s ``normal&rsquo;&rsquo; compute phase.  Other entry points are defined for
-handling faults, performing mode changes, etc.  We plan to address the
-higher-level coordination semantics for these phases in follow-on
-work.  Multiple organizations of entry points are allowed.  Here, we
-address a single and for each thread.</p>
-<p>Many of AADL&rsquo;s thread execution concepts are based on long-established
-task patterns and principles for achieving analyzeable real-time
-systems (such as found in Burns and Wellings &ldquo;Analysable Real-Time Systems&rdquo;).<br>
-Burns and Wellings described these principles for Ada, but we implement similar notions in Slang and Rust.  Following these principles, at each activation of a thread,
-the application code of the thread (it&rsquo;s Compute entry point)
-will abstractly compute a function from its input port
-values and local variables to output port values while possibly
-updating its local variables.</p>
-<p>In the general case, an AADL Thread may explictly call the
-AADL run-time services (RTS) to receive new inputs at any point in its execution.
-Yet, this would break the atomicity of a dispatch
-execution. We explictly forbid this in our formalization as this would
-introduce unsoundess in many AADL analyses and contract languages such as GUMBO.
-Furthermore, this capability is barely used in practice.</p>
-<p>In AADL terminology, dispatching a thread refers to the thread
-becoming ready for execution from a OS scheduler perspective.  The
-thread Dispatch_Protocol property selects among several
-strategies for determining when a thread should be dispatched.  In
-HAMR, we consider only <em>Periodic</em>, which dispatches a thread
-when a certain time interval is passed, and Sporadic, which
-dispatches a thread upon arrival of messages to input ports specified
-as <em>dispatch triggers</em>.</p>
-<p>In descriptions of HAMR&rsquo;s semantics, the state of each port is further decomposed into the
-Infrastructure Port State (IPS) and the Application Port State
-(APS). The IPS represents the communication infrastructure&rsquo;s
-perspective of the port; this is hidden from the thread application code.
-The APS represents the thread application code&rsquo;s perspective of the port.</p>
-<p>HAMR follows AADL and supports an input-compute-output model of communication and execution that is based on threads and port communication. To ensure determinism, the inputs received from other components are frozen at a specified point, by default the dispatch of a thread. As a result the computation performed by a thread is not affected by the arrival of new input unless the thread explicitly requests for input. Similarly, the output is made available to other components at a specified point in time.</p>
-<p>The distinction between IPS and APS is used to represent AADL&rsquo;s
-notions of port freezing and port variable.  Typically, when a thread is
-dispatched, the component infrastructure uses the RTS to move one or more values from the IPS of
-input ports into the input APS.  Then the component application code
-is called and the APS values then remain ``frozen&rsquo;&rsquo; as the code
-executes.  This provides the application a consistent view of inputs
-even though input IPS may be concurrently updated by communication
-infrastructure behind the scenes.  The application code writes to the
-output APS throughout execution.  Our intended design for this is that
-when the application code completes, the component infrastructure will
-call the Send Output RTS to move output values from the
-output APS to the IPS, thus releasing the output values all at once to
-the communication infrastructure for propagation to consumers. This
-release of output values is the key desired behavior. There are
-multiple possible implementations that achieve this behavior.  At the
-component&rsquo;s external interface, this execution pattern follows the
-(Read Inputs; Compute; Write Outputs) structure championed by
-various real-time system methods.</p>
-<p>For input event data ports, the IPS typically would be a queue into
-which the middleware would insert arriving values following overflow
-policies specified for the port.  For input data ports, the IPS
-typically would be a memory block large enough to hold a single value.
-For output ports, the IPS represents pending value(s) to be propagated
-by the communication infrastructure to connected consumer ports.</p>
 </div>
         
         <hr/>

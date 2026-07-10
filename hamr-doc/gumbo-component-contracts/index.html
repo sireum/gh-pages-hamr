@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="GUMBO Component Contracts This chapter is a developer-oriented, example-based walkthrough of the structure of GUMBO contracts for thread components. It uses the Simple Isolette examples from the HAMR tutorials repository: first the data-port variant (periodic components communicating via data ports), then the event-data-port variant of the same system, which introduces the GUMBO constructs for reasoning about message-oriented communication.
+We assume you have read the GUMBO Overview (motivation and framework architecture), the HAMR Overview, and HAMR Modeling Elements and Semantics Concepts — in particular, the concepts of thread components, port categories, entry points, and port freezing. Familiarity with the Rust component development chapters (implementation, manual unit testing) is helpful but not required.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-component-contracts/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="GUMBO Component Contracts This chapter is a developer-oriented, example-based walkthrough of the structure of GUMBO contracts for thread components. It uses the Simple Isolette examples from the HAMR tutorials repository: first the data-port variant (periodic components communicating via data ports), then the event-data-port variant of the same system, which introduces the GUMBO constructs for reasoning about message-oriented communication.
+We assume you have read the GUMBO Overview (motivation and framework architecture), the HAMR Overview, and HAMR Modeling Elements and Semantics Concepts — in particular, the concepts of thread components, port categories, entry points, and port freezing. Familiarity with the Rust component development chapters (implementation, manual unit testing) is helpful but not required.">
+  <meta itemprop="wordCount" content="4854">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="GUMBO Component Contracts This chapter is a developer-oriented, example-based walkthrough of the structure of GUMBO contracts for thread components. It uses the Simple Isolette examples from the HAMR tutorials repository: first the data-port variant (periodic components communicating via data ports), then the event-data-port variant of the same system, which introduces the GUMBO constructs for reasoning about message-oriented communication.
+We assume you have read the GUMBO Overview (motivation and framework architecture), the HAMR Overview, and HAMR Modeling Elements and Semantics Concepts — in particular, the concepts of thread components, port categories, entry points, and port freezing. Familiarity with the Rust component development chapters (implementation, manual unit testing) is helpful but not required.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="gumbo-component-contracts">GUMBO Component Contracts</h1>
+<p>This chapter is a developer-oriented, example-based walkthrough of the structure of GUMBO contracts for thread components.  It uses the Simple Isolette examples from the <a href="https://github.com/santoslab/hamr-tutorials">HAMR tutorials repository</a>: first the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example">data-port variant</a> (periodic components communicating via data ports), then the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">event-data-port variant</a> of the same system, which introduces the GUMBO constructs for reasoning about message-oriented communication.</p>
+<p>We assume you have read the <a href="../gumbo-overview/">GUMBO Overview</a> (motivation and framework architecture), the <a href="../hamr-overview/">HAMR Overview</a>, and <a href="../hamr-semantics-concepts/">HAMR Modeling Elements and Semantics Concepts</a> — in particular, the concepts of thread components, port categories, entry points, and port freezing.  Familiarity with the Rust component development chapters (<a href="../hamr-rust-implementation/">implementation</a>, <a href="../hamr-rust-testing-manual/">manual unit testing</a>) is helpful but not required.</p>
+<p>This chapter addresses <strong>model-level</strong> specifications only.  The translation of these contracts to code-level artifacts — executable GUMBOX contracts for testing and run-time monitoring, and Verus contracts for formal verification of Rust implementations — is covered in forthcoming chapters (see <a href="#from-contracts-to-code-what-comes-next">the closing section</a>).  This chapter narrates and motivates; for the complete catalog of constructs consult the <a href="../gumbo-quick-reference/">GUMBO Quick Reference</a>, and for the syntax the <a href="../gumbo-grammar/">GUMBO Grammar</a>.</p>
+<h2 id="anatomy-of-a-component-contract">Anatomy of a Component Contract</h2>
+<p>The figure below overlays the elements of a GUMBO component contract on the structure of a HAMR thread component.  (The figure uses the abbreviation <em>GCL</em> — GUMBO Contract Language; in prose we simply say &ldquo;GUMBO&rdquo;.)</p>
+<p><img src="images/gcl.png" alt="GUMBO contract elements overlaid on the HAMR thread component structure"></p>
+<p>Working through the figure&rsquo;s callouts:</p>
+<ul>
+<li>
+<p><strong>State variable declarations</strong> declare variables that are local to the thread and that need to be referenced by the thread&rsquo;s contracts to fully specify its behavior (a similar concept appears in other contract frameworks such as SPARK Ada).  GUMBO-declared state variables are translated by HAMR into thread state declarations in the generated application code skeletons.</p>
+</li>
+<li>
+<p><strong>Integration constraints</strong> are invariants on the values flowing through a port.  Each integration constraint clause pertains to a single port.  Components <em>reading</em> from a port may <strong>assume</strong> the constraint; components <em>writing</em> to a connected port must <strong>guarantee</strong> it.  Integration constraints let engineers specify, at the point where components are integrated by connecting ports, the value obligations each side takes on.</p>
+</li>
+<li>
+<p><strong>Entry point contracts</strong> specify relational properties over the <em>application view</em> of the component&rsquo;s state and ports — the frozen input port values and pre-state at dispatch, related to the output port values and post-state at completion — enforced on each execution of an entry point.  The &ldquo;application view&rdquo; is the Application Port State of the <a href="../hamr-semantics-concepts/#informal-semantics-of-thread-dispatch-and-port-interactions">HAMR execution model</a>: because inputs are frozen at dispatch and outputs are released at completion, each contract has an unambiguous pre/post reading.</p>
+</li>
+<li>
+<p><strong>Data invariants</strong> specify properties that must hold for all values of a particular data type (following the AADL Data Model Annex approach to type definitions).  <em>Note: data invariants are not yet implemented for HAMR Rust code generation</em> — see <a href="#data-invariants">the caveat below</a>.</p>
+</li>
+<li>
+<p><strong>The GUMBO annex library</strong> provides helper functions that can be called from contract expressions, defined either locally within a thread&rsquo;s contract or in shared library packages.</p>
+</li>
+</ul>
+<h3 id="entry-points-and-when-contracts-are-enforced">Entry Points and When Contracts Are Enforced</h3>
+<p>As described in the <a href="../hamr-semantics-concepts/#informal-semantics-of-thread-dispatch-and-port-interactions">semantics chapter</a>, a thread&rsquo;s application code is organized into <em>entry points</em> invoked by the underlying scheduling framework:</p>
+<ul>
+<li>
+<p>The <strong>Initialize entry point</strong> executes exactly once, during the system&rsquo;s initialization phase.  It may not read input ports; it must initialize the component&rsquo;s local state and put initial values on all output <em>data</em> ports (output event and event data ports need no initialization).  Its GUMBO contract therefore consists only of <em>guarantees</em> — there are no inputs to make assumptions about.</p>
+</li>
+<li>
+<p>The <strong>Compute entry point</strong> executes repeatedly during the system&rsquo;s compute phase, once per dispatch.  Its GUMBO contract can include assumptions about inputs and pre-state, and guarantees relating inputs and pre-state to outputs and post-state.</p>
+</li>
+</ul>
+<p>The form of the compute entry point depends on the thread&rsquo;s declared dispatch protocol:</p>
+<ul>
+<li><strong>Periodic</strong> threads are dispatched at regular time intervals (the <code>Period</code> property); the generated compute entry point is a single <code>timeTriggered</code> method, and the compute contract applies to every dispatch.</li>
+<li><strong>Sporadic</strong> threads are dispatched by the arrival of messages on incoming event or event data ports; the generated application code is a collection of event <em>handlers</em>, and GUMBO provides per-handler contract sections (<code>handle</code> clauses).</li>
+</ul>
+<p><strong>HAMR code generation for Rust/seL4 does not yet support sporadic threads</strong>, so all examples in this chapter are periodic.  If you want to see the intended contract style for sporadic components, consult the <a href="../gumbo-quick-reference/#17-gumbo-handler-contracts-sporadic-threads">handler contracts section of the Quick Reference</a> and the Slang-based examples it draws from.</p>
+<h2 id="two-ways-you-will-write-contracts">Two Ways You Will Write Contracts</h2>
+<p>Before walking through the constructs, it is worth fixing the two workflows in which you will encounter them.</p>
+<h3 id="specifying-a-new-system-from-scratch">Specifying a New System from Scratch</h3>
+<p>When contracts are part of the initial design, a natural order of work is:</p>
+<ol>
+<li><strong>Ports and data types first.</strong>  Contracts are stated over the component&rsquo;s interface, so the interface comes first.</li>
+<li><strong>Integration constraints next.</strong>  These are the component-boundary obligations — what each producer promises about the values it emits, and what each consumer needs to assume about the values it receives.  Writing them early makes the negotiation between component roles explicit before any behavior is specified, and HAMR can check assume/guarantee compatibility as soon as ports are connected.</li>
+<li><strong>Initialize guarantees.</strong>  Pin down initial state and initial output data port values.</li>
+<li><strong>Compute contracts, transcribed from requirements.</strong>  Behavioral requirements often translate one-for-one into named contract clauses — a <code>compute_cases</code> case per requirement is a common pattern, with the requirement&rsquo;s identifier as the clause name and its prose in the documentation string.</li>
+</ol>
+<p>Run the HAMR type checker (<code>sireum hamr sysml tipe</code>, also available in the CodeIVE command palette) after each increment — GUMBO blocks are parsed and checked, not treated as comments.</p>
+<h3 id="adding-or-evolving-contracts-in-an-existing-system">Adding or Evolving Contracts in an Existing System</h3>
+<p>GUMBO contracts live inside <code>language &quot;GUMBO&quot; /*{ ... }*/</code> annotations within a thread&rsquo;s <code>part def</code>.  Because the contract text sits inside a SysMLv2 block comment, standard SysMLv2 tooling ignores it, while HAMR parses and processes it.  This means contracts can be added to an existing, already-working model without disturbing anything else — and this is the workflow the tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> (linked from the <a href="../reading-order/">Recommended Reading Order</a>) walks through in full.</p>
+<p>When code has already been generated and you add or modify contracts, rerunning HAMR code generation does <em>not</em> overwrite your application code: HAMR re-weaves the updated contract-derived material (Verus contracts, state variable declarations, GUMBO helper methods) into marked regions of the developer-editable files while preserving your code outside those regions.  See <a href="../hamr-rust-implementation/#code-generation-with-embedded-contracts">Thread Component Development in Rust</a> for what the woven regions look like.</p>
+<h2 id="running-example-the-simple-isolette-data-port-variant">Running Example: The Simple Isolette (Data-Port Variant)</h2>
+<p>The Simple Isolette is an infant-incubator control system: a <code>TempSensor</code> samples the air temperature, a <code>Thermostat</code> compares it against a desired range provided by an <code>OperatorInterface</code> and commands a <code>HeatSource</code> on or off.  The <a href="../hamr-semantics-concepts/#the-simple-isolette-example">semantics chapter</a> introduces the architecture in detail, including the variant used here: every thread is periodic, every thread is in its own process, and all communication is via data ports.  The complete model and generated code are in the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example">P-DP tutorial example</a>.</p>
+<p>The contract walkthrough centers on the <code>Thermostat</code>, whose interface is:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Thermostat :&gt; Periodic_Rust_Thread {
+  port current_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
+  port desired_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Set_Points; }
+  port heat_control : DataPort { out :&gt;&gt; type : Isolette_Data_Model::On_Off; }
+  ...
+}
+</code></pre><p>Every dispatch, the thermostat reads the current temperature and the desired set points from its input data ports (data ports always hold the most recent value — they are never empty) and writes an <code>Onn</code>/<code>Off</code> command to its output data port.  The sections below walk through its GUMBO block one section at a time.</p>
+<h2 id="state-variables">State Variables</h2>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  lastCmd: Isolette_Data_Model::On_Off;
+</code></pre><p>The <code>state</code> section declares component-local variables that persist across dispatches — the component&rsquo;s memory as seen by contracts.  Here <code>lastCmd</code> records the most recent command the thermostat placed on <code>heat_control</code>; it exists so that the contract can express the requirement <em>&ldquo;the value of the Heat Control shall not be changed&rdquo;</em> (REQ_THERM_4 below), which relates the current dispatch&rsquo;s output to the <em>previous</em> dispatch&rsquo;s output.</p>
+<p>Two obligations follow from declaring a state variable:</p>
+<ul>
+<li>the <em>initialize</em> contract should pin down its initial value, and</li>
+<li>in <em>compute</em> contracts, its pre-dispatch value is written <code>In(lastCmd)</code> and its post-dispatch value is written <code>lastCmd</code> (see <a href="#pre-state-the-in-operator">the In() operator</a> below).</li>
+</ul>
+<p>GUMBO-declared state variables are the aspects of a component&rsquo;s state that are <em>visible to model-level contracts</em> — and therefore visible to every analysis that consumes those contracts, including <a href="../gumbo-system-properties/">system-level reasoning</a>, which can alias and track component state variables across the schedule.  HAMR auto-generates code-level representations of them (fields of the generated component state struct in the Rust skeleton) and keeps those definitions in sync with the model-level declarations as code generation is re-run.</p>
+<p>Working at the code level, developers may additionally introduce their own state variables in the component struct — implementation details such as caches or diagnostic counters.  Such manually added variables are <em>not</em> tracked at the model level or by the contract framework: model-level contracts cannot refer to them, and they play no role in integration checking or system reasoning.  State that matters to the component&rsquo;s specified behavior should be declared in the GUMBO <code>state</code> section.  <em>(Reference: <a href="../gumbo-quick-reference/#12-gumbo-state-declarations">Quick Reference — State Declarations</a>.)</em></p>
+<h2 id="helper-functions">Helper Functions</h2>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def Temp_Lower_Bound(): Base_Types::Integer_32 := 95 [i32];
+  def Temp_Upper_Bound(): Base_Types::Integer_32 := 104 [s32];
+</code></pre><p>The <code>functions</code> section defines side-effect-free helper functions usable in the thread&rsquo;s contract clauses.  The simplest use, shown here, is naming constants so that requirement-level values are single-sourced: <code>Temp_Lower_Bound()</code> appears in the integration constraint below, and if the bound changes, it changes in one place.</p>
+<p>Functions may also take arguments, which makes them the primary tool for <em>formalizing requirement concepts as named predicates</em>.  For example, the sensed-temperature range that the thermostat&rsquo;s integration constraint spells out could instead be captured as a predicate:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def inSensedRange(degrees: Base_Types::Integer_32): Base_Types::Boolean :=
+    Temp_Lower_Bound() &lt;= degrees &amp; degrees &lt;= Temp_Upper_Bound();
+</code></pre><p>allowing the constraint to be written as <code>inSensedRange(current_temp.degrees)</code>.  The requirement concept now has a single, citable definition that can be reused across integration constraints and compute clauses — and, since HAMR translates GUMBO functions along with the contracts that use them, the same definition reappears in the generated test oracles and verification contracts.</p>
+<p>Parameterized functions can also be <em>layered</em> to mirror the conditional structure of requirement text.  The <a href="https://github.com/loonwerks/INSPECTA-models/tree/main/isolette">full Isolette example</a> formalizes the alarm-range requirements of the FAA Requirements Engineering Management Handbook this way (excerpt from its GUMBO library):</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">def Allowed_LowerAlarmTemp(lower: Base_Types::Integer_32): Base_Types::Boolean :=
+  LowerAlarmTemp_lower() &lt;= lower &amp; lower &lt;= LowerAlarmTemp_upper();
+
+def isValidTempWstatus(value: Isolette_Data_Model::TempWstatus_i): Base_Types::Boolean :=
+  value.status == Isolette_Data_Model::ValueStatus.Valid;
+
+def Allowed_LowerAlarmTempWStatus(lower: Isolette_Data_Model::TempWstatus_i): Base_Types::Boolean :=
+  (isValidTempWstatus(lower) implies Allowed_LowerAlarmTemp(lower.degrees));
+</code></pre><p>Reading bottom-up: a lower-alarm set point (a value carrying a validity status) is <em>allowed</em> when, <strong>if</strong> its value is valid, <strong>then</strong> its degrees lie in the allowed range — a direct transcription of the requirement&rsquo;s conditional structure, assembled from two smaller named predicates.  A contract clause that uses <code>Allowed_LowerAlarmTempWStatus(lower_alarm_tempWstatus)</code> reads almost like the requirement itself.</p>
+<p>Functions declared in a thread&rsquo;s GUMBO block are local to that thread.  Shared functions callable from <em>multiple</em> components — like the Isolette library functions just shown — are declared in package-level GUMBO libraries; see <a href="#package-level-gumbo-libraries">below</a>, where the Simple Network Guard&rsquo;s message predicates (<code>clampedPayload</code>, <code>equalMessage</code>, &hellip;) show the same requirement-formalizing style at library scope.  <em>(Reference: <a href="../gumbo-quick-reference/#13-gumbo-subclause-functions">Quick Reference — Subclause Functions</a>.)</em></p>
+<h2 id="integration-constraints">Integration Constraints</h2>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  assume ASSM_CT_Range:
+    Temp_Lower_Bound() &lt;= current_temp.degrees &amp; current_temp.degrees &lt;= Temp_Upper_Bound();
+</code></pre><p>Integration constraints are invariants on the values flowing through a single port.  The direction of the clause matches the direction of the port:</p>
+<ul>
+<li>an <strong>assume</strong> on an <em>input</em> port states what the component relies on about arriving values;</li>
+<li>a <strong>guarantee</strong> on an <em>output</em> port states what the component promises about the values it emits.</li>
+</ul>
+<p>Here the thermostat assumes that every temperature it reads from <code>current_temp</code> lies in [95, 104].  The producer side of this handshake is in the <code>TempSensor</code> (in <code>Devices.sysml</code>), which guarantees a <em>stronger</em> constraint on its output:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def TempSensor :&gt; Thread {
+  port current_temp : DataPort { out :&gt;&gt; type : Isolette_Data_Model::Temp; }
+  ...
+  language &#34;GUMBO&#34; /*{
+     integration
+        guarantee temp_range:
+            96 [i32] &lt;= current_temp.degrees &amp; current_temp.degrees &lt;= 103 [i32];
+  }*/
+}
+</code></pre><p>When the two ports are connected in the model, HAMR&rsquo;s integration checking (the HAMR Logika check, available in the CodeIVE and via <code>sireum hamr sysml logika</code>) verifies that the producer&rsquo;s guarantee implies the consumer&rsquo;s assumption — here, [96, 103] ⊆ [95, 104], so the connection is valid.  This check happens at <em>model assembly time</em>, before any code exists: incompatible components are caught when they are wired together, not when the system misbehaves.</p>
+<p>Integration constraints also flow down to the code level: the assumption becomes a postcondition of the generated <code>get_current_temp()</code> port API (the implementation may rely on it), and the guarantee becomes a precondition of the sensor&rsquo;s <code>put_current_temp()</code> API (the implementation must establish it).</p>
+<p>Note what the DP-variant model does <em>not</em> express: the well-formedness of the desired set points (<code>lower &lt;= upper</code>).  In this variant the <code>OperatorInterface</code> carries no GUMBO contract, so there is no producer-side guarantee for the thermostat to lean on — and the constraint appears instead as a <em>compute</em> assumption (next section).  The <a href="#event-data-ports-the-p-edp-variant">event-data-port variant</a> closes this handshake properly with an integration constraint pair.  <em>(Reference: <a href="../gumbo-quick-reference/#14-gumbo-integration-constraints">Quick Reference — Integration Constraints</a>.)</em></p>
+<h2 id="initialize-entry-point-contracts">Initialize Entry Point Contracts</h2>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee
+    initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+  guarantee REQ_THERM_1 &#34;The Heat Control command shall be Off initially.&#34;:
+    heat_control == Isolette_Data_Model::On_Off.Off;
+</code></pre><p>The initialize contract consists of guarantees only — the initialize entry point may not read inputs, so there is nothing to assume.  Its guarantees must cover the component&rsquo;s obligations at the end of the initialization phase:</p>
+<ul>
+<li><strong>every state variable is established</strong> — <code>initlastCmd</code> pins <code>lastCmd</code> to <code>Off</code>;</li>
+<li><strong>every output data port has an initial value</strong> — <code>REQ_THERM_1</code> requires the initial heat command to be <code>Off</code>, transcribing the safety requirement that the heater must not start on.</li>
+</ul>
+<p>Each clause has a name (used in generated code and reports) and an optional documentation string.  Documentation strings may span lines using <code>|</code> as a continuation marker, which is the standard way to carry full requirement prose into the model (see the compute cases below).  <em>(Reference: <a href="../gumbo-quick-reference/#15-gumbo-initialize-contracts">Quick Reference — Initialize Contracts</a>.)</em></p>
+<h2 id="compute-entry-point-contracts">Compute Entry Point Contracts</h2>
+<p>The compute contract specifies the behavior of every dispatch.  For a periodic thread like the thermostat, the contract governs the generated <code>timeTriggered</code> entry point.  A compute contract can combine three kinds of clauses — general assumptions, general guarantees, and case-based specifications — all of which relate the frozen inputs and pre-state to the outputs and post-state.</p>
+<h3 id="compute-assumptions">Compute Assumptions</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  assume ASSM_LDT_LE_UDT: desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+</code></pre><p>A compute <code>assume</code> is a per-dispatch precondition: the component is specified (and its implementation verified) only for dispatches in which the assumption holds.  Here the thermostat&rsquo;s control cases are only sensible when the set points are well-ordered.</p>
+<p>When should a constraint be a compute assumption rather than an integration assumption?  An integration assumption is preferable when the producing component can guarantee it — the obligation is then discharged once, at model assembly time.  In this variant the <code>OperatorInterface</code> has no contract, so there is nothing to discharge the constraint against, and a compute assumption documents the reliance explicitly.  (The obligation doesn&rsquo;t vanish: it resurfaces as a precondition in the generated code contracts, and any caller — including the test infrastructure — must respect it.)</p>
+<h3 id="general-guarantees">General Guarantees</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee lastCmd &#34;Set lastCmd to value of output Cmd port&#34;:
+    lastCmd == heat_control;
+</code></pre><p>General guarantees hold on <em>every</em> dispatch, regardless of which case applies.  This one maintains the invariant that gives <code>lastCmd</code> its meaning: after every dispatch, the state variable equals the command just placed on the output port.  Invariant-style properties that cut across all cases belong here rather than being repeated in each case.</p>
+<h3 id="case-based-specification-with-compute_cases">Case-Based Specification with compute_cases</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  compute_cases
+    case REQ_THERM_2 &#34;If Current Temperature is less than
+                      |the Lower Desired Temperature, the Heat Control shall be set to On.&#34;:
+      assume (current_temp.degrees &lt; desired_temp.lower.degrees);
+      guarantee heat_control == Isolette_Data_Model::On_Off.Onn;
+
+    case REQ_THERM_3 &#34;If the Current Temperature is greater than
+                      |the Upper Desired Temperature, the Heat Control shall be set to Off.&#34;:
+      assume (current_temp.degrees &gt; desired_temp.upper.degrees);
+      guarantee heat_control == Isolette_Data_Model::On_Off.Off;
+
+    case REQ_THERM_4 &#34;If the Current Temperature is greater than or equal
+                      |to the Lower Desired Temperature
+                      |and less than or equal to the Upper Desired Temperature, the value of
+                      |the Heat Control shall not be changed.&#34;:
+      assume (current_temp.degrees &gt;= desired_temp.lower.degrees
+              &amp; current_temp.degrees &lt;= desired_temp.upper.degrees);
+      guarantee heat_control == In(lastCmd);
+</code></pre><p><code>compute_cases</code> supports case-based specification in the style of contract <em>cases</em> found in frameworks like JML: each <code>case</code> pairs an assumption (a condition on inputs and pre-state) with a guarantee that must hold in the post-state <em>whenever that case&rsquo;s assumption held at dispatch</em>.  This structure maps naturally onto conditional requirements — note how each case is named after a requirement (REQ_THERM_2/3/4) and carries the requirement text in its documentation string.</p>
+<p>Two things to check when writing cases:</p>
+<ul>
+<li><strong>Coverage.</strong>  Together with the compute assumption <code>ASSM_LDT_LE_UDT</code>, the three cases partition the input space: the temperature is below the range, above it, or within it.  Cases are not required to be exhaustive — a dispatch matching no case is constrained only by the general guarantees — but <em>unintentional</em> gaps are a common specification error.  If some region of the input space is deliberately unconstrained, consider writing an explicit case with <code>guarantee true</code> to record the decision.</li>
+<li><strong>Overlap.</strong>  If two cases&rsquo; assumptions can hold simultaneously, both guarantees must hold; overlapping cases with conflicting guarantees make the contract unimplementable.</li>
+</ul>
+<p><em>(Reference: <a href="../gumbo-quick-reference/#16-gumbo-compute-contracts">Quick Reference — Compute Contracts</a>.)</em></p>
+<h3 id="pre-state-the-in-operator">Pre-State: the In() Operator</h3>
+<p>REQ_THERM_4&rsquo;s guarantee uses the one remaining construct:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">guarantee heat_control == In(lastCmd);
+</code></pre><p><code>In(x)</code> denotes the value of state variable <code>x</code> at the <em>beginning</em> of the current dispatch (the pre-state); a bare <code>lastCmd</code> in a guarantee denotes its post-state value.  <code>In()</code> applies only to state variables — input ports need no such operator, since their frozen values cannot change during the dispatch.</p>
+<p><code>heat_control == In(lastCmd)</code> is the canonical GUMBO idiom for <em>&ldquo;the value shall not be changed&rdquo;</em>: the command emitted this dispatch equals the command remembered from the previous one.  Combined with the general guarantee <code>lastCmd == heat_control</code>, the state variable is re-established for the next dispatch.  <em>(Reference: <a href="../gumbo-quick-reference/#the-in-operator-pre-state-values">Quick Reference — the In() operator</a>.)</em></p>
+<h2 id="event-data-ports-the-p-edp-variant">Event Data Ports: The P-EDP Variant</h2>
+<p>Data ports model <em>sampled</em> communication: the port always holds the most recent value.  Event data ports model <em>message</em> communication: values are queued, a message may or may not be present at a given dispatch, and once dequeued it is gone.  This changes what contracts must say — specifications must reason about the <em>presence or absence</em> of messages, and components typically must <em>latch</em> received values into state if they need them later.</p>
+<p>The <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">P-EDP variant of the Simple Isolette</a> reworks the same system with event data ports: the operator&rsquo;s set points arrive as messages only when the operator changes them, the temperature sensor announces changes as events, and the thermostat sends a heat command only when the commanded state actually changes.  All threads remain <strong>periodic</strong> — each thread polls its event data ports at every dispatch.  (This periodic-polling pattern is exactly what HAMR Rust/seL4 code generation supports today; sporadic, event-<em>triggered</em> dispatch is future work.)</p>
+<h3 id="interface-and-state-latching-inputs">Interface and State: Latching Inputs</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Thermostat :&gt; Periodic_Rust_Thread {
+  port current_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
+  port temp_changed : EventDataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
+  port desired_temp : EventDataPort { in :&gt;&gt; type : Isolette_Data_Model::Set_Points; }
+  port heat_control : EventDataPort { out :&gt;&gt; type : Isolette_Data_Model::On_Off; }
+
+  language &#34;GUMBO&#34; /*{
+    state
+       currentSetPoints: Isolette_Data_Model::Set_Points;
+       lastCmd: Isolette_Data_Model::On_Off;
+    ...
+  }*/
+}
+</code></pre><p>Compare with the DP variant: <code>desired_temp</code> is now an event data port, so set points arrive only occasionally — and the thermostat must remember the most recent ones.  That is the role of the new state variable <code>currentSetPoints</code>: incoming set point messages are <em>latched</em> into it, and the control law is judged against the latched values rather than a port.  Latching is the fundamental state pattern of event data port components: <strong>transient messages that influence future behavior must be captured in state</strong>, and the contract must say so.</p>
+<h3 id="integration-constraints-on-event-data-ports">Integration Constraints on Event Data Ports</h3>
+<p>Integration constraints on an event data port constrain the message payload <em>whenever a message is present</em> — no explicit presence guard is needed in the integration section.  In this variant, the set-points well-formedness constraint that the DP variant could only state as a compute assumption becomes a proper two-sided handshake.  The thermostat assumes:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  assume ASSM_LDT_LE_UDT &#34;Incoming set point messages must be well-formed
+                         |(lower desired temp at most upper desired temp).&#34;:
+    desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+</code></pre><p>and the <code>OperatorInterface</code> — which now carries a contract — guarantees the producer side:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def OperatorInterface :&gt; Periodic_Rust_Thread {
+  port desired_temp : EventDataPort { out :&gt;&gt; type : Isolette_Data_Model::Set_Points; }
+
+  language &#34;GUMBO&#34; /*{
+    integration
+      guarantee LDT_LE_UDT &#34;The lower desired temperature is at most the
+                           |upper desired temperature in every emitted message.&#34;:
+        desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+  }*/
+}
+</code></pre><p>HAMR&rsquo;s integration checking discharges the pair at model assembly time, exactly as for data ports.  <em>(Reference: <a href="../gumbo-quick-reference/#integration-constraints-on-event-data-ports">Quick Reference — Integration Constraints on Event Data Ports</a>.)</em></p>
+<h3 id="initialization-with-event-data-ports">Initialization with Event Data Ports</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee initCurrentSetPoints &#34;The latched set points start at the default range.&#34;:
+    currentSetPoints.lower.degrees == Default_Lower_Set_Point() &amp;
+    currentSetPoints.upper.degrees == Default_Upper_Set_Point();
+  guarantee REQ_THERM_1 &#34;The commanded heat state shall be Off initially. ...&#34;:
+    lastCmd == Isolette_Data_Model::On_Off.Off;
+</code></pre><p>Unlike output <em>data</em> ports, output event and event data ports require no initialization — no message need be sent during the initialization phase.  The initialize contract therefore constrains only the state variables: the latched set points start at a default range (defined by helper functions <code>Default_Lower_Set_Point()</code> / <code>Default_Upper_Set_Point()</code>, in force until the first set point message arrives), and the commanded state starts <code>Off</code>.  Note how the original REQ_THERM_1 is <em>adapted</em> rather than dropped: since no initial message is sent on <code>heat_control</code>, the initial-off obligation moves to the state variable here — and to the <code>HeatSource</code>&rsquo;s own initialize contract, which independently guarantees its heater state starts <code>Off</code>.</p>
+<h3 id="reacting-to-message-presence-hasevent">Reacting to Message Presence: HasEvent</h3>
+<p>The predicate <code>HasEvent(port)</code> is true at a dispatch exactly when a message is present on the (input) event data port.  The latching behavior is specified as a presence/absence pair:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  assume INV_CSP &#34;The latched set points are well-formed.&#34;:
+    currentSetPoints.lower.degrees &lt;= currentSetPoints.upper.degrees;
+
+  guarantee latchSetPointsOnEvent &#34;A newly received set point message is latched.&#34;:
+    HasEvent(desired_temp) implies
+      (currentSetPoints.lower.degrees == desired_temp.lower.degrees and
+       currentSetPoints.upper.degrees == desired_temp.upper.degrees);
+  guarantee latchSetPointsNoEvent &#34;Otherwise the latched set points are unchanged.&#34;:
+    (not HasEvent(desired_temp)) implies currentSetPoints == In(currentSetPoints);
+  guarantee invCSPMaintained &#34;Well-formedness of the latched set points is
+                             |re-established for the next dispatch.&#34;:
+    currentSetPoints.lower.degrees &lt;= currentSetPoints.upper.degrees;
+</code></pre><p>Three patterns worth naming:</p>
+<ul>
+<li><strong>The latch pair.</strong>  <code>latchSetPointsOnEvent</code> / <code>latchSetPointsNoEvent</code> cover both outcomes of the presence test: a fresh message overwrites the latch; no message leaves it unchanged (<code>In(currentSetPoints)</code> — the frame condition on the state variable).</li>
+<li><strong>A re-established invariant.</strong>  <code>INV_CSP</code> (assume) and <code>invCSPMaintained</code> (guarantee) bracket every dispatch with the same property: the latched set points are well-formed.  The assumption is justified inductively — the initialize contract establishes it (98 ≤ 101 for the defaults), and each dispatch re-establishes it, because only payloads satisfying the integration assumption <code>ASSM_LDT_LE_UDT</code> are ever latched.</li>
+<li><strong>A trigger frame condition.</strong>  The variant&rsquo;s control logic runs only when something happened; without a trigger, nothing changes:</li>
+</ul>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee noTriggerNoChange &#34;Without a triggering event (temperature change or
+                              |new set points) the commanded state is unchanged.&#34;:
+    (not (HasEvent(temp_changed) or HasEvent(desired_temp)))
+      implies lastCmd == In(lastCmd);
+</code></pre><p>The control law itself (REQ_THERM_2/3/4) is restated in this variant as implication-style guarantees rather than <code>compute_cases</code> — guarded by the event triggers and judged against the <em>latched</em> set points:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee REQ_THERM_2 &#34;If triggered and the Current Temperature is less than
+                        |the Lower Desired Temperature, the commanded heat state
+                        |shall be set to On.&#34;:
+    ((HasEvent(temp_changed) or HasEvent(desired_temp)) and
+      current_temp.degrees &lt; currentSetPoints.lower.degrees)
+    implies lastCmd == Isolette_Data_Model::On_Off.Onn;
+</code></pre><p>(REQ_THERM_3 and REQ_THERM_4 follow the same shape; see the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example/sysmlv2/isolette-simple/Isolette_Software.sysml">model source</a>.)  The guarantee-with-<code>implies</code> style and the <code>compute_cases</code> style are interchangeable ways to write conditional specifications; cases shine when the conditions partition the input space, while <code>implies</code>-guarantees compose more freely with presence guards.</p>
+<p><strong>A pitfall to remember:</strong> when combining <code>HasEvent</code> with access to the port&rsquo;s payload, use the short-circuit operators <code>and</code>/<code>or</code>/<code>implies</code> rather than <code>&amp;</code>/<code>|</code>.  With <code>&amp;</code>, both operands are evaluated, so <code>HasEvent(p) &amp; p.field &gt; 0</code> accesses the payload even when no message is present — an error.  With <code>and</code>, the payload access is only evaluated under the presence guard.  <em>(Reference: <a href="../gumbo-quick-reference/#gumbo-on-event-data-ports">Quick Reference — GUMBO on Event Data Ports</a>.)</em></p>
+<h3 id="specifying-outputs-mustsend-and-nosend">Specifying Outputs: MustSend and NoSend</h3>
+<p>For <em>output</em> event data ports, GUMBO provides two predicates:</p>
+<ul>
+<li><code>MustSend(port, value)</code> — a message carrying <code>value</code> must be sent on <code>port</code> this dispatch (a one-argument form <code>MustSend(port)</code> requires a message be sent without constraining its value);</li>
+<li><code>NoSend(port)</code> — no message may be sent on <code>port</code> this dispatch.</li>
+</ul>
+<p>The EDP thermostat uses them to specify a <em>send-on-change</em> policy — a command message is emitted exactly when the commanded state changes:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee mustSendOnChange &#34;A command message is sent exactly when the commanded
+                             |state changes, and it carries the new state.&#34;:
+    (lastCmd != In(lastCmd)) implies MustSend(heat_control, lastCmd);
+  guarantee noSendNoChange &#34;No message is sent when the commanded state is unchanged.&#34;:
+    (lastCmd == In(lastCmd)) implies NoSend(heat_control);
+</code></pre><p>This is a common idiom for event data outputs: the <em>state machine</em> (here, <code>lastCmd</code>) is specified by the control-law guarantees, and the <em>communication</em> is specified separately as a function of state change.  Note there is no <code>NoEvent</code> predicate — write <code>not HasEvent(port)</code> for input absence, and <code>NoSend(port)</code> for output silence.</p>
+<p>The receiving side shows the same constructs from the consumer&rsquo;s perspective.  The <code>HeatSource</code> in the EDP variant latches arriving commands with a compact contract that combines nearly everything in this section:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">language &#34;GUMBO&#34; /*{
+  state
+    heater_state: Isolette_Data_Model::On_Off;
+
+  initialize
+    guarantee REQ_THERM_1_HS &#34;The heater shall be Off initially. ...&#34;:
+      heater_state == Isolette_Data_Model::On_Off.Off;
+
+  compute
+    guarantee HS_latch_cmd &#34;A received command is latched into the heater state.&#34;:
+      HasEvent(heat_control) implies heater_state == heat_control;
+    guarantee HS_hold_cmd &#34;If no command arrives, the heater state is unchanged.&#34;:
+      (not HasEvent(heat_control)) implies heater_state == In(heater_state);
+}*/
+</code></pre><h2 id="contract-features-not-shown-by-the-isolette-examples">Contract Features Not Shown by the Isolette Examples</h2>
+<p>The Isolette walkthroughs above cover the everyday constructs.  A few remaining features are summarized here with pointers.</p>
+<h3 id="package-level-gumbo-libraries">Package-Level GUMBO Libraries</h3>
+<p>Helper functions shared across components are declared in a package-level GUMBO <code>library</code> block.  From the Simple Network Guard example&rsquo;s <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-EDP-SNG-Example/sysmlv2/sng/GUMBOLib.sysml">GumboLib package</a>:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">package GumboLib {
+  private import HAMR::*;
+  private import SNG_Data_Model::*;
+
+  language &#34;GUMBO&#34; /*{
+    library
+    functions
+      def clampedPayloadLowerBound(): Base_Types::Integer_32 := 0[i32];
+      def clampedPayloadUpperBound(): Base_Types::Integer_32 := 100[i32];
+
+      def clampedPayload(m: SNG_Data_Model::Message): Base_Types::Boolean :=
+          (clampedPayloadLowerBound() &lt;= m.payload) and (m.payload &lt;= clampedPayloadUpperBound());
+  }*/
+}
+</code></pre><p>Other packages call library functions with the qualified form <code>GumboLib::GUMBO__Library::clampedPayload(...)</code> (the <code>GUMBO__Library</code> segment is the auto-generated container for library functions).  <em>(Reference: <a href="../gumbo-quick-reference/#11-gumbo-library-functions">Quick Reference — Library Functions</a>.)</em></p>
+<h3 id="data-invariants">Data Invariants</h3>
+<p>Data invariants constrain all values of a data type, at the type&rsquo;s definition site:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def TempWstatus_i :&gt; Data {
+  part degrees : Base_Types::Integer_32;
+  attribute status : ValueStatus;
+
+  language &#34;GUMBO&#34; /*{
+    invariants
+      inv MaxMinEarthTemperatures &#34;Temps should fall within the max/min temperatures
+                                  |recorded on planet Earth&#34; :
+        -128 [s32] &lt;= degrees and degrees &lt;= 134 [s32];
+  }*/
+}
+</code></pre><p><strong>Caveat: data invariants are not yet implemented for HAMR Rust code generation</strong> (they are supported in the Slang workflow).  For Rust components today, express value constraints as integration constraints or entry point contracts instead.  <em>(Reference: <a href="../gumbo-quick-reference/#data-invariants">Quick Reference — Data Invariants</a>.)</em></p>
+<h3 id="modifies-clauses">Modifies Clauses</h3>
+<p>Initialize and compute contracts may carry a <code>modifies</code> clause listing the state variables the entry point is allowed to change:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  modifies currentSetPoints, lastCmd;
+</code></pre><p>Everything <em>not</em> listed is implicitly unchanged — a frame condition that spares the contract from writing <code>x == In(x)</code> for every untouched variable.  The Isolette contracts omit <code>modifies</code> (each has few state variables and states its frame conditions explicitly, e.g. <code>latchSetPointsNoEvent</code>); larger components benefit from it.  <em>(Reference: <a href="../gumbo-quick-reference/#15-gumbo-initialize-contracts">Quick Reference — Initialize</a> and <a href="../gumbo-quick-reference/#16-gumbo-compute-contracts">Compute</a> contracts.)</em></p>
+<h3 id="arrays-and-quantifiers">Arrays and Quantifiers</h3>
+<p>GUMBO supports array-typed data with element access <code>a#(i)</code>, <code>size(a)</code>, and bounded quantification:</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">guarantee sorted:
+  (0 .. size(myArray) - 2) -&gt; forAll { in i; myArray#(i) &lt;= myArray#(i + 1) };
+</code></pre><p>See the <a href="https://github.com/loonwerks/INSPECTA-models/blob/main/micro-examples/microkit/gumbo-verus/structs_arrays/sysml/Gumbo_Structs_Arrays.sysml">structs and arrays micro-example</a> in the INSPECTA models repository for worked usages with the Rust/Verus workflow.  <em>(Reference: <a href="../gumbo-quick-reference/#19-gumbo-quantified-expressions-arrays">Quick Reference — Quantified Expressions</a>.)</em></p>
+<h3 id="sporadic-handler-contracts">Sporadic Handler Contracts</h3>
+<p>For sporadic threads, GUMBO organizes compute contracts into per-event-port <code>handle</code> sections, each with its own modifies/assume/guarantee clauses.  As noted <a href="#entry-points-and-when-contracts-are-enforced">above</a>, sporadic components are not yet supported by HAMR Rust/seL4 code generation; the <a href="../gumbo-quick-reference/#17-gumbo-handler-contracts-sporadic-threads">Quick Reference — Handler Contracts</a> section and its Slang-based examples illustrate the intended design.</p>
+<h2 id="from-contracts-to-code-what-comes-next">From Contracts to Code: What Comes Next</h2>
+<p>Everything in this chapter is a model-level specification.  From these specifications, HAMR generates the code-level artifacts that make the contracts <em>operational</em>:</p>
+<ul>
+<li><strong>GUMBOX Executable Contracts</strong> — <em>(forthcoming)</em> how HAMR translates each GUMBO clause into executable Rust boolean functions used as oracles for manual unit testing, automated property-based testing, and run-time monitoring.  The <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> already previews GUMBOX-based testing in the current workflow.</li>
+<li><strong>GUMBO-to-Verus Translation</strong> — <em>(forthcoming)</em> how each contract clause becomes a Verus <code>requires</code>/<code>ensures</code> contract woven into the generated Rust application code (the <a href="../hamr-rust-implementation/#code-generation-with-embedded-contracts">Rust implementation chapter</a> shows the woven regions).</li>
+<li><strong>Working with Verus</strong> — <em>(forthcoming)</em> practical guidance for discharging the generated contracts with the Verus verifier.</li>
+</ul>
+<p>Component contracts are also the foundation for <strong>system-level reasoning</strong>: <a href="../gumbo-system-properties/">GUMBO System Properties</a> shows how end-to-end properties of the composed system are specified and verified using component contracts as behavioral summaries.</p>
+<p>For hands-on practice, the three-part tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> (Simple Isolette) takes a working system through contract authoring, GUMBOX testing, and Verus verification — start with <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/01-Ex-Simple-Isolette-DT-add-GUMBO-model.md">Part 1</a> or follow the <a href="../reading-order/">Recommended Reading Order</a>.</p>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>

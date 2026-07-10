@@ -47,7 +47,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
   <meta itemprop="name" content="Recommended Reading Order">
   <meta itemprop="description" content="This page suggests an order for working through the HAMR lecture videos, tutorials, and reference documentation. It is aimed at readers who are new to HAMR and want a guided path; experienced readers should feel free to jump directly to the reference documentation chapters most relevant to their work.
 Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Overview — start here to understand HAMR’s three development layers, HAMR as a formal-methods pipeline, and the kinds of systems HAMR targets. HAMR Overview (Part 1 - General concepts and modeling)">
-  <meta itemprop="wordCount" content="782">
+  <meta itemprop="wordCount" content="809">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -230,7 +230,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <ul>
 <li><a href="https://drive.google.com/file/d/1YrFfXteK7JaN6y3ze4AJgQjLEdZ13s4n/view?usp=sharing">Video - lecture</a></li>
 <li><a href="https://drive.google.com/file/d/1kP8OJF7gOM_paaFCaX0YaWVVuJtvwxW4/view?usp=sharing">Slides</a> &ndash; slides used in the video above</li>
-<li><a href="../HAMR-Overview/">Documentation</a> &ndash; in large part, a transcript of the video above.</li>
+<li><a href="../hamr-overview/">Documentation</a> &ndash; in large part, a transcript of the video above.</li>
 </ul>
 </li>
 <li>
@@ -248,7 +248,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li>
 <p>Installation</p>
 <ul>
-<li><a href="../Installation/">Documentation</a></li>
+<li><a href="../installation/">Documentation</a></li>
 </ul>
 </li>
 <li>
@@ -274,7 +274,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li><strong>Editing and Code Generation Using SysMLv2 Models</strong> — set up and use the VSCodium-based IDE to actually author SysMLv2 models, run the type checker, and configure code generation.</li>
 </ol>
 <ul>
-<li><a href="../SysMLv2-CodeIVE/">Documentation</a></li>
+<li><a href="../sysmlv2-codeive/">Documentation</a></li>
 </ul>
 <ol start="5">
 <li><strong>Thread Component Application Code Development in Rust and Manual Unit Testing</strong> — fill in the Rust application logic for generated HAMR thread skeletons: entry points, port APIs.</li>
@@ -301,7 +301,7 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 </ul>
 <ol start="8">
 <li>
-<p><a href="../Microkit-Folder-Structure/">Microkit Folder Structure</a> — get oriented to the folder layout that HAMR generates for seL4 Microkit projects with Rust components.</p>
+<p><a href="../microkit-folder-structure/">Microkit Folder Structure</a> — get oriented to the folder layout that HAMR generates for seL4 Microkit projects with Rust components.</p>
 </li>
 <li>
 <p><strong>Tutorial: Building a HAMR System From Scratch - The Simple Network Guard (Part 1 - Working with SysMLv2 in the CodeIVE)</strong></p>
@@ -322,8 +322,10 @@ Suggested Reading Order for SysMLv2 Modeling with Rust Code Development HAMR Ove
 <li><strong>GUMBO Component Contracts</strong> — learn the GUMBO contract language for specifying component behavior and the contracts that downstream tooling will reason about</li>
 </ol>
 <ul>
-<li>Overview Documentation - <em>Forthcoming</em></li>
-<li><a href="../gumbo-quick-reference">GUMBO Quick Reference</a></li>
+<li><a href="../gumbo-overview/">Documentation - GUMBO Overview and Rationale</a></li>
+<li><a href="../gumbo-component-contracts/">Documentation - GUMBO Component Contracts</a> &ndash; example-based walkthrough of contract structure</li>
+<li><a href="../gumbo-quick-reference">GUMBO Quick Reference</a> &ndash; reference &ldquo;cheat sheet&rdquo; of contract constructs</li>
+<li><a href="../gumbo-grammar/">GUMBO Grammar</a> &ndash; BNF-style syntax reference (optional)</li>
 </ul>
 <ol start="12">
 <li><strong>Tutorial: Adding GUMBO Thread Component Contracts to an Existing System - The Simple Isolette System (Part 1 - Adding GUMBO Thread Contracts to SysMLv2 Models)</strong></li>
