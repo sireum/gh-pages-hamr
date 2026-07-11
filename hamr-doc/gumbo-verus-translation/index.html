@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="How GUMBO Contracts are Translated to Verus Contracts to Support Formal Verification of Thread Application Code This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into Verus contracts — requires/ensures specifications woven into the generated Rust code, which the Verus verifier discharges to prove that a component&rsquo;s application code satisfies its model-level contract. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbo-verus-translation/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="How GUMBO Contracts are Translated to Verus Contracts to Support Formal Verification of Thread Application Code This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into Verus contracts — requires/ensures specifications woven into the generated Rust code, which the Verus verifier discharges to prove that a component’s application code satisfies its model-level contract. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.">
+  <meta itemprop="wordCount" content="5344">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="How GUMBO Contracts are Translated to Verus Contracts to Support Formal Verification of Thread Application Code This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into Verus contracts — requires/ensures specifications woven into the generated Rust code, which the Verus verifier discharges to prove that a component’s application code satisfies its model-level contract. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="how-gumbo-contracts-are-translated-to-verus-contracts-to-support-formal-verification-of-thread-application-code">How GUMBO Contracts are Translated to Verus Contracts to Support Formal Verification of Thread Application Code</h1>
+<p>This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into <strong>Verus</strong> contracts — <code>requires</code>/<code>ensures</code> specifications woven into the generated Rust code, which the <a href="https://verus-lang.github.io/verus/guide/">Verus verifier</a> discharges to <em>prove</em> that a component&rsquo;s application code satisfies its model-level contract.  It continues with the same running examples as the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter: the Simple Isolette from the <a href="https://github.com/santoslab/hamr-tutorials">HAMR tutorials repository</a>, first the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example">data-port variant</a> (P-DP) and then the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">event-data-port variant</a> (P-EDP), both centered on the <code>Thermostat</code> thread.</p>
+<p>We assume you have read the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter — every contract translated below is introduced and motivated there — and the <a href="../hamr-rust-implementation/">Rust implementation chapter</a>, which tours the generated component crate, the <code>verus!</code> macro and its constructs, and the port APIs that this chapter examines from the contract-translation perspective.  The companion <a href="../gumbox-translation/">GUMBOX translation chapter</a> shows the <em>executable</em> rendering of the very same clauses; we cross-reference it throughout, because seeing a clause in both forms — as a logical contract Verus proves and as a boolean function you can run — is often the fastest way to internalize its semantics.</p>
+<p>This chapter addresses the <strong>logical form</strong> of the contracts: what Verus contracts HAMR generates and where, how each GUMBO contract form maps to Verus, how ghost state makes port values speakable in contracts, the workflow for running the verifier, and the Verus limitations HAMR developers most commonly meet.  Testing against the executable form — manual GUMBOX unit testing and property-based testing — is covered in forthcoming chapters.</p>
+<h2 id="why-formally-verify-components">Why Formally Verify Components?</h2>
+<p>A test evaluates a component on <em>one</em> input; a property-based test campaign evaluates it on <em>thousands</em>.  A discharged Verus proof establishes that the entry point satisfies its contract on <strong>every</strong> input and pre-state the contract&rsquo;s assumptions admit — including the boundary combinations no test campaign happened to generate.  For high-assurance components — the kind deployed on seL4 precisely because failure is not acceptable — this is the assurance step-up that motivates writing formal contracts in the first place: the same GUMBO clauses that served as test oracles become theorems about the code.</p>
+<p>The payoff compounds at the system level.  HAMR&rsquo;s compositional analyses — integration constraint checking at model assembly, and <a href="../gumbo-system-properties/">system-level property verification</a> — consume component <em>contracts</em> as behavioral summaries, never component code.  Those analyses are sound only if each component actually conforms to its contract; per-component Verus verification is exactly the evidence that discharges that assumption.  A verified component is therefore not just locally correct — it is a trustworthy building block for every argument made about the composed system.</p>
+<p><strong>Verification does not retire testing.</strong>  Even for a component whose Verus proof discharges completely, testing retains distinct roles:</p>
+<ul>
+<li><strong>Validating the specification itself.</strong>  A Verus proof shows the code satisfies the <em>contract</em>; it cannot show the contract captures the <em>intent</em>.  An incorrect or incomplete GUMBO contract verifies just as cleanly as a correct one.  Concrete test cases — and direct interrogation of the executable contracts — are how engineers and reviewers check that the specification means what they think it means (see the <a href="../gumbox-translation/#auditing-the-specification-itself">auditing section of the GUMBOX chapter</a>).</li>
+<li><strong>Exercising the trusted boundary.</strong>  Everything marked <code>#[verifier::external_body]</code> — logging helpers, the FFI layer beneath the port APIs, any helper the developer exempts — is <em>trusted</em> by the prover, not verified.  Only testing executes that code.</li>
+<li><strong>Covering developer-written helpers.</strong>  Helper methods and library calls in entry-point bodies have no model-level description, so HAMR generates neither Verus contracts nor GUMBOX oracles for them (<a href="#helper-methods-and-libraries-your-verification-obligations">details below</a>); their correctness is the developer&rsquo;s obligation, typically discharged by a mix of hand-written contracts and tests.</li>
+<li><strong>Explaining and documenting.</strong>  Tests are runnable, human-reviewable scenarios: they record intended use cases, and they turn abstract proof failures into concrete demonstrations anyone can run (<a href="#explaining-verus-failures-with-executable-contracts">below</a>).</li>
+</ul>
+<p>In short: Verus proves the code against the contract; testing scrutinizes the contract, the trusted base, and everything the model does not see.  The two consume the same GUMBO source, so using both costs no additional specification effort.</p>
+<h2 id="where-the-verus-contracts-live">Where the Verus Contracts Live</h2>
+<p>For each thread component, the GUMBO-derived Verus contracts are woven into two generated files in the component crate:</p>
+<pre tabindex="0"><code>hamr/microkit/crates/&lt;component&gt;/
+  src/
+    component/
+      &lt;component&gt;_app.rs         &lt;- entry-point requires/ensures, state struct,
+                                    GUMBO spec functions  (developer-edited file)
+    bridge/
+      &lt;component&gt;_api.rs         &lt;- port API contracts: ghost port state,
+                                    get_/put_ methods    (fully auto-generated)
+      &lt;component&gt;_GUMBOX.rs      &lt;- the executable contracts (companion chapter)
+</code></pre><p>The division of labor: <strong><code>&lt;component&gt;_app.rs</code></strong> carries the <em>entry point contracts</em> — each GUMBO <code>initialize</code> and <code>compute</code> clause appears as a <code>requires</code> or <code>ensures</code> on the corresponding skeleton method — while <strong><code>&lt;component&gt;_api.rs</code></strong> carries the <em>integration constraints</em>, as contracts on the <code>get_&lt;port&gt;</code>/<code>put_&lt;port&gt;</code> methods, together with the ghost variables that make port values referable in specifications.  The <a href="../hamr-rust-implementation/#code-generation-with-embedded-contracts">Rust implementation chapter</a> walks the full generated skeleton and the <code>verus!</code> constructs (<code>requires</code>, <code>ensures</code>, <code>==&gt;</code>, <code>old(...)</code>, <code>assert(...)</code>, <code>open spec fn</code>, <code>#[verifier::external_body]</code>); here we focus on how each GUMBO form arrives in those files.</p>
+<p>For the DP thermostat the two files are <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/component/thermostat_thermostat_app.rs"><code>thermostat_thermostat_app.rs</code></a> and <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/bridge/thermostat_thermostat_api.rs"><code>thermostat_thermostat_api.rs</code></a>; the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">EDP example</a> has files of the same names.</p>
+<h2 id="marker-regions-and-contract-regeneration">Marker Regions and Contract Regeneration</h2>
+<p>The two files have different regeneration behavior, and the difference matters for day-to-day work:</p>
+<ul>
+<li><strong><code>&lt;component&gt;_api.rs</code></strong> is fully auto-generated (<code>// Do not edit this file as it will be overwritten if HAMR codegen is rerun</code>).  When contracts change in the model, rerunning code generation simply replaces it.</li>
+<li><strong><code>&lt;component&gt;_app.rs</code></strong> is developer-edited (<code>// This file will not be overwritten if codegen is rerun</code>) — it holds your application logic.  HAMR keeps the <em>contract-derived</em> material in sync by re-weaving only the regions delimited by <code>BEGIN MARKER ...</code> / <code>END MARKER ...</code> comments, leaving everything outside them untouched.</li>
+</ul>
+<p>The woven regions in <code>&lt;component&gt;_app.rs</code> are:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Marker region</th>
+          <th>Contains</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>BEGIN/END MARKER STATE VARS</code></td>
+          <td>GUMBO state variables as struct fields</td>
+      </tr>
+      <tr>
+          <td><code>BEGIN/END MARKER STATE VAR INIT</code></td>
+          <td>Default initial values in the <code>new()</code> constructor</td>
+      </tr>
+      <tr>
+          <td><code>BEGIN/END MARKER INITIALIZATION ENSURES</code></td>
+          <td><code>ensures</code> clauses on <code>initialize</code> (GUMBO initialize guarantees)</td>
+      </tr>
+      <tr>
+          <td><code>BEGIN/END MARKER TIME TRIGGERED REQUIRES</code></td>
+          <td><code>requires</code> clauses on <code>timeTriggered</code> (GUMBO compute assumes)</td>
+      </tr>
+      <tr>
+          <td><code>BEGIN/END MARKER TIME TRIGGERED ENSURES</code></td>
+          <td><code>ensures</code> clauses on <code>timeTriggered</code> (GUMBO compute guarantees and cases)</td>
+      </tr>
+      <tr>
+          <td><code>BEGIN/END MARKER GUMBO METHODS</code></td>
+          <td>GUMBO helper functions as Verus <code>open spec fn</code>s</td>
+      </tr>
+  </tbody>
+</table>
+<p>The working rule: <strong>never hand-edit inside a marker region — change the GUMBO contract in the model and rerun code generation.</strong>  Anything you type inside the markers is overwritten at the next codegen run; anything outside them (your entry-point bodies, helper functions, additional struct fields) is preserved.  This is what lets contracts evolve at the model level while implementation work proceeds at the code level, with the two never drifting apart.  (A component with no GUMBO contract gets <code>PLACEHOLDER MARKER ...</code> comments instead — placeholders that become live regions if contracts are later added, as with the DP <code>TempSensor</code>&rsquo;s app file.)</p>
+<h2 id="the-translation-at-a-glance">The Translation at a Glance</h2>
+<p>Each GUMBO contract form lands in a specific place with a specific Verus shape:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO construct</th>
+          <th>Verus artifact</th>
+          <th>Where</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>helper <code>def f(...)</code> in <code>functions</code></td>
+          <td><code>pub open spec fn f(...)</code></td>
+          <td>app.rs, GUMBO METHODS region</td>
+      </tr>
+      <tr>
+          <td><code>state</code> variable <code>x</code></td>
+          <td><code>pub x: &lt;Type&gt;</code> struct field + default init</td>
+          <td>app.rs, STATE VARS / STATE VAR INIT regions</td>
+      </tr>
+      <tr>
+          <td>integration <code>assume</code> on input port <code>p</code></td>
+          <td><code>ensures</code> clause on <code>get_p()</code></td>
+          <td>api.rs</td>
+      </tr>
+      <tr>
+          <td>integration <code>guarantee</code> on output port <code>p</code></td>
+          <td><code>requires</code> clause on <code>put_p()</code></td>
+          <td>api.rs</td>
+      </tr>
+      <tr>
+          <td>initialize <code>guarantee N</code></td>
+          <td><code>ensures</code> clause on <code>initialize</code></td>
+          <td>app.rs, INITIALIZATION ENSURES region</td>
+      </tr>
+      <tr>
+          <td>compute <code>assume N</code></td>
+          <td><code>requires</code> clause on <code>timeTriggered</code></td>
+          <td>app.rs, TIME TRIGGERED REQUIRES region</td>
+      </tr>
+      <tr>
+          <td>compute <code>guarantee N</code></td>
+          <td><code>ensures</code> clause on <code>timeTriggered</code></td>
+          <td>app.rs, TIME TRIGGERED ENSURES region</td>
+      </tr>
+      <tr>
+          <td>compute <code>case N</code></td>
+          <td><code>ensures</code> implication (case assume <code>==&gt;</code> case guarantee)</td>
+          <td>app.rs, TIME TRIGGERED ENSURES region</td>
+      </tr>
+  </tbody>
+</table>
+<p>And the expression-level mapping, for reading the woven clauses back to their GUMBO sources:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO (model level)</th>
+          <th>Verus (code level)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>implies</code></td>
+          <td><code>==&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>&amp;</code> / <code>and</code></td>
+          <td><code>&amp;&amp;</code></td>
+      </tr>
+      <tr>
+          <td>state variable <code>x</code> (post-state)</td>
+          <td><code>self.x</code></td>
+      </tr>
+      <tr>
+          <td><code>In(x)</code> (pre-state)</td>
+          <td><code>old(self).x</code></td>
+      </tr>
+      <tr>
+          <td>input port <code>p</code> (value frozen at dispatch)</td>
+          <td><code>old(api).p</code> (ghost variable)</td>
+      </tr>
+      <tr>
+          <td>output port <code>p</code> (value at completion)</td>
+          <td><code>api.p</code> (ghost variable)</td>
+      </tr>
+      <tr>
+          <td><code>HasEvent(p)</code></td>
+          <td><code>api.p.is_some()</code></td>
+      </tr>
+      <tr>
+          <td>payload access <code>p.field</code></td>
+          <td><code>api.p.unwrap().field</code></td>
+      </tr>
+      <tr>
+          <td><code>MustSend(p, v)</code></td>
+          <td><code>api.p.is_some() &amp;&amp; (api.p.unwrap() == v)</code></td>
+      </tr>
+      <tr>
+          <td><code>NoSend(p)</code></td>
+          <td><code>api.p.is_none()</code></td>
+      </tr>
+      <tr>
+          <td>enum value <code>Type.Value</code></td>
+          <td><code>Type::Value</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>Every row has an executable counterpart in the <a href="../gumbox-translation/#the-translation-at-a-glance">GUMBOX translation</a>: the same clause that appears here as a Verus <code>ensures</code> appears there as a <code>pub fn ... -&gt; bool</code>.  One GUMBO source, two renderings — the logical one is <em>proved once for all inputs</em>, the executable one is <em>evaluated on one input at a time</em> — and because both are generated from the same clause, they agree by construction.  When a Verus clause&rsquo;s meaning is unclear, calling its GUMBOX twin on a few concrete values is a quick way to see the semantics in action.</p>
+<p>The remaining rows of the mapping — ghost variables, <code>old(...)</code>, and the port-API contracts — need unpacking; the next three sections do so bottom-up, and then we read the entry point contracts whole.</p>
+<h2 id="gumbo-state-variables-and-the-component-struct">GUMBO State Variables and the Component Struct</h2>
+<p>The GUMBO <code>state</code> section of the DP thermostat,</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
+  lastCmd: Isolette_Data_Model::On_Off;
+</code></pre><p>becomes a field of the generated component struct, with a default initial value in the constructor:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">thermostat_thermostat</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// BEGIN MARKER STATE VARS
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// END MARKER STATE VARS
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">new</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Self</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">Self</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// BEGIN MARKER STATE VAR INIT
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">default</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// END MARKER STATE VAR INIT
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The struct <em>is</em> the code-level realization of GUMBO-declared state: entry points receive <code>&amp;mut self</code>, so contracts can relate the state before and after a dispatch.  In a <code>requires</code> or <code>ensures</code> clause, <code>old(self).lastCmd</code> denotes the value at entry — this is exactly the translation of GUMBO&rsquo;s <code>In(lastCmd)</code> — while a bare <code>self.lastCmd</code> in an <code>ensures</code> denotes the post-dispatch value.  The model-level <code>In()</code> operator exists because a state variable name must be readable two ways in one clause; Verus&rsquo;s <code>old(...)</code> is the same device in the code-level idiom.</p>
+<p>(The <code>default()</code> in the constructor is a placeholder — the <em>contractual</em> initial value is imposed by the initialize entry point&rsquo;s <code>ensures</code>, below.  Developers may add their own non-GUMBO fields to the struct outside the markers; those are invisible to contracts, as discussed in the <a href="../gumbo-component-contracts/#state-variables">GUMBO chapter</a>.)</p>
+<h2 id="ghost-variables-the-abstract-state-of-ports">Ghost Variables: the Abstract State of Ports</h2>
+<p>Entry point contracts must talk about <em>port values</em> — &ldquo;the value the component read from <code>current_temp</code>&rdquo;, &ldquo;the command placed on <code>heat_control</code>&rdquo;.  But at the code level there is no variable holding &ldquo;the value on the port&rdquo;: inputs are fetched by calling <code>get_</code> methods, outputs are released by calling <code>put_</code> methods, and the actual values live in infrastructure buffers the application never sees.  HAMR bridges this gap with <strong>ghost variables</strong> on the API object the entry points receive:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">thermostat_thermostat_Application_Api</span><span class="o">&lt;</span><span class="no">API</span>: <span class="nc">thermostat_thermostat_Api</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api</span>: <span class="nc">API</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Fields marked <code>pub ghost</code> exist only at verification time — Verus erases them before the code runs, so they cost nothing at runtime.  Each one tracks the abstract value of one port: the specification-level answer to &ldquo;what is on this port right now.&rdquo;  Because the entry points take <code>api: &amp;mut thermostat_thermostat_Application_Api&lt;API&gt;</code> as a parameter, contracts can then refer to <code>api.heat_control</code> (the output port&rsquo;s value at completion) and <code>old(api).current_temp</code> (the input port&rsquo;s value at entry) — which is precisely how the model-level port references of GUMBO clauses are realized.</p>
+<p>Two conventions to internalize:</p>
+<ul>
+<li><strong>Inputs are referenced through <code>old(api)</code>.</strong>  An input port&rsquo;s value is frozen at dispatch (the <a href="../hamr-semantics-concepts/">HAMR execution model</a>); the contract speaks of it as part of the <em>entry</em> state.  (In a <code>requires</code> clause this is also a Verus necessity — a <code>&amp;mut</code> parameter has only its entry value to refer to.)</li>
+<li><strong>Outputs are referenced through <code>api</code>.</strong>  The clause constrains the value on the port when the entry point <em>completes</em> — the value released to the infrastructure.</li>
+</ul>
+<p>In verification, the ghost input values at entry are <strong>arbitrary</strong> (constrained only by the <code>requires</code> clauses and the integration properties of the <code>get_</code> methods below).  That arbitrariness is the whole point: the proof covers every input the contract admits, not the handful a test would supply.</p>
+<p>In the EDP variant the same mechanism represents message-oriented ports — the ghost fields for event data ports are <code>Option&lt;T&gt;</code>, <code>None</code> meaning &ldquo;no message&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">temp_changed</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">ghost</span><span class="w"> </span><span class="n">heat_control</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="o">&gt;</span><span class="w">
+</span></span></span></code></pre></div><p>exactly mirroring the <code>Option&lt;T&gt;</code> encoding of the <a href="../gumbox-translation/#the-edp-variant-message-presence-becomes-option">GUMBOX translation</a>.</p>
+<h2 id="the-get_put_-bridge-to-infrastructure">The get_/put_ Bridge to Infrastructure</h2>
+<p>The <code>get_&lt;port&gt;</code>/<code>put_&lt;port&gt;</code> methods are where application code meets infrastructure code — and where the ghost abstraction is maintained.  Each method is a <em>verified wrapper</em> around an <em>unverified primitive</em>.  Here is the DP thermostat&rsquo;s input side:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_current_temp</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">(</span><span class="n">res</span><span class="w"> </span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">current_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">desired_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">heat_control</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assume ASSM_CT_Range
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="k">crate</span>::<span class="n">component</span>::<span class="n">thermostat_thermostat_app</span>::<span class="n">Temp_Lower_Bound</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="k">crate</span>::<span class="n">component</span>::<span class="n">thermostat_thermostat_app</span>::<span class="n">Temp_Upper_Bound</span><span class="p">()),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">unverified_get_current_temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Ghost</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Read the <code>ensures</code> clauses in three groups:</p>
+<ul>
+<li><strong>Framing</strong> — <code>old(self).current_temp == self.current_temp</code> and the analogous clauses for the other two ports say that reading this port changes <em>no</em> ghost state.  Without framing, Verus would have to assume any call might change anything, and no contract downstream would survive.  (The <a href="../hamr-rust-implementation/">Rust implementation chapter</a> discusses why framing matters at more length.)</li>
+<li><strong>The binding</strong> — <code>res == self.current_temp</code> ties the concrete value the application receives to the ghost variable.  After this call, whatever the body does with <code>res</code>, the prover knows it is <em>the</em> port value the entry point contract talks about.</li>
+<li><strong>The integration assume</strong> — the last clause is GUMBO&rsquo;s <code>assume ASSM_CT_Range</code> from the <a href="../gumbo-component-contracts/#integration-constraints">thermostat&rsquo;s integration constraints</a>, woven verbatim: every value read from <code>current_temp</code> lies in <code>[Temp_Lower_Bound(), Temp_Upper_Bound()]</code>.  The application may <em>rely</em> on this without checking it — the obligation to actually deliver such values belongs to the producer, as we see next.</li>
+</ul>
+<p>Note how the range is expressed by calling <code>Temp_Lower_Bound()</code> / <code>Temp_Upper_Bound()</code> — the GUMBO helper functions, generated into the app file&rsquo;s GUMBO METHODS region as specification functions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// BEGIN MARKER GUMBO METHODS
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">Temp_Lower_Bound</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">i32</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="mi">95</span><span class="k">i32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">Temp_Upper_Bound</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">i32</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="mi">104</span><span class="k">i32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">// END MARKER GUMBO METHODS
+</span></span></span></code></pre></div><p>An <code>open spec fn</code> is a specification-only function: callable in contracts and proofs, erased from executable code.  The single-sourcing of requirement constants that GUMBO helper functions provide at the model level thus carries into the verification layer (and, in executable form, into <a href="../gumbox-translation/#helper-functions">GUMBOX</a>).</p>
+<p>The producer side of the handshake lives in the <code>TempSensor</code>&rsquo;s API.  Its GUMBO integration <code>guarantee temp_range</code> becomes a <strong>requires</strong> on the <code>put_</code> method:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_current_temp</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">value</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee temp_range
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="mi">96</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">103</span><span class="k">i32</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">unverified_put_current_temp</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The direction flip is the heart of the integration-constraint translation: a consumer&rsquo;s <code>assume</code> becomes something the consumer&rsquo;s code <em>gets for free</em> (an <code>ensures</code> on its <code>get_</code>), while a producer&rsquo;s <code>guarantee</code> becomes something the producer&rsquo;s code <em>must prove</em> (a <code>requires</code> on its <code>put_</code>).  Verus will reject any <code>TempSensor</code> implementation that cannot show its argument lies in [96, 103] at every call site.  The handshake between the two sides — [96, 103] ⊆ [95, 104] — is discharged separately, once per connection, by HAMR&rsquo;s model-level integration checking (<code>sireum hamr sysml logika</code>), as described in the <a href="../gumbo-component-contracts/#integration-constraints">GUMBO chapter</a>.  The executable counterparts are the GUMBOX <code>I_Assm_&lt;port&gt;</code> / <code>I_Guar_&lt;port&gt;</code> functions (<a href="../gumbox-translation/#integration-constraints">GUMBOX chapter</a>).</p>
+<p>The thermostat&rsquo;s own <code>put_heat_control</code> carries no integration guarantee (the DP model states none), so its contract is framing plus the ghost update:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_heat_control</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">value</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">current_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">desired_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">unverified_put_heat_control</span><span class="p">(</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The executable statement <code>self.heat_control = value;</code> — an assignment to a ghost field — is how the abstraction is <em>maintained</em>: after the call, the ghost output value is exactly what the application sent, so the entry point&rsquo;s <code>ensures</code> over <code>api.heat_control</code> can be discharged.</p>
+<h3 id="where-verification-stops-and-trust-begins">Where verification stops and trust begins</h3>
+<p>Each verified wrapper delegates to an <code>unverified_*</code> method marked <code>#[verifier::external_body]</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[verifier::external_body]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">unverified_get_current_temp</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">value</span>: <span class="kp">&amp;</span><span class="nc">Ghost</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">(</span><span class="n">res</span><span class="w"> </span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">value</span><span class="o">@</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assume ASSM_CT_Range
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="k">crate</span>::<span class="n">component</span>::<span class="n">thermostat_thermostat_app</span>::<span class="n">Temp_Lower_Bound</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="k">crate</span>::<span class="n">component</span>::<span class="n">thermostat_thermostat_app</span>::<span class="n">Temp_Upper_Bound</span><span class="p">()),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">extern_api</span>::<span class="n">unsafe_get_current_temp</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>external_body</code> tells Verus to trust the signature and contract without looking at the body — necessary, because the body crosses into the C bridge and seL4 shared-memory infrastructure that Verus cannot analyze.  The <code>ensures res == value@</code> clause (where <code>value@</code> reads the ghost wrapper&rsquo;s contents) is the <em>trusted assumption</em> that the concrete value the infrastructure delivers is the value the ghost variable tracks.  This is the precise seam between the verified world and the trusted world: everything above this line (the wrapper&rsquo;s framing, the entry points, your application logic) is proved; everything below it (the FFI, the queues, the kernel) is part of HAMR&rsquo;s trusted infrastructure, per the <a href="../hamr-semantics-concepts/">execution semantics</a>.  It is also one of the standing reasons testing remains valuable — tests exercise the real path through the trusted layer.</p>
+<h2 id="entry-point-contracts-verifying-functional-behavior">Entry Point Contracts: Verifying Functional Behavior</h2>
+<p>With ghost port state and the port APIs in place, the entry point contracts can now say everything the model-level contracts say.  Recall from the <a href="../gumbo-component-contracts/#anatomy-of-a-component-contract">GUMBO chapter</a> that entry point contracts are relational properties over the frozen inputs and pre-state at dispatch, and the outputs and post-state at completion.  The Verus rendering is literal: pre-state is <code>old(self)</code> / <code>old(api)</code>, post-state is <code>self</code> / <code>api</code>.</p>
+<h3 id="initialize">Initialize</h3>
+<p>The DP thermostat&rsquo;s initialize contract,</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee
+    initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+  guarantee REQ_THERM_1 &#34;The Heat Control command shall be Off initially.&#34;:
+    heat_control == Isolette_Data_Model::On_Off.Off;
+</code></pre><p>is woven onto the generated skeleton as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize</span><span class="o">&lt;</span><span class="no">API</span>: <span class="nc">thermostat_thermostat_Put_Api</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">thermostat_thermostat_Application_Api</span><span class="o">&lt;</span><span class="no">API</span><span class="o">&gt;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// BEGIN MARKER INITIALIZATION ENSURES
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee initlastCmd
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee REQ_THERM_1
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   The Heat Control command shall be Off initially.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// END MARKER INITIALIZATION ENSURES
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">log_info</span><span class="p">(</span><span class="s">&#34;initialize entrypoint invoked&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// REQ_THERM_1: The Heat Control shall be initially Off
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">currentCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api</span><span class="p">.</span><span class="n">put_heat_control</span><span class="p">(</span><span class="n">currentCmd</span><span class="p">)</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Note the traceability discipline: each woven clause is preceded by a comment carrying the GUMBO clause name and its requirement prose, so the code-level contract reads back to the model (and to the requirements) line by line.  There are only <code>ensures</code> — initialization has no inputs, so nothing to require — and the API type parameter enforces the same discipline structurally: <code>thermostat_thermostat_Put_Api</code> provides only <code>put_</code> methods, so an initialize body <em>cannot</em> read inputs.  The proof is direct: the assignment establishes the first clause, and <code>put_heat_control</code>&rsquo;s <code>ensures self.heat_control == value</code> establishes the second.</p>
+<h3 id="timetriggered">timeTriggered</h3>
+<p>The compute contract — assume, general guarantee, and the three requirement cases from the <a href="../gumbo-component-contracts/#compute-entry-point-contracts">GUMBO chapter</a> — arrives as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">timeTriggered</span><span class="o">&lt;</span><span class="no">API</span>: <span class="nc">thermostat_thermostat_Full_Api</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">thermostat_thermostat_Application_Api</span><span class="o">&lt;</span><span class="no">API</span><span class="o">&gt;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// BEGIN MARKER TIME TRIGGERED REQUIRES
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assume ASSM_LDT_LE_UDT
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// END MARKER TIME TRIGGERED REQUIRES
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// BEGIN MARKER TIME TRIGGERED ENSURES
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee lastCmd
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   Set lastCmd to value of output Cmd port
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// case REQ_THERM_2
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   If Current Temperature is less than
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   the Lower Desired Temperature, the Heat Control shall be set to On.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// case REQ_THERM_3
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   If the Current Temperature is greater than
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   the Upper Desired Temperature, the Heat Control shall be set to Off.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Off</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// case REQ_THERM_4
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   If the Current Temperature is greater than or equal 
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   to the Lower Desired Temperature
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   and less than or equal to the Upper Desired Temperature, the value of
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   the Heat Control shall not be changed.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">((</span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">))</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">lastCmd</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// END MARKER TIME TRIGGERED ENSURES
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">..</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Reading the clauses back to their GUMBO sources:</p>
+<ul>
+<li>The compute <code>assume ASSM_LDT_LE_UDT</code> is the lone <code>requires</code>: the entry point is verified only for dispatches whose frozen <code>desired_temp</code> is well-ordered.  As at the model level, the obligation to <em>establish</em> the assumption sits with whoever invokes the component — here the HAMR runtime, and, in testing, the harness&rsquo;s precondition filter.</li>
+<li>The general <code>guarantee lastCmd</code> is an unconditional <code>ensures</code> relating post-state to output: <code>self.lastCmd == api.heat_control</code>.</li>
+<li>Each <code>compute_cases</code> case is an <code>ensures</code> implication — the case&rsquo;s assume (over <code>old(api)</code> inputs) <code>==&gt;</code> the case&rsquo;s guarantee (over <code>api</code> outputs and <code>self</code>/<code>old(self)</code> state).  Conjoined implications reproduce the model-level case semantics exactly, and REQ_THERM_4&rsquo;s <code>In(lastCmd)</code> surfaces as <code>old(self).lastCmd</code>.</li>
+</ul>
+<p>This is, clause for clause, the same contract the GUMBOX chapter renders as <a href="../gumbox-translation/#the-dp-thermostat-translated"><code>compute_CEP_Pre</code> and <code>compute_CEP_Post</code></a> — there as boolean functions over explicit pre/post parameters, here as <code>requires</code>/<code>ensures</code> over <code>old(...)</code>/current references.  If a clause&rsquo;s reading is ever in doubt, evaluate its GUMBOX twin on concrete values.</p>
+<h3 id="how-the-body-proves">How the body proves</h3>
+<p>The developer&rsquo;s implementation:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">log_info</span><span class="p">(</span><span class="s">&#34;compute entrypoint invoked&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="c1">// -------------- Get values of input ports ------------------
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span>: <span class="nc">Set_Points</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">get_desired_temp</span><span class="p">();</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">currentTemp</span>: <span class="nc">Temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">get_current_temp</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//================ compute / control logic ===========================
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// current command defaults to value of last command (REQ-THERM-4)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">currentCmd</span>: <span class="nc">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentTemp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">// REQ-THERM-3
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">currentCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">currentTemp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">assert</span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">// REQ-THERM-2
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//currentCmd = On_Off::Off; // seeded bug/error
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">currentCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -------------- Set values of output ports ------------------
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api</span><span class="p">.</span><span class="n">put_heat_control</span><span class="p">(</span><span class="n">currentCmd</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">currentCmd</span><span class="w">        
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The proof flows through the port API contracts: each <code>get_</code> call&rsquo;s <code>ensures res == self.&lt;port&gt;</code> binds the local variable to the ghost port value (so <code>currentTemp</code> <em>is</em> <code>api.current_temp</code> as far as the prover is concerned), the branch structure mirrors the case structure, <code>put_heat_control</code> sets the ghost output, and the final assignment re-establishes the general guarantee.  The <code>assert(...)</code> in the middle branch is a <em>proof hint</em> — an in-body assertion that restates a fact in the vocabulary of the contract (ghost port values) at the point where it holds, helping the SMT solver connect the executable comparison to the case antecedent.  Hints like this are occasionally needed in larger bodies; a failing <code>assert</code> also makes an excellent probe when diagnosing why a proof does not go through.  (The commented-out <code>seeded bug/error</code> line is a teaching aid we return to <a href="#explaining-verus-failures-with-executable-contracts">below</a>.)</p>
+<h2 id="the-edp-variant-events-option-and-send-policies">The EDP Variant: Events, Option, and Send Policies</h2>
+<p>The <a href="../gumbo-component-contracts/#event-data-ports-the-p-edp-variant">event-data-port variant</a> exercises the message-oriented constructs.  Its <code>timeTriggered</code> requires:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// BEGIN MARKER TIME TRIGGERED REQUIRES
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assume AADL_Requirement
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   All outgoing event ports must be empty
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="n">api</span><span class="p">).</span><span class="n">heat_control</span><span class="p">.</span><span class="n">is_none</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assume INV_CSP
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   The latched set points are well-formed.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">currentSetPoints</span><span class="p">).</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="p">(</span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">currentSetPoints</span><span class="p">).</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// END MARKER TIME TRIGGERED REQUIRES
+</span></span></span></code></pre></div><p>The first clause is not from the model&rsquo;s GUMBO block at all — it is an <em>AADL execution-model requirement</em> HAMR adds for every outgoing event data port: at dispatch, nothing has been sent yet (<code>None</code>), so <code>NoSend</code>-style guarantees are judged against a clean slate.  The second is the model&rsquo;s <code>INV_CSP</code> compute assume over the pre-state of the latched set points.</p>
+<p>The ensures clauses translate the latch pair, the invariant maintenance, and the trigger frame condition:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee latchSetPointsOnEvent
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   A newly received set point message is latched.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">()</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee latchSetPointsNoEvent
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   Otherwise the latched set points are unchanged.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">!</span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">())</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">currentSetPoints</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">currentSetPoints</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee invCSPMaintained
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   Well-formedness of the latched set points is
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   re-established for the next dispatch.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee noTriggerNoChange
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   Without a triggering event (temperature change or
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   new set points) the commanded state is unchanged.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">!</span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">temp_changed</span><span class="p">.</span><span class="n">is_some</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">api</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">())</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">lastCmd</span><span class="p">),</span><span class="w">
+</span></span></span></code></pre></div><p>and the send-on-change policy — GUMBO&rsquo;s <code>MustSend</code>/<code>NoSend</code> — unfolds onto the <code>Option</code>-valued output ghost:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee mustSendOnChange
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   A command message is sent exactly when the commanded
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   state changes, and it carries the new state.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">lastCmd</span><span class="p">)</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="p">.</span><span class="n">is_some</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">(</span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="p">.</span><span class="n">unwrap</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// guarantee noSendNoChange
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//   No message is sent when the commanded state is unchanged.
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">lastCmd</span><span class="p">)</span><span class="w"> </span><span class="o">==&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api</span><span class="p">.</span><span class="n">heat_control</span><span class="p">.</span><span class="n">is_none</span><span class="p">(),</span><span class="w">
+</span></span></span></code></pre></div><p>On the API side, the integration assume on the <code>desired_temp</code> event data port is woven as a <em>guarded</em> ensures — the constraint applies to the payload only when a message is present:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_desired_temp</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">(</span><span class="n">res</span><span class="w"> </span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">current_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">temp_changed</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">temp_changed</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">desired_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">res</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">heat_control</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">res</span><span class="p">.</span><span class="n">is_none</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c1">// assume ASSM_LDT_LE_UDT
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c1">//   Incoming set point messages must be well-formed
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="c1">//   (lower desired temp at most upper desired temp).
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">res</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="bp">self</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">unverified_get_desired_temp</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Ghost</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>and <code>put_heat_control</code> records a send by setting the ghost to <code>Some(value)</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">current_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">current_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">temp_changed</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">temp_changed</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">old</span><span class="p">(</span><span class="bp">self</span><span class="p">).</span><span class="n">desired_temp</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">desired_temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="bp">self</span><span class="p">.</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">value</span><span class="p">),</span><span class="w">
+</span></span></span></code></pre></div><p>Every one of these shapes has its executable twin in the EDP GUMBOX file — the guarded integration wrapper is <code>I_Assm_Guard_desired_temp</code>, the send clauses are <code>compute_spec_mustSendOnChange_guarantee</code> / <code>compute_spec_noSendNoChange_guarantee</code> — see the <a href="../gumbox-translation/#the-edp-variant-message-presence-becomes-option">GUMBOX chapter&rsquo;s EDP section</a> for the side-by-side.</p>
+<h2 id="helper-methods-and-libraries-your-verification-obligations">Helper Methods and Libraries: Your Verification Obligations</h2>
+<p>Real entry-point bodies rarely consist only of port calls and if-statements.  Developers factor logic into helper methods, and reach for Rust library functionality — data structure manipulation, arithmetic utilities, encoding/decoding.  Here an important boundary appears:</p>
+<p><strong>HAMR generates contracts only for what the model describes.</strong>  Ports, state variables, and GUMBO clauses have SysMLv2 sources, so they get generated Verus contracts (and GUMBOX oracles, and test infrastructure).  A helper method you write in the entry-point body has <em>no</em> model-level counterpart — so HAMR generates no Verus contract for it, no GUMBOX oracle, and no test support.  Its specification and validation are entirely the developer&rsquo;s responsibility:</p>
+<ul>
+<li><strong>Write your own <code>requires</code>/<code>ensures</code>.</strong>  For the entry point&rsquo;s proof to use a helper, the helper needs a contract strong enough to support the calling context — Verus reasons about calls through contracts, not bodies.</li>
+<li><strong>Or exempt it and test it.</strong>  A helper marked <code>#[verifier::external_body]</code> is trusted; its correctness must then be established by unit tests you write (the general-purpose testing patterns of the <a href="../hamr-rust-testing-manual/">manual unit testing chapter</a> apply, even though no GUMBOX oracle exists for it).</li>
+<li><strong>Either way, test it.</strong>  Even verified helpers benefit from example-based tests as documentation and as a check on the contract&rsquo;s intent — the same spec-validation argument as for component contracts.</li>
+</ul>
+<p>The EDP thermostat contains a small, instructive example — a developer-written helper with a developer-written contract:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// Executable equality test on On_Off command values.
+</span></span></span><span class="line"><span class="cl"><span class="c1">// NOTE: inside verus! blocks, `==` cannot be used on enums from the `data`
+</span></span></span><span class="line"><span class="cl"><span class="c1">// crate in EXECUTABLE code (the derived PartialEq is external to Verus);
+</span></span></span><span class="line"><span class="cl"><span class="c1">// pattern matching is used instead.  In SPEC position (the ensures clause
+</span></span></span><span class="line"><span class="cl"><span class="c1">// below), `==` denotes Verus structural equality and is fine.
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">on_off_eq</span><span class="p">(</span><span class="n">a</span>: <span class="nc">On_Off</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>: <span class="nc">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">(</span><span class="n">res</span>: <span class="kt">bool</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">match</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The <code>ensures</code> bridges the executable result to Verus&rsquo;s structural equality, so the send-on-change body can branch on <code>on_off_eq(currentCmd, self.lastCmd)</code> and the prover still connects the branch condition to the <code>self.lastCmd != old(self).lastCmd</code> antecedents in the contract.  (Why the helper is needed at all is a Verus limitation — next-but-one section.)</p>
+<h2 id="the-verification-workflow">The Verification Workflow</h2>
+<p>The rhythm of contract-driven development with Verus, assembled from the pieces above:</p>
+<ol>
+<li><strong>Author or evolve GUMBO contracts in the model</strong>, and type-check (<code>sireum hamr sysml tipe</code>).</li>
+<li><strong>Run code generation.</strong>  Contracts are woven into the marker regions of <code>&lt;component&gt;_app.rs</code> and into a fresh <code>&lt;component&gt;_api.rs</code>; your code outside the markers is preserved.</li>
+<li><strong>Implement (or adjust) the entry-point bodies</strong>, adding helper functions with their own contracts as needed.</li>
+<li><strong>Verify</strong>: from the component crate, <code>make verus</code> — the fastest check, running <code>cargo-verus verify</code> without producing build artifacts.  <code>make verus-json</code> emits machine-readable results to <code>verus_results.json</code>; from <code>hamr/microkit/</code>, a top-level <code>make verus</code> verifies every component crate.</li>
+<li><strong>When a proof fails</strong>, Verus names the entry point and the specific <code>requires</code>/<code>ensures</code> clause that could not be established.  Then:
+<ul>
+<li>if the <em>body</em> is wrong, fix the logic (the clause comment&rsquo;s requirement text tells you what behavior is expected — and a GUMBOX probe can demonstrate the failure concretely, <a href="#explaining-verus-failures-with-executable-contracts">below</a>);</li>
+<li>if the proof needs help, add <code>assert(...)</code> hints restating key facts in contract vocabulary, or strengthen a helper&rsquo;s contract;</li>
+<li>if the <em>contract</em> is wrong or incomplete, fix it <strong>in the model</strong> and return to step 1 — never by editing inside the marker regions.</li>
+</ul>
+</li>
+<li><strong>Keep testing.</strong>  <code>make test</code> runs the crate&rsquo;s unit and property-based suites without requiring verification; the two evidence streams are complementary.</li>
+</ol>
+<p>Verification is also wired into the build: the top-level <code>make all</code> builds component crates with <code>cargo-verus</code>, so a system image is only produced from code that verifies (set <code>RUST_MAKE_TARGET=build-release</code> to bypass during exploratory work).  None of the verification targets require the seL4/Microkit SDK — <code>make verus</code> runs anywhere Rust and <code>cargo-verus</code> are installed.</p>
+<h2 id="verus-limitations-you-will-encounter">Verus Limitations You Will Encounter</h2>
+<p>Verus verifies a subset of Rust, and HAMR developers meet its edges in predictable places.  The three most common, with their standard workarounds:</p>
+<p><strong>String formatting and logging.</strong>  The <code>log::</code> macros perform formatting that Verus cannot reason about, so every logging helper is marked <code>#[verifier::external_body]</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[verifier::external_body]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">log_info</span><span class="p">(</span><span class="n">msg</span>: <span class="kp">&amp;</span><span class="kt">str</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">log</span>::<span class="fm">info!</span><span class="p">(</span><span class="s">&#34;{0}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">msg</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>HAMR generates the basic helpers this way, and any logging function you add (e.g., one formatting a data value with <code>{0:?}</code>) needs the same attribute.  This is the single most frequent reason for <code>external_body</code> in HAMR components.</p>
+<p><strong>Equality on data-model enums in executable code.</strong>  Types in the <code>data</code> crate derive <code>PartialEq</code> outside any <code>verus!</code> block, so their <code>==</code> operator is an external function Verus refuses to call in <em>executable</em> positions (spec positions are fine — there <code>==</code> is Verus&rsquo;s structural equality).  The error reads like:</p>
+<pre tabindex="0"><code>error: cannot use function `data::..::impl&amp;%11::eq` which is ignored because it is
+       either declared outside the verus! macro or it is marked as `external`
+</code></pre><p>The workaround is pattern matching, packaged once in a small helper with a bridging contract — exactly the <code>on_off_eq</code> function shown <a href="#helper-methods-and-libraries-your-verification-obligations">above</a>.</p>
+<p><strong>Runtime logic Verus cannot digest.</strong>  Occasionally a body needs an operation outside Verus&rsquo;s supported subset (complex slice manipulation, third-party library calls).  The escape hatch is again <code>#[verifier::external_body]</code> on a helper that isolates the operation behind a contract.  Use it sparingly and deliberately: everything so marked joins the <em>trusted</em> base — the prover believes its contract without proof — which is precisely why such helpers should carry unit tests, and why testing retains a permanent role alongside verification.</p>
+<h2 id="explaining-verus-failures-with-executable-contracts">Explaining Verus Failures with Executable Contracts</h2>
+<p>A failing Verus proof names a clause; it does not hand you a concrete scenario.  For the developer that is often enough, but for code review, issue reports, and regression protection, a <em>runnable demonstration</em> of the failure is far more useful — and the GUMBOX rendering of the same contract provides exactly that, as developed in the GUMBOX chapter&rsquo;s <a href="../gumbox-translation/#interrogating-a-contract-by-calling-gumbox-directly">Interrogating a Contract</a> section.</p>
+<p>The DP thermostat ships with a worked instance: the seeded bug kept in its body as a comment,</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">     </span><span class="c1">// REQ-THERM-2
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="c1">//currentCmd = On_Off::Off; // seeded bug/error
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">currentCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>Re-introducing the bug (uncomment the first line, remove the second) and running <code>make verus</code> produces a failure on the <code>timeTriggered</code> ensures clause labeled <code>case REQ_THERM_2</code> — the verifier has determined that <em>some</em> dispatch violates the requirement, but reports it in proof terms.  The GUMBOX clause function <code>compute_case_REQ_THERM_2</code> restates the finding as a test anyone can run and read:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">bridge</span>::<span class="n">thermostat_thermostat_GUMBOX</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="no">GUMBOX</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">explain_verus_failure_REQ_THERM_2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Below range (96 &lt; 98) the buggy body emits Off; REQ_THERM_2 requires Onn.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_case_REQ_THERM_2</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">96</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">));</span><span class="w">   </span><span class="c1">// what the buggy implementation emits
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>(The <code>temp</code>/<code>set_points</code> constructors and the full probing technique are in the <a href="../gumbox-translation/#asking-what-the-contract-requires">GUMBOX chapter</a>.)  Once the bug is fixed, invert the assertion — the clause <em>holds</em> on the corrected output — and keep it as a regression test.  The same move works in the other direction: when a proof fails and you suspect the <em>contract</em> rather than the code, probing the GUMBOX oracles with scenarios you believe should be accepted or rejected tells you what the specification actually says — turning &ldquo;the prover won&rsquo;t accept my code&rdquo; into a concrete conversation about either the code or the model, whichever is actually wrong.</p>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>This chapter covered the logical rendering of GUMBO contracts and the practice of discharging them with Verus.  Building on it:</p>
+<ul>
+<li><strong>Manual GUMBOX Unit Testing</strong> — <em>(forthcoming)</em> driving the generated contract-checked test harnesses with chosen inputs; the current <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> previews the workflow.</li>
+<li><strong>GUMBOX Property-Based Testing</strong> — <em>(forthcoming)</em> automated exploration of the input space against the same contract oracles.</li>
+<li>The <a href="../gumbox-translation/">GUMBOX translation chapter</a> is the standing companion: one specification, proved here, executed there.</li>
+</ul>
+<p>For hands-on practice, Part 3 of the tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> takes the Simple Isolette through Verus verification of the thermostat — see <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/03-Ex-Simple-Isolette-DT-add-GUMBO-Verus.md">Part 3</a> or follow the <a href="../reading-order/">Recommended Reading Order</a>.</p>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
