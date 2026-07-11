@@ -45,7 +45,7 @@
 
   <meta itemprop="name" content="Sireum HAMR">
   <meta itemprop="description" content="The GUMBO Contract Language — Overview and Rationale GUMBO is HAMR’s contract language for specifying the behavior of thread components at the model level. Contracts are written directly in system models — GUMBO is available in both AADL (as an annex language) and SysMLv2, and this documentation focuses on the SysMLv2 form. GUMBO’s semantics is aligned with HAMR’s execution semantics for threads and port communication, and HAMR automatically translates GUMBO contracts into code-level artifacts that support testing, formal verification, and run-time monitoring of component implementations.">
-  <meta itemprop="wordCount" content="2048">
+  <meta itemprop="wordCount" content="2053">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -328,7 +328,7 @@
 <h3 id="system-reasoning-over-contract-summaries">System Reasoning over Contract Summaries</h3>
 <p>GUMBO system specifications (<a href="../gumbo-system-properties/">GUMBO System Properties</a>) reason about end-to-end properties of the composed system — for example, that a value produced by a sensor early in the static schedule is appropriately reflected in an actuator command later in the schedule.  System verification uses only the component <em>contracts</em> together with HAMR&rsquo;s scheduling model; it never inspects component implementation code.  This is a deliberate scalability decision: system properties can be stated and verified in terms of small behavioral summaries, so the cost of system verification grows with the number of components and the size of their contracts — not with the volume of implementation code.</p>
 <h3 id="code-level-representations-logical-and-executable">Code-Level Representations: Logical and Executable</h3>
-<p>At the bottom layer, HAMR mechanically translates each component contract into its logical form (Verus/Logika contracts) and its executable form (GUMBOX).  Because both are generated from the same model artifact, evidence produced at the code level — a Verus proof, a passing GUMBOX test suite, a clean run-time monitor — discharges obligations stated at the model level.  Dedicated chapters on the GUMBOX translation, the GUMBO-to-Verus translation, and working with Verus are forthcoming (see <a href="#where-to-go-next">Where to Go Next</a>).</p>
+<p>At the bottom layer, HAMR mechanically translates each component contract into its logical form (Verus/Logika contracts) and its executable form (GUMBOX).  Because both are generated from the same model artifact, evidence produced at the code level — a Verus proof, a passing GUMBOX test suite, a clean run-time monitor — discharges obligations stated at the model level.  The <a href="../gumbox-translation/">GUMBOX translation chapter</a> covers the executable form; dedicated chapters on the GUMBO-to-Verus translation and working with Verus are forthcoming (see <a href="#where-to-go-next">Where to Go Next</a>).</p>
 <h2 id="the-trusted-base">The Trusted Base</h2>
 <p>GUMBO reasoning treats the principles of HAMR&rsquo;s infrastructure — the threading semantics, port communication, port freezing, and scheduling behavior described in the <a href="../hamr-semantics-concepts/">semantics chapter</a> — as <em>axioms</em>.  The correctness of HAMR&rsquo;s code generation for infrastructure code is part of the trusted computing base of the framework.</p>
 <p>This has three consequences that matter in practice:</p>
@@ -342,7 +342,7 @@
 <li><strong><a href="../gumbo-component-contracts/">GUMBO Component Contracts</a></strong> — read next: an example-based walkthrough of contract structure using the Simple Isolette.</li>
 <li><strong><a href="../gumbo-quick-reference/">GUMBO Quick Reference</a></strong> and <strong><a href="../gumbo-grammar/">GUMBO Grammar</a></strong> — reference material for the full construct catalog and syntax.</li>
 <li><strong><a href="../gumbo-system-properties/">GUMBO System Properties</a></strong> — the system-level layer, with its own <a href="../gumbo-system-properties-vcs/">technical VC reference</a>.</li>
-<li><strong>GUMBOX Executable Contracts</strong> — <em>(forthcoming)</em> how HAMR translates GUMBO contracts into executable Rust boolean functions for unit testing, property-based testing, and run-time monitoring.</li>
+<li><strong><a href="../gumbox-translation/">GUMBO to GUMBOX Translation</a></strong> — how HAMR translates GUMBO contracts into executable Rust boolean functions for unit testing, property-based testing, and run-time monitoring.</li>
 <li><strong>GUMBO-to-Verus Translation</strong> — <em>(forthcoming)</em> how each GUMBO clause becomes a Verus <code>requires</code>/<code>ensures</code> contract in the generated Rust application code.</li>
 <li><strong>Working with Verus</strong> — <em>(forthcoming)</em> practical guidance for verifying HAMR component implementations with Verus.</li>
 <li>The three-part tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> (Simple Isolette), linked from the <a href="../reading-order/">Recommended Reading Order</a>, exercises the full path from model-level contracts through GUMBOX testing to Verus verification.</li>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="How GUMBO Contracts are Translated to Rust Boolean Functions to Provide GUMBOX Executable Contracts This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into GUMBOX — executable Rust boolean functions that evaluate the contracts on concrete values. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbox-translation/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="How GUMBO Contracts are Translated to Rust Boolean Functions to Provide GUMBOX Executable Contracts This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into GUMBOX — executable Rust boolean functions that evaluate the contracts on concrete values. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.">
+  <meta itemprop="wordCount" content="4654">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="How GUMBO Contracts are Translated to Rust Boolean Functions to Provide GUMBOX Executable Contracts This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into GUMBOX — executable Rust boolean functions that evaluate the contracts on concrete values. It continues with the same running examples as the GUMBO Component Contracts chapter: the Simple Isolette from the HAMR tutorials repository, first the data-port variant (P-DP) and then the event-data-port variant (P-EDP), both centered on the Thermostat thread.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="how-gumbo-contracts-are-translated-to-rust-boolean-functions-to-provide-gumbox-executable-contracts">How GUMBO Contracts are Translated to Rust Boolean Functions to Provide GUMBOX Executable Contracts</h1>
+<p>This chapter is a developer-oriented, example-based walkthrough of how HAMR translates GUMBO thread component contracts into <strong>GUMBOX</strong> — executable Rust boolean functions that evaluate the contracts on concrete values.  It continues with the same running examples as the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter: the Simple Isolette from the <a href="https://github.com/santoslab/hamr-tutorials">HAMR tutorials repository</a>, first the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example">data-port variant</a> (P-DP) and then the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">event-data-port variant</a> (P-EDP), both centered on the <code>Thermostat</code> thread.</p>
+<p>We assume you have read the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter — every contract translated below is introduced and motivated there.  Familiarity with the Rust component development chapters (<a href="../hamr-rust-implementation/">implementation</a>, <a href="../hamr-rust-testing-manual/">manual unit testing</a>) is helpful but not required.</p>
+<p>This chapter addresses the <strong>translation itself</strong>: what functions HAMR generates, where they live, how each GUMBO contract form maps to Rust, and how you (or a tool) can call the functions directly to probe what a contract means.  <em>Using</em> the generated functions through the test harnesses — manual GUMBOX unit testing and automated property-based testing — is covered in forthcoming chapters (the <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> previews GUMBOX-based testing in the current workflow).  The parallel translation of the same contracts into Verus logical contracts for formal verification is also covered in a forthcoming chapter.</p>
+<h2 id="why-executable-contracts">Why Executable Contracts?</h2>
+<p>A GUMBO contract is written once, at the model level, and HAMR derives multiple code-level artifacts from it.  GUMBOX is the <em>executable</em> derivation: every contract clause becomes an ordinary, pure Rust boolean function — a function you can call with concrete port values and state variable values and that answers <code>true</code> (the values satisfy the clause) or <code>false</code> (they violate it).  We call these functions <strong>contract oracles</strong>, because their primary role is to judge observed behavior against the specification.</p>
+<p>Executable contracts earn their keep in several distinct ways:</p>
+<ul>
+<li>
+<p><strong>Test oracles.</strong>  A test that runs a component entry point needs a way to decide whether the outputs are <em>correct</em>.  With GUMBOX, correctness checking is automatic: the harness evaluates the generated postcondition oracle on the observed outputs, so the test author supplies only inputs — never hand-coded expected-result assertions.  This is what powers both manual GUMBOX unit testing (you pick the inputs) and automated property-based testing (PropTest generates the inputs) — each the subject of its own forthcoming chapter.</p>
+</li>
+<li>
+<p><strong>Run-time monitoring.</strong>  Because the oracles are plain Rust functions over port and state values, they can also be evaluated against a <em>deployed</em> component&rsquo;s observed behavior, forming the basis of HAMR&rsquo;s run-time monitoring support — checking, in operation, that each dispatch satisfies the same contracts that were tested and verified during development.</p>
+</li>
+<li>
+<p><strong>Companions to Verus proofs.</strong>  HAMR also translates the same GUMBO clauses into Verus <code>requires</code>/<code>ensures</code> contracts for formal verification of the component&rsquo;s Rust implementation (forthcoming chapter).  The two artifacts are complementary: Verus establishes that <em>all</em> executions satisfy a clause, while GUMBOX evaluates the clause on <em>one</em> concrete execution.  When a Verus proof fails, the corresponding GUMBOX clause function turns the abstract failure into an explanation — you call the very clause that would not verify with concrete values and watch it return <code>false</code>, producing a runnable test case that demonstrates exactly which requirement is violated and on what data (an example appears <a href="#explaining-a-failing-verus-proof">below</a>).  Because both artifacts are generated from the same GUMBO source, they agree by construction — a GUMBOX counterexample is a counterexample to the Verus contract, and vice versa.</p>
+</li>
+<li>
+<p><strong>Machine-readable specifications.</strong>  A contract you can <em>call</em> is a contract that tools — and LLM-based agents — can interrogate without any implementation in the loop.  By constructing input/output pairs and asking the postcondition oracle whether the specification accepts them, an agent can probe the spec for gaps (scenarios it should reject but accepts), vacuity, boundary ambiguity, and contradictions.  The <code>audit-gumbo-contracts</code> skill in HAMR&rsquo;s agent-context materials automates exactly this: it audits a component&rsquo;s GUMBO compute contract against a catalog of specification anti-patterns and emits demonstration tests that call the GUMBOX functions directly (see <a href="#interrogating-a-contract-by-calling-gumbox-directly">Interrogating a Contract</a> below).</p>
+</li>
+</ul>
+<p>Throughout, keep the trust story in mind: GUMBOX functions are <em>generated</em>, marked do-not-edit, and re-generated whenever the model changes — the executable form cannot silently drift from the model-level specification.</p>
+<h2 id="where-hamr-generates-gumbox-code">Where HAMR Generates GUMBOX Code</h2>
+<p>For each thread component, HAMR code generation places the GUMBOX functions in a single file inside the component crate&rsquo;s <code>bridge</code> module:</p>
+<pre tabindex="0"><code>hamr/microkit/crates/&lt;component&gt;/
+  src/
+    bridge/
+      &lt;component&gt;_GUMBOX.rs      &lt;- the GUMBOX contract oracles (this chapter)
+      &lt;component&gt;_api.rs         &lt;- port APIs with woven Verus contracts
+      extern_c_api.rs
+    component/
+      &lt;component&gt;_app.rs         &lt;- application code (developer-edited)
+    test/
+      util/
+        cb_apis.rs               &lt;- harness entry points that call the oracles
+        test_apis.rs
+        generators.rs
+      tests.rs                   &lt;- developer-edited tests
+</code></pre><p>For the DP thermostat the file is <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/bridge/thermostat_thermostat_GUMBOX.rs"><code>crates/thermostat_thermostat/src/bridge/thermostat_thermostat_GUMBOX.rs</code></a>, and for the EDP variant <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example/hamr/microkit/crates/thermostat_thermostat/src/bridge/thermostat_thermostat_GUMBOX.rs">the file of the same name in the P-EDP example</a>.  The file is fully auto-generated (<code>// Do not edit this file as it will be overwritten if HAMR codegen is rerun</code>) and is regenerated in place whenever code generation reruns, keeping the oracles in sync with the model.</p>
+<p>From tests and other code in the crate, the functions are reached through the module path <code>crate::bridge::&lt;component&gt;_GUMBOX</code>; the generated test harness aliases it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">bridge</span>::<span class="n">thermostat_thermostat_GUMBOX</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="no">GUMBOX</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p><em>(Reference: <a href="../microkit-folder-structure/">Microkit Folder Structure</a> for the full crate layout.)</em></p>
+<h2 id="the-translation-at-a-glance">The Translation at a Glance</h2>
+<p>The generated file contains one boolean function per contract <em>clause</em>, plus composite functions that conjoin the clauses into the entry-point-level oracles the harnesses call.  The naming scheme is uniform across components:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO construct</th>
+          <th>GUMBOX function</th>
+          <th>Role</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>helper <code>def f(...)</code> in <code>functions</code></td>
+          <td><code>f(...)</code> (same name)</td>
+          <td>callable from the oracles and from your tests</td>
+      </tr>
+      <tr>
+          <td>integration <code>assume</code> on input port <code>p</code></td>
+          <td><code>I_Assm_p</code></td>
+          <td>payload constraint on <code>p</code></td>
+      </tr>
+      <tr>
+          <td>integration <code>assume</code> on input <em>event data</em> port <code>p</code></td>
+          <td><code>I_Assm_Guard_p</code> (wraps <code>I_Assm_p</code>)</td>
+          <td>applies <code>I_Assm_p</code> only when a message is present</td>
+      </tr>
+      <tr>
+          <td>integration <code>guarantee</code> on output port <code>p</code></td>
+          <td><code>I_Guar_p</code> (and <code>I_Guar_Guard_p</code> for event data ports)</td>
+          <td>payload promise on <code>p</code></td>
+      </tr>
+      <tr>
+          <td>initialize <code>guarantee N</code></td>
+          <td><code>initialize_N</code></td>
+          <td>one function per clause</td>
+      </tr>
+      <tr>
+          <td><em>(composite)</em></td>
+          <td><code>initialize_IEP_Guar</code></td>
+          <td>conjunction of all initialize guarantees</td>
+      </tr>
+      <tr>
+          <td><em>(top level)</em></td>
+          <td><code>initialize_IEP_Post</code></td>
+          <td><strong>initialize oracle</strong> — the post-check entry point</td>
+      </tr>
+      <tr>
+          <td>compute <code>assume N</code></td>
+          <td><code>compute_spec_N_assume</code></td>
+          <td>one function per clause</td>
+      </tr>
+      <tr>
+          <td><em>(composite)</em></td>
+          <td><code>compute_CEP_T_Assm</code></td>
+          <td>conjunction of all compute assumes</td>
+      </tr>
+      <tr>
+          <td><em>(top level)</em></td>
+          <td><code>compute_CEP_Pre</code></td>
+          <td><strong>compute precondition oracle</strong> — integration assumes ∧ compute assumes</td>
+      </tr>
+      <tr>
+          <td>compute <code>guarantee N</code></td>
+          <td><code>compute_spec_N_guarantee</code></td>
+          <td>one function per general guarantee</td>
+      </tr>
+      <tr>
+          <td><em>(composite)</em></td>
+          <td><code>compute_CEP_T_Guar</code></td>
+          <td>conjunction of all general guarantees</td>
+      </tr>
+      <tr>
+          <td>compute <code>case N</code></td>
+          <td><code>compute_case_N</code></td>
+          <td>the case as an implication (assume ⟹ guarantee)</td>
+      </tr>
+      <tr>
+          <td><em>(composite)</em></td>
+          <td><code>compute_CEP_T_Case</code></td>
+          <td>conjunction of all cases</td>
+      </tr>
+      <tr>
+          <td><em>(top level)</em></td>
+          <td><code>compute_CEP_Post</code></td>
+          <td><strong>compute postcondition oracle</strong> — <code>CEP_T_Guar</code> ∧ <code>CEP_T_Case</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>The abbreviations follow the entry point structure: <strong>IEP</strong> = Initialize Entry Point, <strong>CEP</strong> = Compute Entry Point, <strong>I-Assm</strong>/<strong>I-Guar</strong> = integration assume/guarantee, and <strong>T</strong> marks the top-level composite for a clause category.  The three <strong>bold</strong> rows are the entry points into the contract: <code>initialize_IEP_Post</code> and <code>compute_CEP_Post</code> judge outputs, and <code>compute_CEP_Pre</code> judges inputs.</p>
+<p>Each function&rsquo;s parameters follow equally uniform conventions:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Contract reference</th>
+          <th>GUMBOX parameter</th>
+          <th>Rust type</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>state variable <code>x</code> in the pre-state — <code>In(x)</code></td>
+          <td><code>In_x</code></td>
+          <td>the variable&rsquo;s data type</td>
+      </tr>
+      <tr>
+          <td>state variable <code>x</code> in the post-state</td>
+          <td><code>x</code> (bare name)</td>
+          <td>the variable&rsquo;s data type</td>
+      </tr>
+      <tr>
+          <td>data port <code>p</code> (input or output)</td>
+          <td><code>api_p</code></td>
+          <td>the port&rsquo;s payload type</td>
+      </tr>
+      <tr>
+          <td>event data port <code>p</code> (input or output)</td>
+          <td><code>api_p</code></td>
+          <td><code>Option&lt;payload type&gt;</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>So a function&rsquo;s signature <em>is</em> a statement of which parts of the component state and interface the clause depends on — the generated doc comments spell each parameter&rsquo;s role out (<code>pre-state state variable</code>, <code>incoming data port</code>, &hellip;), and the clause name and requirement prose from the model are carried into the doc comment, preserving requirement traceability at the code level.</p>
+<p>One last preliminary: the top of every GUMBOX file defines two macros used in the clause bodies,</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="n">macro_rules</span><span class="o">!</span><span class="w"> </span><span class="n">implies</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">(</span><span class="cp">$lhs</span>: <span class="nc">expr</span><span class="p">,</span><span class="w"> </span><span class="cp">$rhs</span>: <span class="nc">expr</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">!</span><span class="cp">$lhs</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="cp">$rhs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">macro_rules</span><span class="o">!</span><span class="w"> </span><span class="n">impliesL</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">(</span><span class="cp">$lhs</span>: <span class="nc">expr</span><span class="p">,</span><span class="w"> </span><span class="cp">$rhs</span>: <span class="nc">expr</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">!</span><span class="cp">$lhs</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="cp">$rhs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>mirroring GUMBO&rsquo;s two families of logical operators: GUMBO&rsquo;s short-circuit <code>implies</code> becomes <code>implies!</code> (Rust <code>||</code> does not evaluate the right side when the left is false — important when the right side accesses an event data port payload), and the logical, both-sides-evaluated forms map to <code>impliesL</code> and Rust&rsquo;s non-short-circuit <code>&amp;</code>/<code>|</code> on booleans.</p>
+<h2 id="the-dp-thermostat-translated">The DP Thermostat, Translated</h2>
+<p>We now walk the DP thermostat&rsquo;s GUMBO block — exactly the contract developed section-by-section in the <a href="../gumbo-component-contracts/#running-example-the-simple-isolette-data-port-variant">prerequisite chapter</a> — through its translation.  Each subsection shows a brief reminder of the GUMBO source, then the generated Rust, verbatim.</p>
+<h3 id="helper-functions">Helper Functions</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
+  def Temp_Lower_Bound(): Base_Types::Integer_32 := 95 [i32];
+  def Temp_Upper_Bound(): Base_Types::Integer_32 := 104 [s32];
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">Temp_Lower_Bound</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">i32</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="mi">95</span><span class="k">i32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">Temp_Upper_Bound</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">i32</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="mi">104</span><span class="k">i32</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>GUMBO helper functions translate to same-named Rust functions, so the single-sourcing benefit described in the prerequisite chapter carries directly to the code level: the requirement-level bounds have one definition, and every oracle that mentions them calls it.</p>
+<h3 id="integration-constraints">Integration Constraints</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  assume ASSM_CT_Range:
+    Temp_Lower_Bound() &lt;= current_temp.degrees &amp; current_temp.degrees &lt;= Temp_Upper_Bound();
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** I-Assm: Integration constraint on thermostat&#39;s incoming data port current_temp
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * assume ASSM_CT_Range
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">I_Assm_current_temp</span><span class="p">(</span><span class="n">current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">(</span><span class="n">Temp_Lower_Bound</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">Temp_Upper_Bound</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>An integration constraint is a property of a single port&rsquo;s value, so its oracle takes exactly one parameter: the payload.  Note the translation of GUMBO&rsquo;s logical <code>&amp;</code> to Rust&rsquo;s non-short-circuit <code>&amp;</code> on booleans.  Integration assumes are folded into the compute precondition oracle <code>compute_CEP_Pre</code> below; a component with integration <em>guarantees</em> on output ports would additionally get <code>I_Guar_&lt;port&gt;</code> functions folded into its postcondition oracle (the EDP <code>OperatorInterface</code> provides an example).</p>
+<h3 id="initialize-contracts-and-the-initialize-oracle">Initialize Contracts and the Initialize Oracle</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">initialize
+  guarantee
+    initlastCmd: lastCmd == Isolette_Data_Model::On_Off.Off;
+  guarantee REQ_THERM_1 &#34;The Heat Control command shall be Off initially.&#34;:
+    heat_control == Isolette_Data_Model::On_Off.Off;
+</code></pre><p>Each guarantee becomes its own function, over only the values it mentions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** Initialize EntryPointContract
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * guarantee initlastCmd
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param lastCmd post-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize_initlastCmd</span><span class="p">(</span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Off</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/** Initialize EntryPointContract
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * guarantee REQ_THERM_1
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   The Heat Control command shall be Off initially.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize_REQ_THERM_1</span><span class="p">(</span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Off</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>(Notice the notational shift for enum values: GUMBO&rsquo;s <code>On_Off.Off</code> is Rust&rsquo;s <code>On_Off::Off</code>.)  The composite conjoins the clauses, and the top-level oracle wraps the composite:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** IEP-Guar: Initialize Entrypoint for thermostat
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param lastCmd post-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize_IEP_Guar</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">initialize_initlastCmd</span><span class="p">(</span><span class="n">lastCmd</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">initialize_REQ_THERM_1</span><span class="p">(</span><span class="n">api_heat_control</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/** IEP-Post: Initialize Entrypoint Post-Condition
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param lastCmd post-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">initialize_IEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">initialize_IEP_Guar</span><span class="p">(</span><span class="n">lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>initialize_IEP_Post</code> is the function a test harness (or monitor) calls after the initialize entry point runs, passing the observed post-state and output port values.  There is no <code>IEP_Pre</code>: as the prerequisite chapter explains, initialization has no inputs, so there is nothing to check beforehand.</p>
+<h3 id="compute-assumptions-and-the-precondition-oracle">Compute Assumptions and the Precondition Oracle</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">compute
+  assume ASSM_LDT_LE_UDT: desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+</code></pre><p>becomes a per-clause function and its composite:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** Compute Entrypoint Contract
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * assumes ASSM_LDT_LE_UDT
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_ASSM_LDT_LE_UDT_assume</span><span class="p">(</span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/** CEP-T-Assm: Top-level assume contracts for thermostat&#39;s compute entrypoint
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_CEP_T_Assm</span><span class="p">(</span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r0</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_spec_ASSM_LDT_LE_UDT_assume</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">r0</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The precondition oracle then assembles <em>everything the component relies on at dispatch</em> — the integration assumes on its input ports and its compute assumes:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** CEP-Pre: Compute Entrypoint Pre-Condition for thermostat
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param In_lastCmd pre-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_current_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_CEP_Pre</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// I-Assm-Guard: Integration constraints for thermostat&#39;s incoming ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r0</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">I_Assm_current_temp</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// CEP-Assm: assume clauses of thermostat&#39;s compute entrypoint
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r1</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_CEP_T_Assm</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>This is the function the test harnesses use to <em>filter</em> inputs: a test vector for which <code>compute_CEP_Pre</code> returns <code>false</code> is outside the component&rsquo;s specified envelope, and running the component on it would prove nothing.  Note the discipline of the composites: each conjunct is bound to a named intermediate (<code>r0</code>, <code>r1</code>, &hellip;) and the constituent functions are all <code>pub</code> — so when a composite returns <code>false</code>, you can call the pieces individually to localize exactly which clause failed.</p>
+<h3 id="general-guarantees">General Guarantees</h3>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee lastCmd &#34;Set lastCmd to value of output Cmd port&#34;:
+    lastCmd == heat_control;
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** Compute Entrypoint Contract
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * guarantee lastCmd
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   Set lastCmd to value of output Cmd port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param lastCmd post-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_lastCmd_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>with the composite <code>compute_CEP_T_Guar</code> conjoining all general guarantees (here there is just this one).</p>
+<h3 id="compute-cases">Compute Cases</h3>
+<p>Each <code>compute_cases</code> case translates to a single implication: the case&rsquo;s assume becomes the antecedent, its guarantee the consequent.</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">    case REQ_THERM_2 &#34;If Current Temperature is less than
+                      |the Lower Desired Temperature, the Heat Control shall be set to On.&#34;:
+      assume (current_temp.degrees &lt; desired_temp.lower.degrees);
+      guarantee heat_control == Isolette_Data_Model::On_Off.Onn;
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** guarantee REQ_THERM_2
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   If Current Temperature is less than
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   the Lower Desired Temperature, the Heat Control shall be set to On.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_current_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_case_REQ_THERM_2</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>REQ_THERM_4 shows the translation of the <code>In()</code> operator — the pre-state reference <code>In(lastCmd)</code> simply becomes the <code>In_lastCmd</code> parameter:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** guarantee REQ_THERM_4
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   If the Current Temperature is greater than or equal
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   to the Lower Desired Temperature
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   and less than or equal to the Upper Desired Temperature, the value of
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *   the Heat Control shall not be changed.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param In_lastCmd pre-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_current_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_case_REQ_THERM_4</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">In_lastCmd</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>At the model level, <code>In()</code> needs an operator because a state variable name is a single identifier that must be read two ways; at the code level, the ambiguity disappears — pre- and post-state are just two parameters.  The composite conjoins the three cases:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_CEP_T_Case</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r0</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_case_REQ_THERM_2</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r1</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_case_REQ_THERM_3</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r2</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_case_REQ_THERM_4</span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r2</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Because each case is an implication, conjoining them reproduces the model-level case semantics exactly: on any given dispatch, the cases whose assumptions do not hold are vacuously true, and the cases whose assumptions do hold impose their guarantees.</p>
+<h3 id="the-postcondition-oracle">The Postcondition Oracle</h3>
+<p>Finally, the top-level compute oracle conjoins the general guarantees and the cases:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** CEP-Post: Compute Entrypoint Post-Condition for thermostat
+</span></span></span><span class="line"><span class="cl"><span class="sd">  *
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param In_lastCmd pre-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param lastCmd post-state state variable
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_current_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_desired_temp incoming data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * @param api_heat_control outgoing data port
+</span></span></span><span class="line"><span class="cl"><span class="sd">  */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_CEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// CEP-Guar: guarantee clauses of thermostat&#39;s compute entrypoint
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r0</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_CEP_T_Guar</span><span class="p">(</span><span class="n">lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// CEP-T-Case: case clauses of thermostat&#39;s compute entrypoint
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r1</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_CEP_T_Case</span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Read its signature as a summary of the compute contract&rsquo;s whole vocabulary: pre-state (<code>In_lastCmd</code>), post-state (<code>lastCmd</code>), frozen inputs (<code>api_current_temp</code>, <code>api_desired_temp</code>), and outputs (<code>api_heat_control</code>).  Given one dispatch&rsquo;s worth of those values — whether they came from a unit test, a PropTest run, a deployed monitor, or were simply made up to ask a question — <code>compute_CEP_Post</code> answers whether that dispatch satisfied the contract.</p>
+<h2 id="the-edp-variant-message-presence-becomes-option">The EDP Variant: Message Presence Becomes Option</h2>
+<p>The <a href="../gumbo-component-contracts/#event-data-ports-the-p-edp-variant">event-data-port variant</a> of the Simple Isolette introduced the GUMBO constructs for message-oriented communication: <code>HasEvent</code>, <code>MustSend</code>, <code>NoSend</code>, and the latching state pattern.  Their translations all rest on one encoding decision: <strong>an event data port&rsquo;s value is an <code>Option&lt;T&gt;</code></strong> — <code>None</code> when no message is present at the dispatch, <code>Some(payload)</code> when one is.  Everything else follows mechanically:</p>
+<table>
+  <thead>
+      <tr>
+          <th>GUMBO (model level)</th>
+          <th>GUMBOX (Rust)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>event data port <code>p</code> of payload type <code>T</code></td>
+          <td>parameter <code>api_p: Option&lt;T&gt;</code></td>
+      </tr>
+      <tr>
+          <td><code>HasEvent(p)</code></td>
+          <td><code>api_p.is_some()</code></td>
+      </tr>
+      <tr>
+          <td>payload access <code>p.field</code> (under a presence guard)</td>
+          <td><code>api_p.unwrap().field</code></td>
+      </tr>
+      <tr>
+          <td><code>MustSend(p, v)</code></td>
+          <td><code>api_p.is_some() &amp;&amp; (api_p.unwrap() == v)</code></td>
+      </tr>
+      <tr>
+          <td><code>NoSend(p)</code></td>
+          <td><code>api_p.is_none()</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="integration-guards">Integration Guards</h3>
+<p>An integration constraint on an event data port constrains the payload <em>whenever a message is present</em> — the presence guard is implicit at the model level, so the translation makes it explicit.  The EDP thermostat&rsquo;s integration assume</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">integration
+  assume ASSM_LDT_LE_UDT &#34;Incoming set point messages must be well-formed
+                         |(lower desired temp at most upper desired temp).&#34;:
+    desired_temp.lower.degrees &lt;= desired_temp.upper.degrees;
+</code></pre><p>generates <em>two</em> functions — the payload constraint, and a guard that applies it only under presence:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">I_Assm_desired_temp</span><span class="p">(</span><span class="n">desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">desired_temp</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">I_Assm_Guard_desired_temp</span><span class="p">(</span><span class="n">desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">I_Assm_desired_temp</span><span class="p">(</span><span class="n">desired_temp</span><span class="p">.</span><span class="n">unwrap</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>It is the guard form that participates in the precondition oracle: a dispatch with no set point message trivially satisfies the constraint.  Integration guarantees on <em>output</em> event data ports follow the same pattern (<code>I_Guar_&lt;port&gt;</code> wrapped by <code>I_Guar_Guard_&lt;port&gt;</code>), folded into the sender&rsquo;s postcondition oracle.</p>
+<h3 id="hasevent-the-latch-pair-translated">HasEvent: the Latch Pair, Translated</h3>
+<p>The latch pair from the prerequisite chapter,</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee latchSetPointsOnEvent &#34;A newly received set point message is latched.&#34;:
+    HasEvent(desired_temp) implies
+      (currentSetPoints.lower.degrees == desired_temp.lower.degrees and
+       currentSetPoints.upper.degrees == desired_temp.upper.degrees);
+  guarantee latchSetPointsNoEvent &#34;Otherwise the latched set points are unchanged.&#34;:
+    (not HasEvent(desired_temp)) implies currentSetPoints == In(currentSetPoints);
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_latchSetPointsOnEvent_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">currentSetPoints</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">(),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">lower</span><span class="p">.</span><span class="n">degrees</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">currentSetPoints</span><span class="p">.</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">unwrap</span><span class="p">().</span><span class="n">upper</span><span class="p">.</span><span class="n">degrees</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_latchSetPointsNoEvent_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_currentSetPoints</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">currentSetPoints</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="o">!</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">.</span><span class="n">is_some</span><span class="p">()),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">currentSetPoints</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">In_currentSetPoints</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Here the reason GUMBO insists on the short-circuit operators around payload access becomes concrete: <code>implies!</code> expands to <code>!lhs || rhs</code>, and Rust&rsquo;s <code>||</code> does not evaluate the right side when the left is false — so <code>api_desired_temp.unwrap()</code> is only reached when a message is actually present, and the <code>unwrap()</code> cannot panic.</p>
+<h3 id="mustsend-and-nosend">MustSend and NoSend</h3>
+<p>The send-on-change policy,</p>
+<pre tabindex="0"><code class="language-sysml" data-lang="sysml">  guarantee mustSendOnChange &#34;A command message is sent exactly when the commanded
+                             |state changes, and it carries the new state.&#34;:
+    (lastCmd != In(lastCmd)) implies MustSend(heat_control, lastCmd);
+  guarantee noSendNoChange &#34;No message is sent when the commanded state is unchanged.&#34;:
+    (lastCmd == In(lastCmd)) implies NoSend(heat_control);
+</code></pre><p>becomes</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_mustSendOnChange_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">In_lastCmd</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_heat_control</span><span class="p">.</span><span class="n">is_some</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="p">(</span><span class="n">api_heat_control</span><span class="p">.</span><span class="n">unwrap</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">lastCmd</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_spec_noSendNoChange_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_heat_control</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">implies!</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">(</span><span class="n">lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">In_lastCmd</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_heat_control</span><span class="p">.</span><span class="n">is_none</span><span class="p">())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>MustSend(heat_control, lastCmd)</code> unfolds to presence plus payload equality; <code>NoSend(heat_control)</code> is simply absence.  An output event data port&rsquo;s <code>Option</code> value thus captures the <em>communication decision</em> — whether a message was emitted at all — as first-class data the oracle can judge, something a plain payload parameter could not express.</p>
+<h3 id="the-full-width-oracles">The Full-Width Oracles</h3>
+<p>The EDP thermostat&rsquo;s top-level oracles have wider signatures than the DP variant&rsquo;s, mixing data ports, event data ports, and two state variables — but the composition pattern is identical:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">compute_CEP_Pre</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_currentSetPoints</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_temp_changed</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// I-Assm-Guard: Integration constraints for thermostat&#39;s incoming ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r0</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">I_Assm_current_temp</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r1</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">I_Assm_Guard_desired_temp</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// CEP-Assm: assume clauses of thermostat&#39;s compute entrypoint
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">r2</span>: <span class="kt">bool</span> <span class="o">=</span><span class="w"> </span><span class="n">compute_CEP_T_Assm</span><span class="p">(</span><span class="n">In_currentSetPoints</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">r0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r2</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>and <code>compute_CEP_Post</code> conjoins all nine of the variant&rsquo;s guarantees (the latch pair, the invariant maintenance, the trigger frame condition, REQ_THERM_2/3/4, and the two send-policy clauses) through <code>compute_CEP_T_Guar</code>.  One detail worth noticing: the EDP <code>initialize_IEP_Post</code> takes an <code>api_heat_control: Option&lt;...&gt;</code> parameter but no clause constrains it — output event data ports need no initialization, so the initialize contract says nothing about the port, and the oracle&rsquo;s signature simply records that the port exists in the initialize phase&rsquo;s output vocabulary.</p>
+<h2 id="interrogating-a-contract-by-calling-gumbox-directly">Interrogating a Contract by Calling GUMBOX Directly</h2>
+<p>The oracles are pure functions: they read no component state, invoke no entry point, and need no seL4 libraries.  You can call them from any Rust test — with values observed from a real execution, or with values you simply <em>make up</em> — which turns the specification itself into something you can query.  This section shows the technique on the thermostat; the same moves work for any component.</p>
+<p>(Because these probes never touch the component&rsquo;s static state, they are unaffected by the test-serialization concerns that apply to tests that <em>run</em> the component — a topic for the manual testing chapter.)</p>
+<h3 id="asking-what-the-contract-requires">Asking What the Contract Requires</h3>
+<p>Suppose you want to check your reading of the DP contract: <em>below the desired range, is the thermostat required to command heat on?</em>  Two probe calls answer it — one presenting the behavior you believe is required, one presenting its opposite:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">bridge</span>::<span class="n">thermostat_thermostat_GUMBOX</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="no">GUMBOX</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="o">*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">temp</span><span class="p">(</span><span class="n">degrees</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">set_points</span><span class="p">(</span><span class="n">lower</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lower</span>: <span class="nc">temp</span><span class="p">(</span><span class="n">lower</span><span class="p">),</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">temp</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">probe_below_range_requires_heat_on</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// 96 degrees, desired range [98, 101]: below range.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// The spec ACCEPTS commanding Onn (and latching it) ...
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w">            </span><span class="c1">// In_lastCmd  (pre-state)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">,</span><span class="w">            </span><span class="c1">// lastCmd     (post-state)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">96</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">));</span><span class="w">          </span><span class="c1">// api_heat_control
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// ... and REJECTS commanding Off.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">96</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>No thermostat code ran — the second call returns <code>false</code> purely because <code>compute_case_REQ_THERM_2</code>&rsquo;s antecedent holds (96 &lt; 98) and its consequent does not (<code>Off != Onn</code>).  The pair of calls <em>is</em> the semantics of the requirement, demonstrated on concrete numbers.</p>
+<p>The same technique settles boundary questions without squinting at inequalities.  At exactly the lower bound, does the contract require heating or holding?</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">probe_at_lower_bound_hold_not_heat</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Exactly 98 degrees with range [98, 101]: REQ_THERM_2 uses strict &lt;,
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// so the &#34;hold&#34; case REQ_THERM_4 governs.  Holding the previous command
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// (Off) is accepted ...
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">98</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// ... and switching heat on at the boundary is rejected (violates REQ_THERM_4).
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">98</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The precondition oracle can be interrogated the same way — for instance, confirming that inverted set points are outside the component&rsquo;s specified envelope: <code>GUMBOX::compute_CEP_Pre(On_Off::Off, temp(100), set_points(101, 98))</code> returns <code>false</code> because <code>compute_spec_ASSM_LDT_LE_UDT_assume</code> fails.</p>
+<h3 id="explaining-a-failing-verus-proof">Explaining a Failing Verus Proof</h3>
+<p>The <a href="../hamr-rust-implementation/">Rust implementation chapter</a> keeps a seeded bug in the thermostat&rsquo;s application code: an assignment that commands <code>Off</code> where the control law requires <code>Onn</code>, which the Verus verifier duly rejects.  A Verus failure report tells you <em>which clause</em> could not be proved, but it speaks in the language of the proof.  The corresponding GUMBOX clause function restates the failure as a concrete, runnable demonstration:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">explain_verus_failure_REQ_THERM_2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// The seeded bug emits Off when the temperature is below range.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Evaluating the failing clause on that scenario shows the violation:
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_case_REQ_THERM_2</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">temp</span><span class="p">(</span><span class="mi">96</span><span class="p">),</span><span class="w"> </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">));</span><span class="w">   </span><span class="c1">// what the buggy implementation emits
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Because the individual clause functions are public, you evaluate exactly the clause the prover named — not the whole postcondition — on values drawn from the scenario you suspect.  A probe like this makes a proof failure reviewable by anyone who can read a unit test, and once the bug is fixed it can be inverted (assert the clause <em>holds</em> on the same inputs with the corrected output) and kept as a regression test.</p>
+<h3 id="auditing-the-specification-itself">Auditing the Specification Itself</h3>
+<p>The probes above interrogate a contract to <em>confirm</em> its meaning.  The same technique, applied adversarially, audits a specification for weaknesses: construct a scenario the component&rsquo;s intent should forbid, and ask the postcondition oracle whether the specification actually forbids it.  If the oracle <em>accepts</em> the scenario, you have found a specification gap — before any implementation exists to exploit it.</p>
+<p>For example, a frame-condition audit of the EDP thermostat asks: <em>when no set point message arrives, does the specification actually prevent the latched set points from drifting?</em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">audit_no_event_forbids_latch_drift</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// No message on desired_temp, but the latched set points changed [98,101] -&gt; [97,102].
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// latchSetPointsNoEvent must reject this.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_spec_latchSetPointsNoEvent_guarantee</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">set_points</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w">   </span><span class="c1">// In_currentSetPoints (pre-state)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">set_points</span><span class="p">(</span><span class="mi">97</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">),</span><span class="w">   </span><span class="c1">// currentSetPoints    (post-state)
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nb">None</span><span class="p">));</span><span class="w">                </span><span class="c1">// api_desired_temp    (no message)
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Here the audit <em>passes</em> — the contract is tight.  Had the contract omitted the <code>latchSetPointsNoEvent</code> frame condition, the probe would have exposed the gap: the oracle would accept silent drift of safety-relevant state.  Typical gaps this style of probing uncovers include missing &ldquo;no input, no output&rdquo; guarantees (the spec accepts fabricated output on a dispatch with no message), data fields no guarantee ever mentions (the spec accepts any value for them), vacuous clauses, and overlapping cases with contradictory guarantees.</p>
+<p>Because the probes are just function calls over plain data, they are as natural for an LLM-based agent to write as for a human — this is the basis of the <code>audit-gumbo-contracts</code> skill in HAMR&rsquo;s agent-context materials, which walks a component&rsquo;s GUMBO compute contract through an anti-pattern catalog and emits a <code>specification_audit_tests</code> module of exactly such probes, each documenting a finding as an executable demonstration.  The essential discipline, for humans and agents alike: these tests <strong>probe the spec, not the implementation</strong> — they call the GUMBOX functions directly on constructed values and never invoke the component&rsquo;s entry points.</p>
+<h2 id="how-the-test-harnesses-enter-the-contracts">How the Test Harnesses Enter the Contracts</h2>
+<p>The forthcoming testing chapters build on generated harness functions in <code>src/test/util/cb_apis.rs</code> that orchestrate a complete contract-checked execution of an entry point.  Here we note only <em>where those harnesses enter the GUMBOX contracts</em>, so the oracle roles established above connect forward.</p>
+<p>Each harness returns a three-valued result:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">HarnessResult</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">RejectedPrecondition</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">FailedPostcondition</span><span class="p">(</span><span class="n">TestCaseError</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Passed</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>and the entry points into the contracts are exactly the three top-level oracles:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Harness function</th>
+          <th>Checks before running</th>
+          <th>Oracle after running</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>testInitializeCB()</code></td>
+          <td>— (no inputs)</td>
+          <td><code>initialize_IEP_Post</code></td>
+      </tr>
+      <tr>
+          <td><code>testComputeCB(inputs...)</code></td>
+          <td><code>compute_CEP_Pre</code></td>
+          <td><code>compute_CEP_Post</code></td>
+      </tr>
+      <tr>
+          <td><code>testComputeCBwGSV(In_state..., inputs...)</code></td>
+          <td><code>compute_CEP_Pre</code></td>
+          <td><code>compute_CEP_Post</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>For example, the DP thermostat&rsquo;s compute harness runs the pipeline <em>pre-check → set inputs → invoke entry point → retrieve outputs → post-check</em>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">testComputeCB</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">HarnessResult</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Initialize the app
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [SaveInLocal]: retrieve and save the current (input) values of GUMBO-declared local state variables
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [CheckPre]: check/filter based on pre-condition.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Pre</span><span class="w"> </span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">RejectedPrecondition</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [PutInPorts]: Set values on the input ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [RetrieveOutState]: retrieve values of the output ports via get operations and GUMBO declared local state variable
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [CheckPost]: invoke the oracle function
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">FailedPostcondition</span><span class="p">(</span><span class="n">TestCaseError</span>::<span class="n">Fail</span><span class="p">(</span><span class="s">&#34;Postcondition failed: incorrect output behavior&#34;</span><span class="p">.</span><span class="n">into</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p><code>compute_CEP_Pre</code> acts as the input filter (an input outside the contract&rsquo;s envelope yields <code>RejectedPrecondition</code> — the test is inapplicable, not failed), and <code>compute_CEP_Post</code> acts as the correctness oracle.  The <code>wGSV</code> variant additionally lets the caller set the pre-state values of GUMBO state variables before invocation, so contracts that mention <code>In(...)</code> can be exercised from chosen pre-states.  The property-based testing macros (<code>testInitializeCB_macro!</code>, <code>testComputeCB_macro!</code>, <code>testComputeCBwGSV_macro!</code>) wrap these same harness functions in PropTest drivers — random inputs flow through the identical pre-filter and post-oracle.</p>
+<p>How to <em>use</em> these harnesses — writing manual GUMBOX tests, choosing inputs, configuring PropTest generators and rejection budgets — is the subject of the next two chapters.</p>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>This chapter covered the translation from GUMBO to GUMBOX and the direct use of the generated functions.  Building on it:</p>
+<ul>
+<li><strong>Manual GUMBOX Unit Testing</strong> — <em>(forthcoming)</em> writing unit tests that drive the <code>testInitializeCB</code>/<code>testComputeCB</code>/<code>testComputeCBwGSV</code> harnesses with chosen inputs, and interpreting <code>HarnessResult</code> outcomes.  The current <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> previews this workflow.</li>
+<li><strong>GUMBOX Property-Based Testing</strong> — <em>(forthcoming)</em> using the PropTest macros with HAMR-generated value generators to explore the input space automatically against the same oracles.</li>
+<li><strong>GUMBO-to-Verus Translation</strong> — <em>(forthcoming)</em> how the same clauses become Verus <code>requires</code>/<code>ensures</code> contracts woven into the application code skeletons, and how the two artifact families cooperate (as previewed in <a href="#explaining-a-failing-verus-proof">Explaining a Failing Verus Proof</a> above).</li>
+</ul>
+<p>For hands-on practice, Part 2 of the tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> takes the Simple Isolette through GUMBOX-based testing — see <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/02-Ex-Simple-Isolette-DT-add-GUMBO-GUMBOX.md">Part 2</a> or follow the <a href="../reading-order/">Recommended Reading Order</a>.</p>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
