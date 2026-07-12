@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Manual GUMBOX Contract-Based Unit Testing of Thread Components This chapter provides an overview of manual GUMBOX testing — unit tests in which the developer supplies hand-chosen inputs for a thread component and HAMR-generated contract-based test harnesses automatically judge the component&rsquo;s outputs against the executable (GUMBOX) form of its GUMBO contracts. In this sense, the GUMBOX contracts form an oracle for component tests that determines if the component application code satisfies the model-declared component contracts for particular developer-selected input values.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/gumbox-manual-testing/" />
+
+
+    <title>
+        
+             :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Sireum HAMR">
+  <meta itemprop="description" content="Manual GUMBOX Contract-Based Unit Testing of Thread Components This chapter provides an overview of manual GUMBOX testing — unit tests in which the developer supplies hand-chosen inputs for a thread component and HAMR-generated contract-based test harnesses automatically judge the component’s outputs against the executable (GUMBOX) form of its GUMBO contracts. In this sense, the GUMBOX contracts form an oracle for component tests that determines if the component application code satisfies the model-declared component contracts for particular developer-selected input values.">
+  <meta itemprop="wordCount" content="4151">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Sireum HAMR">
+  <meta name="twitter:description" content="Manual GUMBOX Contract-Based Unit Testing of Thread Components This chapter provides an overview of manual GUMBOX testing — unit tests in which the developer supplies hand-chosen inputs for a thread component and HAMR-generated contract-based test harnesses automatically judge the component’s outputs against the executable (GUMBOX) form of its GUMBO contracts. In this sense, the GUMBOX contracts form an oracle for component tests that determines if the component application code satisfies the model-declared component contracts for particular developer-selected input values.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+
+        <h1></h1>
+
+        
+          <div class="post-content"><h1 id="manual-gumbox-contract-based-unit-testing-of-thread-components">Manual GUMBOX Contract-Based Unit Testing of Thread Components</h1>
+<p>This chapter provides an overview of <strong>manual GUMBOX testing</strong> — unit tests in which the developer supplies hand-chosen inputs for a thread component and HAMR-generated <em>contract-based test harnesses</em> automatically judge the component&rsquo;s outputs against the executable (GUMBOX) form of its GUMBO contracts.  In this sense, the GUMBOX contracts form an <em>oracle</em> for component tests that determines if the component application code satisfies the model-declared component contracts for particular developer-selected input values.</p>
+<p>The chapter continues with the same running examples as the preceding chapters: the Simple Isolette from the <a href="https://github.com/santoslab/hamr-tutorials">HAMR tutorials repository</a>, in its <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example">data-port</a> (P-DP) and <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">event-data-port</a> (P-EDP) variants, centered on the <code>Thermostat</code> thread.</p>
+<p>We assume you have read the <a href="../gumbo-component-contracts/">GUMBO Component Contracts</a> chapter (the contracts being tested), the <a href="../gumbox-translation/">GUMBOX translation chapter</a> (the executable oracles the harnesses call), and the <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> (the base testing infrastructure — test folder layout, <code>put_</code>/<code>get_</code> helpers, <code>#[serial]</code>, running tests, coverage — all of which this chapter builds on).  The <a href="../gumbo-verus-translation/">Verus translation chapter</a> is a companion: the harnesses here check dynamically the very clauses Verus proves statically, and the <a href="#supporting-verus-verification">closing section</a> develops that connection.</p>
+<p>This chapter addresses <strong>manual</strong> GUMBOX testing only — the developer chooses each test vector.  The third testing style, automated property-based GUMBOX testing (random test vectors from HAMR-generated value generators, judged by the same oracles), is covered in a following chapter.</p>
+<h2 id="why-manual-gumbox-tests">Why Manual GUMBOX Tests?</h2>
+<p>The <a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a> introduced HAMR&rsquo;s three styles of component testing as a ladder of increasing automation: <em>manual unit tests</em> (the developer supplies both the inputs and the expected-result assertions), <em>manual GUMBOX tests</em> (the developer supplies only the inputs), and <em>automated property-based GUMBOX tests</em> (a generator supplies the inputs too).  This chapter is about the middle rung, and its value is easiest to see against its two neighbors.</p>
+<p><strong>Compared to manual unit tests</strong>, a manual GUMBOX test replaces the hand-written expected-result assertions with the component&rsquo;s <em>entire contract</em>:</p>
+<ul>
+<li><strong>Nothing to hand-code, nothing to get wrong.</strong>  The harness evaluates the generated postcondition oracle on the observed outputs — every guarantee, every case, every integration constraint, on every run.  In contrast, a hand-written assertion in a manual unit test only checks the one property its author thought of; the oracle checks all of them.</li>
+<li><strong>The oracle cannot drift.</strong>  When the model&rsquo;s contracts evolve and code generation reruns, the GUMBOX oracles are regenerated in lock-step (<a href="../gumbox-translation/">GUMBOX translation</a>); hand-written assertions must be found and updated by hand.</li>
+<li><strong>Failures are contract violations by construction.</strong>  A failed GUMBOX test means the implementation disagreed with the model-level specification — the same disagreement Verus would report — not merely with one engineer&rsquo;s expectation.</li>
+</ul>
+<p><strong>Compared to property-based tests</strong>, a manual GUMBOX test contributes what randomness cannot:</p>
+<ul>
+<li><strong>Chosen scenarios.</strong>  Requirement-linked cases (one test per REQ_THERM_*), exact boundary values, the specific input that once exposed a bug — deterministic, repeatable, and citable in reviews and assurance arguments.</li>
+<li><strong>Readable intent.</strong>  A named test with a five-line input test vector <em>documents</em> a use case in a way a generator configuration does not; the example project&rsquo;s test suites double as worked examples of each requirement.</li>
+<li><strong>Specification validation.</strong>  A passing manual GUMBOX test records &ldquo;the contract accepts this concrete scenario I believe is correct&rdquo; — evidence about the <em>contract&rsquo;s</em> fidelity to intent, the one thing neither proof nor random testing can supply (see the <a href="../gumbox-translation/#auditing-the-specification-itself">GUMBOX chapter&rsquo;s auditing discussion</a>).</li>
+</ul>
+<p>The three styles share one specification and one infrastructure, so using all three costs no additional contract-writing effort — and in practice they are used together: manual tests for the scenarios that matter, property-based tests for breadth, plain manual tests where no contract (yet) exists or when a developer wants to indicate the desired output beyond the level of precision provided by the contract.</p>
+<h2 id="where-the-support-is-generated">Where the Support Is Generated</h2>
+<p>Everything manual GUMBOX testing needs is generated into the component crate alongside the base test infrastructure:</p>
+<pre tabindex="0"><code>hamr/microkit/crates/&lt;component&gt;/
+  src/
+    bridge/
+      &lt;component&gt;_GUMBOX.rs     &lt;- the executable contract oracles (GUMBOX chapter)
+    test/
+      tests.rs                  &lt;- your tests (developer-edited)
+      util/
+        cb_apis.rs              &lt;- the contract-based test harnesses (this chapter)
+        test_apis.rs            &lt;- put_/get_ helpers and input containers
+        generators.rs           &lt;- PropTest value generators (property-based chapter)
+</code></pre><p>The harnesses live in <code>cb_apis.rs</code> (<code>cb</code> = <em>contract-based</em>) and orchestrate the full cycle of a contract-checked execution; <code>test_apis.rs</code> supplies the primitive helpers they (and you) use to move values in and out of the component.  As with all component testing, everything runs without seL4 libraries — in test mode the port infrastructure is <code>Mutex</code>-guarded statics — so the tests run anywhere <code>cargo</code> runs.  <em>(Reference: <a href="../hamr-rust-testing-manual/#relevant-infrastructure-and-application-testing-files">Manual Unit Testing — infrastructure files</a>.)</em></p>
+<p>For the DP thermostat the key files are <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/cb_apis.rs"><code>cb_apis.rs</code></a> and <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/tests.rs"><code>tests.rs</code></a>; the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">EDP example</a> has files of the same names.</p>
+<h2 id="the-harness-family">The Harness Family</h2>
+<p>Every harness returns one of three outcomes:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">HarnessResult</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">RejectedPrecondition</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">FailedPostcondition</span><span class="p">(</span><span class="n">TestCaseError</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Passed</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>whose meanings deserve care:</p>
+<ul>
+<li><strong><code>Passed</code></strong> — the input vector satisfied the contract&rsquo;s preconditions, the entry point ran, and the outputs (with the inputs and pre-state) satisfied the postcondition oracle: every general guarantee and every case, with cases whose antecedents did not hold counting vacuously (exactly the semantics of the <a href="../gumbox-translation/#the-postcondition-oracle">GUMBOX postcondition oracle</a>).</li>
+<li><strong><code>RejectedPrecondition</code></strong> — the input vector violated the precondition oracle (an integration assume or compute assume), so the entry point was <em>never run</em>.  The test vector is outside the component&rsquo;s specified envelope: the test is <strong>inapplicable</strong>, not failed.  Whether that is a mistake or the point of the test depends on what you assert (<a href="#rejectedprecondition-probing-the-contract-envelope">below</a>).</li>
+<li><strong><code>FailedPostcondition</code></strong> — the entry point ran on an admissible vector and its outputs violated some contract clause.  This is the genuine failure outcome: the implementation disagrees with the specification.</li>
+</ul>
+<p>Five harness functions cover the two entry points and the ways of supplying a vector:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Harness</th>
+          <th>Test vector</th>
+          <th>Pre-state of GUMBO state variables</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>testInitializeCB()</code></td>
+          <td>none (initialization has no inputs)</td>
+          <td>n/a</td>
+      </tr>
+      <tr>
+          <td><code>testComputeCB(inputs...)</code></td>
+          <td>input ports, as individual arguments</td>
+          <td>whatever <code>initialize</code> established</td>
+      </tr>
+      <tr>
+          <td><code>testComputeCB_container(c)</code></td>
+          <td>input ports, bundled in a <code>PreStateContainer</code></td>
+          <td>whatever <code>initialize</code> established</td>
+      </tr>
+      <tr>
+          <td><code>testComputeCBwGSV(In_state..., inputs...)</code></td>
+          <td>state variables <strong>and</strong> input ports, individually</td>
+          <td><strong>chosen by the test</strong></td>
+      </tr>
+      <tr>
+          <td><code>testComputeCBwGSV_container(c)</code></td>
+          <td>both, bundled in a <code>PreStateContainer_wGSV</code></td>
+          <td><strong>chosen by the test</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p>The first function tests the Initialize entry point application code against the GUMBO contract for that entry point.  There is only a single function for the Initialize entry because there are no input values to Initialize entry points.   The many variations that follow for Compute entry point test arise due to the various approaches for providing inputs to test.   Regardless, all of them enter the contracts through the same two doors: <code>compute_CEP_Pre</code> as the admissibility filter and <code>compute_CEP_Post</code> (or <code>initialize_IEP_Post</code>) as the oracle — see <a href="../gumbox-translation/#how-the-test-harnesses-enter-the-contracts">How the Test Harnesses Enter the Contracts</a> in the GUMBOX chapter.</p>
+<h3 id="anatomy-of-a-harness-run">Anatomy of a Harness Run</h3>
+<p>The DP thermostat&rsquo;s <code>testComputeCB</code> shows the full pipeline (generated code, verbatim):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">testComputeCB</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">HarnessResult</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Initialize the app
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [SaveInLocal]: retrieve and save the current (input) values of GUMBO-declared local state variables
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [CheckPre]: check/filter based on pre-condition.
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Pre</span><span class="w"> </span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">RejectedPrecondition</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [PutInPorts]: Set values on the input ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [RetrieveOutState]: retrieve values of the output ports via get operations and GUMBO declared local state variable
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [CheckPost]: invoke the oracle function
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="no">GUMBOX</span>::<span class="n">compute_CEP_Post</span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">lastCmd</span><span class="p">,</span><span class="w"> </span><span class="n">api_current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">api_heat_control</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">FailedPostcondition</span><span class="p">(</span><span class="n">TestCaseError</span>::<span class="n">Fail</span><span class="p">(</span><span class="s">&#34;Postcondition failed: incorrect output behavior&#34;</span><span class="p">.</span><span class="n">into</span><span class="p">()));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The bracketed step names are the harness&rsquo;s fixed choreography: capture the pre-state (<code>[SaveInLocal]</code>), filter (<code>[CheckPre]</code>), stage the inputs (<code>[PutInPorts]</code>), dispatch (<code>[InvokeEntryPoint]</code>), collect the post-state (<code>[RetrieveOutState]</code>), judge (<code>[CheckPost]</code>).  Note two design points.  First, the harness begins by running the initialize entry point, so each test executes against a <em>freshly initialized</em> component — tests are independent of each other.  Second, the pre-state used in the contract check is whatever initialization established (here, <code>lastCmd == Off</code>); <code>testComputeCB</code> cannot exercise other pre-states — that is the <code>wGSV</code> variants&rsquo; job.</p>
+<h3 id="choosing-the-pre-state-the-wgsv-variants">Choosing the Pre-State: the wGSV Variants</h3>
+<p>Contracts that reference <code>In(...)</code> — like REQ_THERM_4&rsquo;s <em>&ldquo;the value of the Heat Control shall not be changed&rdquo;</em> — relate the outcome to the pre-dispatch values of state variables.  Testing such clauses from <em>only</em> the post-initialization state would leave most of their behavior unexercised.  The example&rsquo;s own test-design note (in the DP <code>tests.rs</code>) states the methodology:</p>
+<blockquote>
+<p>The <code>_CB</code> based tests re-initialize the internal state of the component (including the GUMBO state variables) during each call.  Therefore, we cannot use them to implement the testing approach in which we &ldquo;inherit&rdquo; the values of GSV from previous invocations.  Instead, we follow the approach in which we explicitly force the GSV pre-state variable values to specific values on each test invocation.</p>
+</blockquote>
+<p><code>testComputeCBwGSV</code> implements exactly that: it takes the pre-state values as leading arguments and adds one step to the pipeline — after <code>[PutInPorts]</code> it performs</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [SetInStateVars]: set the pre-state values of state variables
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_lastCmd</span><span class="p">(</span><span class="n">In_lastCmd</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>before invoking the entry point, and it passes the <em>supplied</em> <code>In_lastCmd</code> to both oracles.  A <code>wGSV</code> test therefore examines one dispatch from an arbitrary, explicitly chosen state — which is also how the contract itself is stated.</p>
+<h3 id="bundling-vectors-the-container-variants">Bundling Vectors: the Container Variants</h3>
+<p>Both compute harnesses have <code>_container</code> forms that take the HAMR-generated input-aggregation structs from <code>test_apis.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values and GUMBO state variables
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer_wGSV</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The container forms are one-line wrappers (<code>testComputeCB_container(c)</code> simply calls <code>testComputeCB(c.api_current_temp, c.api_desired_temp)</code>).  One benefit of using the containers is that building a test vector utilizes Rust <code>struct</code> constructor, in which the name of each field is supplied.  Thus, an input value for a port or state variable is directly associated with the name of the port or state variable represented in the associated <code>struct</code> field name.   The choice of using containers vs. non-container methods is stylistic — but a named container value makes a test vector a first-class, reusable, requirement-traceable artifact, the same benefits discussed for plain manual tests in the <a href="../hamr-rust-testing-manual/#test-vectors--aggregating-component-inputs">Test Vectors section</a> of the Manual Unit Testing chapter.  The field names (<code>api_&lt;port&gt;</code>, <code>In_&lt;stateVar&gt;</code>) follow the <a href="../gumbox-translation/#the-translation-at-a-glance">GUMBOX parameter conventions</a>, so a container literal reads directly against the contract.</p>
+<h2 id="examining-results-the-test_apis-helpers">Examining Results: the test_apis Helpers</h2>
+<p>In a pure GUMBOX test you often need <em>no</em> result-examination code at all — <code>[RetrieveOutState]</code> and <code>[CheckPost]</code> do it, against the whole contract.  The <code>test_apis.rs</code> helpers matter for two situations: adding assertions <em>beyond</em> the contract (checking a property the contract deliberately leaves open, or pinning an exact value where the contract gives a range), and writing plain manual tests alongside the GUMBOX ones.</p>
+<p>For <strong>output ports</strong>, <code>get_&lt;port&gt;()</code> retrieves what the component emitted.  A data port always has a value:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// getter for OUT DataPort
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_heat_control</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">extern_api</span>::<span class="n">OUT_heat_control</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">|</span><span class="n">e</span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">into_inner</span><span class="p">()).</span><span class="n">expect</span><span class="p">(</span><span class="s">&#34;Not expecting None&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>while an <em>event data</em> port (EDP variant) yields an <code>Option</code> — <code>None</code> meaning no message was sent this dispatch:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// getter for OUT EventDataPort
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_heat_control</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="o">&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">extern_api</span>::<span class="n">OUT_heat_control</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">|</span><span class="n">e</span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">into_inner</span><span class="p">()).</span><span class="n">clone</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>For <strong>GUMBO state variables</strong>, <code>get_&lt;var&gt;()</code>/<code>put_&lt;var&gt;()</code> read and write the field directly on the live component instance:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// getter for GUMBO State Variable
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">get_lastCmd</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">match</span><span class="w"> </span><span class="o">&amp;</span><span class="k">crate</span>::<span class="n">app</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nb">Some</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">inner</span><span class="p">.</span><span class="n">lastCmd</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nb">None</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="fm">panic!</span><span class="p">(</span><span class="s">&#34;The app is None&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>(and symmetrically <code>put_lastCmd(value)</code>; the EDP variant adds <code>get_currentSetPoints()</code>/<code>put_currentSetPoints(...)</code> for its second state variable).  After a harness run, <code>get_&lt;var&gt;()</code> lets a test additionally inspect the post-state — for example, confirming not just that the contract passed but that <code>lastCmd</code> landed on the specific value a scenario narrative calls for.</p>
+<p>For <strong>input ports</strong>, <code>put_&lt;port&gt;()</code> stages values — a data port takes the value, an event data port takes an <code>Option</code> (pass <code>None</code> to model &ldquo;no message arrived&rdquo;):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// setter for IN EventDataPort
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_temp_changed</span><span class="p">(</span><span class="n">value</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="o">&gt;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">*</span><span class="n">extern_api</span>::<span class="n">IN_temp_changed</span><span class="p">.</span><span class="n">lock</span><span class="p">().</span><span class="n">unwrap_or_else</span><span class="p">(</span><span class="o">|</span><span class="n">e</span><span class="o">|</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">into_inner</span><span class="p">())</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>You rarely call the input setters yourself in GUMBOX tests (the harness&rsquo;s <code>[PutInPorts]</code> does), but they are the bridge for mixed-style suites.  <em>(Reference: <a href="../hamr-rust-testing-manual/#manual-unit-tests-for-thread-entry-points">Manual Unit Testing — entry point tests</a> for the plain-manual usage of these helpers.)</em></p>
+<h2 id="writing-manual-gumbox-tests-the-dp-thermostat">Writing Manual GUMBOX Tests: the DP Thermostat</h2>
+<p>The example&rsquo;s <code>tests.rs</code> organizes tests into modules by style (<code>mod tests</code> for plain manual, <code>mod GUMBOX_manual_tests</code>, <code>mod GUMBOX_tests</code> for property-based).  Here is the manual GUMBOX test for REQ_THERM_2 — <em>&ldquo;If Current Temperature is less than the Lower Desired Temperature, the Heat Control shall be set to On&rdquo;</em> — verbatim:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_compute_GUMBOX_manual_REQ_THERM_2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// generate values for the incoming data ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">lower_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">upper_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="n">lower</span>: <span class="nc">lower_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">upper_desired_temp</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">harness_result</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">cb_apis</span>::<span class="n">testComputeCB</span><span class="p">(</span><span class="n">current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">harness_result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Compare this with the corresponding <em>plain</em> manual test in the <a href="../hamr-rust-testing-manual/#compute-entry-point-tests">Manual Unit Testing chapter</a>: the input construction is identical, but the explicit <code>assert!(api_heat_control == On_Off::Onn)</code> / <code>assert!(lastCmd == On_Off::Onn)</code> conclusions are gone.  The single <code>matches!(..., Passed)</code> assertion is stronger than both: <code>Passed</code> certifies that the outputs satisfied <em>every</em> clause of <code>compute_CEP_Post</code> — the general guarantee <code>lastCmd == heat_control</code>, REQ_THERM_2&rsquo;s case (whose antecedent 95 &lt; 98 holds, so its consequent <code>heat_control == Onn</code> was genuinely checked), and REQ_THERM_3/REQ_THERM_4 (vacuously, since their antecedents do not hold on this vector).  When you want to see precisely which boolean obligations that one assertion covered, read the vector against the oracles in the <a href="../gumbox-translation/#the-dp-thermostat-translated">GUMBOX chapter&rsquo;s DP walkthrough</a> — the executable rendering <em>is</em> the test&rsquo;s oracle.</p>
+<p>The container form of the same test bundles the vector first:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_compute_GUMBOX_manual_REQ_THERM_2_container</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Inputs can be &#34;bundled&#34; into a container. 
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">preStateContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_current_temp</span><span class="w"> </span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">api_desired_temp</span><span class="w"> </span>: <span class="nc">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">lower</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>:  <span class="mi">98</span><span class="w"> </span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">upper</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">    
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">harness_result</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">cb_apis</span>::<span class="n">testComputeCB_container</span><span class="p">(</span><span class="n">preStateContainer</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">harness_result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><h3 id="testing-in-clauses-from-chosen-pre-states">Testing In()-Clauses from Chosen Pre-States</h3>
+<p>REQ_THERM_4 (<em>&quot;&hellip;the value of the Heat Control shall not be changed&quot;</em>) constrains the output relative to <code>In(lastCmd)</code>.  Its interesting scenarios start from <code>lastCmd == Onn</code> — a state that plain <code>testComputeCB</code> (which always tests from the freshly initialized <code>Off</code>) can never reach.  The <code>wGSV</code> harness supplies it directly:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_compute_GUMBOX_manual_1_a</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// generate values for the incoming data ports
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">lower_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">upper_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="n">lower</span>: <span class="nc">lower_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">upper_desired_temp</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">last_cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">harness_result</span><span class="w"> </span><span class="o">=</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">cb_apis</span>::<span class="n">testComputeCBwGSV</span><span class="p">(</span><span class="n">last_cmd</span><span class="p">,</span><span class="w"> </span><span class="n">current_temp</span><span class="p">,</span><span class="w"> </span><span class="n">desired_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">harness_result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>The temperature sits exactly on the lower bound (98 in [98, 100]), so REQ_THERM_4&rsquo;s case is the one whose consequent is checked: the heat command must equal the <em>supplied</em> pre-state <code>Onn</code>.  Boundary placement plus chosen pre-state is the signature move of manual GUMBOX testing — each <code>compute_cases</code> case gets at least one test that makes <em>its</em> antecedent true, at the values where off-by-one errors live.</p>
+<p>The initialize entry point has the simplest harness of all — no inputs, so the test is one call:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_initialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testInitializeCB</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>which checks the full initialize contract (<code>initialize_IEP_Post</code>) — every state variable pinned, every output data port initialized.</p>
+<h3 id="rejectedprecondition-probing-the-contract-envelope">RejectedPrecondition: Probing the Contract Envelope</h3>
+<p>What if a test vector violates the contract&rsquo;s assumptions?  The DP example keeps a commented-out example: supplying inverted set points (<code>lower = 102</code>, <code>upper = 100</code>) violates the compute assume <code>ASSM_LDT_LE_UDT</code>, so <code>testComputeCB</code> returns <code>RejectedPrecondition</code> at <code>[CheckPre]</code> — the entry point never runs, and an <code>assert!(matches!(..., Passed))</code> fails.  As the example&rsquo;s commentary puts it, such an outcome &ldquo;represents a failed development process step: the developer has not followed the methodology to design an appropriate test input OR the pre-condition has not been specified appropriately.&rdquo;</p>
+<p>But the same outcome, <em>asserted deliberately</em>, is a useful test in its own right: it documents the contract&rsquo;s envelope as executable fact.  The EDP suite does exactly this (<a href="#the-edp-variant-choosing-events-and-pre-state">below</a>) — one test per assumption, each asserting <code>RejectedPrecondition</code> for a vector that violates precisely that assumption.  Read the pair of idioms as: <em>assert <code>Passed</code></em> for vectors inside the envelope (the contract judges the behavior), <em>assert <code>RejectedPrecondition</code></em> for vectors just outside it (the test pins where the envelope&rsquo;s edge is).</p>
+<h2 id="the-edp-variant-choosing-events-and-pre-state">The EDP Variant: Choosing Events and Pre-State</h2>
+<p>In the <a href="../gumbo-component-contracts/#event-data-ports-the-p-edp-variant">event-data-port variant</a>, messages may or may not be present at a dispatch — so the harness parameters for event data ports are <code>Option</code>-typed, and <em>the test vector chooses the message pattern</em>: <code>None</code> for &ldquo;no message this dispatch,&rdquo; <code>Some(v)</code> for &ldquo;a message carrying <code>v</code>.&rdquo;  The EDP <code>testComputeCBwGSV</code> signature is</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">testComputeCBwGSV</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_currentSetPoints</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_desired_temp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_temp_changed</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">HarnessResult</span><span class="w">
+</span></span></span></code></pre></div><p>— two pre-state variables (the latched set points and the last command), two optional event inputs, one sampled data port.  The <code>wGSV</code> form earns its keep even more here than in the DP variant: the control law is judged against the <em>latched</em> <code>currentSetPoints</code>, so nearly every interesting scenario begins by choosing it.  The EDP suite defines a small constructor to keep vectors readable:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">sp</span><span class="p">(</span><span class="n">lower</span>: <span class="kt">i32</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">lower</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="nc">lower</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="nc">upper</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>A triggered control-law scenario — temperature change event, temperature below the latched range:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_REQ_THERM_2_low_temp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// (In_currentSetPoints, In_lastCmd, api_desired_temp, api_temp_changed, api_current_temp)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testComputeCBwGSV</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sp</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">96</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">96</span><span class="w"> </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>One call, and <code>Passed</code> certifies all nine EDP guarantees at once: the latch pair (no set-point message, so the latch must be unchanged), the trigger condition (an event is present, so the control law applies), REQ_THERM_2 (96 &lt; 98, so the command must become <code>Onn</code>), <em>and</em> the send policy (the command changed from <code>Off</code> to <code>Onn</code>, so a message carrying <code>Onn</code> must be on <code>heat_control</code>).  The executable statements of all of these are in the <a href="../gumbox-translation/#the-edp-variant-message-presence-becomes-option">GUMBOX chapter&rsquo;s EDP section</a> — reading a vector against them is how to understand exactly what a <code>Passed</code> covers.</p>
+<p>Manual sweeps extend the same shape across boundaries and pre-states with a few lines of ordinary Rust:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_boundary_temp_sweep</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// sweep the sensed temperature across the boundaries of the default
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// latched range [98, 101] (and the sensor range [95, 104]), for both
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// command pre-states
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">pre</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="mi">95</span><span class="p">,</span><span class="w"> </span><span class="mi">96</span><span class="p">,</span><span class="w"> </span><span class="mi">97</span><span class="p">,</span><span class="w"> </span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">99</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="mi">103</span><span class="p">,</span><span class="w"> </span><span class="mi">104</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testComputeCBwGSV</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">sp</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span><span class="w"> </span><span class="mi">101</span><span class="p">),</span><span class="w"> </span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="nc">t</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="nc">t</span><span class="w"> </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="s">&#34;failed for pre-state {:?}, temp {}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">pre</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Twenty contract-checked dispatches, every boundary of the control law, both pre-states — with the context message identifying the failing combination if one ever fails.  This is the deterministic middle ground between a single hand-picked vector and the property-based chapter&rsquo;s randomized exploration.</p>
+<p>Finally, the envelope-probing idiom, one test per assumption.  The EDP thermostat has three kinds of assumptions (<a href="../gumbo-component-contracts/#event-data-ports-the-p-edp-variant">GUMBO chapter</a>), and the suite pins each edge:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_rejected_ill_formed_latched_set_points</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// the pre-state violates the INV_CSP compute assume (lower &gt; upper),
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// so the harness rejects the vector instead of running the entry point
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testComputeCBwGSV</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sp</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span><span class="w"> </span><span class="mi">98</span><span class="p">),</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">,</span><span class="w"> </span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">96</span><span class="w"> </span><span class="p">}),</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">96</span><span class="w"> </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">RejectedPrecondition</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_rejected_out_of_range_temp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// the sensed temperature violates the ASSM_CT_Range integration assume
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testComputeCB</span><span class="p">(</span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">200</span><span class="w"> </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">RejectedPrecondition</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#[serial]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">fn</span> <span class="nf">test_GUMBOX_rejected_ill_formed_set_point_message</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// the incoming set point message violates the ASSM_LDT_LE_UDT
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// integration assume (lower &gt; upper)
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="kd">let</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">testComputeCB</span><span class="p">(</span><span class="nb">Some</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span><span class="w"> </span><span class="mi">97</span><span class="p">)),</span><span class="w"> </span><span class="nb">None</span><span class="p">,</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">RejectedPrecondition</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>Note the middle test: an out-of-range temperature is rejected by the <em>integration</em> assume woven into the precondition oracle — the same constraint that, on the deployed system, is discharged by the <code>TempSensor</code>&rsquo;s verified output guarantee.  The rejection tests collectively answer, in executable form, &ldquo;for exactly which inputs is this component specified?&rdquo;</p>
+<h2 id="running-the-tests">Running the Tests</h2>
+<p>Manual GUMBOX tests are ordinary <code>cargo</code> tests, so everything from the <a href="../hamr-rust-testing-manual/#running-tests">Running Tests section</a> of the Manual Unit Testing chapter applies unchanged.  The essentials, GUMBOX-flavored:</p>
+<ul>
+<li><strong>One test</strong>: click the <em>Run Test</em> annotation in the CodeIVE/VSCode editor, or <code>cargo test test_compute_GUMBOX_manual_REQ_THERM_2</code> from the crate directory.</li>
+<li><strong>One crate</strong>: from <code>crates/&lt;component&gt;/</code>, <code>make test</code> (or <code>cargo test</code>).</li>
+<li><strong>Filtered subsets</strong>: the Makefile forwards a substring filter — <code>make test args=GUMBOX_manual</code> runs just the manual GUMBOX module, <code>make test args=GUMBOX</code> runs manual <em>and</em> property-based GUMBOX tests, <code>cargo test REQ_THERM_2</code> runs every test (any style) whose name mentions that requirement.  Organizing tests into modules by style, as the DP and EDP examples do, is what makes these filters precise.</li>
+<li><strong>Seeing output</strong>: <code>cargo test -- --nocapture</code> streams the component&rsquo;s log output (the <code>log_info</code> lines from the entry points) and any <code>println!</code> diagnostics — often the fastest way to see what a failing dispatch actually did.</li>
+<li><strong>All crates</strong>: from <code>hamr/microkit/</code>, the top-level <code>make test</code> runs every component crate&rsquo;s test suite.</li>
+<li><strong><code>#[serial]</code> is required</strong> on every test, GUMBOX or otherwise — component state and the port statics are shared, so tests must not run concurrently (<a href="../hamr-rust-testing-manual/">Manual Unit Testing chapter</a>).</li>
+</ul>
+<p>None of these require the seL4/Microkit SDK or Verus — <code>make test</code> runs on a plain Rust toolchain.</p>
+<h3 id="are-your-vectors-exercising-the-contract--coverage-of-the-oracles">Are Your Vectors Exercising the Contract?  Coverage of the Oracles</h3>
+<p><code>make coverage</code> (optionally <code>make coverage args=GUMBOX_manual</code>) produces the HTML coverage report described in the <a href="../hamr-rust-testing-manual/#generating-coverage-reports">coverage section</a> of the Manual Unit Testing chapter — and for GUMBOX testing, the file to study is <code>src/bridge/&lt;component&gt;_GUMBOX.rs</code> itself.  Because each <code>compute_case_*</code> oracle is an <code>implies!</code>, its <em>consequent</em> line executes only when your vector makes the antecedent true; the <a href="../hamr-rust-testing-manual/#gap-2-gumbox-case-oracles">Gap 2 discussion</a> shows a reduced suite in which the REQ_THERM_2 and REQ_THERM_3 consequents have zero hits — those requirements were being checked only vacuously.  The working rule from that chapter bears repeating: high coverage of the <code>*_GUMBOX.rs</code> consequent lines tells you your chosen vectors are actually <em>driving</em> each contract case; it does not by itself say the contract is correct — that is what the scenarios themselves, and contract review, are for.</p>
+<h2 id="supporting-verus-verification">Supporting Verus Verification</h2>
+<p>The harnesses evaluate, dynamically and per-vector, the same clauses that the <a href="../gumbo-verus-translation/">Verus translation</a> states as <code>requires</code>/<code>ensures</code> and proves for all vectors.  That identity — one GUMBO source, one semantics, two checkers — makes manual GUMBOX testing a working companion to verification rather than a separate activity:</p>
+<ul>
+<li><strong>Cheap bug-finding before (and alongside) proving.</strong>  A GUMBOX test run takes seconds and reports failures on concrete data.  Re-introduce the DP thermostat&rsquo;s seeded REQ_THERM_2 bug (<a href="../hamr-rust-implementation/">Rust implementation chapter</a>) and <code>test_compute_GUMBOX_manual_REQ_THERM_2</code> returns <code>FailedPostcondition</code> — the very violation <code>make verus</code> reports abstractly, demonstrated on <code>current_temp = 95</code> against <code>[98, 100]</code>.  Running the GUMBOX suite before attempting proofs clears out the ordinary bugs so verification effort goes to the genuinely hard residue.</li>
+<li><strong>Understanding a puzzling clause.</strong>  When it is unclear what a woven Verus clause demands in some situation, construct the situation as a harness vector and see whether it <code>Passed</code> — or drop below the harness and call the individual clause oracles directly on constructed values (<a href="../gumbox-translation/#interrogating-a-contract-by-calling-gumbox-directly">Interrogating a Contract</a>).  The harness answers &ldquo;does the whole contract accept this dispatch?&rdquo;; the direct calls answer &ldquo;which clause, exactly, and why?&rdquo;</li>
+<li><strong>Turning proof failures into regression tests.</strong>  When a Verus proof fails, encode the suspect scenario as a manual GUMBOX test: if it returns <code>FailedPostcondition</code>, you have a runnable, reviewable demonstration of the failure — and after the fix, the same test (now asserting <code>Passed</code>) guards against regression.  This is the harness-level counterpart of the clause-level probe developed in <a href="../gumbo-verus-translation/#explaining-verus-failures-with-executable-contracts">Explaining Verus Failures</a>.</li>
+<li><strong>Probing the assumed envelope.</strong>  The <code>RejectedPrecondition</code> idiom makes the woven <code>requires</code> tangible: each rejection test documents an input the entry point is <em>not</em> obligated to handle — exactly the vectors Verus excludes from the proof.  When a Verus proof succeeds suspiciously easily, rejection probes help check whether the preconditions are quietly excluding more than intended.</li>
+<li><strong>A consistency check on the trusted base.</strong>  Once a component&rsquo;s Verus proof discharges, every admissible manual GUMBOX vector <em>must</em> return <code>Passed</code> — the proof covers all of them.  A <code>FailedPostcondition</code> on verified code therefore points not at the proved logic but at the <a href="../gumbo-verus-translation/#where-verification-stops-and-trust-begins">trusted base</a>: an <code>external_body</code> helper, or an environment discrepancy.  Keeping the GUMBOX suite running after verification is a cheap, continuous audit of exactly the parts the proof takes on trust.</li>
+</ul>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>This chapter covered choosing test vectors by hand and letting the contract judge them.  Building on it:</p>
+<ul>
+<li><strong>GUMBOX Property-Based Testing</strong> — <em>(forthcoming)</em> the third rung of the ladder: HAMR-generated PropTest value generators drive the same <code>testComputeCB</code>/<code>testComputeCBwGSV</code> harnesses with hundreds of random vectors, with configurable strategies for ranges, enum biases, and message-presence ratios.</li>
+<li>The <a href="../gumbox-translation/">GUMBOX translation chapter</a> remains the reference for what each <code>Passed</code> actually certified, and the <a href="../gumbo-verus-translation/">Verus translation chapter</a> for the proof-side of the same contracts.</li>
+</ul>
+<p>For hands-on practice, Part 2 of the tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> walks the Simple Isolette through exactly the tests shown here — see <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/02-Ex-Simple-Isolette-DT-add-GUMBO-GUMBOX.md">Part 2</a> or follow the <a href="../reading-order/">Recommended Reading Order</a>.</p>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
