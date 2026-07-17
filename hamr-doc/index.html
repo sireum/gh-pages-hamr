@@ -209,7 +209,19 @@
         <hr />
         <aside id="toc">
             <div class="toc-title">Table of Contents</div>
-            <nav id="TableOfContents"></nav>
+            <nav id="TableOfContents">
+              <ul>
+                <li><a href="#getting-started">Getting Started</a></li>
+                <li><a href="#hamr-overview">HAMR Overview</a></li>
+                <li><a href="#hamr-semantics-building-blocks-and-computational-concepts">HAMR Semantics Building Blocks and Computational Concepts</a></li>
+                <li><a href="#model-level-development-with-sysmlv2">Model-Level Development with SysMLv2</a></li>
+                <li><a href="#code-level-development-for-microkit">Code-Level Development for Microkit</a></li>
+                <li><a href="#gumbo-component-contracts">GUMBO Component Contracts</a></li>
+                <li><a href="#gumbox-rust-executable-contracts">GUMBOX Rust Executable Contracts</a></li>
+                <li><a href="#gumbo-verus-contracts-and-formal-verification">GUMBO Verus Contracts and Formal Verification</a></li>
+                <li><a href="#gumbo-system-property-specifications-and-verification">GUMBO System Property Specifications and Verification</a></li>
+              </ul>
+            </nav>
         </aside>
         <hr />
 
@@ -221,32 +233,32 @@
         
           <hr/>
               <div class="doc-module">
-                <div class="doc-module-title">Getting Started</div>
+                <div class="doc-module-title" id="getting-started">Getting Started</div>
                 <div class="doc-module-description">Setting up and configuring HAMR tools and development environments.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/installation/"><span>Installation</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">HAMR Overview</div>
+                <div class="doc-module-title" id="hamr-overview">HAMR Overview</div>
                 <div class="doc-module-description">Understanding the purpose, scope, and primary features of HAMR.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/hamr-overview/"><span>HAMR Overview</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">HAMR Semantics Building Blocks and Computational Concepts</div>
+                <div class="doc-module-title" id="hamr-semantics-building-blocks-and-computational-concepts">HAMR Semantics Building Blocks and Computational Concepts</div>
                 <div class="doc-module-description">Understanding the semantics of HAMR threads (real-time tasks), port-based communication, and scheduling.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/hamr-semantics-concepts"><span>HAMR Semantics Concepts</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">Model-Level Development with SysMLv2</div>
+                <div class="doc-module-title" id="model-level-development-with-sysmlv2">Model-Level Development with SysMLv2</div>
                 <div class="doc-module-description">System modeling and IDE support for HAMR SysMLv2 workflows.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/sysmlv2/"><span>HAMR System Modeling in SysMLv2</span></a></li><li>
         <a href="https://hamr.sireum.org/hamr-doc/sysmlv2-codeive/"><span>Using the CodeIVE for HAMR SysMLv2 Models</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">Code-Level Development for Microkit</div>
+                <div class="doc-module-title" id="code-level-development-for-microkit">Code-Level Development for Microkit</div>
                 <div class="doc-module-description">Building and organizing HAMR applications targeting the seL4 Microkit platform.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/hamr-rust-implementation/"><span>Rust-based Component Development</span></a></li><li>
@@ -254,7 +266,7 @@
         <a href="https://hamr.sireum.org/hamr-doc/microkit-folder-structure/"><span>Microkit Folder Structure</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">GUMBO Component Contracts</div>
+                <div class="doc-module-title" id="gumbo-component-contracts">GUMBO Component Contracts</div>
                 <div class="doc-module-description">Model-level formal behavior specifications which HAMR translates to code to support both testing and verification.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/gumbo-overview/"><span>GUMBO Contract Language - Overview and Rationale</span></a></li><li>
@@ -263,7 +275,7 @@
         <a href="https://hamr.sireum.org/hamr-doc/gumbo-grammar/"><span>GUMBO Component Contracts - Reference Grammar</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">GUMBOX Rust Executable Contracts</div>
+                <div class="doc-module-title" id="gumbox-rust-executable-contracts">GUMBOX Rust Executable Contracts</div>
                 <div class="doc-module-description">How GUMBO contracts are translated to Rust boolean functions so as to provide &#39;executable contracts&#39; that can be used in testing and run-time monitoring.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/gumbox-translation/"><span>How GUMBO Contracts are Translated to Rust Boolean Functions to Provide GUMBOX Executable Contracts</span></a></li><li>
@@ -271,13 +283,13 @@
         <a href="https://hamr.sireum.org/hamr-doc/gumbox-property-based-testing/"><span>Automated GUMBOX Property-Based Testing of Thread Components</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">GUMBO Verus Contracts and Formal Verification</div>
+                <div class="doc-module-title" id="gumbo-verus-contracts-and-formal-verification">GUMBO Verus Contracts and Formal Verification</div>
                 <div class="doc-module-description">How GUMBO contracts are translated to Verus contracts in application code, enabling formal verification that components meet their model-level specified behavior.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/gumbo-verus-translation/"><span>How GUMBO Contracts are Translated to Verus Contracts to Support Formal Verification of Thread Application Code</span></a></li></ul></div>
               </div>
               <div class="doc-module">
-                <div class="doc-module-title">GUMBO System Property Specifications and Verification</div>
+                <div class="doc-module-title" id="gumbo-system-property-specifications-and-verification">GUMBO System Property Specifications and Verification</div>
                 <div class="doc-module-description">Model-level formal behavior specifications for systems, which support formal verification and run-time monitoring.</div>
                 <div class="module-tree" style="background: transparent;"><ul><li>
         <a href="https://hamr.sireum.org/hamr-doc/gumbo-system-properties/"><span>GUMBO System Specifications - Overview</span></a></li><li>

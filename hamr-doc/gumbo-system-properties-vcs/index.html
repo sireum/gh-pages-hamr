@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
-This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.
+<meta name="description" content="This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_XXX_proof crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how the independence obligations (the non-disabling and commutativity VCs) make the parallel schedule sound.
 " />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
@@ -16,7 +16,7 @@ This is the companion document to gumbo-system-properties.md (which covers how t
 
     <title>
         
-             :: Sireum HAMR 
+            GUMBO System-Level Property Verification Conditions :: Sireum HAMR 
         
     </title>
 
@@ -44,17 +44,17 @@ This is the companion document to gumbo-system-properties.md (which covers how t
 
 
 
-  <meta itemprop="name" content="Sireum HAMR">
-  <meta itemprop="description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
-This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.">
-  <meta itemprop="wordCount" content="7617">
+  <meta itemprop="name" content="GUMBO System-Level Property Verification Conditions">
+  <meta itemprop="description" content="This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_XXX_proof crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how the independence obligations (the non-disabling and commutativity VCs) make the parallel schedule sound.">
+  <meta itemprop="wordCount" content="7651">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://hamr.sireum.org/">
-  <meta name="twitter:title" content="Sireum HAMR">
-  <meta name="twitter:description" content="GUMBO System-Level Property Verification Conditions This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
-This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_proof_XXX crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how independence and commutativity make the parallel schedule sound.">
+  <meta name="twitter:title" content="GUMBO System-Level Property Verification Conditions">
+  <meta name="twitter:description" content="This chapter provides a a detailed look at the verification conditions (VCs) HAMR generates for Verus to discharge when it proves a composition system-level property. We use the SysPropStructSplit example (examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example) as the running case.
+This is the companion document to gumbo-system-properties.md (which covers how to author the composition/property syntax). Here we look at the generated sys_XXX_proof crate and explain what each kind of VC is for, how the system assertions and component contracts are compiled into VCs, what the overall soundness argument is, and how the independence obligations (the non-disabling and commutativity VCs) make the parallel schedule sound.">
 
 
 
@@ -210,25 +210,24 @@ This is the companion document to gumbo-system-properties.md (which covers how t
 
     <main class="posts">
 
-        <h1></h1>
+        <h1>GUMBO System-Level Property Verification Conditions</h1>
 
         
-          <div class="post-content"><h1 id="gumbo-system-level-property-verification-conditions">GUMBO System-Level Property Verification Conditions</h1>
-<p>This chapter provides a a detailed look at the <strong>verification conditions (VCs)</strong> HAMR generates for Verus to discharge when it proves a <code>composition</code> system-level property.
+          <div class="post-content"><p>This chapter provides a a detailed look at the <strong>verification conditions (VCs)</strong> HAMR generates for Verus to discharge when it proves a <code>composition</code> system-level property.
 We use the <strong>SysPropStructSplit</strong> example (<code>examples/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit-Example</code>) as the running case.</p>
 <p>This is the companion document to <code>gumbo-system-properties.md</code> (which covers <em>how to author</em> the
-<code>composition</code>/<code>property</code> syntax). Here we look at the generated <code>sys_proof_XXX</code> crate and
+<code>composition</code>/<code>property</code> syntax). Here we look at the generated <code>sys_XXX_proof</code> crate and
 explain what each kind of VC is for, how the system assertions and component contracts are
-compiled into VCs, what the overall soundness argument is, and how independence and
-commutativity make the parallel schedule sound.</p>
+compiled into VCs, what the overall soundness argument is, and how the independence
+obligations (the non-disabling and commutativity VCs) make the parallel schedule sound.</p>
 <p>Unless labeled otherwise, generated code is quoted verbatim from this repository&rsquo;s crate
-<code>hamr/microkit/crates/sys_proof_nominal/</code>. A few examples are quoted (also verbatim) from
+<code>hamr/microkit/crates/sys_nominal_proof/</code>. A few examples are quoted (also verbatim) from
 the Isolette and TempControl system-verification examples in
-<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models @ 4da74d7</a>,
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/a2a33aaeceeed08e6b712ed5ab190d281715363e">loonwerks/INSPECTA-models @ a2a33aa</a>,
 which exercise VC forms this example does not (event data ports, requirement-case
 contracts at scale) and which were generated by a newer toolchain (see the note in §3.2).</p>
 <hr>
-<h2 id="1-the-proof-model-induction-over-a-schedule-schema">1. The proof model: induction over a schedule schema</h2>
+<h3 id="1-the-proof-model-induction-over-a-schedule-schema">1. The proof model: induction over a schedule schema</h3>
 <p>The system proof is an <strong>induction over major frames (hyperperiods)</strong> of a schedule
 schema. The schedule schema potentially represents multiple possible linear static
 schedules. Assuming that the linear static schedule specified for the seL4 system conforms
@@ -268,7 +267,7 @@ after it holds (<em>Next-Assert VCs</em>).</li>
 so the whole argument repeats for every subsequent hyperperiod (<em>Post-Pre VC</em>).</li>
 <li><strong>Justifying the schema&rsquo;s parallelism</strong> — for branches the schema declares independent
 (<code>split</code>), reasoning about one linearization is shown to stand in for every conforming
-order (<em>Non-Blocking, Preservation, Commutativity VCs</em>).</li>
+order (<em>Pre-Assertions Preservation, Post-Assertions Preservation, Commutativity VCs</em>).</li>
 <li><strong>Justifying the contract handshakes</strong> — every connection&rsquo;s producer guarantee is shown
 to imply the consumer&rsquo;s integration assume, once, statically (<em>Integration VCs</em>).</li>
 </ul>
@@ -276,12 +275,12 @@ to imply the consumer&rsquo;s integration assume, once, statically (<em>Integrat
 conformance to its GUMBO contract is discharged separately by that component crate&rsquo;s Verus
 run, and the system proof consumes the contracts as axioms. §6 makes this trust boundary
 precise.</p>
-<h3 id="where-the-vcs-live">Where the VCs live</h3>
+<h4 id="where-the-vcs-live">Where the VCs live</h4>
 <p>When a <code>composition &lt;name&gt;</code> block is present, codegen emits the proof crate
-<code>hamr/microkit/crates/sys_proof_&lt;name&gt;/</code> (here: <code>sys_proof_nominal</code>). Shared,
+<code>hamr/microkit/crates/sys_&lt;name&gt;_proof/</code> (here: <code>sys_nominal_proof</code>). Shared,
 property-independent modules sit at the top of <code>src/</code>; each <strong>concrete</strong> property gets its
 own module directory (abstract properties get none):</p>
-<pre tabindex="0"><code>crates/sys_proof_nominal/src/
+<pre tabindex="0"><code>crates/sys_nominal_proof/src/
   system_state.rs        # SystemState: channels + GUMBO state variables        (§2.1)
   contracts.rs           # component contracts as spec fns — the axioms         (§2.2)
   assertions.rs          # the composition&#39;s `functions` as shared spec fns     (§2.5)
@@ -294,18 +293,18 @@ own module directory (abstract properties get none):</p>
     vc_init.rs           #   Init-State VC                                      (§3.1)
     vc_sequential.rs     #   Pre-Assert + Next-Assert VCs, one pair/transition  (§3.2–3.4)
     vc_post_pre.rs       #   Post-Pre VC                                        (§3.5)
-    vc_independence.rs   #   Non-Blocking + Preservation VCs                    (§3.8)
-</code></pre><p><code>make -C crates/sys_proof_nominal</code> verifies everything; each concrete property also gets
-its own Makefile target (<code>make -C crates/sys_proof_nominal consume_range_loop_invariant</code>),
+    vc_non_disabling.rs  #   Pre-/Post-Assertions Preservation VCs              (§3.8)
+</code></pre><p><code>make -C crates/sys_nominal_proof</code> verifies everything; each concrete property also gets
+its own Makefile target (<code>make -C crates/sys_nominal_proof consume_range_loop_invariant</code>),
 implemented with Verus <code>--verify-module</code> flags, for a fast loop on one property.</p>
 <p>For SysPropStructSplit&rsquo;s four concrete properties the counts are: <strong>3 shared VCs</strong>
 (1 Integration + 2 Commutativity) plus <strong>27 VCs per property</strong> (1 Init-State +
-17 Sequential + 1 Post-Pre + 8 Independence), for <strong>111 VCs total</strong> — all discharging with
+17 Sequential + 1 Post-Pre + 8 Non-Disabling), for <strong>111 VCs total</strong> — all discharging with
 0 errors.</p>
 <hr>
-<h2 id="2-what-the-vcs-are-stated-over">2. What the VCs are stated over</h2>
+<h3 id="2-what-the-vcs-are-stated-over">2. What the VCs are stated over</h3>
 <p>Five shared modules set up the vocabulary the VCs are written in.</p>
-<h3 id="21-systemstate--the-flat-system-state-system_staters">2.1 <code>SystemState</code> — the flat system state (<code>system_state.rs</code>)</h3>
+<h4 id="21-systemstate--the-flat-system-state-system_staters">2.1 <code>SystemState</code> — the flat system state (<code>system_state.rs</code>)</h4>
 <p>HAMR system verification reasons about the evolution of key points of the system state (e.g., values of component ports and GUMBO-declared state variables) as execution proceeds through the system schedule.  The generated <code>SystemState</code> structure is essentially an abstraction of the system state that is referenced by generated VCs.  Phrasing the abstract state as a Rust struct enables the Rust-based specification to reasoning abstractly about state changes (e.g., relating the possible values of the system state before a component executes to the possible values of the system state after the component executes).  Thus, we commonly see constraints on pre/before and post/after versions of the system state.</p>
 <p>The whole composition&rsquo;s state is one flat record with <strong>one field per connection channel</strong>
 (owned by the source out-port), plus unconnected ports and <strong>every GUMBO state variable</strong>:</p>
@@ -338,7 +337,7 @@ variables. The field names are the composition&rsquo;s port and state <strong>al
 and VCs read the way the model was written.</p>
 <p>Data ports appear as plain values. <strong>Event data ports</strong> appear as <code>Option&lt;T&gt;</code> (a message
 may or may not be present in a given frame). From the TempControl example
-(INSPECTA-models, <code>temp-control/.../sys_proof_nominal/src/system_state.rs</code>):</p>
+(INSPECTA-models, <code>temp-control/.../sys_nominal_proof/src/system_state.rs</code>):</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">SystemState</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// -- TempControlSystem_Instance.tsp.tst --
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">sensedTemp</span>: <span class="nb">Option</span><span class="o">&lt;</span><span class="n">TempControl_SysVerif</span>::<span class="n">Temperature</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="c1">// channel
@@ -349,7 +348,7 @@ may or may not be present in a given frame). From the TempControl example
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">sv_currentSetPoint</span>: <span class="nc">TempControl_SysVerif</span>::<span class="n">SetPoint</span><span class="p">,</span><span class="w"> </span><span class="c1">// state variable
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">..</span><span class="p">.</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
-</span></span></span></code></pre></div><h3 id="22-component-gumbo-contracts--the-axioms-contractsrs">2.2 Component GUMBO contracts — the axioms (<code>contracts.rs</code>)</h3>
+</span></span></span></code></pre></div><h4 id="22-component-gumbo-contracts--the-axioms-contractsrs">2.2 Component GUMBO contracts — the axioms (<code>contracts.rs</code>)</h4>
 <p>Every component&rsquo;s GUMBO contract is re-emitted as <code>open spec fn</code>s, grouped in one module
 per component. These are the <strong>axioms</strong> of the system proof: it <em>assumes</em> each component
 satisfies its own contract, and those obligations are discharged <strong>separately</strong> by each
@@ -419,7 +418,7 @@ contracts (a deliberate reusable-component design; see <code>gumbo-system-proper
 <p>The distinction between <strong>integration</strong> contracts (<code>I-Assm</code>/<code>I-Guar</code>, attached to a
 <em>port</em>, part of the cross-component handshake) and <strong>compute</strong> contracts (attached to the
 <em>entry point</em>) determines where each clause shows up in the VCs — §3.2, §3.3, §3.6.</p>
-<h3 id="23-how-a-place-assertion-becomes-a-spec-function-propassertionsrs">2.3 How a place assertion becomes a spec function (<code>&lt;prop&gt;/assertions.rs</code>)</h3>
+<h4 id="23-how-a-place-assertion-becomes-a-spec-function-propassertionsrs">2.3 How a place assertion becomes a spec function (<code>&lt;prop&gt;/assertions.rs</code>)</h4>
 <p>Each place assertion in a <code>property</code> is compiled into one <code>open spec fn</code> over
 <code>SystemState</code>, named <code>sys_assert_&lt;property&gt;_&lt;place&gt;</code>. The transformation:</p>
 <table>
@@ -476,7 +475,7 @@ is the conjunction of every binding of that place along its inheritance chain(s)
 <code>Consume_Range_Loop_Invariant :&gt; Pipeline_Ranges, Consume_State_Base</code> simply takes the
 union of both bases&rsquo; bindings (they bind disjoint places here; shared places would be
 conjoined). Abstract properties themselves generate no spec fns and no VCs.</p>
-<h3 id="24-write-frames-write_framesrs">2.4 Write frames (<code>write_frames.rs</code>)</h3>
+<h4 id="24-write-frames-write_framesrs">2.4 Write frames (<code>write_frames.rs</code>)</h4>
 <p>For each component, a <strong>global write frame</strong> pins every <code>SystemState</code> field <em>outside</em> the
 component&rsquo;s write set (its out-port channels plus its own state variables) to be unchanged
 across its firing; the <strong>local write frame</strong> is <code>true</code> (the component may do anything
@@ -496,14 +495,14 @@ within its own scope). <code>IncX</code> writes only <code>x1</code>:</p>
 </span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>Write frames are derived automatically from the model (connection topology + GUMBO <code>state</code>
 sections). They are how facts &ldquo;survive&rdquo; a step that doesn&rsquo;t touch them (frame reasoning),
-and they are the crux of why the independence VCs discharge (§3.8).</p>
-<h3 id="25-shared-gumbo-functions-assertionsrs">2.5 Shared GUMBO functions (<code>assertions.rs</code>)</h3>
+and they are the crux of why the non-disabling VCs discharge (§3.8).</p>
+<h4 id="25-shared-gumbo-functions-assertionsrs">2.5 Shared GUMBO functions (<code>assertions.rs</code>)</h4>
 <p>The composition-level <code>functions</code> become shared spec fns used by the place assertions:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inRange100</span><span class="p">(</span><span class="n">v</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">100</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inConsumeRange</span><span class="p">(</span><span class="n">s</span>: <span class="err">…</span><span class="n">StructXY</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w"> </span><span class="p">(((</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">x</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">y</span><span class="p">))</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">y</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">open</span><span class="w"> </span><span class="n">spec</span><span class="w"> </span><span class="k">fn</span> <span class="nf">inRange200</span><span class="p">(</span><span class="n">v</span>: <span class="kt">i32</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="kt">bool</span> <span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="k">i32</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">200</span><span class="k">i32</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w">
-</span></span></span></code></pre></div><h3 id="26-action-abstractions-actionsrs--only-for-commutativity">2.6 Action abstractions (<code>actions.rs</code>) — only for commutativity</h3>
+</span></span></span></code></pre></div><h4 id="26-action-abstractions-actionsrs--only-for-commutativity">2.6 Action abstractions (<code>actions.rs</code>) — only for commutativity</h4>
 <p>Each component gets an <strong>uninterpreted</strong> action function per written field plus a
 <code>&lt;comp&gt;_fire</code> predicate: the written fields are an (unknown) function of the component&rsquo;s
 <em>read scope</em>, and everything else is framed.</p>
@@ -523,7 +522,7 @@ interpretations of these functions; the real component behavior is one such
 interpretation, so a discharged commutativity VC holds for it too. Why this encoding is
 needed — rather than write frames alone — is explained in §3.8.</p>
 <hr>
-<h2 id="3-vc-taxonomy">3. VC taxonomy</h2>
+<h3 id="3-vc-taxonomy">3. VC taxonomy</h3>
 <p>Every obligation the proof depends on falls into one of the categories below. For each
 category we give: <strong>Informal</strong> (its role in the argument), <strong>Inputs</strong> (what feeds it),
 <strong>Generated form</strong> (the logical schema of the emitted VC — premises <code>⊢</code> conclusion), and
@@ -591,8 +590,8 @@ generated <strong>example(s)</strong>.</p>
       </tr>
       <tr>
           <td>3.8</td>
-          <td>Non-Blocking / Preservation</td>
-          <td><code>&lt;prop&gt;/vc_independence.rs</code></td>
+          <td>Pre-/Post-Assertions Preservation</td>
+          <td><code>&lt;prop&gt;/vc_non_disabling.rs</code></td>
           <td>per property, per MHIP pair</td>
           <td>16 + 16</td>
       </tr>
@@ -615,7 +614,7 @@ generated <strong>example(s)</strong>.</p>
 <p>Trivial instances (a <code>true</code> premise or conclusion, from an unbound place or a projected
 contract) are emitted anyway — uniformity keeps the VC set in one-to-one correspondence
 with the obligations of the soundness argument, and Verus discharges them instantly.</p>
-<h3 id="31-init-state-vc">3.1 Init-State VC</h3>
+<h4 id="31-init-state-vc">3.1 Init-State VC</h4>
 <p><strong>Informal.</strong> The base case of the frame induction: the initial state — reached after
 every component&rsquo;s <code>initialize</code> entry point has run — must satisfy the assertion at the
 schema&rsquo;s <code>START</code> place. Since the initialize entry points are also required to establish
@@ -651,7 +650,7 @@ satisfy those guarantees (assumption T2 in §6).</p>
 their I-Guars appear alongside the initialize guarantees.) For a property with no
 <code>at START</code> binding (the other three here), the conclusion is
 <code>true /* START has no assertion */</code> and the VC is trivial.</p>
-<h3 id="32-pre-assert-vc-one-per-component-transition">3.2 Pre-Assert VC (one per component transition)</h3>
+<h4 id="32-pre-assert-vc-one-per-component-transition">3.2 Pre-Assert VC (one per component transition)</h4>
 <p><strong>Informal.</strong> At every point in the schedule where a component fires, the assertion
 carried into its <code>before</code> place must imply the component&rsquo;s precondition — the component is
 only ever invoked in a state its contract covers. This is the VC that fails when a
@@ -731,7 +730,7 @@ generated this crate it surfaces as a Pre-Assert obligation, discharged by the c
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">split_stage</span>::<span class="n">integration_spec_instruct_range_assume</span><span class="p">(</span><span class="n">st</span><span class="p">.</span><span class="n">gen_out</span><span class="p">),</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><p><strong>Example (current toolchains — folded form)</strong> — Isolette,
-<code>normal_mode_heat/vc_sequential.rs</code> (INSPECTA-models @ 4da74d7). Only MRI&rsquo;s <em>compute</em>
+<code>normal_mode_heat/vc_sequential.rs</code> (INSPECTA-models @ a2a33aa). Only MRI&rsquo;s <em>compute</em>
 assume is an obligation; its integration assumes appear instead as Next-Assert premises:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[9]: Pre-Assert -- after_drf |- MRI compute assumes */</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assert_mri</span><span class="p">(</span><span class="n">st</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
@@ -741,7 +740,7 @@ assume is an obligation; its integration assumes appear instead as Next-Assert p
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mri</span>::<span class="n">compute_spec_lower_is_not_higher_than_upper_assume</span><span class="p">(</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">st</span><span class="p">.</span><span class="n">lower_desired_tempWstatus</span><span class="p">,</span><span class="w"> </span><span class="n">st</span><span class="p">.</span><span class="n">upper_desired_tempWstatus</span><span class="p">),</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
-</span></span></span></code></pre></div><h3 id="33-next-assert-vc--component-one-per-component-transition">3.3 Next-Assert VC — component (one per component transition)</h3>
+</span></span></span></code></pre></div><h4 id="33-next-assert-vc--component-one-per-component-transition">3.3 Next-Assert VC — component (one per component transition)</h4>
 <p><strong>Informal.</strong> The inductive step across a firing: if the assertion at the component&rsquo;s
 <code>before</code> place holds, and the component behaves according to its contract, and everything
 outside its write set is unchanged, then the assertion at its <code>after</code> place holds. This is
@@ -812,10 +811,11 @@ the loop invariant:</p>
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_consume_range_loop_invariant_after_consume</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">       </span><span class="c1">// inRange200(consume_last_x&#39;)
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><p><strong>Example (current toolchains — folded integration assumes, cases at scale)</strong> —
-Isolette, <code>normal_mode_alarm/vc_sequential.rs</code> (INSPECTA-models @ 4da74d7). MMI&rsquo;s seven
+Isolette, <code>normal_mode_alarm/vc_sequential.rs</code> (INSPECTA-models @ a2a33aa). MMI&rsquo;s seven
 requirement cases are premises exactly as above, and — this is the folded form of §3.2&rsquo;s
 toolchain note — MMI&rsquo;s in-port integration assumes appear as premises over the pre-state:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[18]: Next-Assert (task) -- after_dmf + frames + MMI postcondition |- after_mmi */</span><span class="w">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[18]: Next-Assert (task) -- after_dmf + frames + MMI postcondition + MMI&#39;s integration assumes |- after_mmi.
+</span></span></span><span class="line"><span class="cl"><span class="sd">  * The integration assumes are discharged per-connection in vc_integration.rs (upstream guarantee =&gt; assume). */</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_mmi</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_normal_mode_alarm_after_dmf</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">
@@ -833,7 +833,7 @@ toolchain note — MMI&rsquo;s in-port integration assumes appear as premises ov
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_normal_mode_alarm_after_mmi</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
-</span></span></span></code></pre></div><h3 id="34-next-assert-vc--control-point-one-per-control-point-transition">3.4 Next-Assert VC — control point (one per control-point transition)</h3>
+</span></span></span></code></pre></div><h4 id="34-next-assert-vc--control-point-one-per-control-point-transition">3.4 Next-Assert VC — control point (one per control-point transition)</h4>
 <p><strong>Informal.</strong> At a schedule control point (split fan-out, join, pass-through to <code>END</code>) no
 component runs and the state is unchanged; the assertions at the in-place(s) must directly
 imply the assertions at the out-place(s), over a single state.</p>
@@ -872,8 +872,8 @@ simultaneously available downstream:</p>
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_post_join_1</span><span class="p">(</span><span class="n">st</span><span class="p">),</span><span class="w">  </span><span class="c1">// both, conjoined
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
 </span></span></span></code></pre></div><p>The soundness of treating the two branch posts as jointly available at the join is <em>not</em>
-assumed — it is exactly what the Preservation VCs discharge (§3.8).</p>
-<h3 id="35-post-pre-vc-one-per-property">3.5 Post-Pre VC (one per property)</h3>
+assumed — it is exactly what the Post-Assertions Preservation VCs discharge (§3.8).</p>
+<h4 id="35-post-pre-vc-one-per-property">3.5 Post-Pre VC (one per property)</h4>
 <p><strong>Informal.</strong> Loop closure of the frame induction: the assertion at <code>END</code> must
 re-establish the assertion at <code>START</code>, so whatever held at the end of one hyperperiod
 holds at the start of the next — turning &ldquo;held this frame&rdquo; into &ldquo;holds every frame&rdquo;.</p>
@@ -895,7 +895,7 @@ consequential instance is the Isolette&rsquo;s <code>Regulator_Failsafe_Latching
 (INSPECTA-models): its invariant <code>FailedModeImpliesHeatOff(reg_last_mode, heat_control)</code>
 is asserted at both boundaries, and — because MRM&rsquo;s Failed mode is absorbing — the
 discharged Post-Pre VC yields &ldquo;once the regulator fails, the heat stays off <em>forever</em>.&rdquo;</p>
-<h3 id="36-integration-vc-shared-one-per-connection">3.6 Integration VC (shared, one per connection)</h3>
+<h4 id="36-integration-vc-shared-one-per-connection">3.6 Integration VC (shared, one per connection)</h4>
 <p><strong>Informal.</strong> For every connection whose destination in-port carries an integration
 <code>assume</code>, the <strong>sender&rsquo;s integration guarantee must imply the receiver&rsquo;s integration
 assume</strong>, over the value the wire carries. This is the assume/guarantee <em>handshake</em> — the
@@ -937,7 +937,7 @@ handshake to check. And at the far end, <code>merger.outstruct → consume.instr
 <em>producer-side</em> guarantee: with no handshake at the merger, the merged range cannot be
 established by integration checking and must instead be recovered by a <em>system property</em>
 (§5.1).</p>
-<h3 id="37-component-contract-conformance-assumed--not-emitted">3.7 Component Contract Conformance (assumed — not emitted)</h3>
+<h4 id="37-component-contract-conformance-assumed--not-emitted">3.7 Component Contract Conformance (assumed — not emitted)</h4>
 <p><strong>Informal.</strong> Each component&rsquo;s implementation must satisfy its own GUMBO contract: if the
 component&rsquo;s assumes hold when it is dispatched, executing its actual entry-point code
 yields a state satisfying its guarantees. Every Next-Assert VC uses the contract as a
@@ -953,7 +953,7 @@ the HAMR-generated <code>requires</code>/<code>ensures</code> on the <code>initi
 precisely these clauses (see <code>component-implementation-guide.md</code>). In the trust accounting
 of §6 these are assumptions T1 (compute) and T2 (initialize): the system-level VC set
 depends on them but does not check them.</p>
-<h3 id="38-independence-requirements-per-mhip-pair">3.8 Independence requirements (per MHIP pair)</h3>
+<h4 id="38-independence-requirements-per-mhip-pair">3.8 Independence requirements (per MHIP pair)</h4>
 <p>A <code>split { sequence{incx; clampx}, sequence{decy} }</code> declares that the two branches <strong>may
 happen in parallel (MHIP)</strong>. The Sequential VCs reason about <em>one</em> linearization (incx,
 then clampx, then decy, then join). Three obligation kinds justify that this single-order
@@ -972,11 +972,11 @@ multi-element branches. Emission per pair:</p>
   <tbody>
       <tr>
           <td>component / component</td>
-          <td>2 Non-Blocking + 2 Preservation + 1 Commutativity = 5</td>
+          <td>2 Pre-Assertions Preservation + 2 Post-Assertions Preservation + 1 Commutativity = 5</td>
       </tr>
       <tr>
           <td>component / control-point</td>
-          <td>1 Non-Blocking + 1 Preservation = 2 (only the component-firing direction)</td>
+          <td>1 Pre-Assertions Preservation + 1 Post-Assertions Preservation = 2 (only the component-firing direction)</td>
       </tr>
       <tr>
           <td>control-point / control-point</td>
@@ -986,20 +986,20 @@ multi-element branches. Emission per pair:</p>
 </table>
 <p>SysPropStructSplit has two MHIP pairs — <code>decy</code> is co-enabled with each element of the
 multi-element x branch: <code>incx</code>/<code>decy</code> (transitions <code>t2</code>/<code>t4</code>) and <code>clampx</code>/<code>decy</code>
-(<code>t3</code>/<code>t4</code>) — hence 8 per-property independence VCs plus 2 shared commutativity VCs.
+(<code>t3</code>/<code>t4</code>) — hence 8 per-property non-disabling VCs plus 2 shared commutativity VCs.
 Note which pair is <em>absent</em>: <code>incx</code>/<code>clampx</code> are consecutive elements of one <code>sequence</code>,
 never co-enabled, so no independence obligations arise between them — which is just as
 well, since <code>clampx</code> reads <code>incx</code>&rsquo;s output (§3.8.4).</p>
-<h4 id="381-non-blocking--a-firing-does-not-disable-its-sibling">3.8.1 Non-Blocking — a firing does not disable its sibling</h4>
+<h5 id="381-pre-assertions-preservation--a-firing-does-not-disable-its-sibling">3.8.1 Pre-Assertions Preservation — a firing does not disable its sibling</h5>
 <p><strong>Informal.</strong> Executing one branch must not invalidate the assertion at the sibling&rsquo;s
 <code>before</code> place (its enabledness). Bidirectional: one VC per direction.</p>
 <p><strong>Inputs.</strong> Both transitions&rsquo; pre-assertions; the firing component&rsquo;s global write frame.</p>
 <p><strong>Generated form.</strong></p>
 <pre tabindex="0"><code>pre-asserts(t1) ∧ pre-asserts(t2) ∧ (t1 fires: global_write_frame(t1))
 ⊢ pre-asserts(t2) still hold in the post-state        (and symmetrically for t2)
-</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_independence.rs</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[19]: Non-Blocking -- INCX firing does not block DECY (MHIP pair t2/t4) */</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_non_blocking_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_non_disabling.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[19]: Pre-Assertions Preservation -- INCX firing does not disable DECY (preserves its pre-assertions; MHIP pair t2/t4) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_pre_assertions_preservation_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">   </span><span class="c1">// inRange100(x0)
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_decy</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">   </span><span class="c1">// inRange100(y0)
@@ -1007,7 +1007,7 @@ well, since <code>clampx</code> reads <code>incx</code>&rsquo;s output (§3.8.4)
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">ensures</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_decy</span><span class="p">(</span><span class="n">post</span><span class="p">),</span><span class="w">  </span><span class="c1">// inRange100(y0) still holds
 </span></span></span><span class="line"><span class="cl"><span class="p">{}</span><span class="w">
-</span></span></span></code></pre></div><h4 id="382-preservation--a-firing-does-not-destroy-an-established-post">3.8.2 Preservation — a firing does not destroy an established post</h4>
+</span></span></span></code></pre></div><h5 id="382-post-assertions-preservation--a-firing-does-not-destroy-an-established-post">3.8.2 Post-Assertions Preservation — a firing does not destroy an established post</h5>
 <p><strong>Informal.</strong> Executing one branch must not invalidate the sibling&rsquo;s already-established
 <code>after</code> assertion — this is exactly what the join VC (§3.4) relies on when it conjoins the
 branch posts. Bidirectional.</p>
@@ -1016,9 +1016,9 @@ firing component&rsquo;s global write frame.</p>
 <p><strong>Generated form.</strong></p>
 <pre tabindex="0"><code>pre-asserts(t1) ∧ post-asserts(t2) ∧ (t1 fires: global_write_frame(t1))
 ⊢ post-asserts(t2) still hold in the post-state       (and symmetrically for t2)
-</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_independence.rs</code>:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[21]: Preservation -- INCX firing preserves DECY&#39;s post-assertions (MHIP pair t2/t4) */</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_preservation_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
+</code></pre><p><strong>Example</strong> — <code>merged_in_consume_range/vc_non_disabling.rs</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[21]: Post-Assertions Preservation -- INCX firing preserves DECY&#39;s post-assertions (MHIP pair t2/t4) */</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_post_assertions_preservation_incx_decy</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">requires</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_before_incx</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sys_assert_merged_in_consume_range_after_decy</span><span class="p">(</span><span class="n">pre</span><span class="p">),</span><span class="w">    </span><span class="c1">// y1 ∈ [-101,99]
@@ -1029,7 +1029,7 @@ firing component&rsquo;s global write frame.</p>
 </span></span></span></code></pre></div><p>Both kinds discharge from <strong>write-frame disjointness</strong>: the <code>before_decy</code>/<code>after_decy</code>
 assertions are over <code>{y0}</code>/<code>{y1}</code>, which <code>incx_global_write_frame</code> holds fixed (incx
 writes only <code>x1</code>).</p>
-<h4 id="383-commutativity--the-state-comes-out-the-same-in-either-order">3.8.3 Commutativity — the state comes out the same in either order</h4>
+<h5 id="383-commutativity--the-state-comes-out-the-same-in-either-order">3.8.3 Commutativity — the state comes out the same in either order</h5>
 <p><strong>Informal.</strong> Firing the pair in either order yields the <em>same</em> <code>SystemState</code>, so the one
 linearization the Sequential VCs analyzed represents both. This is property-independent —
 a structural fact about the two components&rsquo; read/write behavior — and symmetric in the
@@ -1067,7 +1067,7 @@ discharges automatically by congruence (<code>incx</code> writes <code>{x1}</cod
 writes <code>{x2}</code> reading <code>{x1, x2}</code>; <code>decy</code> writes <code>{y1}</code> reading <code>{y0, y1}</code>; in each MHIP
 pair, neither member reads or writes what the other writes), while an interfering pair
 fails.</p>
-<h4 id="384-when-independence-and-commutativity-fail">3.8.4 When independence and commutativity fail</h4>
+<h5 id="384-when-the-independence-obligations-fail">3.8.4 When the independence obligations fail</h5>
 <p>These VCs discharge here only because the branches are genuinely independent. They would
 <strong>fail</strong> — correctly flagging an unsound <code>split</code> — in scenarios like these:</p>
 <ul>
@@ -1085,11 +1085,11 @@ failing VC is the tool telling you so. The example contains the positive counter
 <code>sequence { incx; clampx }</code> — had they been put in separate <code>split</code> branches instead,
 <code>vc_commutativity_incx_clampx</code> would be emitted and would fail on exactly this
 dependency (<code>clampx</code>&rsquo;s read scope overlaps <code>incx</code>&rsquo;s write set).</li>
-<li><strong>Non-Blocking fails — a firing disables its sibling.</strong> If <code>incx</code>&rsquo;s write set included
+<li><strong>Pre-Assertions Preservation fails — a firing disables its sibling.</strong> If <code>incx</code>&rsquo;s write set included
 <code>y0</code> (clobbering the splitter&rsquo;s y channel), then after <code>incx</code> fires,
 <code>before_decy = inRange100(y0)</code> might no longer hold — <code>decy</code> is no longer enabled in a
 state its contract covers.</li>
-<li><strong>Preservation fails — a firing invalidates an established post.</strong> If <code>incx</code>&rsquo;s write
+<li><strong>Post-Assertions Preservation fails — a firing invalidates an established post.</strong> If <code>incx</code>&rsquo;s write
 set included <code>y1</code>, <code>incx</code> firing after <code>decy</code> would overwrite <code>decy</code>&rsquo;s result;
 <code>after_decy</code> would not survive, and the join (§3.4) could not soundly conjoin the branch
 posts.</li>
@@ -1098,7 +1098,7 @@ posts.</li>
 the write frames and action abstractions encode. The remedy is either to fix the modeled
 read/write scopes or to serialize the components with <code>sequence</code> instead of <code>split</code>.</p>
 <hr>
-<h2 id="4-contract-projection--which-contracts-a-property-pays-for">4. Contract projection — which contracts a property pays for</h2>
+<h3 id="4-contract-projection--which-contracts-a-property-pays-for">4. Contract projection — which contracts a property pays for</h3>
 <p>Per property, a component&rsquo;s contract is <strong>projected out</strong> — instantiated as
 <code>(assumes, guarantees) := (true, true)</code> — unless the property <strong>binds one of the
 component&rsquo;s out-places</strong> (i.e., that component&rsquo;s Next-Assert conclusion is non-trivial).
@@ -1130,8 +1130,8 @@ properties scales the proof linearly without entangling the proofs of existing o
 out-places each property binds.</li>
 </ul>
 <hr>
-<h2 id="5-two-worked-proofs">5. Two worked proofs</h2>
-<h3 id="51-merged_in_consume_range--recovering-a-range-the-contracts-dont-state">5.1 <code>Merged_In_Consume_Range</code> — recovering a range the contracts don&rsquo;t state</h3>
+<h3 id="5-two-worked-proofs">5. Two worked proofs</h3>
+<h4 id="51-merged_in_consume_range--recovering-a-range-the-contracts-dont-state">5.1 <code>Merged_In_Consume_Range</code> — recovering a range the contracts don&rsquo;t state</h4>
 <p>This property&rsquo;s payoff VC is where the constraint-free merger&rsquo;s output range is recovered:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/** VC[14]: Next-Assert (task) -- post_join_1 + frames + MERGE_STAGE postcondition |- after_merge_stage */</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="n">proof</span><span class="w"> </span><span class="k">fn</span> <span class="nf">vc_next_assert_task_merge_stage</span><span class="p">(</span><span class="n">pre</span>: <span class="nc">SystemState</span><span class="p">,</span><span class="w"> </span><span class="n">post</span>: <span class="nc">SystemState</span><span class="p">)</span><span class="w">
@@ -1253,7 +1253,7 @@ system property closes that assurance gap as a first-class, machine-checked syst
 <p>(Verus verifies these as independent obligations; the file order — branch VCs 5–10 before
 the fan-out VC 11 — is layout, not proof order. VC numbers restart per file, which is why
 <code>vc_integration.rs</code> and <code>vc_commutativity.rs</code> also start at VC[0].)</p>
-<h3 id="52-consume_range_loop_invariant--a-state-variable-loop-invariant">5.2 <code>Consume_Range_Loop_Invariant</code> — a state-variable loop invariant</h3>
+<h4 id="52-consume_range_loop_invariant--a-state-variable-loop-invariant">5.2 <code>Consume_Range_Loop_Invariant</code> — a state-variable loop invariant</h4>
 <p>This property exercises the <code>START</code>/<code>END</code> machinery that <code>Merged_In_Consume_Range</code> leaves
 trivial. Its invariant <code>inRange200(consume_last_x)</code> over ConsumeStruct&rsquo;s GUMBO state
 variable holds <em>every cycle</em>, by exactly the textbook loop-invariant argument:</p>
@@ -1274,17 +1274,17 @@ Post-Pre VC <code>END ⊢ START</code> (§3.5) extends the invariant to every su
 (<code>Consume_State_Base</code>) enter by <strong>multiple inheritance</strong> — the flattened assertion set is
 their union, place by place (§2.3).</p>
 <hr>
-<h2 id="6-soundness-and-the-trusted-base">6. Soundness and the trusted base</h2>
-<h3 id="61-what-discharging-all-vcs-establishes">6.1 What discharging all VCs establishes</h3>
+<h3 id="6-soundness-and-the-trusted-base">6. Soundness and the trusted base</h3>
+<h4 id="61-what-discharging-all-vcs-establishes">6.1 What discharging all VCs establishes</h4>
 <p>If every generated VC discharges, then: <strong>every place assertion of every concrete property
 holds whenever execution reaches that place, in every major frame, under any linear static
 schedule that conforms to the schedule schema.</strong> The argument is the induction of §1: the
 Init-State VC gives the base case, the Sequential VCs push assertions across each frame,
-the Post-Pre VC closes the frame-to-frame loop, and the Independence/Commutativity VCs
-reduce every schema-conforming order of the <code>split</code> branches to the one linearization the
+the Post-Pre VC closes the frame-to-frame loop, and the independence VCs (non-disabling
+and commutativity) reduce every schema-conforming order of the <code>split</code> branches to the one linearization the
 Sequential VCs analyzed. The Integration VCs certify the cross-component handshakes those
 steps (and the per-component verifications) rely on.</p>
-<h3 id="62-the-modular-architecture">6.2 The modular architecture</h3>
+<h4 id="62-the-modular-architecture">6.2 The modular architecture</h4>
 <p>Verification is split into two layers connected by a shared contract interface:</p>
 <ul>
 <li><strong>Component level.</strong> Verus verifies each component&rsquo;s entry-point code against its local
@@ -1298,7 +1298,7 @@ component contracts (<code>contracts.rs</code>).</li>
 Microkit platform requirement), so the proof crate <em>cannot</em> depend on them. The system
 proof is thereby forced to reason only about contract interfaces, never implementations —
 the assume-guarantee boundary is enforced by the build system.</p>
-<h3 id="63-the-trusted-assumptions-tcb">6.3 The trusted assumptions (TCB)</h3>
+<h4 id="63-the-trusted-assumptions-tcb">6.3 The trusted assumptions (TCB)</h4>
 <p>&ldquo;Every generated VC discharges&rdquo; does <strong>not</strong> by itself mean &ldquo;the system satisfies the
 properties.&rdquo; It means the properties hold <em>relative to</em> the following assumptions, which
 are discharged outside the system-level VC set or currently trusted. They are the trusted
@@ -1358,7 +1358,7 @@ assertion (e.g., observed by the optional runtime monitor) cannot be a logic err
 property chain — it localizes to a TCB breach: a component not conforming to its contract,
 an execution-model deviation (T4), or hardware/environment faults.</p>
 <hr>
-<h2 id="7-how-the-pieces-fit--a-synthesis">7. How the pieces fit — a synthesis</h2>
+<h3 id="7-how-the-pieces-fit--a-synthesis">7. How the pieces fit — a synthesis</h3>
 <p>The <strong>component contracts</strong> (<code>contracts.rs</code>) are axioms discharged by the per-component
 Verus runs (T1/T2); the <strong>Integration VCs</strong> certify their boundary handshakes so those
 axioms are non-vacuous and so in-port assumes may be assumed at dispatch. Each <strong>property</strong>
@@ -1367,21 +1367,21 @@ conjunction. The <strong>Init-State VC</strong> establishes the entry assertion;
 thread the assertions through the schedule — Pre-Assert VCs guard each covered component&rsquo;s
 preconditions, Next-Assert (component) VCs spend the component&rsquo;s guarantees to advance the
 assertion, Next-Assert (control point) VCs fan out and rejoin the parallel branches — and
-the <strong>Post-Pre VC</strong> closes the frame loop. The <strong>Non-Blocking</strong>, <strong>Preservation</strong>, and
+the <strong>Post-Pre VC</strong> closes the frame loop. The <strong>Pre-/Post-Assertions Preservation</strong> and
 <strong>Commutativity</strong> VCs certify that the one linearization the Sequential chain reasoned
 about stands in for every legal interleaving of the <code>split</code>. Discharging all of them
 proves the system-level properties of the composed system — given only each component&rsquo;s
 local contract, and relative to the explicit trusted base of §6.</p>
-<h2 id="related">Related</h2>
+<h3 id="related">Related</h3>
 <ul>
 <li><code>gumbo-system-properties.md</code> — authoring the <code>composition</code>/<code>property</code> syntax; the verified StructSplit example in full.</li>
 <li><code>gumbo-bnf.md</code>, <code>sysmlv2-gumbo-quick-reference.md</code> — the GUMBO expression language used in assertions.</li>
 <li><code>build-and-verification-commands.md</code> — the component-level Verus targets that discharge T1/T2.</li>
 <li><code>technical-approach.md</code> — the read-compute-write execution semantics underlying T4.</li>
-<li>Further generated-proof examples (INSPECTA-models @ 4da74d7):
-<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf/isolette">Isolette</a>
-(11 components, 15 properties, compute cases, latched fail-safe invariant) and
-<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf/micro-examples/microkit/system-verification/temp-control">TempControl</a>
+<li>Further generated-proof examples (INSPECTA-models @ a2a33aa):
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/a2a33aaeceeed08e6b712ed5ab190d281715363e/isolette">Isolette</a>
+(11 components, 19 properties, compute cases, latched fail-safe invariant) and
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/a2a33aaeceeed08e6b712ed5ab190d281715363e/micro-examples/microkit/system-verification/temp-control">TempControl</a>
 (event data ports, state-variable loop invariant).</li>
 </ul>
 </div>

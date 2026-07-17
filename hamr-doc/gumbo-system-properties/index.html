@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="author" content="">
-<meta name="description" content="GUMBO System-Level Properties &ndash; Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+<meta name="description" content="This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
 The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.
 " />
 <meta name="keywords" content="" />
@@ -16,7 +16,7 @@ The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approac
 
     <title>
         
-             :: Sireum HAMR 
+            GUMBO System-Level Properties -- Overview :: Sireum HAMR 
         
     </title>
 
@@ -44,16 +44,16 @@ The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approac
 
 
 
-  <meta itemprop="name" content="Sireum HAMR">
-  <meta itemprop="description" content="GUMBO System-Level Properties – Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+  <meta itemprop="name" content="GUMBO System-Level Properties -- Overview">
+  <meta itemprop="description" content="This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
 The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
-  <meta itemprop="wordCount" content="10455">
+  <meta itemprop="wordCount" content="10454">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://hamr.sireum.org/">
-  <meta name="twitter:title" content="Sireum HAMR">
-  <meta name="twitter:description" content="GUMBO System-Level Properties – Overview This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
+  <meta name="twitter:title" content="GUMBO System-Level Properties -- Overview">
+  <meta name="twitter:description" content="This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
 The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
 
 
@@ -210,20 +210,19 @@ The current state of a the tool is a “usable prototype”. The approach curren
 
     <main class="posts">
 
-        <h1></h1>
+        <h1>GUMBO System-Level Properties -- Overview</h1>
 
         
-          <div class="post-content"><h1 id="gumbo-system-level-properties--overview">GUMBO System-Level Properties &ndash; Overview</h1>
-<p>This chapter provides an overview of how to specify and verify <strong>system-level properties</strong> in HAMR.
+          <div class="post-content"><p>This chapter provides an overview of how to specify and verify <strong>system-level properties</strong> in HAMR.
 HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language.  For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts.  System properties are proved when Verus verifies HAMR generated VCs.</p>
 <p>The current state of a the tool is a &ldquo;usable prototype&rdquo;.  The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future.   Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications.  All of these features will be added later.</p>
 <p>In our initial experiments, we have found that HAMR&rsquo;s agentic framework (using Claude code and Codex) can write and verify system specifications in a highly automated fashion.</p>
 <p>The worked example throughout this document is the <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit"><strong>Struct Split</strong> example</a>, whose composition
 block and four properties are reproduced verbatim below and verify end-to-end. Two larger
 examples — the Isolette and TempControl system-verification models in
-<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models</a>
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/a2a33aaeceeed08e6b712ed5ab190d281715363e">loonwerks/INSPECTA-models</a>
 — are excerpted where they demonstrate things Struct Split cannot (§10).</p>
-<h2 id="1-what-a-system-level-property-is-and-why">1. What a system-level property is (and why)</h2>
+<h3 id="1-what-a-system-level-property-is-and-why">1. What a system-level property is (and why)</h3>
 <p>Component-level GUMBO contracts (integration <code>assume</code>/<code>guarantee</code>, compute contracts) specify the behavior of <strong>each component in isolation</strong>. However, we often want to specify and verify behavior properties that address the <strong>combined behavior of components</strong> as they are executed according to some schedule.  A common example is the formalization of &ldquo;system properties&rdquo; that specify some desired &ldquo;end-to-end&rdquo; behavior relating inputs occurring earlier in the schedule cycle (e.g., inputs from sensors or external data sources) to outputs occurring later in the schedule (e.g., outputs to actuators or external data sources).</p>
 <p>GUMBO system specifications layer on top of GUMBO component contracts to specify such properties.  In this approach, verification of system specifications does not &ldquo;see&rdquo; or utilize component implementations (e.g., Rust application code implementing a component).  Instead, system verification uses only information represented in component contracts; each component GUMBO contract provides a &ldquo;summary&rdquo; of the component behavior that is used as the basis of proving the desired system properties.</p>
 <p>Like GUMBO component contracts, GUMBO system specifications support both formal verification, testing, and run-time monitoring.  This chapter focuses on using system specifications for formal verification.</p>
@@ -255,7 +254,7 @@ examples — the Isolette and TempControl system-verification models in
 <li>the role that component independence and scheduling play in system specifications</li>
 <li>the interplay between component level contracts (which should generally be constructed to be independent of the system contracts) and system specifications (which specify important facts about the system execution and utilize component contracts to verify desired system properties).</li>
 </ul>
-<h3 id="11-scheduling-and-independence">1.1 Scheduling and Independence</h3>
+<h4 id="11-scheduling-and-independence">1.1 Scheduling and Independence</h4>
 <p>First, the component computations have natural data dependences on other components leading to execution order dependences.   For example, the data dependences in the system sketch above imply that a system schedule should have&hellip;</p>
 <ul>
 <li><code>GenStruct</code> executed first</li>
@@ -350,7 +349,7 @@ The verification framework includes a step to check that HAMR schedule supplied 
 }
 </code></pre><p>In this case, only Schedule 1 would be conformant.</p>
 <p>The point here is that these last two scheduling schemas are overly conservative with respect to required ordering.  We could possibly use them for verification, but the verification would apply to fewer possible schedules.</p>
-<h3 id="12-illustration-of-component-contracts-as-a-foundation-not-a-complete-specification-of-behavior">1.2 Illustration of Component Contracts as a Foundation, not a Complete Specification of Behavior</h3>
+<h4 id="12-illustration-of-component-contracts-as-a-foundation-not-a-complete-specification-of-behavior">1.2 Illustration of Component Contracts as a Foundation, not a Complete Specification of Behavior</h4>
 <p>In component-oriented development where the emphasis is on reusable components, one aims to design components to be re-useable, i.e., to be independent of a specific system context so that they can be reused in multiple systems.   With respect to component contracts, that means that we want our GUMBO component contracts to focus on the required behavior of the component itself, not on how the component deals with properties relevant to a larger system context.</p>
 <p>The component contracts in this example have been chosen to illustrate how component contracts can focus on their local behavior, but then how facts about the broader system context can be reasoned about in a layering on top of the component contracts.</p>
 <p>Let&rsquo;s look at each component&rsquo;s GUMBO component contracts (also <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit/sysmlv2/struct-split/SysPropStructSplit_Software.sysml">see actual models</a>)</p>
@@ -544,7 +543,7 @@ The verification framework includes a step to check that HAMR schedule supplied 
 <p><em>Impact on model assembly integration constraint checking</em>: The [-200, 200] constraint is a <em>compute</em> assume, not an integration assume, so assembly-time integration checking does not attempt to discharge it — and could not if it tried: the upstream producer, MergeStruct, publishes no integration guarantee for the checker to use.</p>
 <p><em>Impact on system verification</em>: Whenever a property covers ConsumeStruct (binds <code>after consume</code>), the [-200, 200] compute assume becomes a Pre-Assert obligation at the <code>before consume</code> place. The intuition for why it is provable from the upstream contracts along the schedule schema: GenStruct produces <code>x, y ∈ [-100, 100]</code>; the x branch increments (to [-99, 101]) and then clamps back into [-100, 100]; the y branch decrements to [-101, 99]; and MergeStruct reassembles exactly those values — so both fields of the arriving struct lie within [-101, 100], comfortably inside [-200, 200]. §6 writes this chain down as place assertions, and <code>gumbo-system-property-vcs.md</code> shows each link discharged as a VC.</p>
 <p><em>Impact on component implementation verification (e.g., by Verus)</em>: The compute assume is woven as a <code>requires</code> on the <code>timeTriggered</code> entry point (the body may rely on it), <code>track_x</code> becomes an <code>ensures</code> relating the post-state variable to the input, and the initialize guarantee obliges <code>initialize()</code> to set <code>last_x</code> to zero.</p>
-<h2 id="2-where-the-specification-lives">2. Where the specification lives</h2>
+<h3 id="2-where-the-specification-lives">2. Where the specification lives</h3>
 <p>Now that we have discussed the intuition behind system specifications and their relationship to component specifications, we&rsquo;ll start with discuss how the above concepts are actually achieved (also see <a href="https://github.com/santoslab/hamr-tutorials/blob/98e64c6b40e668f405e33ab93cff9e52a536446e/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit/sysmlv2/struct-split/SysPropStructSplit.sysml#L66-L279">full example</a>).</p>
 <p>A system-level specification is a <code>language &quot;GUMBO&quot;</code> block placed <strong>inside the top-level
 <code>System</code> part def</strong>, after the <code>allocation</code> declarations. (The delimiters are <code>/*{</code> … <code>}*/</code>,
@@ -568,9 +567,9 @@ exactly as for component GUMBO blocks; the type checker parses the contents.)</p
 }
 </code></pre><p>Inside the block, <code>functions</code> (optional) is a <strong>sibling</strong> of <code>composition &lt;name&gt; { … }</code>.  Just as in GUMBO component contract specifications, we can use these functions to defined named properties or helper predicates that we want to use in the system specification.</p>
 <p>The composition name (<code>nominal</code> here) names this system-level specification; codegen derives
-a <code>sys_proof_&lt;name&gt;</code> crate from it (<code>sys_proof_nominal</code>).  Multiple <code>composition</code> blocks are allowed.  HAMR will generate a distinct <code>sys_proof_&lt;name&gt;</code> crate for each one.</p>
-<h2 id="3-the-composition-block">3. The <code>composition</code> block</h2>
-<h3 id="31-functions--reusable-spec-patterns">3.1 <code>functions</code> — reusable spec patterns</h3>
+a <code>sys_&lt;name&gt;_proof</code> crate from it (<code>sys_nominal_proof</code>).  Multiple <code>composition</code> blocks are allowed.  HAMR will generate a distinct <code>sys_&lt;name&gt;_proof</code> crate for each one.</p>
+<h3 id="3-the-composition-block">3. The <code>composition</code> block</h3>
+<h4 id="31-functions--reusable-spec-patterns">3.1 <code>functions</code> — reusable spec patterns</h4>
 <p>This section contains ordinary GUMBO function definitions, identical in form to component-level or library GUMBO functions. Use them to specify predicates that recur across properties.  Some examples are given below.</p>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">functions
   def inRange100(v: Base_Types::Integer_32): Base_Types::Boolean :=
@@ -593,7 +592,7 @@ properties. (The Isolette does this with <code>sysProp_REQ_MRI_7</code>, <code>s
 claim and <code>mergedReflectsGen</code> <em>is</em> Property 2&rsquo;s — each stated once, given a meaningful name,
 and bound at a single place in the concrete property (§6). The function name then serves as
 the property&rsquo;s citable statement in reviews and assurance arguments.</p>
-<h3 id="32-components--short-aliases-for-thread-instances">3.2 <code>components</code> — short aliases for thread instances</h3>
+<h4 id="32-components--short-aliases-for-thread-instances">3.2 <code>components</code> — short aliases for thread instances</h4>
 <p>Each entry aliases a fully-qualified <strong>thread instance</strong> path (<code>&lt;process-instance&gt;.&lt;thread-instance&gt;</code>)
 to a short name used everywhere else in the composition and in the schema. This reduces effort in writing specifications.</p>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">components
@@ -604,7 +603,7 @@ to a short name used everywhere else in the composition and in the schema. This 
   decy        = decy.decy;
   merge_stage = merger.merger;
   consume     = consume.consume;
-</code></pre><h3 id="33-ports--named-handles-for-the-values-properties-reason-about">3.3 <code>ports</code> — named handles for the values properties reason about</h3>
+</code></pre><h4 id="33-ports--named-handles-for-the-values-properties-reason-about">3.3 <code>ports</code> — named handles for the values properties reason about</h4>
 <p>Each entry aliases <code>&lt;component-alias&gt;.&lt;port&gt;</code>. In assertions the alias denotes the port&rsquo;s
 <strong>value</strong> (for a struct port, use <code>.field</code> access, e.g. <code>merged.x</code>).</p>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">ports
@@ -613,7 +612,7 @@ to a short name used everywhere else in the composition and in the schema. This 
   x1      = incx.outxfield;
   x2      = clampx.outxfield;
   merged  = merge_stage.outstruct;
-</code></pre><h3 id="34-state--aliases-for-component-gumbo-state-variables-optional">3.4 <code>state</code> — aliases for component GUMBO state variables (optional)</h3>
+</code></pre><h4 id="34-state--aliases-for-component-gumbo-state-variables-optional">3.4 <code>state</code> — aliases for component GUMBO state variables (optional)</h4>
 <p>When properties refer to a component&rsquo;s persistent GUMBO <code>state</code> variable, alias it here as
 <code>&lt;alias&gt; = &lt;component-alias&gt;.&lt;stateVar&gt;</code>. Struct Split aliases ConsumeStruct&rsquo;s latch:</p>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">state
@@ -623,7 +622,7 @@ to a short name used everywhere else in the composition and in the schema. This 
   ma_lastCmd    = ma.lastCmd;
   mmi_lastCmd   = mmi.lastCmd;
   reg_last_mode = mrm.lastRegulatorMode;
-</code></pre><h3 id="35-schema--the-abstract-schedule">3.5 <code>schema</code> — the abstract schedule</h3>
+</code></pre><h4 id="35-schema--the-abstract-schedule">3.5 <code>schema</code> — the abstract schedule</h4>
 <p>The schema describes the order in which the components fire within one major frame — the
 abstract control structure the proof reasons over. It is built from:</p>
 <table>
@@ -670,7 +669,7 @@ abstract control structure the proof reasons over. It is built from:</p>
   consume
 }
 </code></pre><p><code>split</code> models genuine independence: the branches must not interfere (codegen emits
-<em>Commutativity</em> and <em>Independence</em> VCs that check this), and at the join the post-conditions
+<em>Commutativity</em> and <em>Non-Disabling</em> VCs that check this), and at the join the post-conditions
 of <strong>all</strong> branches hold simultaneously — so no cross-branch frame condition is needed. Use a
 plain <code>sequence</code> (or bare list) when stages are strictly ordered.</p>
 <p>Schemas scale to realistic systems. The Isolette&rsquo;s schema has eleven components, two
@@ -688,7 +687,7 @@ and the second split (a point no <code>before</code>/<code>after</code> name can
   };
   hs
 }
-</code></pre><h4 id="places-and-their-names">Places and their names</h4>
+</code></pre><h5 id="places-and-their-names">Places and their names</h5>
 <p>Assertions are bound to <strong>places</strong> — the points between component execution in a schedule schema — via the position names of §4.1. The rules:</p>
 <ul>
 <li><strong>Consecutive elements share a place</strong>: <code>after incx</code> and <code>before clampx</code> are two names
@@ -700,7 +699,7 @@ dispatch on. Pick the synonym that names the <em>role</em> the assertion plays �
 binds <code>before consume</code> (not <code>after merge_stage</code>) for the fact that discharges the
 consumer&rsquo;s precondition. Note that generated code uses one canonical identifier per place
 regardless of which synonym bound it: a <code>before consume</code> binding appears in
-<code>sys_proof_&lt;name&gt;</code> under the place name <code>after_merge_stage</code>.</li>
+<code>sys_&lt;name&gt;_proof</code> under the place name <code>after_merge_stage</code>.</li>
 <li><strong>Labels are optional and purely naming</strong> — never structural. Every point exists in the
 schema whether or not it is labeled; an unlabeled point simply cannot be bound (it
 carries <code>true</code>). A label is needed exactly when a property wants to bind a point with no
@@ -711,11 +710,11 @@ the way <code>before &lt;next-component&gt;</code> would.</li>
 <li><strong><code>at &lt;component&gt;</code> is illegal</strong> — it does not say which side of the dispatch is meant;
 use <code>before</code>/<code>after</code>.</li>
 </ul>
-<h2 id="4-properties">4. Properties</h2>
+<h3 id="4-properties">4. Properties</h3>
 <p>A <code>property</code> binds <strong>place assertions</strong> (aka <strong>system assertions</strong>) to points in the schedule.
 (ToDo: <code>property</code> may not be the best name for this concept, as it is actually a collection of assertions.  It&rsquo;s more like a proof outline - a collection of assertions positioned in the schedule schema as needed to established the particular property that you have in mind.)
 A concrete <code>property</code> becomes a proof obligation; an <code>abstract property</code> does not (it exists only to be inherited).</p>
-<h3 id="41-place-assertion-system-assertion-clauses">4.1 Place-assertion (System assertion) clauses</h3>
+<h4 id="41-place-assertion-system-assertion-clauses">4.1 Place-assertion (System assertion) clauses</h4>
 <pre tabindex="0"><code>&lt;position&gt; &lt;target&gt; [&#34;optional description&#34;] : &lt;boolean-expr&gt; ;
 </code></pre><table>
   <thead>
@@ -748,7 +747,7 @@ Expressions use the full GUMBO expression language (see <code>gumbo-bnf.md</code
 (non-short-circuit), <code>and</code>/<code>or</code>/<code>implies</code> (short-circuit), <code>==</code>/<code>!=</code>/<code>&lt;</code>/<code>&lt;=</code>, arithmetic,
 typed literals <code>[i32]</code>/<code>[s32]</code>/<code>[f32]</code>, <code>.field</code> access, port and state aliases, and the
 function-call implication <code>'-&gt;:'(antecedent, consequent)</code> used by the Isolette model.</p>
-<h3 id="42-concrete-vs-abstract-and-inheritance">4.2 Concrete vs. abstract, and inheritance</h3>
+<h4 id="42-concrete-vs-abstract-and-inheritance">4.2 Concrete vs. abstract, and inheritance</h4>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">abstract property Pipeline_Ranges &#34; … &#34; { … }              // reusable, no proof target
 property Merged_In_Consume_Range :&gt; Pipeline_Ranges { … }  // concrete, inherits the carries
 abstract property Pipeline_Functional :&gt; Pipeline_Ranges { … }   // an abstract extending an abstract
@@ -769,11 +768,11 @@ bindings were written inline. An <code>abstract</code> property is a base only: 
 runtime-monitor checks</strong> are generated for it. Parents must be sibling properties of the
 same composition, and the inheritance graph must be acyclic.</li>
 </ul>
-<h3 id="43-property-name--verification-target">4.3 Property name → verification target</h3>
+<h4 id="43-property-name--verification-target">4.3 Property name → verification target</h4>
 <p>Each concrete property name maps to a lowercased proof target: <code>Merged_In_Consume_Range</code> →
 <code>merged_in_consume_range</code>, <code>Consume_Range_Loop_Invariant</code> →
 <code>consume_range_loop_invariant</code>. Abstract properties produce no target.</p>
-<h3 id="44-loop-invariants-at-start--at-end">4.4 Loop invariants: <code>at START</code> / <code>at END</code></h3>
+<h4 id="44-loop-invariants-at-start--at-end">4.4 Loop invariants: <code>at START</code> / <code>at END</code></h4>
 <p>Properties over <strong>state variables</strong> can assert facts that hold at the frame boundaries.
 Codegen closes the loop with two obligations: the initial system state (after all
 <code>initialize</code> entry points) must establish the <code>START</code> assertion, and the <code>END</code> assertion
@@ -797,7 +796,7 @@ chain, and at <code>END</code>; combined with MRM&rsquo;s absorbing Failed mode,
 yields <em>&ldquo;once the regulator fails, the heat stays off forever.&rdquo;</em> TempControl&rsquo;s
 <code>Control_Invariant_Base</code> uses the frame boundaries to carry the control component&rsquo;s own
 compute assumes as a system-level invariant.</p>
-<h3 id="45-event-data-ports-and-current-limitations">4.5 Event data ports, and current limitations</h3>
+<h4 id="45-event-data-ports-and-current-limitations">4.5 Event data ports, and current limitations</h4>
 <p>System assertions may range over <strong>event data port</strong> channels; the channel value is an
 option (a message may or may not be present in a frame), and <code>HasEvent(...)</code> guards
 access, exactly as in component compute contracts. From TempControl&rsquo;s <code>TC_Req_01</code>:</p>
@@ -809,7 +808,7 @@ system-property assertions</strong> — a pre/post relationship across one firin
 state is unchanged when the temperature is in range&rdquo;) cannot yet be stated directly at the
 system level. The workaround is a component state variable that latches the prior value,
 reasoned about with the loop-invariant pattern of §4.4.</p>
-<h2 id="5-the-modular-proof-model-essential-mental-model">5. The modular proof model (essential mental model)</h2>
+<h3 id="5-the-modular-proof-model-essential-mental-model">5. The modular proof model (essential mental model)</h3>
 <p>The system proof is <strong>modular and Hoare-style</strong>. For each place in the schedule a property
 binds an assertion (unbound places carry <code>true</code>), and codegen emits, per schedule transition:</p>
 <ul>
@@ -861,8 +860,8 @@ fails loudly as an unprovable VC naming the missing premise.</p>
 <p><code>at START</code> / <code>at END</code> close a <strong>hyperperiod loop invariant</strong>: codegen emits a <em>Post-Pre</em> VC
 requiring <code>END ⟹ START</code>, so an invariant asserted at both boundaries is proved to hold every
 cycle (§4.4).</p>
-<h2 id="6-worked-example-verified-verbatim">6. Worked example (verified verbatim)</h2>
-<h3 id="61-how-system-property-verification-fits-the-developer-workflow">6.1 How system-property verification fits the developer workflow</h3>
+<h3 id="6-worked-example-verified-verbatim">6. Worked example (verified verbatim)</h3>
+<h4 id="61-how-system-property-verification-fits-the-developer-workflow">6.1 How system-property verification fits the developer workflow</h4>
 <p>System-property work starts from <strong>properties the developer already has in mind</strong> —
 claims they believe hold of the system&rsquo;s execution and want machine-checked. Two
 archetypes recur. First, <em>&ldquo;every component is dispatched within its contract&rdquo;</em>: each
@@ -907,7 +906,7 @@ ConsumeStruct&rsquo;s <code>last_x</code> state variable lies in [-200, 200].</l
 <p>(A fourth concrete property, <code>Gen_Range_Sanity</code>, is a one-step toolchain smoke test.)
 After the model text below, §6.3 explains how the properties are verified by reading
 their assertion chains as proofs.</p>
-<h3 id="62-the-composition-block">6.2 The composition block</h3>
+<h4 id="62-the-composition-block">6.2 The composition block</h4>
 <p>The full composition block from <code>SysPropStructSplit.sysml</code> — this verifies with <strong>0 errors</strong>:</p>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">language &#34;GUMBO&#34; /*{
 
@@ -1099,7 +1098,7 @@ their assertion chains as proofs.</p>
     }
   }
 }*/
-</code></pre><h3 id="63-reading-the-properties-as-proofs">6.3 Reading the properties as proofs</h3>
+</code></pre><h4 id="63-reading-the-properties-as-proofs">6.3 Reading the properties as proofs</h4>
 <p>Reading <code>Merged_In_Consume_Range</code> as a proof:</p>
 <ul>
 <li><code>after gen</code> gives <code>gen_out ∈ [-100,100]</code> (from GenStruct&rsquo;s integration guarantee; the handshake with SplitStruct&rsquo;s integration <code>assume</code> is certified separately, per connection);</li>
@@ -1123,11 +1122,11 @@ compute case). The conclusion is the single call <code>mergedReflectsGen(merged,
 <p>Reading <code>Consume_Range_Loop_Invariant</code> as a proof: see §4.4 — establish at <code>START</code> from
 the initialize guarantee, preserve across the frame by write frames, re-establish at
 consume&rsquo;s firing from <code>track_x</code> plus the carried merged range, close with <code>END ⟹ START</code>.</p>
-<h2 id="7-what-codegen-generates">7. What codegen generates</h2>
+<h3 id="7-what-codegen-generates">7. What codegen generates</h3>
 <p>When a <code>composition &lt;name&gt;</code> block is present, <code>sireum hamr sysml codegen</code> (Microkit target)
-emits a dedicated proof crate <code>hamr/microkit/crates/sys_proof_&lt;name&gt;/</code> <strong>in addition</strong> to the
+emits a dedicated proof crate <code>hamr/microkit/crates/sys_&lt;name&gt;_proof/</code> <strong>in addition</strong> to the
 per-component crates. No extra codegen flag is required. Structure:</p>
-<pre tabindex="0"><code>crates/sys_proof_nominal/
+<pre tabindex="0"><code>crates/sys_nominal_proof/
   Cargo.toml  Makefile  rust-toolchain.toml
   src/
     lib.rs                # wires the shared modules + one module group per concrete property
@@ -1142,7 +1141,7 @@ per-component crates. No extra codegen flag is required. Structure:</p>
       assertions.rs       #   place-assertion spec fns (one per bound place; unbound = true; inheritance flattened)
       vc_init.rs          #   Init-State VC: initialize + integration guarantees ⟹ START
       vc_sequential.rs    #   Pre-Assert + Next-Assert VCs for every schema transition (the Hoare chain)
-      vc_independence.rs  #   Non-Blocking / Preservation VCs for each independent transition pair
+      vc_non_disabling.rs #   Pre-/Post-Assertions Preservation VCs for each independent transition pair
       vc_post_pre.rs      #   Post-Pre VC: END ⟹ START (hyperperiod loop invariant)
       mod.rs
 </code></pre><p>All generated proof files are auto-generated (<code>Do not edit …</code>); the proof fns have empty
@@ -1150,43 +1149,43 @@ bodies and Verus discharges <code>requires ⟹ ensures</code> by SMT. The system
 component satisfies its own contract (discharged separately by the per-component Verus runs)
 and proves the system properties from those contracts. <code>gumbo-system-property-vcs.md</code> walks
 every VC category in detail, including the soundness argument and its trusted assumptions.</p>
-<h2 id="8-running-the-verification">8. Running the verification</h2>
+<h3 id="8-running-the-verification">8. Running the verification</h3>
 <p>Requires <strong>Rust + Verus</strong> (<code>cargo-verus</code> on <code>PATH</code>); it does <strong>not</strong> require
 <code>MICROKIT_SDK</code>/<code>MICROKIT_BOARD</code>. From <code>hamr/microkit/</code>:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># whole system proof (all properties + the shared Commutativity/Integration VCs)</span>
-</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal            <span class="c1"># or: make -C crates/sys_proof_nominal all</span>
+</span></span><span class="line"><span class="cl">make -C crates/sys_nominal_proof            <span class="c1"># or: make -C crates/sys_nominal_proof all</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># a single property in isolation (target = lowercased property name)</span>
-</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal merged_in_consume_range
-</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal end_to_end_functional
-</span></span><span class="line"><span class="cl">make -C crates/sys_proof_nominal consume_range_loop_invariant
+</span></span><span class="line"><span class="cl">make -C crates/sys_nominal_proof merged_in_consume_range
+</span></span><span class="line"><span class="cl">make -C crates/sys_nominal_proof end_to_end_functional
+</span></span><span class="line"><span class="cl">make -C crates/sys_nominal_proof consume_range_loop_invariant
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1"># everything: each component crate AND the system proof</span>
 </span></span><span class="line"><span class="cl">make verus
 </span></span></code></pre></div><p>In the Struct Split example each of the four concrete properties discharges 27 VCs
-(1 Init-State + 17 Sequential + 1 Post-Pre + 8 Independence); with the 3 shared VCs
+(1 Init-State + 17 Sequential + 1 Post-Pre + 8 Non-Disabling); with the 3 shared VCs
 (1 Integration — only the gen → splitter connection still has an assume/guarantee
 handshake — plus 2 Commutativity, one per independent component pair) the whole
-<code>sys_proof_nominal</code> crate is <strong>111 VCs</strong>; all seven component crates plus the system
+<code>sys_nominal_proof</code> crate is <strong>111 VCs</strong>; all seven component crates plus the system
 proof verify with 0 errors.</p>
-<h2 id="9-authoring-workflow-and-tips">9. Authoring workflow and tips</h2>
+<h3 id="9-authoring-workflow-and-tips">9. Authoring workflow and tips</h3>
 <ol>
 <li><strong>Type-check first.</strong> <code>sireum hamr sysml tipe --sourcepath ../aadl-lib:. &lt;Model&gt;.sysml</code>
 validates the composition/property syntax before codegen. Run it from the model directory.</li>
 <li><strong>Regenerate from the model directory</strong> (not via the MCP tool) so the relative
 <code>--output-dir</code> resolves correctly and editable files are preserved — see <code>mcp-tools.md</code>.
-Codegen adds <code>crates/sys_proof_&lt;name&gt;/</code>; confirm it appeared and that no stray tree landed
+Codegen adds <code>crates/sys_&lt;name&gt;_proof/</code>; confirm it appeared and that no stray tree landed
 outside the project. Codegen may also (re)write a <code>hamr/microkit/attestation/</code> tree — this
 example does not commit those artifacts, so delete it after regenerating.</li>
 <li><strong>Start with a one-step smoke property</strong> (like <code>Gen_Range_Sanity</code>) to confirm the whole
-path — codegen → <code>sys_proof_&lt;name&gt;</code> → Verus — works before writing the real carries.</li>
+path — codegen → <code>sys_&lt;name&gt;_proof</code> → Verus — works before writing the real carries.</li>
 <li><strong>Factor the carry chain into an <code>abstract property</code>.</strong> The shared plumbing that discharges
 each component&rsquo;s <code>assume</code> and threads facts to the join is identical across related
 properties; write it once and inherit it (multiple bases compose, §4.2).</li>
 <li><strong>Reach for GUMBO <code>functions</code></strong> for range/relationship predicates used at several places
 (<code>inRange100</code>, <code>inConsumeRange</code>), and bundle conjunct groups that always travel together
 into a single function (§3.1).</li>
-<li><strong>When a VC fails</strong>, read <code>crates/sys_proof_&lt;name&gt;/src/&lt;property&gt;/vc_sequential.rs</code>: each
+<li><strong>When a VC fails</strong>, read <code>crates/sys_&lt;name&gt;_proof/src/&lt;property&gt;/vc_sequential.rs</code>: each
 failing <code>vc_pre_assert_*</code> means a component&rsquo;s <code>assume</code> is not established at its
 <code>before</code> place; each failing <code>vc_next_assert_task_*</code> means the <code>after</code>/join assertion is
 not derivable from the prior place plus the component&rsquo;s contract. Add the missing carry.</li>
@@ -1209,14 +1208,14 @@ reconcile it with the live file (see <code>modeling-tips.md</code>) and delete t
 <code>&lt;domain …&gt;</code> slot (and rebalance the padding) so the static schedule matches the
 domain assignments.</li>
 </ol>
-<h2 id="10-further-examples">10. Further examples</h2>
-<p>Two larger system-property compositions (with committed, verifying <code>sys_proof_nominal</code>
+<h3 id="10-further-examples">10. Further examples</h3>
+<p>Two larger system-property compositions (with committed, verifying <code>sys_nominal_proof</code>
 crates) live in
-<a href="https://github.com/loonwerks/INSPECTA-models/tree/4da74d7310ab1d2833a75bff137f74f2f3ab62bf">loonwerks/INSPECTA-models @ 4da74d7</a>:</p>
+<a href="https://github.com/loonwerks/INSPECTA-models/tree/a2a33aaeceeed08e6b712ed5ab190d281715363e">loonwerks/INSPECTA-models @ a2a33aa</a>:</p>
 <ul>
 <li><strong>Isolette</strong> (<code>isolette/sysml/Isolette.sysml</code>, composition at the top-level system) —
 eleven components across regulator and monitor subsystems; two splits with multi-element
-branches and a <code>label</code> between them; <code>state</code> aliases; fifteen concrete properties built
+branches and a <code>label</code> between them; <code>state</code> aliases; nineteen concrete properties built
 on two abstract bases (<code>Regulator_Base</code>, <code>Monitor_Base</code>); requirement-linked assertions
 via <code>sysProp_*</code> functions and <code>'-&gt;:'</code>; and the latched fail-safe loop invariant
 <code>Regulator_Failsafe_Latching</code> (&ldquo;once the regulator fails, the heat stays off forever&rdquo;).</li>
@@ -1226,9 +1225,9 @@ via <code>sysProp_*</code> functions and <code>'-&gt;:'</code>; and the latched 
 (<code>Control_Invariant_Base</code>) that carries the control component&rsquo;s compute assumes across
 the frame so every property covering it can discharge its Pre-Assert.</li>
 </ul>
-<h2 id="related">Related</h2>
+<h3 id="related">Related</h3>
 <ul>
-<li><code>gumbo-system-property-vcs.md</code> — a detailed walkthrough of the verification conditions generated for these properties (the full VC taxonomy with generated examples, contract projection, independence/commutativity, and the soundness argument with its trusted assumptions).</li>
+<li><code>gumbo-system-property-vcs.md</code> — a detailed walkthrough of the verification conditions generated for these properties (the full VC taxonomy with generated examples, contract projection, the independence obligations (non-disabling and commutativity), and the soundness argument with its trusted assumptions).</li>
 <li><code>sysmlv2-gumbo-quick-reference.md</code> — GUMBO expression/operator syntax used inside assertions.</li>
 <li><code>gumbo-bnf.md</code> — grammar and built-in predicates (<code>In</code>, <code>HasEvent</code>, <code>NoSend</code>, <code>MustSend</code>, <code>'-&gt;:'</code>).</li>
 <li><code>mcp-tools.md</code> — running <code>tipe</code> / <code>codegen</code> (and the model-directory codegen procedure).</li>
