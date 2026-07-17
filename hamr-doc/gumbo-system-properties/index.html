@@ -47,7 +47,7 @@ The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approac
   <meta itemprop="name" content="GUMBO System-Level Properties -- Overview">
   <meta itemprop="description" content="This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
 The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
-  <meta itemprop="wordCount" content="10454">
+  <meta itemprop="wordCount" content="10417">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -818,10 +818,8 @@ if its precondition holds here), and</li>
 </ul>
 <p>A component&rsquo;s <em>integration</em> assumes (in-port constraints) are handled by a separate,
 per-connection <strong>Integration VC</strong> (<code>sender's guarantee ⟹ receiver's assume</code>), which is why
-the Next-Assert may simply assume them at each dispatch. (Toolchains predating this
-folding — including the one that generated this repository&rsquo;s example crate — discharge the
-integration assumes at the Pre-Assert instead; both forms are sound, and the authoring
-guidance below is the same either way. See <code>gumbo-system-property-vcs.md</code> §3.2.)</p>
+the Next-Assert may simply assume them at each dispatch (see
+<code>gumbo-system-property-vcs.md</code> §3.2).</p>
 <p>Three consequences drive how you write properties:</p>
 <ol>
 <li>
