@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470"
+     font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="470" fill="#ffffff"/>
+
+  <!-- ============ runtime domains ============ -->
+  <rect x="20"  y="70"  width="180" height="250" fill="#ded6ef" stroke="#8f7fb8"/>
+  <text x="110" y="92"  text-anchor="middle" font-size="13" font-weight="bold">micro-ROS</text>
+  <text x="110" y="108" text-anchor="middle" font-size="10" fill="#555">(MCU firmware)</text>
+
+  <rect x="222" y="40"  width="90" height="310" fill="#fadadd" stroke="#d99"/>
+  <text x="267" y="62"  text-anchor="middle" font-size="12" font-weight="bold">Micro</text>
+  <text x="267" y="78"  text-anchor="middle" font-size="12" font-weight="bold">XRCE-DDS</text>
+
+  <rect x="334" y="70"  width="130" height="250" fill="#d6e4f7" stroke="#7fa3cc"/>
+  <text x="399" y="92"  text-anchor="middle" font-size="12" font-weight="bold">micro-ROS</text>
+  <text x="399" y="108" text-anchor="middle" font-size="12" font-weight="bold">Agent</text>
+
+  <rect x="486" y="40"  width="90" height="310" fill="#fadadd" stroke="#d99"/>
+  <text x="531" y="62"  text-anchor="middle" font-size="12" font-weight="bold">Fast</text>
+  <text x="531" y="78"  text-anchor="middle" font-size="12" font-weight="bold">DDS</text>
+
+  <rect x="598" y="70"  width="330" height="250" fill="#d8ecd9" stroke="#8ab98c"/>
+  <text x="763" y="92"  text-anchor="middle" font-size="13" font-weight="bold">ROS 2</text>
+  <text x="763" y="108" text-anchor="middle" font-size="10" fill="#555">(host)</text>
+
+  <!-- namespace band: the two generated nodes only -->
+  <rect x="612" y="150" width="132" height="120" rx="6"
+        fill="none" stroke="#7a7" stroke-dasharray="6 3"/>
+  <text x="678" y="145" text-anchor="middle" font-size="10" fill="#5a7a5a" font-style="italic">namespace /rover</text>
+
+  <rect x="34" y="150" width="152" height="120" rx="6"
+        fill="none" stroke="#7a7" stroke-dasharray="6 3"/>
+  <text x="110" y="145" text-anchor="middle" font-size="10" fill="#5a7a5a" font-style="italic">namespace /rover</text>
+
+  <!-- ============ nodes ============ -->
+  <circle cx="110" cy="215" r="42" fill="#fde7c3" stroke="#c9973c"/>
+  <text x="110" y="212" text-anchor="middle" font-size="13" font-weight="bold">encoder</text>
+  <text x="110" y="227" text-anchor="middle" font-size="9" fill="#555">periodic 100ms</text>
+
+  <circle cx="678" cy="215" r="42" fill="#fde7c3" stroke="#c9973c"/>
+  <text x="678" y="212" text-anchor="middle" font-size="13" font-weight="bold">pilot</text>
+  <text x="678" y="227" text-anchor="middle" font-size="9" fill="#555">sporadic</text>
+
+  <!-- turtlesim is now modeled, so it is solid; deliberately outside /rover -->
+  <circle cx="860" cy="215" r="42" fill="#fde7c3" stroke="#c9973c"/>
+  <text x="860" y="209" text-anchor="middle" font-size="12" font-weight="bold">turtlesim</text>
+  <text x="860" y="223" text-anchor="middle" font-size="8" fill="#555">platform-</text>
+  <text x="860" y="233" text-anchor="middle" font-size="8" fill="#555">provided</text>
+
+  <!-- ============ encoder -> pilot ============ -->
+  <path d="M152,178 H636" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="340" y="172" font-size="11">/rover/speed</text>
+
+  <path d="M152,196 H636" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="340" y="190" font-size="11">/rover/proc_pilot_overspeed</text>
+
+  <!-- ============ pilot -> encoder ============ -->
+  <path d="M636,234 H152" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="340" y="228" font-size="11">/rover/proc_encoder_mode</text>
+
+  <path d="M636,252 H152" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="340" y="247" font-size="11">/rover/proc_encoder_trim</text>
+
+  <!-- ============ pilot <-> turtle: modeled connections now ============ -->
+  <path d="M720,200 H818" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="769" y="194" text-anchor="middle" font-size="10">/turtle1/cmd_vel</text>
+
+  <path d="M818,236 H720" stroke="#222" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+  <text x="769" y="252" text-anchor="middle" font-size="10">/turtle1/pose</text>
+
+  <!-- ============ caption ============ -->
+  <text x="20" y="378" font-size="11" fill="#444">
+    Every topic name is now determined by the model. The two generated nodes sit in /rover; turtlesim is left at
+  </text>
+  <text x="20" y="396" font-size="11" fill="#444">
+    the root, which is why pilot publishes to /turtle1/cmd_vel. Namespacing it would work too — it would move
+  </text>
+  <text x="20" y="414" font-size="11" fill="#444">
+    both ends to /rover/turtle1/cmd_vel. No deployment remaps remain.
+  </text>
+</svg>

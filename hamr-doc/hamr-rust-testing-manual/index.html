@@ -338,8 +338,8 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
 <p>Note that the file has two modules: one for manual unit tests, and one for GUMBOX tests.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">tests</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// NOTE: need to run tests sequentially to prevent race conditions
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//       on the app and the testing apis which are static
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">//       on the app and the testing apis which are static
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">test</span>::<span class="n">util</span>::<span class="o">*</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="o">*</span><span class="p">;</span><span class="w">
@@ -348,42 +348,42 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_initialization</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (a) run the entry point method,
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (b) retreive the results from output ports and local state, and 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (c) check that the outputs match expected results, 
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// (c) check that the outputs match expected results, 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (a) run the Initialize Entry Point method to ensure that component state is properly 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">//     initialized
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">//     initialized
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (b) supply values (test vector) for input ports (and optionally, local state variables) 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span>::<span class="n">default</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (c) run the Compute entry point method, 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (d) retreive the results from output ports and local state, 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (e) check that the outputs match expected results.
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// (e) check that the outputs match expected results.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">GUMBOX_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">mod</span> <span class="nn">GUMBOX_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// .. details omitted
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>This above structure is only a suggestion.   In each module, some example skeleton tests are provided.  The developer is free to reorganize these modules or even separate them into different files as explained above.  If you test files are created, <code>test/mod.rs</code> will need to be updated to reference those files.  For example, if you added new files <code>test/manual_unit_tests.rs</code> and <code>test/manual_GUMBOX_tests.rs</code>,  <code>test/mod.rs</code> will need to be updated to look something like this&hellip;</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// This file will not be overwritten if HAMR codegen is rerun
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">util</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">util</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">tests</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_unit_tests</span><span class="p">;</span><span class="w">    </span><span class="c1">// reference to new test file added
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_GUMBOX_tests</span><span class="p">;</span><span class="w">  </span><span class="c1">// reference to new test file added
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">tests</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_unit_tests</span><span class="p">;</span><span class="w">    </span><span class="c1">// reference to new test file added
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">pub</span><span class="w"> </span><span class="k">mod</span> <span class="nn">manual_GUMBOX_tests</span><span class="p">;</span><span class="w">  </span><span class="c1">// reference to new test file added
 </span></span></span></code></pre></div><p>Returning to the listing above, note that the auto-generated HAMR skeletons don&rsquo;t illustrate all aspects of the tests, e.g., retrieving outputs and comparing to expected results are not provided, since those are often test-specific.   We will illustrate how these aspects to coded below.</p>
 <p>We first discuss the more general <code>Compute</code> Entry Point tests.</p>
 <h2 id="compute-entry-point-tests">Compute Entry Point Tests</h2>
@@ -393,28 +393,28 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// initialize entry point should always be called to initialize 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// output ports and local state
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// output ports and local state
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// implement input of &#34;test vector&#34;
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..set values for input data ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// ..set values for input data ports
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Temp</span>::<span class="n">default</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">Set_Points</span>::<span class="n">default</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..[optional] set values for GUMBO-declared local state variables
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_lastCmd</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">default</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_lastCmd</span><span class="p">(</span><span class="n">Isolette_Data_Model</span>::<span class="n">On_Off</span>::<span class="n">default</span><span class="p">());</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// invoke compute entry point
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// use auto-generated test APIs to retrieve values of 
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// output ports and GUMBO-defined local state as illustrated below
-</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// output ports and GUMBO-defined local state as illustrated below
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// let heat_control: On_Off = test_apis::get_heat_control();
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// let post_lastCmd : On_Off = test_apis::get_lastCmd();
-</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// let post_lastCmd : On_Off = test_apis::get_lastCmd();
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// ..compare outputs to expected results..
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// assert!(..)   
-</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// assert!(..)   
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>First, we see the call of the initialize entry point to initialize the state of the thread as explained earlier.</p>
 <p>Then, we use auto-generated apis to set the input values for the thread.  In the auto-generated examples, HAMR uses the <code>default()</code> values.  When constructing an actual test, these should be replaced with actual values.</p>
@@ -426,10 +426,10 @@ manual tests - the developer supplies manually-constructed inputs (a test vector
 test.  When natural language requirements for the thread have been written, it is good to reference the requirement that the test is addressing.</p>
 <p>As part of this documentation, it is good to summarize the designed inputs (test vector) and then indicate the expected outcomes.  Sometimes, a particular input needs to be provided (to avoid a run-time exception), but its value is (conjectured to be) irrelevant to the test.  It&rsquo;s useful to document these situations.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//========================================================================
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//  REQ-THERM-2: If Current Temperature is less than the Lower Desired Temperature,
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//  the Heat Control shall be set to On.
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">//========================================================================
-</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">//  REQ-THERM-2: If Current Temperature is less than the Lower Desired Temperature,
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">//  the Heat Control shall be set to On.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">//========================================================================
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="cm">/*
 </span></span></span><span class="line"><span class="cl"><span class="cm">       Inputs:
 </span></span></span><span class="line"><span class="cl"><span class="cm">         current_temp:  95f 
@@ -444,23 +444,23 @@ test.  When natural language requirements for the thread have been written, it i
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_REQ_THERM_2</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// generate values for the incoming data ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">current_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="w"> </span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lower_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">98</span><span class="w"> </span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">upper_desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">100</span><span class="w"> </span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">desired_temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="n">lower</span>: <span class="nc">lower_desired_temp</span><span class="p">,</span><span class="w"> </span><span class="n">upper</span>: <span class="nc">upper_desired_temp</span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [PutInPorts]: put values on the input ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">current_temp</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_current_temp</span><span class="p">(</span><span class="n">current_temp</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_desired_temp</span><span class="p">(</span><span class="n">desired_temp</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// get result values from output ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
@@ -492,47 +492,47 @@ test.  When natural language requirements for the thread have been written, it i
 <p>The <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>util/test_apis.rs</code></a> file contains declarations of Rust structs referred to in HAMR parlance as &ldquo;containers&rdquo;.   For testing, HAMR generates &ldquo;pre-state&rdquo; containers to hold values for each component input.  There are two versions of containers: one that holds only input port values and another holds input values for GUMBO state variables in addition to port input values (HAMR generates this second version only if GUMBO state variables are declared).</p>
 <p>Below are the containers generated for the <code>thermostat</code> component.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="sd">/// container for component&#39;s incoming port values and GUMBO state variables
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer_wGSV</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="sd">/// container for component&#39;s incoming port values and GUMBO state variables
+</span></span></span><span class="line"><span class="cl"><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">PreStateContainer_wGSV</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">In_lastCmd</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">On_Off</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_current_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Temp</span><span class="p">,</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">pub</span><span class="w"> </span><span class="n">api_desired_temp</span>: <span class="nc">Isolette_Data_Model</span>::<span class="n">Set_Points</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>In the <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-seL4-P-DP-Example/hamr/microkit/crates/thermostat_thermostat/src/test/util/test_apis.rs"><code>util/test_apis.rs</code></a> file,
 HAMR auto-generates variants of the <code>put</code> methods that take these containers as arguments.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="sd">/// setter for component&#39;s incoming port values
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="sd">/// setter for component&#39;s incoming port values and GUMBO state variables
-</span></span></span><span class="line"><span class="cl"><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container_wGSV</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer_wGSV</span><span class="p">)</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="sd">/// setter for component&#39;s incoming port values and GUMBO state variables
+</span></span></span><span class="line"><span class="cl"><span class="sd"></span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">put_concrete_inputs_container_wGSV</span><span class="p">(</span><span class="n">container</span>: <span class="nc">PreStateContainer_wGSV</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_lastCmd</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">In_lastCmd</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_current_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_current_temp</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="n">put_desired_temp</span><span class="p">(</span><span class="n">container</span><span class="p">.</span><span class="n">api_desired_temp</span><span class="p">);</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>The following version of the previous test for Requirement 2 of the <code>thermostat</code> illustrates the use of the container features above.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_REQ_THERM_2_container</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Alternate version: Illustrate &#34;container&#34;-based APIs
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: invoke the entry point test method
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Inputs can be &#34;bundled&#34; into a container and put &#34;all at once&#34;.
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// There are two versions Pre-State-Container: one without inputs
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// for GUMBO state variables (GSV) and one that includes them.  Below
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// illustrates the version without.   In this case, GSVs retain
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// whatever value they have at the time of the Compute entry point
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// (timeTriggered method) invocation.
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">preStateContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// There are two versions Pre-State-Container: one without inputs
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// for GUMBO state variables (GSV) and one that includes them.  Below
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// illustrates the version without.   In this case, GSVs retain
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// whatever value they have at the time of the Compute entry point
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="c1">// (timeTriggered method) invocation.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">preStateContainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">PreStateContainer</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api_current_temp</span><span class="w"> </span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>: <span class="mi">95</span><span class="p">},</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="n">api_desired_temp</span><span class="w"> </span>: <span class="nc">Set_Points</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">lower</span>: <span class="nc">Temp</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">degrees</span>:  <span class="mi">98</span><span class="w"> </span><span class="p">},</span><span class="w">
@@ -541,13 +541,13 @@ HAMR auto-generates variants of the <code>put</code> methods that take these con
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">};</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [PutInPorts]: put values on the input ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_concrete_inputs_container</span><span class="p">(</span><span class="n">preStateContainer</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">test_apis</span>::<span class="n">put_concrete_inputs_container</span><span class="p">(</span><span class="n">preStateContainer</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// [InvokeEntryPoint]: Invoke the entry point
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// get result values from output ports
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_heat_control</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">lastCmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">api_heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Onn</span><span class="p">);</span><span class="w">
@@ -611,14 +611,14 @@ HAMR auto-generates variants of the <code>put</code> methods that take these con
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">post_lastCmd</span><span class="w"> </span>: <span class="nc">On_Off</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test_apis</span>::<span class="n">get_lastCmd</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// REQ_THERM_1: The Heat Control command shall be initially Off
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">heat_control</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="n">post_lastCmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">On_Off</span>::<span class="n">Off</span><span class="p">);</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Default-valued inputs leave currentTemp.degrees neither greater than the
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// upper bound nor less than the lower bound, so timeTriggered only executes
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// the REQ_THERM_4 fall-through path.
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">// upper bound nor less than the lower bound, so timeTriggered only executes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">// the REQ_THERM_4 fall-through path.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="cp">#[test]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
@@ -629,16 +629,16 @@ HAMR auto-generates variants of the <code>put</code> methods that take these con
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_timeTriggered</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="k">mod</span> <span class="nn">GUMBOX_manual_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">mod</span> <span class="nn">GUMBOX_manual_tests</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">serial_test</span>::<span class="n">serial</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="k">crate</span>::<span class="n">test</span>::<span class="n">util</span>::<span class="o">*</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">use</span><span class="w"> </span><span class="n">data</span>::<span class="n">Isolette_Data_Model</span>::<span class="o">*</span><span class="p">;</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// Manual GUMBOX test that exercises only the REQ_THERM_4 case
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c1">// (current_temp 98 lies inside the desired range [98, 100]).
-</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[test]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="c1">// (current_temp 98 lies inside the desired range [98, 100]).
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">  </span><span class="cp">#[test]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="cp">#[serial]</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">fn</span> <span class="nf">test_compute_GUMBOX_manual_1_a</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">crate</span>::<span class="n">thermostat_thermostat_initialize</span><span class="p">();</span><span class="w">
@@ -654,7 +654,7 @@ HAMR auto-generates variants of the <code>put</code> methods that take these con
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="fm">assert!</span><span class="p">(</span><span class="fm">matches!</span><span class="p">(</span><span class="n">harness_result</span><span class="p">,</span><span class="w"> </span><span class="n">cb_apis</span>::<span class="n">HarnessResult</span>::<span class="n">Passed</span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="p">}</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
 </span></span></span></code></pre></div><p>The corresponding coverage run drops to <strong>65.35%</strong> overall:</p>
 <ul>
 <li><a href="https://hamr.sireum.org/hamr-doc/hamr-rust-testing-manual/coverage-reports/reduced/index.html">Top-level coverage report (reduced suite)</a></li>
