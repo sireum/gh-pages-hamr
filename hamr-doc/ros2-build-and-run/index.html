@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="">
+<meta name="description" content="Chapter 4 of 4 in HAMR ROS 2 Development.
+The previous three chapters produced a workspace. This one builds it and runs it.
+Everything here applies to all three variants — the shape of the generated workspace does not depend on which modeling features you used. What changes is the node list.
+The complete source for all three variants is on the ROS 2 Example Models page.
+A system with micro-ROS nodes has an inherent awkwardness worth naming up front: it is two builds, not one. The rclcpp packages build from the generated workspace; the micro-ROS packages build inside a separate firmware workspace that is shared across projects and set up once. Most of what follows is a consequence of that split.
+" />
+<meta name="keywords" content="" />
+<meta name="robots" content="noodp" />
+<meta name="theme-color" content="" />
+<link rel="canonical" href="https://hamr.sireum.org/hamr-doc/ros2-build-and-run/" />
+
+
+    <title>
+        
+            Building and Running ROS 2 Systems :: Sireum HAMR 
+        
+    </title>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/themes/default-dark/style.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://hamr.sireum.org/_pagefind/pagefind-ui.css">
+
+
+
+
+<link rel="stylesheet" href="https://hamr.sireum.org/main.8efd36e0666cf7f27307551cc354a15dff59b0caf11a0846a367918287a72ad9.css" integrity="sha256-jv024GZs9/JzB1Ucw1ShXf9ZsMrxGghGo2eRgoenKtk=">
+
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="https://hamr.sireum.org/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://hamr.sireum.org/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://hamr.sireum.org/favicon-16x16.png">
+    <link rel="manifest" href="https://hamr.sireum.org/site.webmanifest">
+    <link rel="mask-icon" href="https://hamr.sireum.org/safari-pinned-tab.svg" color="">
+    <link rel="shortcut icon" href="https://hamr.sireum.org/favicon.ico">
+    <meta name="msapplication-TileColor" content="">
+
+
+
+  <meta itemprop="name" content="Building and Running ROS 2 Systems">
+  <meta itemprop="description" content="Chapter 4 of 4 in HAMR ROS 2 Development.
+The previous three chapters produced a workspace. This one builds it and runs it.
+Everything here applies to all three variants — the shape of the generated workspace does not depend on which modeling features you used. What changes is the node list.
+The complete source for all three variants is on the ROS 2 Example Models page.
+A system with micro-ROS nodes has an inherent awkwardness worth naming up front: it is two builds, not one. The rclcpp packages build from the generated workspace; the micro-ROS packages build inside a separate firmware workspace that is shared across projects and set up once. Most of what follows is a consequence of that split.">
+  <meta itemprop="wordCount" content="2003">
+  <meta itemprop="image" content="https://hamr.sireum.org/">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://hamr.sireum.org/">
+  <meta name="twitter:title" content="Building and Running ROS 2 Systems">
+  <meta name="twitter:description" content="Chapter 4 of 4 in HAMR ROS 2 Development.
+The previous three chapters produced a workspace. This one builds it and runs it.
+Everything here applies to all three variants — the shape of the generated workspace does not depend on which modeling features you used. What changes is the node list.
+The complete source for all three variants is on the ROS 2 Example Models page.
+A system with micro-ROS nodes has an inherent awkwardness worth naming up front: it is two builds, not one. The rclcpp packages build from the generated workspace; the micro-ROS packages build inside a separate firmware workspace that is shared across projects and set up once. Most of what follows is a consequence of that split.">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </head>
+
+    
+        <body>
+    
+    
+        <div class="container">
+            <header class="header">
+    <span class="menu-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+    </span>
+    <span class="header__inner">
+        <a href="https://hamr.sireum.org/" style="text-decoration: none;">
+    <div class="logo">
+        
+            <img class="color-scheme" src="https://hamr.sireum.org/img/santos/icon-hamr.png" alt="">
+            &nbsp;<span class="logo__text">HAMR</span>
+        
+    </div>
+</a>
+
+
+        <span class="header__right">
+            
+                
+
+<nav class="menu">
+  <ul class="menu__inner">
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/about/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">About</span>
+            <span class="responsive-title-short">About</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/installation/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Install</span>
+            <span class="responsive-title-short">Install</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Doc</span>
+            <span class="responsive-title-short">Doc</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/papers/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Papers</span>
+            <span class="responsive-title-short">Papers</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://sireum.org/funding" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Funding</span>
+            <span class="responsive-title-short">Funding</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  
+  
+    
+      <div>
+        <li>
+          <a href="https://hamr.sireum.org/team/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">
+            <span class="responsive-title-long">Team</span>
+            <span class="responsive-title-short">Team</span>
+          </a>
+        </li>
+      </div>
+    
+  
+
+  </ul>
+</nav>
+
+            
+        </span>
+    </span>
+        <span class="theme-toggle not-selectable" style="margin-right: 10px"><img src="https://hamr.sireum.org/img/toggle.png" height="20px"></span>
+      <div class="submenu">
+          <li class="dropdown" onmouseover="menuDisplay(this.children[1], true); searchFocus();" onmouseout="menuDisplay(this.children[1], false);">
+              <a class="dropbtn fa fa-search"></a>
+              <div class="dropdown-content" align="left">
+                  <div id="search" style="z-index:2147483647; position: fixed;"></div>
+              </div>
+          </li>
+      </div>
+    
+</header>
+
+
+            <div class="content">
+                
+
+    <main class="posts">
+        <hr />
+        <aside id="toc">
+            <div class="toc-title">Table of Contents</div>
+            <nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-generated-workspace">The Generated Workspace</a></li>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#building">Building</a>
+      <ul>
+        <li><a href="#why-the-micro-ros-build-runs-under-env--i">Why the micro-ROS build runs under <code>env -i</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#firmware-configuration">Firmware Configuration</a>
+      <ul>
+        <li><a href="#it-displaces-micro-ross-stock-profile">It displaces micro-ROS&rsquo;s stock profile</a></li>
+        <li><a href="#what-fails-quietly-if-you-skip-it">What fails quietly if you skip it</a></li>
+        <li><a href="#on-a-host-workspace-the-rcl-entry-is-inert">On a host workspace the <code>rcl</code> entry is inert</a></li>
+      </ul>
+    </li>
+    <li><a href="#running">Running</a>
+      <ul>
+        <li><a href="#launch-arguments">Launch arguments</a></li>
+        <li><a href="#three-launch-files-one-system">Three launch files, one system</a></li>
+        <li><a href="#the-agent-has-to-start-first">The agent has to start first</a></li>
+        <li><a href="#if-the-model-does-not-contain-everything">If the model does not contain everything</a></li>
+      </ul>
+    </li>
+    <li><a href="#cleaning-up">Cleaning Up</a></li>
+    <li><a href="#current-limitations">Current Limitations</a></li>
+    <li><a href="#where-to-go-next">Where To Go Next</a></li>
+  </ul>
+</nav>
+        </aside>
+        <hr />
+
+        <h1>Building and Running ROS 2 Systems</h1>
+
+        
+          <div class="post-content"><p><em>Chapter 4 of 4 in <a href="../ros2/">HAMR ROS 2 Development</a>.</em></p>
+<p>The previous three chapters produced a workspace. This one builds it and runs
+it.</p>
+<p>Everything here applies to all three variants — the shape of the generated
+workspace does not depend on which modeling features you used. What changes is
+the node list.</p>
+<p>The complete source for all three variants is on the <a href="../ros2-example-models/" target="_blank"
+rel="noopener">ROS 2 Example Models</a> page.</p>
+<p>A system with micro-ROS nodes has an inherent awkwardness worth naming up front:
+it is <strong>two builds, not one</strong>. The rclcpp packages build from the generated
+workspace; the micro-ROS packages build inside a separate firmware workspace
+that is shared across projects and set up once. Most of what follows is a
+consequence of that split.</p>
+<h3 id="the-generated-workspace">The Generated Workspace</h3>
+<pre tabindex="0"><code>Makefile                             the intended entry points
+readme.md                            prerequisites and manual equivalents
+src/
+  &lt;pkg&gt;_interfaces/                  generated .msg files
+  &lt;pkg&gt;/                             rclcpp nodes -- base_code + user_code
+  &lt;pkg&gt;_bringup/                     launch files
+microros_apps/
+  colcon.meta                        firmware build configuration
+  &lt;pkg&gt;_microros/                    micro-ROS nodes -- base_code + user_code
+</code></pre><p>Three things about this layout are worth explaining.</p>
+<p><strong>The interfaces package is separate</strong> because both halves depend on it. The
+message definitions are generated once and built twice — once here for the
+rclcpp nodes, once inside the firmware workspace for the micro-ROS nodes, which
+need type support generated by <code>rosidl_typesupport_microxrcedds</code> rather than the
+standard one.</p>
+<p><strong><code>microros_apps/</code> sits outside <code>src/</code></strong> deliberately. A plain <code>colcon build</code>
+from this directory must not pick those packages up: they are built elsewhere,
+against a different middleware. Keeping them out of <code>src/</code> is what makes
+<code>make build-ros2</code> safe to run.</p>
+<p><strong><code>Makefile</code> and <code>readme.md</code> are not overwritten</strong> by a regeneration, so
+anything you add to them survives. The same is true of the marked blocks inside
+<code>colcon.meta</code> and the launch files.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>A ROS 2 installation, and — if the model has any micro-ROS nodes — a <strong>micro-ROS
+firmware workspace</strong>.</p>
+<p>That workspace holds the micro-ROS client stack (<code>rclc</code>, <code>rmw_microxrcedds</code>,
+<code>micro_ros_setup</code>) and the micro-XRCE-DDS agent. It takes a while to build, and
+it is <strong>built once and shared across every micro-ROS project you have</strong>. Set
+<code>MICROROS_WS</code> to a stable location outside any individual project and put it in
+your shell profile:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROROS_WS</span><span class="o">=</span>/path/to/microros_ws
+</span></span></code></pre></div><p>The generated <code>readme.md</code> carries the full one-time setup as copy-pasteable
+commands. In outline: clone and build <code>micro_ros_setup</code>, run
+<code>create_firmware_ws.sh host</code> to fetch the client stack, build it with
+<code>build_firmware.sh</code>, then <code>create_agent_ws.sh</code> and <code>build_agent.sh</code> for the
+agent.</p>
+<p>Every <code>make</code> target that touches the micro-ROS half fails immediately with a
+readable message if <code>MICROROS_WS</code> is unset, rather than getting halfway and
+producing something confusing.</p>
+<h3 id="building">Building</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make build
+</span></span></code></pre></div><p>That runs three steps: <code>check-ros2</code>, which verifies <code>ROS_DISTRO</code> is set and the
+distribution&rsquo;s <code>setup.bash</code> exists; <code>build-microros</code>, which copies the
+interfaces package and the generated micro-ROS packages into <code>$MICROROS_WS/src/</code>
+and builds them there; and <code>build-ros2</code>, an ordinary <code>colcon build</code> in this
+workspace.</p>
+<h4 id="why-the-micro-ros-build-runs-under-env--i">Why the micro-ROS build runs under <code>env -i</code></h4>
+<p>The <code>build-microros</code> target is more careful than it looks:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-make" data-lang="make"><span class="line"><span class="cl"><span class="err">cd</span> <span class="k">$(</span><span class="nv">MICROROS_WS</span><span class="k">)</span> <span class="err">&amp;&amp;</span> <span class="err">env</span> <span class="err">-i</span> <span class="nv">HOME</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$$</span><span class="s2">HOME&#34;</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$$</span><span class="s2">PATH&#34;</span> <span class="nv">ROS_DISTRO</span><span class="o">=</span><span class="s2">&#34;</span><span class="nv">$$</span><span class="s2">{ROS_DISTRO}&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl">  bash --noprofile --norc -c <span class="s2">&#34;...&#34;</span>
+</span></span></code></pre></div><p>colcon records whatever is on <code>AMENT_PREFIX_PATH</code> and <code>COLCON_PREFIX_PATH</code> at
+build time into the setup scripts it generates, as a prefix chain. <code>MICROROS_WS</code>
+is shared across projects — so building into it with another workspace sourced
+would chain <em>that</em> workspace into <code>MICROROS_WS</code> permanently, for every project
+that sources it afterwards. Clearing only one of the two variables is not
+enough; both seed the chain.</p>
+<p>This is the kind of failure that shows up weeks later in an unrelated project,
+which is why the target scrubs the environment rather than trusting yours to be
+clean.</p>
+<h3 id="firmware-configuration">Firmware Configuration</h3>
+<p><code>microros_apps/colcon.meta</code> configures the micro-ROS middleware —
+<code>rmw_microxrcedds</code>, <code>microxrcedds_client</code>, and the typesupport packages. Those
+live in the firmware workspace and were built by the one-time setup, not by
+<code>make build</code>, which builds only application packages.</p>
+<p>To have any effect it must be installed into that workspace. Sitting in
+<code>microros_apps/</code> it does nothing, which is why this is its own step and
+deliberately not part of <code>make build</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make microros-config
+</span></span></code></pre></div><p>Run it once after generating, and again whenever <code>colcon.meta</code> changes. It
+installs the file as <code>$MICROROS_WS/src/colcon.meta</code> — the path
+<code>micro_ros_setup</code>&rsquo;s host build reads — and rebuilds the micro-ROS stack with
+<code>--cmake-force-configure</code>. That flag matters: without it a changed
+<code>colcon.meta</code> can leave existing CMake caches in place, so the target reports
+success while the new settings never take effect.</p>
+<h4 id="it-displaces-micro-ross-stock-profile">It displaces micro-ROS&rsquo;s stock profile</h4>
+<p><code>create_firmware_ws.sh</code> seeds <code>src/colcon.meta</code> with its own profile, so there
+is normally a file there already. Since <code>MICROROS_WS</code> is shared across projects,
+the target <strong>renames</strong> it to <code>colcon.meta.bak</code> rather than discarding it.</p>
+<p>The two differ in ways worth knowing if you go looking:</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>stock profile</th>
+          <th>generated</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>RMW_UXRCE_MAX_*</code></td>
+          <td>generous fixed sizes</td>
+          <td>derived from your model&rsquo;s port counts</td>
+      </tr>
+      <tr>
+          <td><code>UCLIENT_PROFILE_MULTITHREAD</code></td>
+          <td><code>ON</code></td>
+          <td><code>OFF</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>Multithreading is off because generated micro-ROS nodes do not need it. Each
+node runs one rclc executor on one thread and releases all port traffic through
+<code>sendOutputs</code> at dispatch completion, so nothing ever drives the XRCE session
+from two threads at once — and the locking that setting adds is not free.</p>
+<p>If you maintain your own firmware configuration, merge the two rather than
+letting one replace the other.</p>
+<h4 id="what-fails-quietly-if-you-skip-it">What fails quietly if you skip it</h4>
+<ul>
+<li><strong><code>RMW_UXRCE_MAX_PUBLISHERS</code> / <code>RMW_UXRCE_MAX_SUBSCRIPTIONS</code></strong> are derived from
+the model&rsquo;s port counts and regenerated on every run. If the firmware&rsquo;s static
+pools are smaller than the nodes need, <strong>entity creation fails without a
+diagnostic</strong>. Re-apply after adding ports.</li>
+<li><strong><code>RMW_UXRCE_TRANSPORT</code></strong> and the agent address must agree with how you
+actually start the agent. These live in a preserved block, so changing them
+does not update the generated launch file&rsquo;s agent command.</li>
+<li><strong><code>RCL_COMMAND_LINE_ENABLED</code></strong> restores the rcl argument parsing that
+<code>micro_ros_setup</code> disables in its cross-compiled configs. Without it, the rcl
+arguments in each node&rsquo;s <code>node_options</code> block — topic remap rules in
+particular — are parsed by nothing.</li>
+<li><strong><code>RCL_LOGGING_ENABLED</code></strong> and <strong><code>RCL_LOGGING_IMPLEMENTATION</code></strong> are what make
+<a href="../ros2-infrastructure-ports/">chapter 3&rsquo;s</a> <code>rosout</code> port do anything.</li>
+</ul>
+<p>Entries outside the marked blocks are derived from the model and overwritten on
+each run; the marked blocks are preserved. To override a derived value, restate
+its <code>-D</code> flag inside a marked block — colcon passes <code>cmake-args</code> through in
+order, and CMake takes the last occurrence.</p>
+<h4 id="on-a-host-workspace-the-rcl-entry-is-inert">On a host workspace the <code>rcl</code> entry is inert</h4>
+<p>A firmware workspace created for the <strong>host</strong> does not check out <code>rcl</code> at all.
+On host, micro-ROS is <code>rmw_microxrcedds</code> and <code>rclc</code> layered over the ROS 2
+distribution&rsquo;s own <code>rcl</code> — so there is no micro-ROS <code>rcl</code> to configure, and that
+one entry matches no package. The rest of the file applies normally:
+<code>microxrcedds_client</code>, <code>rmw_microxrcedds</code>, and the typesupport packages are all
+built there.</p>
+<p>This is usually invisible, because the distribution&rsquo;s <code>rcl</code> is built with both
+argument parsing and logging enabled — the very things those flags turn on. Remap
+rules and <code>/rosout</code> routing therefore work on host whether or not the step is
+ever run.</p>
+<p>They stop working the moment the same model is deployed to an <strong>embedded</strong>
+target, where the micro-ROS <code>rcl</code> fork is used and ships with both features off.
+That is where applying the configuration matters, and an embedded workspace does
+check <code>rcl</code> out.</p>
+<p>One setting to revisit when moving off host: <code>RCL_LOGGING_IMPLEMENTATION</code> is
+emitted as <code>rcl_logging_spdlog</code>, which suits a host build. Embedded targets
+generally want <code>rcl_logging_noop</code>.</p>
+<h3 id="running">Running</h3>
+<p>Two ways, for two purposes.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make launch     <span class="c1"># everything from one launch file, in the foreground</span>
+</span></span><span class="line"><span class="cl">make run        <span class="c1"># a terminal per node</span>
+</span></span></code></pre></div><p><strong><code>make launch</code></strong> is the normal path. It builds, then runs <code>ros2 launch</code> on the
+generated bringup package. Output from every node is interleaved in one
+terminal.</p>
+<p><strong><code>make run</code></strong> opens a separate terminal per node, with the agent started first
+and each window titled by node. When you are debugging one node&rsquo;s behaviour,
+having its output in its own window is worth the extra windows. <code>make stop</code>
+kills everything it started.</p>
+<p>Both are alternatives to each other — neither is more correct.</p>
+<h4 id="launch-arguments">Launch arguments</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make launch <span class="nv">LAUNCH_ARGS</span><span class="o">=</span><span class="s2">&#34;log_file:=run1.txt&#34;</span>
+</span></span><span class="line"><span class="cl">make run <span class="nv">ROS_ARGS</span><span class="o">=</span><span class="s2">&#34;--ros-args -p log_file_name:=uros-demo.txt&#34;</span>
+</span></span></code></pre></div><p>These are not the same thing. <code>LAUNCH_ARGS</code> are <strong>launch arguments</strong>, declared by
+the launch file and reaching a node through its parameters —
+<code>ros2 launch --show-args &lt;bringup_pkg&gt; &lt;file&gt;.launch.py</code> lists what a file
+accepts. <code>ROS_ARGS</code> are <strong>rcl arguments</strong>, appended directly to each <code>ros2 run</code>.
+Either way, a node parameter must be declared by the node before a value takes
+effect.</p>
+<p>Both launch files carry preserved blocks for declaring arguments, so what you
+add survives regeneration.</p>
+<h4 id="three-launch-files-one-system">Three launch files, one system</h4>
+<p>Generation emits the system in three pieces, in both XML and Python:</p>
+<table>
+  <thead>
+      <tr>
+          <th>File</th>
+          <th>Contents</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>&lt;System&gt;.launch.xml</code></td>
+          <td>the whole system on this host — includes the two below</td>
+      </tr>
+      <tr>
+          <td><code>&lt;System&gt;_ros2.launch.xml</code></td>
+          <td>the rclcpp nodes only</td>
+      </tr>
+      <tr>
+          <td><code>&lt;System&gt;_microros.launch.xml</code></td>
+          <td>the agent plus the micro-ROS nodes</td>
+      </tr>
+  </tbody>
+</table>
+<p>The split is what makes deployment beyond a single host possible. The micro-ROS
+half is valid for a <strong>host deployment only</strong> — on an embedded target those nodes
+are flashed rather than launched, and the agent may run somewhere else entirely.
+In that case you launch the ROS 2 half alone:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make launch <span class="nv">LAUNCH_FILE</span><span class="o">=</span>TurtleControlSystem_Instance_ros2
+</span></span></code></pre></div><p>XML and Python are generated from the same model and launch the same system.
+Pick whichever you would rather hand-edit; <code>make launch</code> defaults to Python and
+<code>make launch-xml</code> selects the other.</p>
+<h4 id="the-agent-has-to-start-first">The agent has to start first</h4>
+<p>Micro-ROS nodes reach the ROS 2 DDS bus through a micro-XRCE-DDS agent. Start it
+before them — the generated <code>run</code> target sleeps two seconds after starting the
+agent for exactly this reason, and the <code>_microros</code> launch file lists it first.</p>
+<p>The agent&rsquo;s transport must match <code>RMW_UXRCE_TRANSPORT</code> and the
+<code>RMW_UXRCE_DEFAULT_UDP_*</code> settings in <code>colcon.meta</code>. Because those live in a
+preserved block, changing them does <strong>not</strong> update the agent command in the
+generated launch file. If the nodes come up and never connect, check that these
+two agree.</p>
+<h4 id="if-the-model-does-not-contain-everything">If the model does not contain everything</h4>
+<p><a href="../ros2-component-development/">Chapter 1&rsquo;s</a> structure variant does not model
+turtlesim, so nothing generated launches it — the launch file starts only what
+the model contains. Start it yourself alongside:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ros2 run turtlesim turtlesim_node <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">make launch
+</span></span></code></pre></div><p>You can also add it to the generated launch file, so one <code>make launch</code> brings up
+everything. Put the entry inside the preserved block — the launch file itself is
+regenerated, and only marked content survives:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!-- LAUNCH ARGUMENTS - additions within these tags will be preserved when re-running Codegen --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;node</span> <span class="na">pkg=</span><span class="s">&#34;turtlesim&#34;</span> <span class="na">exec=</span><span class="s">&#34;turtlesim_node&#34;</span> <span class="na">name=</span><span class="s">&#34;turtle&#34;</span><span class="nt">/&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- LAUNCH ARGUMENTS - additions within these tags will be preserved when re-running Codegen --&gt;</span>
+</span></span></code></pre></div><p>That gets you a single command, but it is still deployment configuration rather
+than a statement in the model — the same trade as the remap rules it sits
+alongside. Nothing checks that the node you started is the one the pilot expects
+to talk to.</p>
+<p>Once turtlesim is modeled, as it is from <a href="../ros2-topic-naming/">chapter
+2</a> onward, none of this is needed: the launch file starts
+it and the bringup package declares the dependency.</p>
+<h3 id="cleaning-up">Cleaning Up</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">make stop     <span class="c1"># kill running nodes and the agent</span>
+</span></span><span class="line"><span class="cl">make clean    <span class="c1"># remove build artifacts here AND the copied packages in MICROROS_WS</span>
+</span></span></code></pre></div><p><code>make clean</code> reaching into <code>MICROROS_WS</code> is intentional: <code>build-microros</code> copied
+packages in there, and leaving stale copies of a renamed or deleted package
+behind is a reliable way to get a confusing build later.</p>
+<h3 id="current-limitations">Current Limitations</h3>
+<ul>
+<li><strong>The one-time firmware setup is manual.</strong> Generation emits the instructions
+into <code>readme.md</code> but does not run them.</li>
+<li><strong><code>make run</code> assumes <code>gnome-terminal</code>.</strong> On another desktop environment, edit
+the target — the Makefile is preserved across regeneration.</li>
+<li><strong>The agent command in the launch file does not track <code>colcon.meta</code>.</strong> Both are
+in preserved blocks; keeping the transport settings in agreement is manual.</li>
+<li><strong>Deploying the micro-ROS half to hardware is outside what generation
+automates.</strong> It emits the <code>_ros2</code> launch file so the host side can be brought
+up independently, but flashing, the board-specific firmware workspace, and the
+transport wiring are yours.</li>
+</ul>
+<h3 id="where-to-go-next">Where To Go Next</h3>
+<p>This is the last of four chapters:</p>
+<ol>
+<li><a href="../ros2-component-development/"><em>ROS 2 Component Development</em></a> — what
+generation produces, and where your code goes</li>
+<li><a href="../ros2-topic-naming/"><em>ROS 2 Topic Naming and Platform
+Integration</em></a> — model-carried topic names, namespaces,
+and declaring platform-provided components</li>
+<li><a href="../ros2-infrastructure-ports/"><em>Infrastructure-Provided Ports</em></a> — ports that
+name a path the platform already provides</li>
+<li>Building and Running ROS 2 Systems — this chapter</li>
+</ol>
+</div>
+        
+        <hr/>
+
+        
+<div style="display: grid; grid-template-columns: 2% 49% 49%; text-align: center;">
+  <div class="submenu" style="background: transparent; text-align: left; position: relative;">
+    <li class="dropdown" onmouseover="menuDisplay(this.children[1], true);" onmouseout="menuDisplay(this.children[1], false);">
+      <a class="dropbtn" href=""><i class="fa-solid fa-angles-up"></i></a>
+      <div class="dropdown-content" style="bottom: 100%;"><a class="post-item-inner" href="https://hamr.sireum.org/hamr-doc/" onmouseover="menuUnderline(this, true);" onmouseout="menuUnderline(this, false);">HAMR Documentation</a></div>
+    </li>
+  </div>
+  <div style="text-align: left;">
+    
+  </div>
+  <div style="text-align: right;">
+    
+  </div>
+</div>
+
+
+
+    </main>
+
+            </div>
+
+            
+                <footer class="footer">
+    
+    
+</footer>
+
+            
+        </div>
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="https://hamr.sireum.org/bundle.min.d9847dec188cb3ba71e262769d7f64069d223c3a9713999a5da5f7aca5638686e15a900ac07cc755d19861961f24145ef2d608296933e4150cae87f4911a7dbb.js" integrity="sha512-2YR97BiMs7px4mJ2nX9kBp0iPDqXE5maXaX3rKVjhobhWpAKwHzHVdGYYZYfJBRe8tYIKWkz5BUMrof0kRp9uw=="></script>
+
+
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/thecarnie-cycle2/2.1.6c/jquery.cycle2.min.js" integrity="sha512-ydWfQuPu+srw5hhkU8O1XGn3/Kc+GyoDBvYc8E+SyuZKphQP18ZWYKywIFzPWZwQk6dlmTY69aDg/SnFz3qPeQ==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/all.min.js" integrity="sha512-rpLlll167T5LJHwp0waJCh3ZRf7pO6IT1+LZOhAyP6phAirwchClbTZV3iqL3BMrVxIYRbzGTpli4rfxsCK6Vw==" crossorigin="anonymous"></script>
+<script defer type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.14/jstree.min.js" integrity="sha512-OQ2by9SrJBwcXaeYmkG2t6FVZiwpyRtFar2VvULjuq5OjVpJLwsUHuNzN9PClqEJAYsWsRPSb4TTfriZzPGiow==" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://hamr.sireum.org/_pagefind/pagefind-ui.js"></script>
+  <script type="text/javascript">
+    window.addEventListener('DOMContentLoaded', (event) => {
+      new PagefindUI({
+        element: "#search",
+        showEmptyFilters: true,
+        mergeIndex: [
+          
+            { bundlePath: "https:\/\/sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/slang.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/logika.sireum.org\/_pagefind" },
+          
+            { bundlePath: "https:\/\/doc.sireum.org\/_pagefind" },
+          
+        ]
+      });
+    });
+  </script>
+<script style="text/javascript">
+  window.addEventListener('load', function () {
+    $('#page-tree').jstree({
+      "core": {
+        "themes": {
+          "name": document.documentElement.getAttribute("data-theme") == "dark" ? "default-dark" : "default",
+          "dots": true,
+          "icons": false,
+          "variant": "large"
+        }
+      },
+      plugins: [ "ui" ],
+    }).bind("select_node.jstree", function (e, data) {
+      document.location.href = data.node.a_attr.href;
+    }).bind("ready.jstree", function (event, data) {
+      $(this).jstree("open_all");
+    }).bind("open_all.jstree", function (event, data) {
+      level = 0;
+      data.instance.element.find('li').each(function() {
+        if (level > 0 && data.instance.get_path(this).length >= level){
+          data.instance.close_node(this);
+        }
+      });
+      data.instance.element.get()[0].style.display="block";
+    });
+  });
+</script>
+
+
+    </body>
+</html>
