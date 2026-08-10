@@ -47,7 +47,7 @@ We assume you have read the GUMBO Overview (motivation and framework architectur
   <meta itemprop="name" content="Sireum HAMR">
   <meta itemprop="description" content="GUMBO Component Contracts This chapter is a developer-oriented, example-based walkthrough of the structure of GUMBO contracts for thread components. It uses the Simple Isolette examples from the HAMR tutorials repository: first the data-port variant (periodic components communicating via data ports), then the event-data-port variant of the same system, which introduces the GUMBO constructs for reasoning about message-oriented communication.
 We assume you have read the GUMBO Overview (motivation and framework architecture), the HAMR Overview, and HAMR Modeling Elements and Semantics Concepts — in particular, the concepts of thread components, port categories, entry points, and port freezing. Familiarity with the Rust component development chapters (implementation, manual unit testing) is helpful but not required.">
-  <meta itemprop="wordCount" content="4873">
+  <meta itemprop="wordCount" content="4871">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -388,11 +388,11 @@ def Allowed_LowerAlarmTempWStatus(lower: Isolette_Data_Model::TempWstatus_i): Ba
 <p><code>heat_control == In(lastCmd)</code> is the canonical GUMBO idiom for <em>&ldquo;the value shall not be changed&rdquo;</em>: the command emitted this dispatch equals the command remembered from the previous one.  Combined with the general guarantee <code>lastCmd == heat_control</code>, the state variable is re-established for the next dispatch.  <em>(Reference: <a href="../gumbo-quick-reference/#the-in-operator-pre-state-values">Quick Reference — the In() operator</a>.)</em></p>
 <h2 id="event-data-ports-the-p-edp-variant">Event Data Ports: The P-EDP Variant</h2>
 <p>Data ports model <em>sampled</em> communication: the port always holds the most recent value.  Event data ports model <em>message</em> communication: values are queued, a message may or may not be present at a given dispatch, and once dequeued it is gone.  This changes what contracts must say — specifications must reason about the <em>presence or absence</em> of messages, and components typically must <em>latch</em> received values into state if they need them later.</p>
-<p>The <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">P-EDP variant of the Simple Isolette</a> reworks the same system with event data ports: the operator&rsquo;s set points arrive as messages only when the operator changes them, the temperature sensor announces changes as events, and the thermostat sends a heat command only when the commanded state actually changes.  All threads remain <strong>periodic</strong> — each thread polls its event data ports at every dispatch.  (This periodic-polling pattern is exactly what HAMR Rust/seL4 code generation supports today; sporadic, event-<em>triggered</em> dispatch is future work.)</p>
+<p>The <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-EDP-Example">P-EDP variant of the Simple Isolette</a> reworks the same system with event data ports: the operator&rsquo;s set points arrive as messages only when the operator changes them, the temperature sensor announces changes on a pure (payload-less) event port, and the thermostat sends a heat command only when the commanded state actually changes.  All threads remain <strong>periodic</strong> — each thread polls its event data ports at every dispatch.  (This periodic-polling pattern is exactly what HAMR Rust/seL4 code generation supports today; sporadic, event-<em>triggered</em> dispatch is future work.)</p>
 <h3 id="interface-and-state-latching-inputs">Interface and State: Latching Inputs</h3>
 <pre tabindex="0"><code class="language-sysml" data-lang="sysml">part def Thermostat :&gt; Periodic_Rust_Thread {
   port current_temp : DataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
-  port temp_changed : EventDataPort { in :&gt;&gt; type : Isolette_Data_Model::Temp; }
+  in port temp_changed : EventPort;
   port desired_temp : EventDataPort { in :&gt;&gt; type : Isolette_Data_Model::Set_Points; }
   port heat_control : EventDataPort { out :&gt;&gt; type : Isolette_Data_Model::On_Off; }
 
