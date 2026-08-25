@@ -49,7 +49,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <meta itemprop="description" content="Distribution Mechanism HAMR is distributed as part of the Sireum tool framework developed at Kansas State University. Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools. These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang. Installation instructions are given below.
 The primary tools provided by HAMR are..
 tools for checking the well-formedness of the SysMLv2 and AADL modeling language subsets supported by HAMR, tools for performing different forms of light-weight verification on HAMR models, and tools for generating code and system build infrastructure for HAMR models. These tools can be invoked from the command line using Sireum’s CLI interface or agentically using HAMR’s MCP interfaces.">
-  <meta itemprop="wordCount" content="1259">
+  <meta itemprop="wordCount" content="2870">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -219,7 +219,18 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <ul>
     <li><a href="#distribution-mechanism">Distribution Mechanism</a></li>
     <li><a href="#supported-platforms">Supported Platforms</a></li>
-    <li><a href="#installation-steps---primary-workflow-sysml-rust">Installation Steps - Primary Workflow (SysML, Rust)</a>
+    <li><a href="#installation-steps---primary-workflow-sysml-rust">Installation Steps - Primary Workflow (SysML, Rust)</a></li>
+    <li><a href="#automated-installation-the-provers-environment">Automated Installation (the PROVERS Environment)</a>
+      <ul>
+        <li><a href="#macos-and-linux">macOS and Linux</a>
+          <ul>
+            <li><a href="#which-sireum-you-get">Which Sireum you get</a></li>
+          </ul>
+        </li>
+        <li><a href="#windows">Windows</a></li>
+      </ul>
+    </li>
+    <li><a href="#manual-installation">Manual Installation</a>
       <ul>
         <li><a href="#sireum">Sireum</a></li>
         <li><a href="#codeive">CodeIVE</a></li>
@@ -227,10 +238,14 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
           <ul>
             <li><a href="#rust">Rust</a></li>
             <li><a href="#verus">Verus</a></li>
+            <li><a href="#sel4-microkit-sdk">seL4 Microkit SDK</a></li>
+            <li><a href="#build-tools-and-qemu">Build Tools and QEMU</a></li>
+            <li><a href="#additional-tools-for-user-land-scheduling">Additional Tools for User-Land Scheduling</a></li>
           </ul>
         </li>
       </ul>
     </li>
+    <li><a href="#keeping-sireum-up-to-date">Keeping Sireum Up To Date</a></li>
     <li><a href="#installation-steps---alternate-workflows">Installation Steps - Alternate Workflows</a>
       <ul>
         <li><a href="#fmide-for-aadl">FMIDE (for AADL)</a></li>
@@ -271,8 +286,58 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <li>Install CodeIVE for editing SysMLv2 models and invoking HAMR</li>
 <li>Install Rust (if not already installed)</li>
 <li>Install Verus for supporting verification of HAMR-support Rust components</li>
+<li>Install the seL4 Microkit SDK and the toolchain its generated builds use, if you are targeting Microkit</li>
 </ul>
 <p>Tools supporting other workflows (such as using AADL for modeling or Slang for component development) are listed at the end of this page</p>
+<p>There are two ways to get there:</p>
+<ul>
+<li>
+<p><strong><a href="#automated-installation-the-provers-environment">Automated</a></strong> &mdash; the PROVERS environment installs all of it at one pinned set of versions, from a single script. This is the quickest route to a working machine, and the one that gives you the same versions everyone else on the program is using.</p>
+</li>
+<li>
+<p><strong><a href="#manual-installation">Manual</a></strong> &mdash; install each piece yourself. Use this if you want a particular arrangement, are adding HAMR to a machine that already has some of these tools, or are on a platform the automated route does not cover.</p>
+</li>
+</ul>
+<p>Either way, see <a href="#keeping-sireum-up-to-date">Keeping Sireum Up To Date</a> afterwards: HAMR&rsquo;s code generator moves faster than its releases, so the version you land on first is usually not the one you want to stay on.</p>
+<h3 id="automated-installation-the-provers-environment">Automated Installation (the PROVERS Environment)</h3>
+<p>The PROVERS environment is the DARPA PROVERS development environment &mdash; Verus, the seL4 Microkit SDK, LionsOS, sdfgen, Rust and Sireum/HAMR &mdash; at one pinned set of versions. It is defined once, as a set of install scripts, and delivered four ways: run on a machine of your own, as a container, as a VirtualBox VM built with Vagrant, or as a prebuilt OVA.</p>
+<p>Full documentation is in the <a href="https://github.com/loonwerks/INSPECTA-models/blob/main/provers-env/readme.md">provers-env readme</a>.</p>
+<h4 id="macos-and-linux">macOS and Linux</h4>
+<p>The same script runs natively on both &mdash; no VM, no container:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">git clone https://github.com/loonwerks/INSPECTA-models.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> INSPECTA-models/provers-env
+</span></span><span class="line"><span class="cl">bash provers-setup.sh
+</span></span></code></pre></div><p>Then open a new terminal to pick up the environment. Everything lands under <code>$PROVERS_DIR</code> (default <code>~/provers</code>), and the environment is wired into your shell startup file.</p>
+<p>Setup is a matter of minutes. Building Sireum from source is the slower of the two paths, but only by minutes &mdash; around ten on recent hardware, more on a slower machine. Unpacking a prepackaged binary release instead is quicker still.</p>
+<p>That installs the command-line tools only. The IDEs are opt-in:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">PROVERS_IVE</span><span class="o">=</span><span class="nb">true</span> <span class="nv">PROVERS_CODEIVE</span><span class="o">=</span><span class="nb">true</span> <span class="nv">PROVERS_FMIDE</span><span class="o">=</span><span class="nb">true</span> bash provers-setup.sh
+</span></span></code></pre></div><h5 id="which-sireum-you-get">Which Sireum you get</h5>
+<p>Left to itself, <code>provers-setup.sh</code> installs the Sireum revision that <code>provers-env</code> pins. That pin is moved by hand, deliberately, so that everyone setting up gets the same environment &mdash; which also means it lags kekinian&rsquo;s <code>master</code> by however long it has been since the last bump. For HAMR work you usually want the current code generator instead, and <code>SIREUM_V</code> is how you ask for it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>dev bash provers-setup.sh      <span class="c1"># the latest dev build, unpacked</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>master bash provers-setup.sh   <span class="c1"># the exact tip, built from source</span>
+</span></span></code></pre></div><p><code>dev</code> is the one to reach for. It is a release, so it is unpacked rather than compiled, and it is re-cut as kekinian advances &mdash; so it carries the recent code generator work without waiting for Sireum to be built from source. Take <code>master</code> when you need the tip exactly, or a change newer than the last dev build.</p>
+<p>If you already have a Sireum checkout you are working in, point <code>SIREUM_HOME</code> at it and that install is adopted &mdash; it is neither rebuilt nor checked out to the pinned revision, and the rest of the environment is installed around it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">SIREUM_HOME</span><span class="o">=</span>&lt;path-to-Sireum&gt;/Sireum bash provers-setup.sh
+</span></span></code></pre></div><p>Per-platform requirements and step-by-step notes:</p>
+<ul>
+<li>
+<p><a href="https://github.com/loonwerks/INSPECTA-models/blob/main/provers-env/vagrant/readme.md#setting-up-an-apple-silicon-mac">Setting up an Apple Silicon Mac</a> &mdash; needs the Xcode Command Line Tools and <a href="https://brew.sh">Homebrew</a>. This is the quickest of the four setups, because every upstream publishes an arm64 macOS build, so none of the tools are compiled from source.</p>
+</li>
+<li>
+<p><a href="https://github.com/loonwerks/INSPECTA-models/blob/main/provers-env/vagrant/readme.md#setting-up-an-ubuntu-2404-machine">Setting up an Ubuntu 24.04 machine</a> &mdash; needs <code>sudo</code>. Slower on aarch64 than on x86_64, where Z3, Verus and sdfgen are unpacked from releases rather than built from source.</p>
+</li>
+</ul>
+<h4 id="windows">Windows</h4>
+<p><code>provers-setup.sh</code> does not run on Windows. Use one of the packaged deliveries instead, both built from the same scripts:</p>
+<ul>
+<li>
+<p><a href="https://github.com/loonwerks/INSPECTA-models/blob/main/provers-env/docker/readme.md">Container</a> &mdash; the command-line tools, suitable for builds and CI. The lighter of the two.</p>
+</li>
+<li>
+<p><a href="https://github.com/loonwerks/INSPECTA-models/blob/main/provers-env/vagrant/readme.md#using-the-prebuilt-ova">Prebuilt OVA, or a VirtualBox VM built with Vagrant</a> &mdash; a full desktop VM that also carries the GUI tools: the Sireum IVE, CodeIVE and FMIDE. Take the prebuilt OVA if you would rather not wait for a build.</p>
+</li>
+</ul>
+<h3 id="manual-installation">Manual Installation</h3>
 <h4 id="sireum">Sireum</h4>
 <p>You can install Sireum and its tools via source or prepackaged binaries. We outline the source-based method below which is what is emphasized on the DARPA PROVERS program, but you can find binary installers on the <a href="https://sireum.org/getting-started/">Sireum installation</a> page.</p>
 
@@ -311,6 +376,11 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
     
 </div>
 </div>
+<style type="text/css">.notice{--root-color:#444;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#c33;--warning-content:#fee;--info-title:#fb7;--info-content:#fec;--note-title:#6be;--note-content:#e7f2fa;--tip-title:#5a5;--tip-content:#efe}@media (prefers-color-scheme:dark){.notice{--root-color:#ddd;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#800;--warning-content:#400;--info-title:#a50;--info-content:#420;--note-title:#069;--note-content:#023;--tip-title:#363;--tip-content:#121}}body.dark .notice{--root-color:#ddd;--root-background:#eff;--title-color:#fff;--title-background:#7bd;--warning-title:#800;--warning-content:#400;--info-title:#a50;--info-content:#420;--note-title:#069;--note-content:#023;--tip-title:#363;--tip-content:#121}.notice{padding:18px;line-height:24px;margin-bottom:24px;border-radius:4px;color:var(--root-color);background:var(--root-background)}.notice p:last-child{margin-bottom:0}.notice-title{margin:-18px -18px 12px;padding:4px 18px;border-radius:4px 4px 0 0;font-weight:700;color:var(--title-color);background:var(--title-background)}.notice.warning .notice-title{background:var(--warning-title)}.notice.warning{background:var(--warning-content)}.notice.info .notice-title{background:var(--info-title)}.notice.info{background:var(--info-content)}.notice.note .notice-title{background:var(--note-title)}.notice.note{background:var(--note-content)}.notice.tip .notice-title{background:var(--tip-title)}.notice.tip{background:var(--tip-content)}.icon-notice{display:inline-flex;align-self:center;margin-right:8px}.icon-notice img,.icon-notice svg{height:1em;width:1em;fill:currentColor}.icon-notice img,.icon-notice.baseline svg{top:.125em;position:relative}.notice.todo .notice-title{background:var(--warning-title)}.notice.todo{background:var(--warning-content)}</style>
+<div><svg width="0" height="0" display="none" xmlns="http://www.w3.org/2000/svg"><symbol id="tip-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"/></symbol><symbol id="note-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zm-248 50c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="warning-notice" viewBox="0 0 576 512" preserveAspectRatio="xMidYMid meet"><path d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"/></symbol><symbol id="info-notice" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet"><path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"/></symbol><symbol id="todo-notice" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line></symbol></svg></div><div class="notice note" >
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#note-notice"></use></svg></span>Note</p><p><code>build.cmd</code> compiles Sireum from source, which is the slow way in. It is the method emphasized on the DARPA PROVERS program because it puts you on an exact revision, and it is the only way to get code generator changes that have not been released yet.</p>
+<p>If you do not need those, installing a <strong>release build</strong> instead is much faster &mdash; prebuilt binaries are unpacked rather than compiled. See the <a href="https://sireum.org/getting-started/#latest-release-bin">Sireum getting started</a> page, and <a href="#keeping-sireum-up-to-date">Keeping Sireum Up To Date</a> below for what you give up by doing so.</p></div>
+
 <p>(Recommended) Add the following environment variables to your shell configuration file (e.g., your <code>.bashrc</code> file on Linux or MacOS) so Sireum tools are available for any terminal session:</p>
 
 
@@ -433,7 +503,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 </div>
 </div></p>
 <h4 id="sel4-microkit-development">seL4 Microkit Development</h4>
-<p>The following tools are only required if you intend to work on seL4 Microkit systems requiring Rust/Verus formal verification.</p>
+<p>The following tools are only required if you intend to work on seL4 Microkit systems. Rust and Verus are what HAMR&rsquo;s Rust components are written and verified against; the SDK and the toolchain below are what a generated project&rsquo;s <code>make</code> invokes to produce a bootable image, and are needed whether or not you verify.</p>
 <h5 id="rust">Rust</h5>
 <p>Install Rust via <code>rustup</code> according to the <a href="https://rust-lang.org/tools/install/">official Rust installation instructions</a>.   You might want to take a look at the discussion of &ldquo;Rust tool chains&rdquo; (essentially, having different versions of Rust installed).  When using Verus, you will need to rely on older version(s) of Rust (see below).</p>
 <h5 id="verus">Verus</h5>
@@ -452,19 +522,171 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>Note: Versus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues that those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
 <p><strong>Installing Verus</strong></p>
 <p>The current Versus version supported by HAMR is</p>
-<pre tabindex="0"><code>Version: 0.2026.01.23.1650a05
+<pre tabindex="0"><code>Version: 0.2026.08.09.92f466f
 Profile: release
 </code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
 <ul>
 <li>
-<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.01.23.1650a05">specific version above</a></p>
+<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.08.09.92f466f">specific version above</a></p>
 </li>
 <li>
 <p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
-<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.01.23.1650a05</code> requires the <code>1.92.0-aarch64-apple-darwin</code> toolchain, so you would run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.92.0-aarch64-apple-darwin
+<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.08.09.92f466f</code> requires the <code>1.97.1-aarch64-apple-darwin</code> toolchain, so you would run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.97.1-aarch64-apple-darwin
 </span></span></code></pre></div></li>
 </ul>
+<h5 id="sel4-microkit-sdk">seL4 Microkit SDK</h5>
+<p>HAMR generates Microkit systems against SDK <strong>2.3.0</strong>. Download the release for your platform from the <a href="https://github.com/seL4/microkit/releases/tag/2.3.0">Microkit 2.3.0 release</a> &mdash; <code>microkit-sdk-2.3.0-linux-x86-64.tar.gz</code>, <code>-linux-aarch64</code>, or <code>-macos-aarch64</code> &mdash; unpack it, and point <code>MICROKIT_SDK</code> at the result:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">tar xf microkit-sdk-2.3.0-&lt;os&gt;-&lt;arch&gt;.tar.gz
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROKIT_SDK</span><span class="o">=</span>&lt;path-to&gt;/microkit-sdk-2.3.0
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROKIT_BOARD</span><span class="o">=</span>qemu_virt_aarch64
+</span></span></code></pre></div><p>Both variables are required: a generated build stops with <code>MICROKIT_SDK must be specified</code> or <code>MICROKIT_BOARD must be specified</code> without them.</p>
+<div class="notice warning" >
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#warning-notice"></use></svg></span>Warning</p><p>The released SDK is what you want, with one exception. Stock 2.3.0 does not assign a virtual machine&rsquo;s vCPU to its protection domain&rsquo;s scheduling domain, so a <strong>domain-scheduled VM</strong> leaves its vCPU in domain 0 while its VMM sits elsewhere, the guest never receives its virtual timer interrupt, and Linux stops in its <code>arch_timer</code> probe. The fix is <a href="https://github.com/seL4/microkit/pull/586">seL4/microkit#586</a>, which merged a week after 2.3.0 was cut, so no release carries it yet; the first release after 2.3.0 will. Until then, the automated installation rebuilds the SDK&rsquo;s <code>microkit</code> tool with that one change applied.</p>
+<p>This only affects a VM under domain scheduling. Systems without virtual machines, and VMs under user-land scheduling, build correctly against the released SDK as it ships.</p></div>
+
+<h5 id="build-tools-and-qemu">Build Tools and QEMU</h5>
+<p>The generated makefiles invoke <code>clang</code>, <code>ld.lld</code>, <code>llvm-ar</code>, <code>llvm-ranlib</code>, <code>llvm-objcopy</code>, <code>dtc</code>, GNU Make 4 or newer, <code>python3</code>, and <code>qemu-system-aarch64</code> to run the resulting image. They compile for the <code>aarch64-none-elf</code> target using clang&rsquo;s built-in cross compilation, so no separate cross toolchain is needed.</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS"
+                data-tab-group="microkit-tools"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'microkit-tools','macOS')"
+        >macOS</button>
+        
+        <button
+                data-tab-item="Ubuntu"
+                data-tab-group="microkit-tools"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'microkit-tools','Ubuntu')"
+        >Ubuntu</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS" data-tab-group="microkit-tools" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">brew install llvm lld dtc make wget git python@3.12 qemu
+</span></span></code></pre></div><p>macOS ships GNU Make 3.81 in <code>/usr/bin</code>, which the sDDF makefiles are not written for, and Homebrew&rsquo;s <code>llvm</code> is keg-only. Put both ahead of the system ones:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>brew --prefix<span class="k">)</span><span class="s2">/opt/make/libexec/gnubin:</span><span class="k">$(</span>brew --prefix<span class="k">)</span><span class="s2">/opt/llvm/bin:</span><span class="nv">$PATH</span><span class="s2">&#34;</span>
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Ubuntu" data-tab-group="microkit-tools" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">sudo apt-get install -y binutils build-essential clang llvm lld <span class="se">\
+</span></span></span><span class="line"><span class="cl">  device-tree-compiler libxml2-utils curl wget git <span class="se">\
+</span></span></span><span class="line"><span class="cl">  python3.12 python3.12-venv qemu-system-arm unzip
+</span></span></code></pre></div><p><code>qemu-system-arm</code> is the package that supplies <code>qemu-system-aarch64</code>.</p>
+
+    </div>
+    
+</div>
+</div>
+<p>A quick check that the toolchain is complete &mdash; every one of these should resolve, and <code>make --version</code> should report 4 or newer:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="k">for</span> t in clang ld.lld llvm-ar llvm-ranlib llvm-objcopy dtc make qemu-system-aarch64 python3<span class="p">;</span> <span class="k">do</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">command</span> -v <span class="nv">$t</span> <span class="o">||</span> <span class="nb">echo</span> <span class="s2">&#34;MISSING: </span><span class="nv">$t</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">done</span>
+</span></span><span class="line"><span class="cl">make --version <span class="p">|</span> head -1
+</span></span></code></pre></div><h5 id="additional-tools-for-user-land-scheduling">Additional Tools for User-Land Scheduling</h5>
+<p>HAMR generates Microkit systems under one of two scheduling models, selected by codegen&rsquo;s <code>--scheduling</code> option. <strong>Domain scheduling</strong> needs nothing beyond the SDK and tools above. <strong>User-land scheduling</strong> builds its system description with <code>sdfgen</code> and links against sDDF, so it needs two more pieces.</p>
+<p><strong>LionsOS</strong>, which vendors both sDDF and libvmm:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">git clone https://github.com/au-ts/lionsos.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> lionsos
+</span></span><span class="line"><span class="cl">git checkout 3945dc5
+</span></span><span class="line"><span class="cl">git submodule update --init --recursive dep/sddf dep/libvmm
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LIONSOS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
+</span></span></code></pre></div><p>Initialise only those two submodules. Cloning with <code>--recurse-submodules</code> pulls in the rest of what LionsOS vendors, which nothing here builds.</p>
+<p>A generated build reports <code>Set SDDF to a copy of https://github.com/au-ts/sddf, or LIONSOS to a checkout that vendors it at dep/sddf</code> if <code>LIONSOS</code> is unset. <code>dep/libvmm</code> is what virtual machine components build against, under either scheduling model.</p>
+<p><strong>sdfgen</strong>, from PyPI. It is a Python library rather than a command-line tool &mdash; the generated <code>meta.py</code> imports it &mdash; so install it where the build&rsquo;s <code>python3</code> will find it:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">python3 -m venv sdfgen-venv
+</span></span><span class="line"><span class="cl">sdfgen-venv/bin/pip install <span class="nv">sdfgen</span><span class="o">==</span>0.33.0
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>&lt;path-to&gt;/sdfgen-venv/bin:<span class="nv">$PATH</span>
+</span></span></code></pre></div><h3 id="keeping-sireum-up-to-date">Keeping Sireum Up To Date</h3>
+<p>HAMR&rsquo;s code generator moves faster than Sireum&rsquo;s numbered releases, so the version you install first is usually not the one you want to stay on. There are three ways to land on a version, and they trade speed against currency:</p>
+<table>
+  <thead>
+      <tr>
+          <th></th>
+          <th>how it installs</th>
+          <th>how long</th>
+          <th>what you get</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>a numbered release, e.g. <code>4.20260810.80aad0c2</code></td>
+          <td>prebuilt binaries are unpacked</td>
+          <td>minutes</td>
+          <td>reproducible, but the code generator is whatever shipped in that release</td>
+      </tr>
+      <tr>
+          <td>the <code>dev</code> release</td>
+          <td>prebuilt binaries are unpacked</td>
+          <td>minutes</td>
+          <td>tracks the tip, but it is a moving tag &mdash; two installs weeks apart give you different Sireums</td>
+      </tr>
+      <tr>
+          <td><code>master</code></td>
+          <td>kekinian is cloned and built from source</td>
+          <td>ten minutes or more</td>
+          <td>the current tip, exactly</td>
+      </tr>
+  </tbody>
+</table>
+<p>So a numbered release is much the faster route, and it is the right one if you are pinning a machine deliberately &mdash; but it will not have the code generator improvements made since it was cut. If you need those, take <code>dev</code> for the speed or <code>master</code> for an exact revision.</p>
+<p><strong>If you installed manually</strong>, update the checkout in place and rebuild:</p>
+
+
+<div class="tab-panel">
+    <div class="tab-nav">
+        
+        <button
+                data-tab-item="macOS/Linux"
+                data-tab-group="sireum-update"
+                class="tab-nav-button btn active"
+        onclick="switchTab(true, 'sireum-update','macOS\/Linux')"
+        >macOS/Linux</button>
+        
+        <button
+                data-tab-item="Windows"
+                data-tab-group="sireum-update"
+                class="tab-nav-button btn "
+        onclick="switchTab(true, 'sireum-update','Windows')"
+        >Windows</button>
+        
+    </div>
+    <div class="tab-content">
+        
+        <div data-tab-item="macOS/Linux" data-tab-group="sireum-update" class="tab-item active">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nb">cd</span> <span class="nv">$SIREUM_HOME</span>
+</span></span><span class="line"><span class="cl">git pull
+</span></span><span class="line"><span class="cl">git submodule update --init --recursive
+</span></span><span class="line"><span class="cl">bin/build.cmd
+</span></span></code></pre></div>
+    </div>
+    
+        <div data-tab-item="Windows" data-tab-group="sireum-update" class="tab-item ">
+        <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="cl"><span class="k">cd</span> <span class="nv">%SIREUM_HOME%</span>
+</span></span><span class="line"><span class="cl">git pull
+</span></span><span class="line"><span class="cl">git submodule update --init --recursive
+</span></span><span class="line"><span class="cl">bin\build.cmd
+</span></span></code></pre></div>
+    </div>
+    
+</div>
+</div>
+<p>To install prebuilt binaries instead, see the <a href="https://sireum.org/getting-started/#latest-release-bin">Sireum getting started</a> page, which takes the release tag in <code>SIREUM_V</code>.</p>
+<p><strong>If you installed with the PROVERS environment</strong>, the same choice is <code>SIREUM_V</code>, and re-running the one script is enough:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>4.20260810.80aad0c2 bash provers-setup.sh   <span class="c1"># a numbered release; unpacked</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>dev bash provers-setup.sh                   <span class="c1"># the moving dev release; also unpacked</span>
+</span></span><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>master bash provers-setup.sh                <span class="c1"># build the current tip from source</span>
+</span></span></code></pre></div><div class="notice tip" >
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#tip-notice"></use></svg></span>Tip</p><p>To see what you would be gaining or giving up, read the <a href="https://github.com/sireum/hamr-codegen/blob/master/changelog.md">HAMR codegen changelog</a>. Its <strong>dev</strong> section at the top lists what is in the current tip but not yet in any numbered release; each release below it has its own entry.</p></div>
+
 <h3 id="installation-steps---alternate-workflows">Installation Steps - Alternate Workflows</h3>
 <p>HAMR supports modeling in AADL or SysMLv2, and component application development in Rust, C, and Slang.   Workflows based on any combination of these is possible.  For example,</p>
 <ul>
