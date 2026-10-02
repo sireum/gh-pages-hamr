@@ -522,27 +522,27 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>Note: Versus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues that those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
 <p><strong>Installing Verus</strong></p>
 <p>The current Versus version supported by HAMR is</p>
-<pre tabindex="0"><code>Version: 0.2026.08.09.92f466f
+<pre tabindex="0"><code>Version: 0.2026.09.27.3cf1832
 Profile: release
 </code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
 <ul>
 <li>
-<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.08.09.92f466f">specific version above</a></p>
+<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.09.27.3cf1832">specific version above</a></p>
 </li>
 <li>
 <p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
-<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.08.09.92f466f</code> requires the <code>1.97.1-aarch64-apple-darwin</code> toolchain, so you would run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.97.1-aarch64-apple-darwin
+<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.09.27.3cf1832</code> requires the <code>1.98.1-aarch64-apple-darwin</code> toolchain, so you would run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.98.1-aarch64-apple-darwin
 </span></span></code></pre></div></li>
 </ul>
 <h5 id="sel4-microkit-sdk">seL4 Microkit SDK</h5>
-<p>HAMR generates Microkit systems against SDK <strong>2.3.0</strong>. Download the release for your platform from the <a href="https://github.com/seL4/microkit/releases/tag/2.3.0">Microkit 2.3.0 release</a> &mdash; <code>microkit-sdk-2.3.0-linux-x86-64.tar.gz</code>, <code>-linux-aarch64</code>, or <code>-macos-aarch64</code> &mdash; unpack it, and point <code>MICROKIT_SDK</code> at the result:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">tar xf microkit-sdk-2.3.0-&lt;os&gt;-&lt;arch&gt;.tar.gz
-</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROKIT_SDK</span><span class="o">=</span>&lt;path-to&gt;/microkit-sdk-2.3.0
+<p>HAMR generates Microkit systems against SDK <strong>2.3.1</strong>. Download the release for your platform from the <a href="https://github.com/seL4/microkit/releases/tag/2.3.1">Microkit 2.3.1 release</a> &mdash; <code>microkit-sdk-2.3.1-linux-x86-64.tar.gz</code>, <code>-linux-aarch64</code>, or <code>-macos-aarch64</code> &mdash; unpack it, and point <code>MICROKIT_SDK</code> at the result:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">tar xf microkit-sdk-2.3.1-&lt;os&gt;-&lt;arch&gt;.tar.gz
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROKIT_SDK</span><span class="o">=</span>&lt;path-to&gt;/microkit-sdk-2.3.1
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">MICROKIT_BOARD</span><span class="o">=</span>qemu_virt_aarch64
 </span></span></code></pre></div><p>Both variables are required: a generated build stops with <code>MICROKIT_SDK must be specified</code> or <code>MICROKIT_BOARD must be specified</code> without them.</p>
 <div class="notice warning" >
-<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#warning-notice"></use></svg></span>Warning</p><p>The released SDK is what you want, with one exception. Stock 2.3.0 does not assign a virtual machine&rsquo;s vCPU to its protection domain&rsquo;s scheduling domain, so a <strong>domain-scheduled VM</strong> leaves its vCPU in domain 0 while its VMM sits elsewhere, the guest never receives its virtual timer interrupt, and Linux stops in its <code>arch_timer</code> probe. The fix is <a href="https://github.com/seL4/microkit/pull/586">seL4/microkit#586</a>, which merged a week after 2.3.0 was cut, so no release carries it yet; the first release after 2.3.0 will. Until then, the automated installation rebuilds the SDK&rsquo;s <code>microkit</code> tool with that one change applied.</p>
+<p class="first notice-title"><span class="icon-notice baseline"><svg><use href="#warning-notice"></use></svg></span>Warning</p><p>The released SDK is what you want, with one exception. Stock 2.3.1 does not assign a virtual machine&rsquo;s vCPU to its protection domain&rsquo;s scheduling domain, so a <strong>domain-scheduled VM</strong> leaves its vCPU in domain 0 while its VMM sits elsewhere, the guest never receives its virtual timer interrupt, and Linux stops in its <code>arch_timer</code> probe. The fix is <a href="https://github.com/seL4/microkit/pull/586">seL4/microkit#586</a>, which merged a week after 2.3.1 was cut, so no release carries it yet; the first release after 2.3.1 will. Until then, the automated installation rebuilds the SDK&rsquo;s <code>microkit</code> tool with that one change applied.</p>
 <p>This only affects a VM under domain scheduling. Systems without virtual machines, and VMs under user-land scheduling, build correctly against the released SDK as it ships.</p></div>
 
 <h5 id="build-tools-and-qemu">Build Tools and QEMU</h5>
@@ -596,14 +596,14 @@ Profile: release
 <p><strong>LionsOS</strong>, which vendors both sDDF and libvmm:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">git clone https://github.com/au-ts/lionsos.git
 </span></span><span class="line"><span class="cl"><span class="nb">cd</span> lionsos
-</span></span><span class="line"><span class="cl">git checkout 3945dc5
+</span></span><span class="line"><span class="cl">git checkout 7554a0f
 </span></span><span class="line"><span class="cl">git submodule update --init --recursive dep/sddf dep/libvmm
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">LIONSOS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>
 </span></span></code></pre></div><p>Initialise only those two submodules. Cloning with <code>--recurse-submodules</code> pulls in the rest of what LionsOS vendors, which nothing here builds.</p>
 <p>A generated build reports <code>Set SDDF to a copy of https://github.com/au-ts/sddf, or LIONSOS to a checkout that vendors it at dep/sddf</code> if <code>LIONSOS</code> is unset. <code>dep/libvmm</code> is what virtual machine components build against, under either scheduling model.</p>
 <p><strong>sdfgen</strong>, from PyPI. It is a Python library rather than a command-line tool &mdash; the generated <code>meta.py</code> imports it &mdash; so install it where the build&rsquo;s <code>python3</code> will find it:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">python3 -m venv sdfgen-venv
-</span></span><span class="line"><span class="cl">sdfgen-venv/bin/pip install <span class="nv">sdfgen</span><span class="o">==</span>0.33.0
+</span></span><span class="line"><span class="cl">sdfgen-venv/bin/pip install <span class="nv">sdfgen</span><span class="o">==</span>0.35.0
 </span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span>&lt;path-to&gt;/sdfgen-venv/bin:<span class="nv">$PATH</span>
 </span></span></code></pre></div><h3 id="keeping-sireum-up-to-date">Keeping Sireum Up To Date</h3>
 <p>HAMR&rsquo;s code generator moves faster than Sireum&rsquo;s numbered releases, so the version you install first is usually not the one you want to stay on. There are three ways to land on a version, and they trade speed against currency:</p>
