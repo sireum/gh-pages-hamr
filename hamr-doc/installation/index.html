@@ -49,7 +49,7 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
   <meta itemprop="description" content="Distribution Mechanism HAMR is distributed as part of the Sireum tool framework developed at Kansas State University. Installing Sireum will install HAMR as well as other tools for building programming language analysis, transformation, and verification tools. These tools include support for Slang, a safety-critical subset of Scala as well as the Logika SMT-based verifier for Slang. Installation instructions are given below.
 The primary tools provided by HAMR are:
 tools for checking the well-formedness of the SysMLv2 and AADL modeling language subsets supported by HAMR, tools for performing different forms of light-weight verification on HAMR models, and tools for generating code and system build infrastructure for HAMR models. These tools can be invoked from the command line using Sireum’s CLI interface or agentically using Sireum’s MCP server, which sireum --mcp runs and which exposes the HAMR tools to MCP clients such as AI coding assistants.">
-  <meta itemprop="wordCount" content="3120">
+  <meta itemprop="wordCount" content="3122">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -629,7 +629,7 @@ Profile: release
   </thead>
   <tbody>
       <tr>
-          <td>a numbered release, e.g. <code>4.20260810.80aad0c2</code> (see the <a href="https://github.com/sireum/kekinian/releases">release list</a> for the latest)</td>
+          <td>a numbered release, e.g. the latest, <code>4.20261021.b1efad5d</code> (see the <a href="https://github.com/sireum/kekinian/releases">release list</a> for the others)</td>
           <td>prebuilt binaries are unpacked</td>
           <td>minutes</td>
           <td>reproducible, but the code generator is whatever shipped in that release</td>
@@ -692,7 +692,7 @@ Profile: release
 </div>
 <p>To install prebuilt binaries instead, see the <a href="https://sireum.org/getting-started/#latest-release-bin">Sireum getting started</a> page, which takes the release tag in <code>SIREUM_V</code>.</p>
 <p><strong>If you installed with the PROVERS environment</strong>, the same choice is <code>SIREUM_V</code>, and re-running the one script is enough:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>4.20260810.80aad0c2 bash provers-setup.sh   <span class="c1"># a numbered release (example tag); unpacked</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>4.20261021.b1efad5d bash provers-setup.sh   <span class="c1"># a numbered release (the latest); unpacked</span>
 </span></span><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>dev bash provers-setup.sh                   <span class="c1"># the moving dev release; also unpacked</span>
 </span></span><span class="line"><span class="cl"><span class="nv">SIREUM_V</span><span class="o">=</span>master bash provers-setup.sh                <span class="c1"># build the current tip from source</span>
 </span></span></code></pre></div><div class="notice tip" >
