@@ -47,7 +47,7 @@ The current state of a the tool is a &ldquo;usable prototype&rdquo;. The approac
   <meta itemprop="name" content="GUMBO System-Level Properties -- Overview">
   <meta itemprop="description" content="This chapter provides an overview of how to specify and verify system-level properties in HAMR. HAMR system properties are cross-component properties of a whole composed system, written in an extension of the GUMBO contract language. For verification, HAMR generates verification conditions (VCs) (in special Rust crates) represented and Verus specifications and contracts. System properties are proved when Verus verifies HAMR generated VCs.
 The current state of a the tool is a “usable prototype”. The approach currently has a number of manual features (like adding support system assertions to enable system properties to be proved) that we will automate in the future. Moreover, other then syntax highlighting and checking, there is no high-level model IDE support that, for example, reports failure of VCs to verify in terms of problem markers in model-level specifications. All of these features will be added later.">
-  <meta itemprop="wordCount" content="10417">
+  <meta itemprop="wordCount" content="10457">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -225,7 +225,7 @@ examples — the Isolette and TempControl system-verification models in
 <h3 id="1-what-a-system-level-property-is-and-why">1. What a system-level property is (and why)</h3>
 <p>Component-level GUMBO contracts (integration <code>assume</code>/<code>guarantee</code>, compute contracts) specify the behavior of <strong>each component in isolation</strong>. However, we often want to specify and verify behavior properties that address the <strong>combined behavior of components</strong> as they are executed according to some schedule.  A common example is the formalization of &ldquo;system properties&rdquo; that specify some desired &ldquo;end-to-end&rdquo; behavior relating inputs occurring earlier in the schedule cycle (e.g., inputs from sensors or external data sources) to outputs occurring later in the schedule (e.g., outputs to actuators or external data sources).</p>
 <p>GUMBO system specifications layer on top of GUMBO component contracts to specify such properties.  In this approach, verification of system specifications does not &ldquo;see&rdquo; or utilize component implementations (e.g., Rust application code implementing a component).  Instead, system verification uses only information represented in component contracts; each component GUMBO contract provides a &ldquo;summary&rdquo; of the component behavior that is used as the basis of proving the desired system properties.</p>
-<p>Like GUMBO component contracts, GUMBO system specifications support both formal verification, testing, and run-time monitoring.  This chapter focuses on using system specifications for formal verification.</p>
+<p>Like GUMBO component contracts, GUMBO system specifications support both formal verification, testing, and run-time monitoring.  This chapter focuses on using system specifications for formal verification; <a href="../hamr-system-testing/">HAMR System Testing</a> shows the same Struct Split properties checked at run time, while the system&rsquo;s actual code runs on seL4.</p>
 <p>This documentation uses a contrived example called <code>Struct Split</code> as an example.  The example implements a simple pipeline of components that manipulate a struct  of two <code>int32</code> fields named <code>x</code> and <code>y</code> (see full <a href="https://github.com/santoslab/hamr-tutorials/tree/main/HAMR-SysMLv2-Rust-seL4-P-DP-SysPropStructSplit/sysmlv2">SysMLv2 model</a>).</p>
 <ul>
 <li>A <code>GenStruct</code> component generates a struct with arbitrary <code>x</code> and <code>y</code> values between -100 and 100 inclusive (the component has no inputs).  The range constraints on the <code>x</code> and <code>y</code> are expressed as GUMBO integration constraints on the output port</li>
@@ -1225,6 +1225,7 @@ the frame so every property covering it can discharge its Pre-Assert.</li>
 </ul>
 <h3 id="related">Related</h3>
 <ul>
+<li><a href="../hamr-system-testing/">HAMR System Testing</a> — running the Struct Split system on seL4 with these properties&rsquo; assertions checked at every dispatch.</li>
 <li><code>gumbo-system-property-vcs.md</code> — a detailed walkthrough of the verification conditions generated for these properties (the full VC taxonomy with generated examples, contract projection, the independence obligations (non-disabling and commutativity), and the soundness argument with its trusted assumptions).</li>
 <li><code>sysmlv2-gumbo-quick-reference.md</code> — GUMBO expression/operator syntax used inside assertions.</li>
 <li><code>gumbo-bnf.md</code> — grammar and built-in predicates (<code>In</code>, <code>HasEvent</code>, <code>NoSend</code>, <code>MustSend</code>, <code>'-&gt;:'</code>).</li>

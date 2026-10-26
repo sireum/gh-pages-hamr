@@ -45,7 +45,7 @@
 
   <meta itemprop="name" content="Sireum HAMR">
   <meta itemprop="description" content="Automated GUMBOX Property-Based Testing of Thread Components This chapter describes automated GUMBOX property-based testing — the third and most automated of HAMR’s component testing styles. In this style, the PropTest framework is used to generate random input test vectors from HAMR-generated value strategies, and the same contract-based harnesses introduced in the Manual GUMBOX Testing chapter judge every vector against the executable (GUMBOX) form of the component’s GUMBO contracts. It continues with the same running examples: the Simple Isolette from the HAMR tutorials repository, in its data-port (P-DP) and event-data-port (P-EDP) variants, centered on the Thermostat thread.">
-  <meta itemprop="wordCount" content="3152">
+  <meta itemprop="wordCount" content="3180">
   <meta itemprop="image" content="https://hamr.sireum.org/">
 
   <meta name="twitter:card" content="summary_large_image">
@@ -524,6 +524,7 @@
   </tbody>
 </table>
 <p>All three run against the same generated infrastructure, and the two GUMBOX styles consume the same specification that drives <a href="../gumbo-verus-translation/">Verus verification</a> — one set of GUMBO contracts, authored once at the model level (<a href="../gumbo-component-contracts/">GUMBO Component Contracts</a>), translated once into <a href="../gumbox-translation/">executable</a> and logical form.</p>
+<p>The same executable contracts reappear one level up in <a href="../hamr-system-testing/">HAMR System Testing</a>, where the whole composed system runs on seL4 and every thread dispatch is checked against them.</p>
 <p>For hands-on practice, Part 2 of the tutorial series <em>Adding GUMBO Thread Component Contracts to an Existing System</em> includes the property-based campaigns shown here — see <a href="https://github.com/santoslab/hamr-tutorials/blob/main/HAMR-SysMLv2-Rust-Tutorials-Exercises/Ex-Simple-Isolette-DT-add-GUMBO/02-Ex-Simple-Isolette-DT-add-GUMBO-GUMBOX.md">Part 2</a> or follow the <a href="../reading-order/">Recommended Reading Order</a>.</p>
 </div>
         
