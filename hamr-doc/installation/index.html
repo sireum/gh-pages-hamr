@@ -535,17 +535,17 @@ tools for checking the well-formedness of the SysMLv2 and AADL modeling language
 <p>Note: Verus is also distributed via the VSCode <code>verus-analyzer</code> extension.  Conceptually, HAMR can be used in conjunction with this extension installation. However, due to even more complex issues than those considered above, we will recommend first starting with the canonical command-line installation of Verus.</p>
 <p><strong>Installing Verus</strong></p>
 <p>The current Verus version supported by HAMR is</p>
-<pre tabindex="0"><code>Version: 0.2026.09.06.8dea4a2
+<pre tabindex="0"><code>Version: 0.2026.10.04.426d8b0
 Profile: release
 </code></pre><p>Follow the installation instructions at <a href="https://github.com/verus-lang/verus/blob/main/INSTALL.md">https://github.com/verus-lang/verus/blob/main/INSTALL.md</a> <strong>but with two differences</strong>:</p>
 <ul>
 <li>
-<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.09.06.8dea4a2">specific version above</a></p>
+<p>When you get to the point where you download the appropriate release/platform <code>zip</code> file, pick the appropriate version for your computing from the releases for the <a href="https://github.com/verus-lang/verus/releases/tag/release%2F0.2026.10.04.426d8b0">specific version above</a></p>
 </li>
 <li>
 <p>After installing the specific Rust toolchain required by Verus, you must also add the matching standard library source (<code>rust-src</code>). This provides the Rust standard library source code needed by Verus and for builds targeting custom platforms such as seL4 Microkit.</p>
-<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.09.06.8dea4a2</code> requires the <code>1.98.0-aarch64-apple-darwin</code> toolchain, so you would run:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.98.0-aarch64-apple-darwin
+<p>It is critical that the <code>--toolchain</code> flag matches the exact version that is required by Verus. For example, on macOS (Apple Silicon), Verus <code>0.2026.10.04.426d8b0</code> requires the <code>1.98.1-aarch64-apple-darwin</code> toolchain, so you would run:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">rustup component add rust-src --toolchain 1.98.1-aarch64-apple-darwin
 </span></span></code></pre></div></li>
 </ul>
 <p><strong>Keep Sireum and Verus in step.</strong> The Rust crates HAMR generates pin the <code>vstd</code> library of the Verus release that the code generator targets, so a Sireum and a Verus from different releases may not work together. When they do not, <code>make</code> fails while compiling <code>vstd</code>, with an error about Verus&rsquo;s internals rather than your code &mdash; for example <code>unexpected verus diagnostic item</code> or <code>external_trait_private_bound ... is not a private non-local bound</code>. If you see one, check that <code>verus --version</code> reports the version given above and that your Sireum is current, then regenerate the code.</p>
